@@ -1,10 +1,13 @@
 extends CharacterBody2D
 ## Core player controller.
 ##
-## Player-specific systems such as movement, stats, skills,
-## inventory, and equipment will be separated into their
-## own scripts.
+## Player-specific systems are separated into their own scripts.
+## This script coordinates access to those systems without owning
+## their implementation.
 
-func _ready() -> void:
-	pass
-	
+@onready var movement: Node = $PlayerMovement
+@onready var stats: Node = $PlayerStats
+@onready var skills: Node = $PlayerSkills
+@onready var inventory: Node = $PlayerInventory
+@onready var equipment: Node = $PlayerEquipment
+@onready var progression: Node = $PlayerProgression
