@@ -26,49 +26,21 @@ If a script becomes responsible for multiple unrelated systems, the functionalit
 
 Combat-related systems.
 
-Examples:
-- Battle management
-- Combat actions
-- Damage calculation
-- Player combat
-- Enemy combat
-
 ### data/
 
 Reusable game data definitions.
-
-Examples:
-- Item data
-- Enemy data
-- Skill data
-- Equipment data
-
-Data definitions should not contain large amounts of unrelated gameplay logic.
 
 ### enemies/
 
 Enemy-specific behavior.
 
-Examples:
-- Enemy controllers
-- Enemy behavior
-- Enemy decision-making
-- Enemy-specific mechanics
-
 ### items/
 
 Item-related systems.
 
-Examples:
-- Item behavior
-- Item usage
-- Item effects
-
 ### player/
 
-Player-related systems.
-
-Examples:
+Player-related systems such as:
 - Player core
 - Movement
 - Stats
@@ -77,34 +49,17 @@ Examples:
 - Equipment
 - Progression
 
-Player systems should not contain unrelated world, UI, or save-system logic.
-
 ### quests/
 
 Quest-related systems.
-
-Examples:
-- Quest definitions
-- Quest tracking
-- Quest objectives
-- Quest rewards
 
 ### scenes/
 
 Game scenes.
 
-Examples:
-- Main scene
-- Player scene
-- World scenes
-- Battle scenes
-- Test scenes
-
 ### systems/
 
-Global game systems.
-
-Examples:
+Global game systems such as:
 - Game manager
 - Save/load manager
 - Scene management
@@ -114,20 +69,9 @@ Examples:
 
 User interface systems.
 
-Examples:
-- Menus
-- HUD
-- Inventory interface
-- Character interface
-- Battle interface
-
-UI scripts should handle presentation and user interaction rather than owning the underlying game data.
-
 ### world/
 
-World-related systems.
-
-Examples:
+World-related systems such as:
 - World interaction
 - Doors
 - Chests
@@ -154,7 +98,6 @@ Global systems should coordinate other systems rather than replacing them.
 The player will be divided into focused systems.
 
 Expected systems include:
-
 - Player core
 - Player movement
 - Player stats
