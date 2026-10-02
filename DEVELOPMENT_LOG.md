@@ -47,24 +47,72 @@ Created `player/player.gd` as the Player's core script.
 
 Created `player/player_movement.gd` for movement logic.
 
+Created the following focused Player systems:
+
+- `player/player_stats.gd`
+- `player/player_skills.gd`
+- `player/player_inventory.gd`
+- `player/player_equipment.gd`
+- `player/player_progression.gd`
+
 The Player scene currently contains:
 
 - `Player`
 - `PlayerMovement`
+- `PlayerStats`
+- `PlayerSkills`
+- `PlayerInventory`
+- `PlayerEquipment`
+- `PlayerProgression`
 - `PlayerSprite`
 - `PlayerCollision`
 
-A temporary `CircleShape2D` collision shape was added to `PlayerCollision`.
+A temporary `CircleShape2D` collision shape with radius 16.0 was added to `PlayerCollision`.
+
+The Player core script now references the focused Player systems without owning their implementation.
+
+### Successful Debug / Verification
+
+Ran the Player scene directly to verify the modular Player foundation.
+
+The first test reported three empty-script errors because the newly created skills, inventory, and equipment scripts contained no code.
+
+Fixed those scripts by giving each a valid `extends Node` declaration.
+
+Re-ran the Player scene successfully. The empty-script errors were resolved and the Player scene loaded without those errors.
+
+This successful debug established that the current modular Player scene and its attached system scripts are structurally valid.
+
+### Project Structure Cleanup
+
+Removed the unused `systems/save_system.gd` and its generated UID file because save/load functionality is not yet being implemented.
+
+Created the initial `World` scene at `scenes/World.tscn`.
+
+The World scene is currently a `Node2D` root and has not yet been populated with the Player.
 
 ### Current Status
 
-The project is still in the foundation stage.
+The project is in the foundation stage.
 
-Movement has been implemented but has not yet been meaningfully tested because the project does not yet have a test world.
+The modular Player structure has been created and successfully tested for script validity.
+
+The World scene exists, but the Player has not yet been instanced into it.
+
+### Development Rule
+
+After every successful debug or meaningful verification, update this development log with:
+
+- What was tested.
+- What worked.
+- Files or systems changed.
+- Remaining issues or unfinished work.
+
+The development log should be updated as part of the corresponding Git checkpoint so the repository history reflects verified project state.
 
 ### Next Work
 
-- Finish verifying the Player collision setup.
-- Create a minimal test world.
-- Test Player movement and collision.
-- Continue separating Player systems such as stats, skills, inventory, equipment, and progression.
+- Instance the Player scene into the World scene.
+- Test Player movement in the World.
+- Verify Player collision behavior in the test world.
+- Continue implementing focused Player systems without expanding `player.gd` into a large multi-purpose script.
