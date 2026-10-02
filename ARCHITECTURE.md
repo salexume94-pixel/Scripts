@@ -1,0 +1,127 @@
+# Scripts - Architecture
+
+## Purpose
+
+This project is a fresh implementation of the game systems from the previous prototype.
+
+The goal is to keep systems organized, modular, and easy to understand.
+
+Each script should have a clear responsibility.
+
+---
+
+## Core Rule
+
+A script should do one primary job.
+
+A system should not contain unrelated functionality simply because it is convenient.
+
+If a script becomes responsible for multiple unrelated systems, the functionality should be separated into additional scripts.
+
+---
+
+## Project Structure
+
+### combat/
+
+Combat-related systems.
+
+### data/
+
+Reusable game data definitions.
+
+### enemies/
+
+Enemy-specific behavior.
+
+### items/
+
+Item-related systems.
+
+### player/
+
+Player-related systems such as:
+- Player core
+- Movement
+- Stats
+- Skills
+- Inventory
+- Equipment
+- Progression
+
+### quests/
+
+Quest-related systems.
+
+### scenes/
+
+Game scenes.
+
+### systems/
+
+Global game systems such as:
+- Game manager
+- Save/load manager
+- Scene management
+- Global state
+
+### ui/
+
+User interface systems.
+
+### world/
+
+World-related systems such as:
+- World interaction
+- Doors
+- Chests
+- Regions
+- Waystones
+- World objects
+
+---
+
+## Separation of Responsibilities
+
+Game logic should remain separate from UI whenever practical.
+
+Game data should remain separate from presentation.
+
+Saving and loading should be handled by the save system rather than individual gameplay systems.
+
+Global systems should coordinate other systems rather than replacing them.
+
+---
+
+## Player Architecture
+
+The player will be divided into focused systems.
+
+Expected systems include:
+- Player core
+- Player movement
+- Player stats
+- Player skills
+- Player inventory
+- Player equipment
+- Player progression
+
+These systems may communicate with each other, but each should maintain a clearly defined responsibility.
+
+---
+
+## Development Rule
+
+Do not add functionality to an existing script merely because the functionality is related to the same object.
+
+First determine which system owns the responsibility.
+
+---
+
+## Reference Project
+
+The previous Prototype project may be used as a reference for existing gameplay mechanics.
+
+Its architecture should not be copied automatically.
+
+Existing mechanics should be redesigned and implemented according to this architecture.
