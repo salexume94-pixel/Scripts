@@ -1,3 +1,15 @@
-[gd_scene format=3 uid="uid://bryx83e7q5338"]
+[gd_scene load_steps=3 format=3 uid="uid://bryx83e7q5338"]
+
+[ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://scenes/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/world_presentation.gd" id="2_world_presentation"]
 
 [node name="World" type="Node2D" unique_id=119908091]
+
+[node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
+script = ExtResource("2_world_presentation")
+
+[node name="WorldContent" type="Node2D" parent="WorldPresentation" unique_id=137521038]
+
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation" unique_id=137521039]
+
+[node name="Player" parent="." instance=ExtResource("1_player") unique_id=137521040]
