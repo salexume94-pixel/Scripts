@@ -22,19 +22,21 @@ func _ready() -> void:
 	# a specific gameplay system into this presentation script.
 	target = get_node_or_null(target_path) as Node2D
 
-	# Activate this camera so it becomes the World scene's visible
-	# viewpoint when the World scene is running.
+	# Explicitly enable and make this camera the active World camera.
+	# Enabling allows the camera to operate, while make_current() removes
+	# any ambiguity about which Camera2D should control the viewport.
 	camera.enabled = true
+	camera.make_current()
 
 	# Position the camera immediately so the first rendered frame is
 	# already centered on the target instead of starting at the origin.
 	_update_camera_position()
 
 
-func _process(_delta: float) -> void:
-	# Keep the camera centered on the target as the target moves.
-	# This leaves camera behavior in the World presentation system
-	# instead of adding camera responsibilities to the Player.
+func _physics_process(_delta: float) -> void:
+	# Update the camera after the Player's physics movement.
+	# This keeps the camera in the World presentation system while making
+	# the camera position follow the Player on the same movement cycle.
 	_update_camera_position()
 
 
@@ -42,4 +44,6 @@ func _update_camera_position() -> void:
 	if target == null:
 		return
 
+	# Use global coordinates because the Player is a sibling of
+	# WorldPresentation rather than a child of the camera node.
 	camera.global_position = target.global_position
