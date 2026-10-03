@@ -21,7 +21,6 @@ window/size/viewport_width=1152
 window/size/viewport_height=648
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-
 [dotnet]
 
 project/assembly_name="Scripts"
@@ -35,3 +34,4 @@ project/assembly_name="Scripts"
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
