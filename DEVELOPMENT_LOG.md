@@ -129,6 +129,39 @@ The viewport size should not be treated as the total world size. The world can e
 
 Player visual size and Player collision size should remain separate concerns. Collision should represent the physical space occupied by the Player rather than simply matching an arbitrary visual size.
 
+### World Presentation and Camera Structure
+
+Implemented the initial World presentation skeleton according to the project architecture.
+
+The World scene now contains:
+
+- `WorldPresentation` for world presentation responsibilities.
+- `WorldContent` as the future container for terrain, scenery, and world objects.
+- `Camera2D` under `WorldPresentation`.
+- `Player` as a separate World child instance.
+
+Created `world/world_presentation.gd`.
+
+This script is responsible for following the active Player with the World camera. Camera behavior remains outside `player.gd`, preserving the one-primary-job architecture.
+
+The camera is positioned from the Player's world coordinates, allowing the World to extend beyond the visible viewport.
+
+The project viewport baseline is now explicitly configured as **1152x648** in `project.godot`.
+
+No permanent background, terrain, or temporary visual placeholder was added.
+
+### Current Camera Test State
+
+The World presentation and camera structure has been pushed to GitHub for local Godot testing.
+
+The implementation has not yet been verified in the local Godot runtime after this GitHub update. The next verification should run `World.tscn` and confirm:
+
+- The World scene loads without debugger errors.
+- The Player movement still works.
+- The camera follows the Player.
+- The visible viewport uses the 1152x648 baseline.
+- No temporary background or unrelated presentation system has been introduced.
+
 ### Project Structure Cleanup
 
 Removed the unused `systems/save_system.gd` and its generated UID file because save/load functionality is not yet being implemented.
@@ -143,6 +176,8 @@ The Player is instanced into the World and its basic movement has been verified 
 
 The experimental background and oversized Player collision changes have been reverted.
 
+The World presentation skeleton and camera have now been implemented and pushed for local verification.
+
 ### Development Rule
 
 After every successful debug or meaningful verification, update this development log with:
@@ -156,7 +191,8 @@ The development log should be updated as part of the corresponding Git checkpoin
 
 ### Next Work
 
+- Run and verify the new World presentation/camera structure locally at the 1152x648 baseline.
 - Verify Player collision behavior in the World.
-- Define the appropriate world visual/presentation responsibility before implementing a permanent background.
+- Define the appropriate permanent world visual responsibility before implementing terrain or a background.
 - Replace temporary Player debug visuals with the eventual visual system when appropriate.
 - Continue implementing focused Player systems without expanding `player.gd` into a large multi-purpose script.
