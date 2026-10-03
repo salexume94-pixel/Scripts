@@ -281,3 +281,31 @@ At minimum, verify:
 - Larger World content remains visible as the camera moves.
 - Player collision remains separate from the visual.
 - No node-path, resource, or script errors appear.
+
+
+### World Hierarchy Correction
+
+The World scene hierarchy was corrected after runtime testing exposed two presentation failures: the Player was visible but the camera was not following it, and the World floor was no longer visible.
+
+The World scene now keeps the major responsibilities as separate siblings:
+
+- WorldContent contains the actual World visual/content nodes.
+- WorldPresentation owns presentation behavior and the Camera2D.
+- Player remains a separate gameplay actor instance.
+
+WorldFloor was moved back under WorldContent instead of being nested inside WorldPresentation. This keeps World content separate from camera/presentation control and follows the project's one-primary-job architecture.
+
+world/world_presentation.gd was also strengthened with explicit target validation and camera-current diagnostics. The camera is enabled, made current, checked with is_current(), positioned immediately on startup, and updated after Player physics movement.
+
+### Pending Runtime Verification
+
+The corrected World hierarchy and camera diagnostics are now committed to GitHub but require local Godot runtime verification.
+
+Run scenes/World.tscn with F6 and use the full World Runtime Debug Checklist above. Record each item as PASS, FAIL, or NOT TESTED. The expected focus of this test is:
+
+- World floor is visible again.
+- Player remains visible.
+- Camera starts centered on Player.
+- Camera follows Player in all four directions.
+- Debugger shows no node-path or camera errors.
+- The World floor moves through the viewport as the Player moves.
