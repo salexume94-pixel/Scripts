@@ -5,14 +5,14 @@
 
 [node name="World" type="Node2D" unique_id=119908091]
 
-[node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
-script = ExtResource("2_world_presentation")
+[node name="WorldContent" type="Node2D" parent="." unique_id=137521038]
 
-[node name="WorldContent" type="Node2D" parent="WorldPresentation" unique_id=137521038]
-
-[node name="WorldFloor" type="Polygon2D" parent="WorldPresentation/WorldContent" unique_id=137521041]
+[node name="WorldFloor" type="Polygon2D" parent="WorldContent" unique_id=137521041]
 polygon = PackedVector2Array(-1500, -1000, 1500, -1000, 1500, 1000, -1500, 1000)
 color = Color(0.12, 0.18, 0.12, 1)
+
+[node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
+script = ExtResource("2_world_presentation")
 
 [node name="Camera2D" type="Camera2D" parent="WorldPresentation" unique_id=137521039]
 
