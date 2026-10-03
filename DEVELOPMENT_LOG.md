@@ -39,7 +39,7 @@ Created `systems/game_manager.gd`.
 
 Created the initial Player scene:
 
-`scenes/player.tscn`
+`scenes/Player.tscn`
 
 The Player root is a `CharacterBody2D`.
 
@@ -67,9 +67,9 @@ The Player scene currently contains:
 - `PlayerSprite`
 - `PlayerCollision`
 
-A temporary `CircleShape2D` collision shape with radius 16.0 was added to `PlayerCollision`.
+The Player uses a temporary `CircleShape2D` collision shape with radius 16.0 for the current foundation.
 
-The Player core script now references the focused Player systems without owning their implementation.
+The Player core script references the focused Player systems without owning their implementation.
 
 ### Successful Debug / Verification
 
@@ -89,7 +89,7 @@ Created the initial `World` scene at `scenes/World.tscn`.
 
 Instanced `Player.tscn` as a child of the World scene.
 
-The Player initially had no visible texture, so a temporary `ColorRect` was added to make the Player visible during development and movement testing.
+A temporary `ColorRect` was used during initial movement testing so the Player could be seen. This experimental visual setup was later removed rather than becoming part of the permanent architecture.
 
 ### Successful World Movement Debug
 
@@ -105,7 +105,29 @@ Verified successfully:
 
 This confirms the current Player instancing and movement system work correctly in the World test scene.
 
-The `ColorRect` is a temporary debug visual and is not intended to be the final Player visual representation.
+The temporary `ColorRect` used during this test is not part of the current permanent Player scene.
+
+### Architecture Review and World Visual Reset
+
+Compared the local experimental World and Player changes against the current GitHub `main` branch and `ARCHITECTURE.md`.
+
+The temporary World background experiments using `ColorRect` and `Polygon2D` were discarded because they were not yet backed by a defined world-visual responsibility.
+
+The temporary Player collision change from the original 16px CircleShape2D to a 130x130 RectangleShape2D was also discarded.
+
+The project is returning to the known architectural baseline before adding a permanent world visual system.
+
+The architecture continues to require clear ownership of responsibilities rather than adding functionality to existing nodes simply because it is convenient.
+
+### Display and World Baseline
+
+The intended in-game viewport is **1152x648 pixels**, using a **16:9 aspect ratio**.
+
+This resolution will be used as the baseline when designing the initial Player presentation, visible world area, and camera behavior.
+
+The viewport size should not be treated as the total world size. The world can extend beyond the visible 1152x648 area, with the camera determining which portion of the world is visible.
+
+Player visual size and Player collision size should remain separate concerns. Collision should represent the physical space occupied by the Player rather than simply matching an arbitrary visual size.
 
 ### Project Structure Cleanup
 
@@ -117,7 +139,9 @@ The project is in the foundation stage.
 
 The modular Player structure has been created and successfully tested.
 
-The Player is now instanced into the World and its basic movement has been verified successfully with no debugger errors.
+The Player is instanced into the World and its basic movement has been verified successfully with no debugger errors.
+
+The experimental background and oversized Player collision changes have been reverted.
 
 ### Development Rule
 
@@ -133,5 +157,6 @@ The development log should be updated as part of the corresponding Git checkpoin
 ### Next Work
 
 - Verify Player collision behavior in the World.
-- Replace the temporary Player debug visual with the eventual visual system when appropriate.
+- Define the appropriate world visual/presentation responsibility before implementing a permanent background.
+- Replace temporary Player debug visuals with the eventual visual system when appropriate.
 - Continue implementing focused Player systems without expanding `player.gd` into a large multi-purpose script.
