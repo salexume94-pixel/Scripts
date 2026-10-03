@@ -196,3 +196,27 @@ The development log should be updated as part of the corresponding Git checkpoin
 - Define the appropriate permanent world visual responsibility before implementing terrain or a background.
 - Replace temporary Player debug visuals with the eventual visual system when appropriate.
 - Continue implementing focused Player systems without expanding `player.gd` into a large multi-purpose script.
+
+
+### World Visual Foundation
+
+Added a temporary visual foundation for the World presentation so the camera can be tested against visible content.
+
+The Player scene now gives `PlayerSprite` a simple diamond-shaped `Polygon2D` presentation. The visual remains separate from the existing `PlayerCollision` CircleShape2D, which remains at a 16px radius.
+
+The World scene now uses `WorldContent` as the container for a large temporary world floor. The floor is a 3000x2000 visual area, substantially larger than the 1152x648 viewport, so camera movement can be observed while the Player moves away from the starting position.
+
+No gameplay logic was added to the World visual layer. The floor exists only as presentation content, while camera following remains owned by `world/world_presentation.gd`.
+
+### Pending Runtime Verification
+
+The new Player visual and larger World visual layer still require local Godot runtime verification.
+
+The verification should confirm:
+
+- Player is visible immediately when `World.tscn` runs.
+- Player movement remains functional.
+- Player collision remains separate from the visual representation.
+- The camera follows the Player as the Player moves.
+- The larger World remains visible around the Player as the camera moves.
+- No debugger errors occur.
