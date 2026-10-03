@@ -17,7 +17,8 @@ script = ExtResource("1_p0vlq")
 [node name="PlayerMovement" type="Node" parent="." unique_id=557976840]
 script = ExtResource("2_v6fml")
 
-[node name="PlayerSprite" type="Sprite2D" parent="." unique_id=1969911015]
+[node name="PlayerSprite" type="Polygon2D" parent="." unique_id=1969911015]
+polygon = PackedVector2Array(0, -20, 17, -10, 17, 10, 0, 20, -17, 10, -17, -10)
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="." unique_id=134236741]
 shape = SubResource("CircleShape2D_5hmnj")
