@@ -1,13 +1,12 @@
 extends Node2D
 ## Handles the presentation side of the World scene.
 ##
-## This script is responsible for keeping the World camera focused on
-## the active player. It does not handle player movement, world gameplay,
-## or world objects. Those responsibilities remain in their own systems.
+## This script owns the World camera's presentation behavior. It does not
+## move the Player or contain World gameplay logic. The Player and World
+## content remain separate nodes so each system keeps a clear responsibility.
 ##
-## The camera provides the visible window into the World. The project's
-## 1152x648 viewport is the presentation baseline, while the actual World
-## can extend beyond that visible area.
+## The project's 1152x648 viewport is the presentation baseline. The World
+## itself is larger, and the camera determines which portion is visible.
 
 @export var target_path: NodePath = NodePath("../Player")
 
@@ -17,26 +16,38 @@ var target: Node2D
 
 
 func _ready() -> void:
-	# Find the object that the presentation camera should follow.
-	# The target is supplied by the World scene instead of hard-coding
-	# a specific gameplay system into this presentation script.
+	# Resolve the Player explicitly from the World scene. Keeping the target
+	# as a configurable path lets the presentation system follow the active
+	# World actor without hard-coding player movement into this script.
 	target = get_node_or_null(target_path) as Node2D
 
-	# Explicitly enable and make this camera the active World camera.
-	# Enabling allows the camera to operate, while make_current() removes
-	# any ambiguity about which Camera2D should control the viewport.
+	if target == null:
+		push_error(
+			"WorldPresentation could not find camera target at: %s"
+			% target_path
+		)
+		return
+
+	# Explicitly enable this camera and make it the active viewport camera.
+	# This avoids relying on editor defaults or another Camera2D becoming
+	# current by accident.
 	camera.enabled = true
 	camera.make_current()
 
-	# Position the camera immediately so the first rendered frame is
-	# already centered on the target instead of starting at the origin.
+	if not camera.is_current():
+		push_error("WorldPresentation Camera2D failed to become current.")
+		return
+
+	# Center the first rendered frame on the Player immediately instead of
+	# briefly showing the World origin before the first physics update.
 	_update_camera_position()
+
+	print("WorldPresentation: camera target = ", target.get_path())
 
 
 func _physics_process(_delta: float) -> void:
-	# Update the camera after the Player's physics movement.
-	# This keeps the camera in the World presentation system while making
-	# the camera position follow the Player on the same movement cycle.
+	# Follow the Player after physics movement so the camera tracks the
+	# position produced by PlayerMovement on the same simulation cycle.
 	_update_camera_position()
 
 
@@ -44,6 +55,7 @@ func _update_camera_position() -> void:
 	if target == null:
 		return
 
-	# Use global coordinates because the Player is a sibling of
-	# WorldPresentation rather than a child of the camera node.
+	# Player and WorldPresentation are siblings, so global coordinates are
+	# used to keep camera positioning independent of either node's parent
+	# transform.
 	camera.global_position = target.global_position
