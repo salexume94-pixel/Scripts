@@ -197,7 +197,6 @@ The development log should be updated as part of the corresponding Git checkpoin
 - Replace temporary Player debug visuals with the eventual visual system when appropriate.
 - Continue implementing focused Player systems without expanding `player.gd` into a large multi-purpose script.
 
-
 ### World Visual Foundation
 
 Added a temporary visual foundation for the World presentation so the camera can be tested against visible content.
@@ -208,15 +207,77 @@ The World scene now uses `WorldContent` as the container for a large temporary w
 
 No gameplay logic was added to the World visual layer. The floor exists only as presentation content, while camera following remains owned by `world/world_presentation.gd`.
 
+### World Runtime Debug Checklist
+
+This checklist is now the standard verification checklist for every new World/runtime test in this project. It should be used in project chats when reporting a new test so that important checks are not left to human memory, humanity's least reliable debugging subsystem.
+
+Run `scenes/World.tscn` with F6 and verify:
+
+1. **Scene load**
+   - World scene opens and runs.
+   - No debugger errors or script errors appear.
+
+2. **Viewport**
+   - Game window/view uses the configured **1152x648** viewport baseline.
+   - The visible area behaves as a camera viewport rather than defining the total World size.
+
+3. **Player presentation**
+   - Player sprite is visible immediately.
+   - Player visual remains separate from Player collision.
+
+4. **Player movement**
+   - Arrow-key movement works.
+   - Player moves up, down, left, and right.
+   - Player stops when input is released.
+   - Diagonal movement does not move faster than cardinal movement.
+
+5. **Camera**
+   - Camera starts centered on the Player.
+   - Camera follows the Player while moving.
+   - Camera follows in all four directions.
+   - Player remains in the expected camera-centered position while the World moves around the visible viewport.
+
+6. **World presentation**
+   - World floor/content is visible.
+   - World content extends beyond the 1152x648 viewport.
+   - Moving the Player exposes different parts of the larger World.
+
+7. **Collision**
+   - Player collision remains independent of the visual.
+   - No unexpected collision behavior occurs during movement.
+
+8. **Runtime stability**
+   - No debugger errors appear during movement.
+   - No warnings or errors indicate broken node paths, missing resources, or invalid scripts.
+
+When reporting a test result, record each item as **PASS**, **FAIL**, or **NOT TESTED**, with a short note for anything other than PASS.
+
+### Camera Follow Verification Failure
+
+The first local runtime test after the World visual foundation confirmed that the Player sprite is visible.
+
+The camera did **not** follow the Player during movement.
+
+Other checklist items were not fully tested because the project did not previously provide the complete checklist above.
+
+The camera implementation was updated in `world/world_presentation.gd` to:
+
+- Explicitly enable the Camera2D.
+- Explicitly call `make_current()` so this Camera2D becomes the active viewport camera.
+- Update camera position during `_physics_process()` so it follows the Player after physics movement.
+- Continue using global coordinates because Player and WorldPresentation are sibling nodes.
+
 ### Pending Runtime Verification
 
-The new Player visual and larger World visual layer still require local Godot runtime verification.
+After pulling the camera fix, run the full **World Runtime Debug Checklist** above.
 
-The verification should confirm:
+At minimum, verify:
 
-- Player is visible immediately when `World.tscn` runs.
-- Player movement remains functional.
-- Player collision remains separate from the visual representation.
-- The camera follows the Player as the Player moves.
-- The larger World remains visible around the Player as the camera moves.
-- No debugger errors occur.
+- Scene loads without debugger errors.
+- Player remains visible.
+- Player movement works in all four directions.
+- Camera starts centered on Player.
+- Camera follows Player in all four directions.
+- Larger World content remains visible as the camera moves.
+- Player collision remains separate from the visual.
+- No node-path, resource, or script errors appear.
