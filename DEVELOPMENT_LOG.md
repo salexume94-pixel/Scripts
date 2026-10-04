@@ -282,7 +282,6 @@ At minimum, verify:
 - Player collision remains separate from the visual.
 - No node-path, resource, or script errors appear.
 
-
 ### World Hierarchy Correction
 
 The World scene hierarchy was corrected after runtime testing exposed two presentation failures: the Player was visible but the camera was not following it, and the World floor was no longer visible.
@@ -297,15 +296,75 @@ WorldFloor was moved back under WorldContent instead of being nested inside Worl
 
 world/world_presentation.gd was also strengthened with explicit target validation and camera-current diagnostics. The camera is enabled, made current, checked with is_current(), positioned immediately on startup, and updated after Player physics movement.
 
-### Pending Runtime Verification
+### Successful World Runtime Verification
 
-The corrected World hierarchy and camera diagnostics are now committed to GitHub but require local Godot runtime verification.
+Ran `scenes/World.tscn` locally with F6 after the World hierarchy and camera correction.
 
-Run scenes/World.tscn with F6 and use the full World Runtime Debug Checklist above. Record each item as PASS, FAIL, or NOT TESTED. The expected focus of this test is:
+The full runtime checklist was verified successfully:
 
-- World floor is visible again.
-- Player remains visible.
-- Camera starts centered on Player.
-- Camera follows Player in all four directions.
-- Debugger shows no node-path or camera errors.
-- The World floor moves through the viewport as the Player moves.
+1. **Scene load: PASS**
+   - World loads without errors.
+
+2. **Viewport: PASS**
+   - The configured 1152x648 viewport behaves correctly.
+
+3. **Player presentation: PASS**
+   - Player is visible.
+   - Player visual and collision remain separate.
+
+4. **Player movement: PASS**
+   - Player moves in all eight directional combinations.
+   - Player stops when input stops.
+   - Diagonal movement works as expected through the normalized movement vector.
+
+5. **Camera: PASS**
+   - Camera starts centered on the Player.
+   - Camera follows the Player in all directions.
+
+6. **World presentation: PASS**
+   - WorldFloor remains visible as the camera moves.
+   - The larger World content can be observed through camera movement.
+
+7. **Collision structure: PASS**
+   - Player visual and collision remain separate.
+   - Actual obstacle collision has not yet been tested because the World currently contains no physical obstacles.
+
+8. **Runtime stability: PASS**
+   - No debugger, node-path, resource, or script errors appeared during testing.
+
+This verifies that the corrected World hierarchy and camera implementation work correctly in the local Godot runtime.
+
+### World Scale Adjustment
+
+The temporary 3000x2000 WorldFloor was found to be disproportionately large relative to the current Player presentation and 1152x648 viewport.
+
+The temporary WorldFloor test area should be reduced to **1200x800** for the next World test.
+
+The intended temporary centered floor bounds are:
+
+- Left: -600
+- Right: 600
+- Top: -400
+- Bottom: 400
+
+This gives a 1200x800 test area while preserving enough space beyond the viewport to test camera movement.
+
+This is a temporary presentation/testing scale, not the final game-world size. Permanent terrain and playable boundaries will be defined later as part of the World system.
+
+### Current Status
+
+The corrected World hierarchy and camera behavior are now verified in the local Godot runtime.
+
+The temporary WorldFloor remains only a visual test surface.
+
+The current test surface is being reduced from 3000x2000 to 1200x800 because the original test area is too large relative to the Player and viewport.
+
+No World boundaries, buildings, or interactive objects have been implemented yet.
+
+### Next Work
+
+- Reduce the temporary WorldFloor to 1200x800.
+- Implement explicit World boundaries after the smaller test area is verified.
+- Keep boundary logic separate from `player.gd`.
+- Add buildings and World objects only after the World area and boundary behavior are established.
+- Continue using comments in scripts to explain what each script and major section is doing and why.
