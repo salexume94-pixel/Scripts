@@ -15,7 +15,7 @@ extends CanvasLayer
 @onready var magic_defense_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MagicDefenseLabel
 @onready var speed_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/SpeedLabel
 @onready var equipment_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentLabel
-@onready var test_damage_button: Button = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/TestDamageButton
+@onready var test_damage_button: Button = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDamageButton
 @onready var unequip_button: Button = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/UnequipButton
 @onready var inventory_grid: GridContainer = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/InventoryGrid
 @onready var item_name_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemName
@@ -26,6 +26,7 @@ extends CanvasLayer
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 const TEST_ITEMS_SCRIPT = preload("res://items/test_items.gd")
 const ITEM_USE_SYSTEM = preload("res://systems/item_use_system.gd")
+const DEBUG_SYSTEM = preload("res://systems/debug_system.gd")
 
 var selected_item_id: String = ""
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 	screen.visible = false
 	unequip_button.pressed.connect(_on_unequip_button_pressed)
 	test_damage_button.pressed.connect(_on_test_damage_button_pressed)
+	test_damage_button.visible = OS.is_debug_build()
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	_set_player_movement_enabled(true)
 	_refresh_screen()
@@ -210,16 +212,13 @@ func _on_item_action_button_pressed() -> void:
 
 
 func _on_test_damage_button_pressed() -> void:
-	# This temporary development control creates a known damaged state so the
-	# Test Potion can be verified before the combat system is implemented.
+	# The HUD only requests the debug action. DebugSystem owns the test behavior
+	# so normal Character/Inventory presentation remains separate from testing.
 	var player := get_tree().current_scene.get_node_or_null("Player")
 	if player == null:
 		return
 
-	var stats = player.get_node_or_null("PlayerStats")
-	if stats != null:
-		stats.take_damage(25)
-
+	DEBUG_SYSTEM.test_damage(player, 25)
 	_refresh_screen()
 
 
