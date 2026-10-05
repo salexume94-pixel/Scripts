@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
-[ext_resource type="Script" uid="uid://c0f3wboundary" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
+[ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
 
 [node name="World" type="Node2D" unique_id=119908091]
 
