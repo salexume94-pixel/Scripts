@@ -585,3 +585,33 @@ Verified:
 9. Runtime stability PASS with no reported debugger, node-path, resource, or script errors.
 
 The Building collision alignment issue is resolved. The Building is ready for the next isolated system: a door/entrance and interior transition.
+
+### First Door and Interior Implementation
+
+Implemented the first reusable Building entrance and interior transition system.
+
+Added:
+- `systems/scene_manager.gd` for global scene-transition coordination and Player placement.
+- `world/door.gd` for reusable Player-triggered doorway transitions.
+- `world/Door.tscn` as the reusable doorway scene.
+- `world/interior.gd` for modular interior boundary collision.
+- `scenes/Interior.tscn` as the first test interior.
+- Registered `SceneManager` as an Autoload in `project.godot`.
+
+Updated:
+- `world/building.gd` now splits the bottom wall around a 48-pixel doorway.
+- `world/Building.tscn` now contains the Door and its interior destination.
+
+The implementation is **not yet runtime verified**. Required test sequence:
+1. Pull the changes locally.
+2. Run `scenes/World.tscn`.
+3. Walk to the Building entrance and confirm the Player can physically pass through the doorway.
+4. Confirm entering the doorway changes to `Interior.tscn`.
+5. Confirm the Player appears at the configured interior entry position.
+6. Confirm interior walls block movement correctly.
+7. Walk back through the ExitDoor and confirm return to the World.
+8. Confirm the Player appears outside the Building at the configured World entry position.
+9. Confirm World boundaries and Building side/top collision remain functional.
+10. Check the debugger for script, node-path, resource, or scene-transition errors.
+
+No additional interaction, inventory, or interior gameplay has been added. The door currently triggers automatically when the Player enters it, keeping the first implementation focused on physical entrance and scene transition.
