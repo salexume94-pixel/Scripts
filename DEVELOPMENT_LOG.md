@@ -69,6 +69,7 @@ Updated:
 - Checking item quantities.
 - Checking whether the Player owns a requested quantity.
 - Enforcing item stack limits.
+- Providing a read-only inventory copy through `get_inventory()`.
 
 The Chest now creates a test item reward and adds it to the Player's inventory when opened.
 
@@ -84,7 +85,7 @@ A temporary development display was added:
 Updated:
 - `scenes/World.tscn`
 
-The temporary display reads the Player's inventory and shows the current item IDs and quantities on screen.
+The temporary display reads the Player's inventory through the PlayerInventory public interface and shows the current item IDs and quantities on screen.
 
 Runtime verification confirmed:
 - World loads without Godot script errors.
@@ -92,6 +93,12 @@ Runtime verification confirmed:
 - Opening the Chest successfully changes the Chest state.
 - The Chest reward is added to `PlayerInventory`.
 - The temporary display updates to show `test_potion x1`.
+- The new read-only inventory interface works as intended.
+
+Known runtime limitations identified during testing:
+- **Inventory does not currently persist when leaving/re-entering the World or otherwise recreating the Player.**
+- **The temporary inventory debug display is currently attached to the World scene, so it does not appear in the Building Interior scene.**
+- These are known limitations of the current foundation and are not yet considered bugs in the final inventory system.
 
 This confirms the current data path:
 
@@ -111,9 +118,15 @@ Verified systems:
 - Item data foundation.
 - Test item definitions.
 - Functional Player inventory storage.
+- Read-only inventory interface.
 - Chest item rewards.
 - Chest-to-inventory runtime verification.
 - Temporary inventory debug display.
+
+Known limitations:
+- Inventory persistence has not been implemented.
+- The temporary inventory display only exists in the World scene and is not present in the Building Interior.
+- Proper Inventory/Character HUD has not been implemented yet.
 
 Still incomplete:
 - Proper Inventory/Character screen HUD.
@@ -125,13 +138,15 @@ Still incomplete:
 
 ### Next Project Goal
 
-The next goal is to strengthen the Inventory foundation before replacing the temporary debug display.
+The next goal is to build the real **Inventory/Character screen HUD** while keeping inventory ownership separate from UI presentation.
 
 Planned order:
-1. Add a clean read-only inventory interface for UI and other systems.
-2. Update the temporary debug display to use that interface instead of accessing the internal inventory Dictionary directly.
-3. Build the real **Inventory/Character screen HUD**.
-4. Replace the temporary debug inventory display with the real screen.
+1. Build the real Inventory/Character screen HUD.
+2. Make the HUD accessible from the appropriate Player/game UI context rather than tying it only to the World scene.
+3. Replace the temporary debug inventory display with the real screen.
+4. Determine the correct persistence owner for inventory so it survives scene transitions and save/load.
 5. Expand into Equipment and item use systems.
+
+Do not treat the current lack of persistence or Interior display as final behavior. They are known limitations to be resolved as the inventory and HUD architecture is expanded.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
