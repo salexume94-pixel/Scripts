@@ -15,6 +15,9 @@ extends StaticBody2D
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 const TEST_ITEMS_SCRIPT = preload("res://items/test_items.gd")
 
+## Stable item ID used to choose the development reward for this chest.
+@export var reward_item_id: String = TEST_ITEMS_SCRIPT.TEST_POTION
+
 # Tracks whether the Player is currently close enough to interact.
 var player_in_range: bool = false
 
@@ -68,7 +71,7 @@ func open_chest() -> void:
 	# Create the temporary development reward used to prove that the Chest
 	# can pass an ItemData object into the Player's inventory.
 	var test_items: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
-	var reward: Resource = test_items[TEST_ITEMS_SCRIPT.TEST_POTION]
+	var reward: Resource = test_items.get(reward_item_id)
 
 	# Confirm that the generated Resource is actually an ItemData Resource.
 	if reward == null or reward.get_script() != ITEM_DATA_SCRIPT:
