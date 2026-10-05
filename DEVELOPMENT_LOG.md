@@ -182,3 +182,45 @@ Still incomplete:
 - Quests and other planned World systems.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Character Screen and Inventory UI Expansion
+
+Implemented the next three Inventory/Character HUD tasks:
+
+1. Character stats section
+   - The HUD now reads Player level, HP, MP, Attack, Defense, Magic Attack, Magic Defense, and Speed directly from PlayerStats.
+   - The HUD does not duplicate or own stat values.
+
+2. Inventory slot UI
+   - The previous text-only inventory list was replaced with selectable inventory slots.
+   - Each owned item is represented by a button showing its readable name and quantity.
+   - Inventory data remains owned by PlayerInventory.
+
+3. Item selection and details
+   - Selecting an inventory slot updates a details panel with the item's name, description, and quantity.
+   - Selection is UI state only.
+   - Item use, consumption, equipping, and other item behavior remain separate future systems.
+
+Updated:
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+
+### Current Runtime Verification Required
+
+The new Character/Inventory UI has not yet been runtime tested after this implementation.
+
+Verify locally:
+- Project opens without parse errors.
+- World loads normally.
+- Pressing I opens the expanded Character/Inventory screen.
+- Character stats display the current PlayerStats values.
+- Inventory starts empty.
+- Chest still awards Test Potion.
+- Test Potion x1 appears as a selectable inventory slot.
+- Selecting the potion shows its name, description, and quantity.
+- Entering the Interior preserves the inventory and HUD behavior.
+- Returning to World preserves the inventory and HUD behavior.
+- No Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section.
