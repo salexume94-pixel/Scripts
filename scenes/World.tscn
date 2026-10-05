@@ -27,7 +27,7 @@ script = ExtResource("3_world_boundaries")
 [node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
 script = ExtResource("2_world_presentation")
 
-[node name="Camera2D" type="Camera2D" parent="WorldPresentation" unique_id=137521039
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation" unique_id=137521039]
 
 [node name="Player" parent="." unique_id=137521040 instance=ExtResource("1_player")]
 
