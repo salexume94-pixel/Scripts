@@ -372,3 +372,47 @@ No World boundaries, buildings, or interactive objects have been implemented yet
 - Keep boundary logic separate from `player.gd`.
 - Add buildings and World objects only after the World area and boundary behavior are established.
 - Continue using comments in scripts to explain what each script and major section is doing and why.
+
+## 2026-10-05
+
+### World Boundary Foundation
+
+Started implementation of the physical World boundaries for the current **1200x800** WorldFloor.
+
+Created:
+
+- `world/world_boundaries.gd`
+
+This script owns only World boundary collision creation. It does not move the Player, control the camera, or contain World presentation logic.
+
+The boundary system currently uses configurable World bounds:
+
+- Left: -600
+- Right: 600
+- Top: -400
+- Bottom: 400
+
+A configurable **32px boundary thickness** is used to create four static collision walls.
+
+The boundaries are generated as `StaticBody2D` nodes with `RectangleShape2D` collision shapes when the World loads. Static bodies are appropriate because the World boundaries do not move.
+
+Updated:
+
+- `scenes/World.tscn`
+
+The World scene now contains a dedicated `WorldBoundaries` node separate from `WorldContent`, `WorldPresentation`, and `Player`.
+
+The physical boundaries have **not yet been runtime verified**. The next test must run `World.tscn` and verify that the Player can move normally inside the World but cannot cross any of the four World edges.
+
+### Current Status
+
+World boundary implementation is present on GitHub `main`, but runtime collision behavior remains **NOT TESTED**.
+
+### Next Work
+
+- Pull the boundary implementation into the local project.
+- Run the World Runtime Debug Checklist.
+- Specifically test collision at all four World edges.
+- Confirm no debugger, node-path, resource, or script errors.
+- Record the runtime results here before moving on to buildings.
+- Continue using comments in scripts to explain each script and major section.
