@@ -402,17 +402,54 @@ Updated:
 
 The World scene now contains a dedicated `WorldBoundaries` node separate from `WorldContent`, `WorldPresentation`, and `Player`.
 
-The physical boundaries have **not yet been runtime verified**. The next test must run `World.tscn` and verify that the Player can move normally inside the World but cannot cross any of the four World edges.
+The physical boundaries have now been runtime verified. The Player moves normally inside the World and cannot cross any of the four World edges.
+
+### World Boundary Runtime Verification
+
+Ran `scenes/World.tscn` locally with F6 after pulling the boundary implementation from GitHub.
+
+Verified:
+
+1. **Scene load: PASS**
+   - World loads successfully.
+
+2. **Player movement: PASS**
+   - Normal movement remains functional inside the World.
+
+3. **Left boundary: PASS**
+   - Player cannot cross the left World edge.
+
+4. **Right boundary: PASS**
+   - Player cannot cross the right World edge.
+
+5. **Top boundary: PASS**
+   - Player cannot cross the top World edge.
+
+6. **Bottom boundary: PASS**
+   - Player cannot cross the bottom World edge.
+
+7. **Corner movement: PASS**
+   - Player can move into the corners without escaping the defined World area.
+
+8. **Runtime stability: PASS**
+   - No debugger, node-path, resource, or script errors were observed during the test.
+
+The World boundary collision is now confirmed working correctly in the local Godot runtime.
 
 ### Current Status
 
-World boundary implementation is present on GitHub `main`, but runtime collision behavior remains **NOT TESTED**.
+The World foundation now has:
+
+- A 1200x800 temporary WorldFloor.
+- A working Player instance and movement system.
+- A working camera that follows the Player.
+- Separate Player visual and collision.
+- Physical boundaries on all four World edges.
+- No buildings or interactive World objects yet.
 
 ### Next Work
 
-- Pull the boundary implementation into the local project.
-- Run the World Runtime Debug Checklist.
-- Specifically test collision at all four World edges.
-- Confirm no debugger, node-path, resource, or script errors.
-- Record the runtime results here before moving on to buildings.
+- Define the permanent World visual/terrain responsibility before replacing the temporary WorldFloor.
+- Begin the first building as a self-contained World object after the World foundation remains stable.
+- Keep building presentation, collision, and interaction responsibilities separated.
 - Continue using comments in scripts to explain each script and major section.
