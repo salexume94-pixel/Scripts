@@ -20,8 +20,9 @@ const PLAYER_VISUAL_CLEARANCE := 4.0
 
 func _ready() -> void:
     # The visible Building extends 96 pixels left/right and 64 pixels
-    # up/down from its center. The collision outline is placed outside that
-    # footprint so the Player's visible sprite keeps a small visual gap.
+    # up/down from its center. The collision outline extends 8 pixels beyond
+    # the visible edge, leaving the Player's 16-pixel collision radius enough
+    # room to keep the visible sprite about 4 pixels away.
     #
     # Each wall is positioned so adjacent walls meet cleanly at their edges.
     # This avoids overlapping collision rectangles at the corners, which was
@@ -29,38 +30,38 @@ func _ready() -> void:
     var half_width := BUILDING_SIZE.x / 2.0
     var half_height := BUILDING_SIZE.y / 2.0
 
-    var outer_half_width := half_width + PLAYER_VISUAL_CLEARANCE + 4.0
-    var outer_half_height := half_height + PLAYER_VISUAL_CLEARANCE + 4.0
-
-    var side_wall_height := BUILDING_SIZE.y - WALL_THICKNESS
-    var bottom_segment_width := (BUILDING_SIZE.x + WALL_THICKNESS * 2.0 - DOOR_WIDTH) / 2.0
-    var bottom_segment_offset := DOOR_WIDTH / 2.0 + bottom_segment_width / 2.0
+    var collision_half_width := half_width + WALL_THICKNESS / 2.0
+    var collision_half_height := half_height + WALL_THICKNESS / 2.0
 
     # Top wall:
     # Its outer edge reaches the same exterior boundary as the side walls.
     _configure_wall(
         $BuildingCollision/TopWall,
-        Vector2(outer_half_width * 2.0, WALL_THICKNESS),
+        Vector2(collision_half_width * 2.0, WALL_THICKNESS),
         Vector2(0.0, -half_height)
     )
 
     # Left and right walls:
-    # Their height stops at the inner edge of the top/bottom walls so the
+    # Their height stops at the inner edges of the top/bottom walls so the
     # collision rectangles touch rather than overlap at the corners.
     _configure_wall(
         $BuildingCollision/LeftWall,
-        Vector2(WALL_THICKNESS, side_wall_height),
+        Vector2(WALL_THICKNESS, BUILDING_SIZE.y - WALL_THICKNESS),
         Vector2(-half_width, 0.0)
     )
     _configure_wall(
         $BuildingCollision/RightWall,
-        Vector2(WALL_THICKNESS, side_wall_height),
+        Vector2(WALL_THICKNESS, BUILDING_SIZE.y - WALL_THICKNESS),
         Vector2(half_width, 0.0)
     )
 
     # Bottom wall:
     # Split the wall around the Door so the entrance remains open. The two
     # segments extend to the same outer boundary as the side walls.
+    var bottom_total_width := collision_half_width * 2.0
+    var bottom_segment_width := (bottom_total_width - DOOR_WIDTH) / 2.0
+    var bottom_segment_offset := DOOR_WIDTH / 2.0 + bottom_segment_width / 2.0
+
     _configure_wall(
         $BuildingCollision/BottomLeftWall,
         Vector2(bottom_segment_width, WALL_THICKNESS),
