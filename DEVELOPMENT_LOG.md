@@ -203,7 +203,14 @@ Added a temporary visual foundation for the World presentation so the camera can
 
 The Player scene now gives `PlayerSprite` a simple diamond-shaped `Polygon2D` presentation. The visual remains separate from the existing `PlayerCollision` CircleShape2D, which remains at a 16px radius.
 
-The World scene now uses `WorldContent` as the container for a large temporary world floor. The floor is a 3000x2000 visual area, substantially larger than the 1152x648 viewport, so camera movement can be observed while the Player moves away from the starting position.
+The World scene now uses `WorldContent` as the container for a temporary world floor. The floor is now **1200x800**, centered at the origin, with bounds:
+
+- Left: -600
+- Right: 600
+- Top: -400
+- Bottom: 400
+
+This temporary floor is substantially larger than the 1152x648 viewport while remaining small enough to match the current Player presentation and provide a manageable camera test area.
 
 No gameplay logic was added to the World visual layer. The floor exists only as presentation content, while camera following remains owned by `world/world_presentation.gd`.
 
@@ -336,34 +343,31 @@ This verifies that the corrected World hierarchy and camera implementation work 
 
 ### World Scale Adjustment
 
-The temporary 3000x2000 WorldFloor was found to be disproportionately large relative to the current Player presentation and 1152x648 viewport.
+The temporary WorldFloor was reduced from **3000x2000 to 1200x800** in `scenes/World.tscn`.
 
-The temporary WorldFloor test area should be reduced to **1200x800** for the next World test.
-
-The intended temporary centered floor bounds are:
+The centered floor bounds are now:
 
 - Left: -600
 - Right: 600
 - Top: -400
 - Bottom: 400
 
-This gives a 1200x800 test area while preserving enough space beyond the viewport to test camera movement.
+The change was committed directly to GitHub `main` before local synchronization.
 
 This is a temporary presentation/testing scale, not the final game-world size. Permanent terrain and playable boundaries will be defined later as part of the World system.
 
 ### Current Status
 
-The corrected World hierarchy and camera behavior are now verified in the local Godot runtime.
+The corrected World hierarchy and camera behavior are verified in the local Godot runtime.
 
-The temporary WorldFloor remains only a visual test surface.
-
-The current test surface is being reduced from 3000x2000 to 1200x800 because the original test area is too large relative to the Player and viewport.
+The temporary WorldFloor is now 1200x800 and remains only a visual test surface.
 
 No World boundaries, buildings, or interactive objects have been implemented yet.
 
 ### Next Work
 
-- Reduce the temporary WorldFloor to 1200x800.
+- Pull the WorldFloor scale change into the local project and verify the local Git working tree is synchronized with GitHub.
+- Run the World scene again and verify the 1200x800 test area.
 - Implement explicit World boundaries after the smaller test area is verified.
 - Keep boundary logic separate from `player.gd`.
 - Add buildings and World objects only after the World area and boundary behavior are established.
