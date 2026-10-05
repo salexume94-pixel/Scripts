@@ -79,36 +79,80 @@ Godot initially reported parse errors because the inventory and Chest scripts de
 
 The Chest-to-inventory path has now been runtime verified.
 
-A temporary development display was added:
-- `world/debug_inventory_ui.gd`
+The temporary debug inventory display was replaced by the reusable **Inventory/Character HUD**.
+
+Created:
+- `systems/game_state.gd`
+- `ui/inventory_character_hud.gd`
+- `ui/InventoryCharacterHUD.tscn`
 
 Updated:
+- `player/player_inventory.gd`
+- `project.godot`
 - `scenes/World.tscn`
+- `scenes/Interior.tscn`
 
-The temporary display reads the Player's inventory through the PlayerInventory public interface and shows the current item IDs and quantities on screen.
+Removed:
+- `world/debug_inventory_ui.gd`
 
-Runtime verification confirmed:
-- World loads without Godot script errors.
-- Inventory initially displays as empty.
-- Opening the Chest successfully changes the Chest state.
-- The Chest reward is added to `PlayerInventory`.
-- The temporary display updates to show `test_potion x1`.
-- The new read-only inventory interface works as intended.
+The new HUD:
+- Is a reusable CanvasLayer scene.
+- Is available in both World and Building Interior.
+- Opens and closes with the **I key**.
+- Reads inventory through `PlayerInventory.get_inventory()`.
+- Displays readable names for the current temporary test items.
+- Does not own or modify inventory data.
 
-Known runtime limitations identified during testing:
-- **Inventory does not currently persist when leaving/re-entering the World or otherwise recreating the Player.**
-- **The temporary inventory debug display is currently attached to the World scene, so it does not appear in the Building Interior scene.**
-- These are known limitations of the current foundation and are not yet considered bugs in the final inventory system.
+### Inventory Runtime Persistence
 
-This confirms the current data path:
+`GameState` is now an autoload responsible for the runtime inventory snapshot.
 
-`Chest -> Test Item -> PlayerInventory`
+The persistence path is now:
 
-The debug inventory display is temporary and will be replaced by the planned **Inventory/Character screen HUD**.
+`Chest -> PlayerInventory -> GameState`
+
+When a scene transition recreates the Player:
+- The new PlayerInventory loads its inventory from GameState.
+- Successful inventory additions/removals synchronize back to GameState.
+- Inventory therefore has a runtime owner outside the Player scene.
+
+This is **runtime persistence only**. It does not yet save inventory to disk. Save/load persistence will remain the responsibility of the future save system.
+
+### Four Inventory/HUD Tasks
+
+The four previously identified tasks have now been started:
+
+1. **Build the real Inventory/Character screen HUD**
+   - Initial reusable HUD implemented.
+
+2. **Make the HUD available from the appropriate game UI context**
+   - The same HUD scene is instantiated in both World and Interior instead of being tied only to World.
+
+3. **Replace the temporary debug inventory display**
+   - The temporary debug UI has been removed and replaced by the new HUD.
+
+4. **Establish a persistence owner for inventory**
+   - GameState now owns the runtime inventory snapshot so it survives Player recreation during scene transitions.
+
+### Current Verification Status
+
+The new HUD and GameState changes have **not yet been runtime tested locally** after the GitHub implementation.
+
+The next required runtime test should verify:
+- Project opens without parse errors.
+- World loads normally.
+- Pressing **I** opens the Character/Inventory screen.
+- Inventory starts empty.
+- Chest still awards `Test Potion`.
+- HUD displays `Test Potion x1`.
+- Entering the Building Interior keeps the inventory.
+- Pressing **I** inside the Interior opens the same HUD.
+- Returning to the World keeps the inventory.
+- No Godot debugger errors occur.
 
 ### Current Project State
 
-Verified systems:
+Verified before this change:
 - World scene and camera.
 - Player movement and collision.
 - World boundaries.
@@ -121,32 +165,20 @@ Verified systems:
 - Read-only inventory interface.
 - Chest item rewards.
 - Chest-to-inventory runtime verification.
-- Temporary inventory debug display.
 
-Known limitations:
-- Inventory persistence has not been implemented.
-- The temporary inventory display only exists in the World scene and is not present in the Building Interior.
-- Proper Inventory/Character HUD has not been implemented yet.
+Implemented but awaiting local runtime verification:
+- Inventory/Character screen HUD.
+- HUD availability in World and Interior.
+- Replacement of temporary inventory debug UI.
+- Runtime inventory persistence through GameState.
 
 Still incomplete:
-- Proper Inventory/Character screen HUD.
+- Disk save/load persistence.
+- Full character stats/equipment presentation.
 - Equipment system integration.
 - Shared interaction/input system.
 - Item use/consumption behavior.
 - Item detail/selection UI.
 - Quests and other planned World systems.
-
-### Next Project Goal
-
-The next goal is to build the real **Inventory/Character screen HUD** while keeping inventory ownership separate from UI presentation.
-
-Planned order:
-1. Build the real Inventory/Character screen HUD.
-2. Make the HUD accessible from the appropriate Player/game UI context rather than tying it only to the World scene.
-3. Replace the temporary debug inventory display with the real screen.
-4. Determine the correct persistence owner for inventory so it survives scene transitions and save/load.
-5. Expand into Equipment and item use systems.
-
-Do not treat the current lack of persistence or Interior display as final behavior. They are known limitations to be resolved as the inventory and HUD architecture is expanded.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
