@@ -293,3 +293,35 @@ Run locally after pulling the latest commits:
 - Press Unequip Weapon and confirm the sword returns to inventory and Attack returns to 10.
 - Transition World -> Interior -> World and confirm equipped state and resulting stats persist.
 - Confirm no Godot debugger errors occur.
+
+
+### Test Item Access and HUD Interaction Fix
+
+Updated the temporary item test path so the item systems can actually be exercised in runtime.
+
+Updated:
+- world/chest.gd
+- world/Chest.tscn
+- scenes/World.tscn
+- scenes/Interior.tscn
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+
+Changes:
+- Chest rewards are now selected by exported item ID instead of every chest always giving Test Potion.
+- World now contains separate Test Potion and Test Sword chests.
+- Interior now also contains separate Test Potion and Test Sword chests.
+- The Character/Inventory HUD no longer rebuilds its inventory Buttons every frame. The previous per-frame rebuild could destroy a Button while it was being clicked, making the UI effectively non-interactive.
+- The HUD Screen now accepts mouse input while its background remains mouse-transparent, allowing child Buttons to receive clicks.
+- The HUD still locks Player movement while open.
+
+Runtime verification required:
+- Pull the commit and open the project.
+- Open the HUD with I and click an inventory item.
+- Confirm the item details and Use/Equip button respond to mouse clicks.
+- Obtain Test Potion from a Potion Chest.
+- Obtain Test Sword from a Sword Chest.
+- Equip and unequip the sword and verify Attack changes 10 -> 15 -> 10.
+- Verify the potion can be selected and its Use button is clickable.
+- Verify the same test item access exists in World and Interior.
+- Confirm no Godot debugger errors.
