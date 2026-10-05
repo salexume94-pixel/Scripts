@@ -95,6 +95,15 @@ text = "Magic Defense: 10"
 layout_mode = 2
 text = "Speed: 10"
 
+[node name="EquipmentLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Weapon: None"
+
+[node name="UnequipButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Unequip Weapon"
+visible = false
+
 [node name="Spacer" type="Control" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -159,3 +168,8 @@ autowrap_mode = 2
 [node name="ItemQuantity" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox"]
 layout_mode = 2
 text = ""
+
+[node name="ItemActionButton" type="Button" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
+layout_mode = 2
+text = "Use"
+visible = false
