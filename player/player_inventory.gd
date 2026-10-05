@@ -14,6 +14,8 @@ extends Node
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 
 # Each key is an item_id and each value is the quantity currently owned.
+# Other systems should use the read-only access functions below instead of
+# modifying this Dictionary directly.
 var items: Dictionary = {}
 
 
@@ -61,6 +63,15 @@ func remove_item(item: Resource, quantity: int = 1) -> bool:
 		items[item_id] = new_quantity
 
 	return true
+
+
+func get_inventory() -> Dictionary:
+	# Return a copy instead of the internal Dictionary so UI and other systems
+	# can inspect the inventory without being able to modify its stored state.
+	#
+	# This creates a simple boundary between inventory ownership and systems
+	# that only need to display or inspect inventory contents.
+	return items.duplicate()
 
 
 func get_item_quantity(item: Resource) -> int:
