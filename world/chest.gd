@@ -8,6 +8,12 @@ extends StaticBody2D
 ## ItemData defines the reward, while PlayerInventory stores it. Keeping
 ## those responsibilities separate preserves the project's one-primary-job
 ## architecture.
+##
+## The item scripts are explicitly preloaded so this scene does not depend
+## on Godot's global class-name cache being refreshed first.
+
+const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
+const TEST_ITEMS_SCRIPT = preload("res://items/test_items.gd")
 
 # Tracks whether the Player is currently close enough to interact.
 var player_in_range: bool = false
@@ -61,8 +67,12 @@ func open_chest() -> void:
 
 	# Create the temporary development reward used to prove that the Chest
 	# can pass an ItemData object into the Player's inventory.
-	var test_items := TestItems.create_test_items()
-	var reward: ItemData = test_items[TestItems.TEST_POTION]
+	var test_items: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
+	var reward: Resource = test_items[TEST_ITEMS_SCRIPT.TEST_POTION]
+
+	# Confirm that the generated Resource is actually an ItemData Resource.
+	if reward == null or reward.get_script() != ITEM_DATA_SCRIPT:
+		return
 
 	# Only mark the Chest as opened after the inventory successfully accepts
 	# the reward. This prevents a failed inventory operation from consuming
