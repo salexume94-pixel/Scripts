@@ -224,3 +224,21 @@ Verify locally:
 - No Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section.
+
+
+### Character HUD Movement Lock
+
+Updated the Character/Inventory HUD so opening it disables Player movement while the screen is visible.
+
+Updated:
+- player/player_movement.gd
+- ui/inventory_character_hud.gd
+
+The movement system now exposes a small `set_movement_enabled()` control point. The HUD uses that control instead of directly manipulating CharacterBody2D movement. Existing velocity is cleared immediately when the HUD opens so the Player cannot continue sliding.
+
+Runtime verification required:
+- Open the Character/Inventory HUD with **I**.
+- Confirm directional input no longer moves the Player.
+- Confirm the Player stops immediately when the HUD opens.
+- Close the HUD with **I** and confirm movement resumes normally.
+- Confirm World/Interior transitions and inventory behavior remain unchanged.
