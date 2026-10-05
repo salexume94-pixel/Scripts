@@ -15,9 +15,7 @@ The Chest does not own item definitions or inventory behavior. Those responsibil
 The initial interaction test uses the **E key** while the Player is within the Chest's interaction range. A shared interaction input/UI system has intentionally not been added yet so the first Chest implementation remains isolated.
 
 Updated:
-- `scenes/World.tscn` now contains a test Chest instance at `(160, -80)`.
-
-The Chest implementation is **NOT YET RUNTIME VERIFIED**.
+- `scenes/World.tscn` now contains a test Chest instance at `(240, -80)`.
 
 ### Chest Runtime Verification Pending
 
@@ -33,22 +31,60 @@ The next local test should:
 9. Confirm Player movement, Building collision, Door transition, and World boundaries remain functional.
 10. Check for debugger, node-path, resource, and script errors.
 
+The Chest interaction was runtime tested successfully: the Chest changes state when the Player is within interaction range and **E** is pressed.
+
+A collision adjustment was also made:
+- `world/Chest.tscn` increased the Chest body collision from `32x24` to `40x32` so the Player does not visibly overlap the Chest vertically.
+
 No item reward has been added yet because the item-definition and inventory systems have not been implemented.
 
-### Next Work
+### Building Collision
 
-- Runtime verify the first Chest implementation.
-- Fix any Chest collision or interaction issues found during testing.
-- Keep Chest behavior separate from item data and Player inventory.
-- Add a proper interaction/input system only when its responsibility is clearly defined.
-- Continue using comments in scripts to explain each script and major section.
+The World Building exterior collision has now been corrected and runtime verified.
 
-### Building Collision Issue
+The previous collision layout used oversized wall rectangles that overlapped around the Building corners. This could push the Player away from the Building or prevent the Player from walking completely around it.
 
-Current World Building collision has been improved so the Player no longer visibly overlaps the Building in the previously reported areas.
+Updated:
+- `world/building.gd`
 
-A runtime issue remains **NOT YET FIXED**: when walking around the exterior of the Building, especially near the upper border/corners, the Player can be pushed away from the Building or become blocked from walking completely around it.
+The corrected collision layout:
+- Keeps the Building's visible footprint unchanged.
+- Uses clean wall geometry around the exterior.
+- Prevents collision rectangles from creating problematic corner overlap.
+- Keeps the bottom wall split around the Door.
+- Preserves the intended visual clearance between the Player and Building.
+- Includes comments explaining the purpose and geometry of each collision section.
 
-This is a known collision-geometry issue. The Building should eventually allow the Player to walk around its entire exterior without snagging, while preserving the visible clearance between the Player and Building.
+Runtime verification confirmed the Player can now walk completely around the Building without the previous pushing or corner-blocking behavior.
 
-Do not consider the Building collision fully runtime verified until this issue is resolved and retested.
+### Current Project State
+
+Verified systems:
+- World scene and camera.
+- Player movement and collision.
+- World boundaries.
+- Building exterior collision.
+- Building Door and Interior transition.
+- Chest presence, collision, and basic E-key interaction.
+
+Still incomplete:
+- Chest item rewards.
+- Item definitions.
+- Functional Player inventory.
+- Shared interaction/input system.
+- Equipment and item systems.
+- Quests and other planned World systems.
+
+### Next Project Goal
+
+The next project goal is to build the **Item and Inventory foundation**.
+
+Planned order:
+1. Define the base item data structure in `items/`.
+2. Create a small set of test items.
+3. Implement functional Player inventory storage.
+4. Connect Chest rewards to the Player inventory.
+5. Runtime verify obtaining and storing items.
+6. Keep item data, inventory behavior, and World Chest behavior separated according to the one-primary-job architecture rule.
+
+Continue using comments in scripts to explain each script and major section.
