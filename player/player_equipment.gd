@@ -20,6 +20,20 @@ func _ready() -> void:
 	# Restore the runtime equipment snapshot whenever a new Player is created.
 	equipped_items = GameState.get_equipment()
 
+	# Reapply the stored equipment's stat effects because PlayerStats belongs to
+	# the newly created Player instance and starts with its base values.
+	var stats = get_parent().get_node_or_null("PlayerStats")
+	if stats == null:
+		return
+
+	for item_id in equipped_items.values():
+		var item: Resource = _get_item_definition(item_id)
+		if item != null:
+			stats.apply_equipment_modifiers(
+				item.get("attack_bonus"),
+				item.get("defense_bonus")
+			)
+
 
 func equip_item(item: Resource) -> bool:
 	# Only equipment definitions can enter PlayerEquipment.
