@@ -42,3 +42,13 @@ No item reward has been added yet because the item-definition and inventory syst
 - Keep Chest behavior separate from item data and Player inventory.
 - Add a proper interaction/input system only when its responsibility is clearly defined.
 - Continue using comments in scripts to explain each script and major section.
+
+### Building Collision Issue
+
+Current World Building collision has been improved so the Player no longer visibly overlaps the Building in the previously reported areas.
+
+A runtime issue remains **NOT YET FIXED**: when walking around the exterior of the Building, especially near the upper border/corners, the Player can be pushed away from the Building or become blocked from walking completely around it.
+
+This is a known collision-geometry issue. The Building should eventually allow the Player to walk around its entire exterior without snagging, while preserving the visible clearance between the Player and Building.
+
+Do not consider the Building collision fully runtime verified until this issue is resolved and retested.
