@@ -33,8 +33,8 @@ static func use_item(player: Node, item: Resource) -> bool:
 
 	# Do not consume an item that would have no effect. This prevents wasting a
 	# healing item while the relevant Player resource is already full.
-	var restored_hp := stats.restore_hp(hp_restore)
-	var restored_mp := stats.restore_mp(mp_restore)
+	var restored_hp: int = stats.restore_hp(hp_restore)
+	var restored_mp: int = stats.restore_mp(mp_restore)
 	if restored_hp == 0 and restored_mp == 0:
 		return false
 
