@@ -49,11 +49,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				_refresh_screen()
 
 
-func _process(_delta: float) -> void:
-	# Refresh visible values so item and equipment changes appear immediately.
-	if screen.visible:
-		_refresh_screen()
-
 
 func _refresh_screen() -> void:
 	# Locate the active Player in the current gameplay scene.
