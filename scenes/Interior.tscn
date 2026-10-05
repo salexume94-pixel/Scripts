@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://world/interior.gd" id="2_interior"]
 [ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
 [ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_interior_presentation"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
 
 [node name="Interior" type="Node2D"]
 script = ExtResource("2_interior")
@@ -26,3 +27,5 @@ script = ExtResource("4_interior_presentation")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(0, 120)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
