@@ -4,27 +4,20 @@ extends Node2D
 ## This script owns the Building's local visual footprint and wall collision.
 ## It does not move the Player, control the camera, or handle interaction.
 ##
-## The collision walls are placed at the visual edges of the Building. This
-## keeps the physical boundary aligned with what the player sees instead of
-## hiding the wall inside the building graphic.
+## The bottom wall is split around the Door so the entrance is a real opening.
+## All other walls remain solid and aligned with the visible Building edge.
 
 const BUILDING_SIZE := Vector2(192.0, 128.0)
 const WALL_THICKNESS := 16.0
+const DOOR_WIDTH := 48.0
 
 
 func _ready() -> void:
-    # Place each wall so its inner edge is aligned with the corresponding
-    # edge of the visual building footprint. The wall itself extends outward,
-    # leaving the Building interior clear while preventing visual overlap.
+    # Configure the three complete walls around the Building.
     _configure_wall(
         $BuildingCollision/TopWall,
         Vector2(BUILDING_SIZE.x + WALL_THICKNESS * 2.0, WALL_THICKNESS),
         Vector2(0.0, -BUILDING_SIZE.y / 2.0 - WALL_THICKNESS / 2.0)
-    )
-    _configure_wall(
-        $BuildingCollision/BottomWall,
-        Vector2(BUILDING_SIZE.x + WALL_THICKNESS * 2.0, WALL_THICKNESS),
-        Vector2(0.0, BUILDING_SIZE.y / 2.0 + WALL_THICKNESS / 2.0)
     )
     _configure_wall(
         $BuildingCollision/LeftWall,
@@ -37,6 +30,23 @@ func _ready() -> void:
         Vector2(BUILDING_SIZE.x / 2.0 + WALL_THICKNESS / 2.0, 0.0)
     )
 
+    # Split the bottom wall around the doorway. This creates a physical gap
+    # that matches the Door's visible entrance instead of placing a trigger
+    # on top of an otherwise impassable wall.
+    var segment_width := (BUILDING_SIZE.x - DOOR_WIDTH) / 2.0
+    var segment_x := DOOR_WIDTH / 2.0 + segment_width / 2.0
+
+    _configure_wall(
+        $BuildingCollision/BottomLeftWall,
+        Vector2(segment_width, WALL_THICKNESS),
+        Vector2(-segment_x, BUILDING_SIZE.y / 2.0 + WALL_THICKNESS / 2.0)
+    )
+    _configure_wall(
+        $BuildingCollision/BottomRightWall,
+        Vector2(segment_width, WALL_THICKNESS),
+        Vector2(segment_x, BUILDING_SIZE.y / 2.0 + WALL_THICKNESS / 2.0)
+    )
+
 
 func _configure_wall(
     wall: CollisionShape2D,
@@ -44,8 +54,8 @@ func _configure_wall(
     position: Vector2
 ) -> void:
     # Create the rectangle used by this wall and assign its local position.
-    # Keeping this setup in one helper makes all four walls use the same
-    # collision construction rules.
+    # Keeping this setup in one helper makes every wall use the same collision
+    # construction rules.
     var shape := RectangleShape2D.new()
     shape.size = size
     wall.shape = shape
