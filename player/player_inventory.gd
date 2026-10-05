@@ -1,15 +1,16 @@
 extends Node
 ## Stores the Player's item inventory.
 ##
-## This script is responsible only for keeping track of which items the
-## Player owns and how many copies of each item are currently stored.
+## This script is responsible only for validating and changing the Player's
+## inventory contents. GameState owns the runtime snapshot that survives when
+## a Player node is recreated during a scene transition.
 ##
-## ItemData defines what an item is. The Chest decides when an item is
-## awarded. This script only handles the Player's inventory data.
+## ItemData defines what an item is. World systems such as the Chest decide
+## when an item is awarded. This script handles the Player's inventory data.
 ##
-## ItemData is preloaded explicitly here instead of relying on Godot's
-## global class-name cache. This keeps the dependency available immediately
-## after pulling the project into a fresh local editor session.
+## ItemData is preloaded explicitly here instead of relying on Godot's global
+## class-name cache. This keeps the dependency available immediately after
+## pulling the project into a fresh local editor session.
 
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 
@@ -17,6 +18,13 @@ const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 # Other systems should use the read-only access functions below instead of
 # modifying this Dictionary directly.
 var items: Dictionary = {}
+
+
+func _ready() -> void:
+	# Load the runtime inventory snapshot when this Player instance is created.
+	# Scene transitions create a new Player node, so restoring from GameState
+	# prevents the inventory from being reset to an empty Dictionary.
+	items = GameState.get_inventory()
 
 
 func add_item(item: Resource, quantity: int = 1) -> bool:
@@ -38,6 +46,10 @@ func add_item(item: Resource, quantity: int = 1) -> bool:
 		return false
 
 	items[item_id] = new_quantity
+
+	# Update the runtime owner immediately so the inventory survives a scene
+	# transition after this change.
+	_sync_to_game_state()
 	return true
 
 
@@ -62,6 +74,9 @@ func remove_item(item: Resource, quantity: int = 1) -> bool:
 	else:
 		items[item_id] = new_quantity
 
+	# Keep the persistent runtime snapshot synchronized with the Player's
+	# current inventory after every successful change.
+	_sync_to_game_state()
 	return true
 
 
@@ -90,3 +105,9 @@ func has_item(item: Resource, quantity: int = 1) -> bool:
 		return false
 
 	return get_item_quantity(item) >= quantity
+
+
+func _sync_to_game_state() -> void:
+	# GameState owns the runtime copy so a newly created Player can restore
+	# the same inventory after World <-> Interior scene transitions.
+	GameState.set_inventory(items)
