@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
 [ext_resource type="PackedScene" path="res://world/Building.tscn" id="4_building"]
+[ext_resource type="PackedScene" path="res://world/Chest.tscn" id="5_chest"]
 
 [node name="World" type="Node2D" unique_id=119908091]
 
@@ -15,6 +16,9 @@ color = Color(0.12, 0.18, 0.12, 1)
 
 [node name="Building" parent="WorldContent" instance=ExtResource("4_building")]
 position = Vector2(0, -120)
+
+[node name="Chest" parent="WorldContent" instance=ExtResource("5_chest")]
+position = Vector2(160, -80)
 
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
