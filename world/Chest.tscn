@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://world/chest.gd" id="1_chest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(32, 24)
+size = Vector2(40, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(72, 64)
