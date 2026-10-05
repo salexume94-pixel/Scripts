@@ -546,3 +546,25 @@ Do not add doors or interiors until this alignment issue is corrected and runtim
 - Confirm no debugger, node-path, resource, or script errors.
 - Record the corrected runtime result before adding a door or interior.
 - Continue using comments in scripts to explain each script and major section.
+
+### Building Collision Alignment Correction
+
+Updated `world/building.gd` to align the Building's physical wall boundaries with the visible Building footprint.
+
+The four wall collision shapes now extend outward from the visual edges instead of being centered inward from those edges. This keeps the physical boundary at the visible edge while preserving the separate visual and collision responsibilities.
+
+The wall setup remains centralized in `world/building.gd`, with explanatory comments describing the purpose of the collision geometry.
+
+The corrected implementation has **not yet been runtime verified**. The next test must confirm that the Player no longer visually overlaps the Building while all four walls and corners continue to block movement correctly.
+
+### Next Work
+
+- Pull the Building collision alignment correction into the local project.
+- Run `scenes/World.tscn` with F6.
+- Verify the Player no longer visually overlaps the Building when blocked.
+- Re-test all four Building walls and corners.
+- Confirm normal movement around the Building remains intact.
+- Confirm World boundary collision still works.
+- Confirm no debugger, node-path, resource, or script errors.
+- Record the corrected runtime result before adding a door or interior.
+- Continue using comments in scripts to explain each script and major section.
