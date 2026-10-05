@@ -18,17 +18,17 @@ func _ready() -> void:
     _configure_wall(
         $BuildingCollision/TopWall,
         Vector2(BUILDING_SIZE.x + WALL_THICKNESS * 2.0, WALL_THICKNESS),
-        Vector2(0.0, -BUILDING_SIZE.y / 2.0 - PLAYER_VISUAL_CLEARANCE + WALL_THICKNESS / 2.0)
+        Vector2(0.0, -BUILDING_SIZE.y / 2.0 + WALL_THICKNESS / 2.0 - PLAYER_VISUAL_CLEARANCE)
     )
     _configure_wall(
         $BuildingCollision/LeftWall,
         Vector2(WALL_THICKNESS, BUILDING_SIZE.y),
-        Vector2(-BUILDING_SIZE.x / 2.0 + PLAYER_VISUAL_CLEARANCE + WALL_THICKNESS / 2.0, 0.0)
+        Vector2(-BUILDING_SIZE.x / 2.0 + WALL_THICKNESS / 2.0 - PLAYER_VISUAL_CLEARANCE, 0.0)
     )
     _configure_wall(
         $BuildingCollision/RightWall,
         Vector2(WALL_THICKNESS, BUILDING_SIZE.y),
-        Vector2(BUILDING_SIZE.x / 2.0 - PLAYER_VISUAL_CLEARANCE - WALL_THICKNESS / 2.0, 0.0)
+        Vector2(BUILDING_SIZE.x / 2.0 - WALL_THICKNESS / 2.0 + PLAYER_VISUAL_CLEARANCE, 0.0)
     )
 
     # Split the bottom wall around the doorway. This creates a physical gap
@@ -40,12 +40,12 @@ func _ready() -> void:
     _configure_wall(
         $BuildingCollision/BottomLeftWall,
         Vector2(segment_width, WALL_THICKNESS),
-        Vector2(-segment_x, BUILDING_SIZE.y / 2.0 - PLAYER_VISUAL_CLEARANCE - WALL_THICKNESS / 2.0)
+        Vector2(-segment_x, BUILDING_SIZE.y / 2.0 - WALL_THICKNESS / 2.0 + PLAYER_VISUAL_CLEARANCE)
     )
     _configure_wall(
         $BuildingCollision/BottomRightWall,
         Vector2(segment_width, WALL_THICKNESS),
-        Vector2(segment_x, BUILDING_SIZE.y / 2.0 - PLAYER_VISUAL_CLEARANCE - WALL_THICKNESS / 2.0)
+        Vector2(segment_x, BUILDING_SIZE.y / 2.0 - WALL_THICKNESS / 2.0 + PLAYER_VISUAL_CLEARANCE)
     )
 
 
