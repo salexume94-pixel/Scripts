@@ -1,4 +1,5 @@
 extends Node
+class_name TestItems
 ## Provides a small set of test item definitions for development.
 ##
 ## This script exists only to give the inventory and Chest systems concrete
