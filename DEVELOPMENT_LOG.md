@@ -698,3 +698,46 @@ The return trip from Interior to World should remain part of the next verificati
 - Confirm the Building doorway remains physically usable in both directions.
 - Keep Door transition logic separate from future interaction/UI systems.
 - Continue using comments in scripts to explain each script and major section.
+
+
+### Complete Building Entrance and Exit Runtime Verification
+
+Ran the complete World-to-Interior-to-World loop locally after the Interior boundary alignment correction.
+
+Verified:
+
+1. **World → Interior transition: PASS**
+   - Player enters the Building through the Door successfully.
+2. **Interior movement: PASS**
+   - Player moves normally inside the Interior.
+3. **Interior boundaries: PASS**
+   - All Interior borders block the Player correctly.
+   - Player visual does not overlap the borders.
+4. **Interior → World transition: PASS**
+   - Player exits through the ExitDoor and returns to the World successfully.
+5. **Exterior Player placement: PASS**
+   - Player is placed at the configured exterior destination.
+6. **Building collision after return: PASS**
+   - Player can move normally around the Building and remains blocked by its walls.
+7. **World boundaries after return: PASS**
+   - World boundary behavior remains functional.
+8. **Runtime stability: PASS**
+   - No debugger, node-path, resource, or scene-transition errors were observed.
+
+The complete Building entrance and exit loop is now runtime verified.
+
+### Current Status
+
+The first reusable Building entrance/interior system is complete and verified in the local Godot runtime.
+
+The verified loop is:
+
+**World → Building Door → Interior → ExitDoor → World**
+
+The World, Building, Door, Interior, camera, and collision systems are functioning together without runtime errors.
+
+### Next Work
+
+- Begin adding the next isolated World system or object.
+- Keep future interaction logic separate from the current automatic Door transition.
+- Continue using comments in scripts to explain each script and major section.
