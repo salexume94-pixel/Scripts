@@ -325,3 +325,23 @@ Runtime verification required:
 - Verify the potion can be selected and its Use button is clickable.
 - Verify the same test item access exists in World and Interior.
 - Confirm no Godot debugger errors.
+
+
+### Item Testing Control
+
+Added a temporary development control to the Character HUD so the Test Potion can be verified before the full combat system exists.
+
+Updated:
+- player/player_stats.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+
+The HUD now has a **Test Damage (-25 HP)** button that calls PlayerStats.take_damage(). This is explicitly a development test control and is not intended to become the final combat UI.
+
+This allows the item loop to be tested now:
+1. Obtain Test Potion from a Potion Chest.
+2. Open the Character/Inventory HUD.
+3. Press Test Damage (-25 HP).
+4. Select Test Potion.
+5. Press Use.
+6. Confirm HP increases by 25 and one potion is consumed.
