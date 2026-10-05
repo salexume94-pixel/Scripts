@@ -615,3 +615,86 @@ The implementation is **not yet runtime verified**. Required test sequence:
 10. Check the debugger for script, node-path, resource, or scene-transition errors.
 
 No additional interaction, inventory, or interior gameplay has been added. The door currently triggers automatically when the Player enters it, keeping the first implementation focused on physical entrance and scene transition.
+
+
+### Door and Interior Runtime Verification
+
+Ran `scenes/World.tscn` locally after the Door, deferred SceneManager transition, and Interior camera fixes were pulled.
+
+Verified:
+
+1. **Building entrance: PASS**
+   - The Player can pass through the Building doorway.
+2. **Scene transition into Interior: PASS**
+   - Entering the Door transitions from the World to `Interior.tscn`.
+3. **Interior Player placement: PASS**
+   - The Player is placed at the configured interior entry position.
+4. **Interior camera: PASS**
+   - The Interior camera becomes active and follows the Player correctly.
+5. **Interior boundaries: PASS**
+   - Interior wall collision blocks the Player.
+6. **Runtime stability: PASS**
+   - The deferred scene transition prevents the previous physics-callback collision error.
+   - No scene-transition, node-path, resource, or script errors were observed during this test.
+
+The scene-transition system and Interior camera are now functionally working in the local Godot runtime.
+
+### Interior Border Alignment Issue
+
+The first Interior collision test found that the Player sprite visually overlapped the north and south interior borders before the Player collision stopped movement.
+
+The Player uses a 16px-radius collision shape, while the current diamond-shaped Player visual extends 20px vertically and horizontally. This created a 4px visual overlap even though the physical collision itself was working.
+
+Updated `world/interior.gd` to account for this visual difference with a documented 4px clearance adjustment. The adjustment keeps the interior collision boundary slightly inside the visible floor edge so the Player sprite remains visually clear of the border.
+
+The east and west walls were included in the same geometry correction so all four interior boundaries follow the same alignment rule.
+
+### Interior Border Runtime Verification
+
+Re-tested the Interior after the collision alignment correction.
+
+Verified:
+
+1. **North border: PASS**
+   - Player collision stops correctly without the Player sprite overlapping the border.
+2. **South border: PASS**
+   - Player collision stops correctly without the Player sprite overlapping the border.
+3. **East border: PASS**
+   - Interior wall remains correctly aligned.
+4. **West border: PASS**
+   - Interior wall remains correctly aligned.
+5. **Player movement: PASS**
+   - Normal movement remains functional inside the Interior.
+6. **Doorway: PASS**
+   - The ExitDoor remains usable after the wall alignment correction.
+7. **Camera: PASS**
+   - Interior camera continues to track the Player correctly.
+8. **Runtime stability: PASS**
+   - No debugger, node-path, resource, or script errors were observed.
+
+The first World-to-Interior transition path and Interior boundary system are now runtime verified.
+
+### Current Status
+
+The current World foundation now includes:
+
+- 1200x800 temporary WorldFloor.
+- Four working World boundary walls.
+- Modular Player movement, stats, skills, inventory, equipment, and progression structure.
+- World camera following the Player.
+- Reusable Building with aligned visual and physical boundaries.
+- Automatic Building Door transition.
+- Deferred scene-transition handling through SceneManager.
+- First Interior scene with working boundaries.
+- Interior camera following the Player.
+- Aligned Interior boundaries that prevent visual Player overlap.
+
+The return trip from Interior to World should remain part of the next verification pass before considering the complete entrance/exit loop fully verified.
+
+### Next Work
+
+- Verify the complete Interior-to-World return trip.
+- Confirm the Player appears at the configured exterior position after exiting.
+- Confirm the Building doorway remains physically usable in both directions.
+- Keep Door transition logic separate from future interaction/UI systems.
+- Continue using comments in scripts to explain each script and major section.
