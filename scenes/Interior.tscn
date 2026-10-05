@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
 [ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_interior_presentation"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
+[ext_resource type="PackedScene" path="res://world/Chest.tscn" id="6_chest"]
 
 [node name="Interior" type="Node2D"]
 script = ExtResource("2_interior")
@@ -19,6 +20,14 @@ color = Color(0.18, 0.18, 0.22, 1)
 position = Vector2(0, 160)
 target_scene = "res://scenes/World.tscn"
 target_player_position = Vector2(0, -8)
+
+[node name="PotionChest" parent="InteriorContent" instance=ExtResource("6_chest")]
+position = Vector2(-140, -80)
+reward_item_id = "test_potion"
+
+[node name="SwordChest" parent="InteriorContent" instance=ExtResource("6_chest")]
+position = Vector2(140, -80)
+reward_item_id = "test_sword"
 
 [node name="InteriorPresentation" type="Node2D" parent="."]
 script = ExtResource("4_interior_presentation")
