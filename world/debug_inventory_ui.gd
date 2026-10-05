@@ -49,15 +49,20 @@ func _update_inventory_display() -> void:
 		inventory_label.text = "Inventory: PlayerInventory not found"
 		return
 
-	if inventory.items.is_empty():
+	# Read inventory contents through PlayerInventory's public interface
+	# instead of accessing its internal Dictionary directly. This keeps the
+	# temporary UI compatible with the same boundary the real HUD will use.
+	var inventory_items: Dictionary = inventory.get_inventory()
+
+	if inventory_items.is_empty():
 		inventory_label.text = "Inventory: Empty"
 		return
 
 	var lines: Array[String] = ["Inventory:"]
 
-	# Inventory stores item IDs and quantities. Display both values so the
+	# Inventory returns item IDs and quantities. Display both values so the
 	# Chest reward can be verified without exposing internal data elsewhere.
-	for item_id in inventory.items:
-		lines.append("%s x%d" % [item_id, inventory.items[item_id]])
+	for item_id in inventory_items:
+		lines.append("%s x%d" % [item_id, inventory_items[item_id]])
 
 	inventory_label.text = "\n".join(lines)
