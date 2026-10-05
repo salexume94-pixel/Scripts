@@ -1,12 +1,13 @@
 extends StaticBody2D
 ## Handles the behavior of a reusable World chest.
 ##
-## This script is responsible only for the chest's World interaction state.
-## It detects when the Player is close enough to interact, listens for the
-## interaction key, and changes the chest from closed to open.
+## This script is responsible for the chest's World interaction state and
+## deciding when its reward is granted. It does not define the item itself
+## or store the Player's inventory.
 ##
-## The chest does not own inventory logic or item definitions. Those systems
-## will be connected later when the item and inventory architecture exists.
+## ItemData defines the reward, while PlayerInventory stores it. Keeping
+## those responsibilities separate preserves the project's one-primary-job
+## architecture.
 
 # Tracks whether the Player is currently close enough to interact.
 var player_in_range: bool = false
@@ -45,15 +46,39 @@ func open_chest() -> void:
 	if is_opened:
 		return
 
-	# Record the new chest state before changing the presentation.
+	# Find the Player from the current World scene. The Chest is a child of
+	# WorldContent while the Player is a sibling under the World root.
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null:
+		return
+
+	# The Player's inventory is a dedicated child system, so the Chest asks
+	# that system to store the reward instead of modifying inventory data
+	# directly.
+	var inventory := player.get_node_or_null("PlayerInventory")
+	if inventory == null:
+		return
+
+	# Create the temporary development reward used to prove that the Chest
+	# can pass an ItemData object into the Player's inventory.
+	var test_items := TestItems.create_test_items()
+	var reward: ItemData = test_items[TestItems.TEST_POTION]
+
+	# Only mark the Chest as opened after the inventory successfully accepts
+	# the reward. This prevents a failed inventory operation from consuming
+	# the Chest's reward.
+	if not inventory.add_item(reward, 1):
+		return
+
+	# Record the new chest state after the reward has been granted.
 	is_opened = true
 
-	# Change the visible lid to show that the chest is now open.
+	# Change the visible Chest to show that it has been opened.
 	$ChestVisual.color = Color(0.65, 0.45, 0.18, 1.0)
 
 
 func _on_interaction_area_body_entered(body: Node2D) -> void:
-	# Only the Player should activate this chest's interaction range.
+	# Only the Player should activate this Chest's interaction range.
 	if body.name != "Player":
 		return
 
