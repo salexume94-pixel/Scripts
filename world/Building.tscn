@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://world/building.gd" id="1_building"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="2_door"]
 
 [node name="Building" type="Node2D"]
 script = ExtResource("1_building")
@@ -12,13 +13,19 @@ color = Color(0.28, 0.28, 0.32, 1)
 [node name="BuildingCollision" type="StaticBody2D" parent="."]
 
 [node name="TopWall" type="CollisionShape2D" parent="BuildingCollision"]
-position = Vector2(0, -56)
+position = Vector2(0, -72)
 
-[node name="BottomWall" type="CollisionShape2D" parent="BuildingCollision"]
-position = Vector2(0, 56)
+[node name="BottomLeftWall" type="CollisionShape2D" parent="BuildingCollision"]
+
+[node name="BottomRightWall" type="CollisionShape2D" parent="BuildingCollision"]
 
 [node name="LeftWall" type="CollisionShape2D" parent="BuildingCollision"]
-position = Vector2(-88, 0)
+position = Vector2(-104, 0)
 
 [node name="RightWall" type="CollisionShape2D" parent="BuildingCollision"]
-position = Vector2(88, 0)
+position = Vector2(104, 0)
+
+[node name="Door" parent="." instance=ExtResource("2_door")]
+position = Vector2(0, 72)
+target_scene = "res://scenes/Interior.tscn"
+target_player_position = Vector2(0, 120)
