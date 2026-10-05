@@ -27,37 +27,135 @@ mouse_filter = 2
 
 [node name="Panel" type="PanelContainer" parent="Screen"]
 layout_mode = 0
-offset_left = 176.0
-offset_top = 72.0
-offset_right = 976.0
-offset_bottom = 576.0
+offset_left = 96.0
+offset_top = 56.0
+offset_right = 1056.0
+offset_bottom = 592.0
 
 [node name="Margin" type="MarginContainer" parent="Screen/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
 
-[node name="VBox" type="VBoxContainer" parent="Screen/Panel/Margin"]
+[node name="Columns" type="HBoxContainer" parent="Screen/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 24
 
-[node name="Title" type="Label" parent="Screen/Panel/Margin/VBox"]
+[node name="CharacterPanel" type="PanelContainer" parent="Screen/Panel/Margin/Columns"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="CharacterMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="CharacterVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 text = "CHARACTER"
 horizontal_alignment = 1
 
-[node name="InventoryTitle" type="Label" parent="Screen/Panel/Margin/VBox"]
+[node name="LevelLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
-text = "INVENTORY"
+text = "Level: 1"
 
-[node name="InventoryLabel" type="Label" parent="Screen/Panel/Margin/VBox"]
+[node name="HPLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "HP: 100 / 100"
+
+[node name="MPLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "MP: 20 / 20"
+
+[node name="AttackLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Attack: 10"
+
+[node name="DefenseLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Defense: 10"
+
+[node name="MagicAttackLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Magic Attack: 10"
+
+[node name="MagicDefenseLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Magic Defense: 10"
+
+[node name="SpeedLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+text = "Speed: 10"
+
+[node name="Spacer" type="Control" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Inventory is empty."
 
-[node name="Help" type="Label" parent="Screen/Panel/Margin/VBox"]
+[node name="Help" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 text = "Press I to close"
 horizontal_alignment = 1
+
+[node name="InventoryPanel" type="PanelContainer" parent="Screen/Panel/Margin/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InventoryMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="InventoryVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="InventoryTitle" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
+layout_mode = 2
+text = "INVENTORY"
+horizontal_alignment = 1
+
+[node name="InventoryGrid" type="GridContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="ItemDetails" type="PanelContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="DetailsMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="DetailsVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ItemName" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox"]
+layout_mode = 2
+text = "Select an item"
+
+[node name="ItemDescription" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox"]
+layout_mode = 2
+text = "Choose an inventory slot to view its details."
+autowrap_mode = 2
+
+[node name="ItemQuantity" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox"]
+layout_mode = 2
+text = ""
