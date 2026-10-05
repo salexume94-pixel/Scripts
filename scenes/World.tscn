@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
+[ext_resource type="PackedScene" path="res://world/Building.tscn" id="4_building"]
 
 [node name="World" type="Node2D" unique_id=119908091]
 
@@ -11,6 +12,9 @@
 [node name="WorldFloor" type="Polygon2D" parent="WorldContent" unique_id=137521041]
 polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
 color = Color(0.12, 0.18, 0.12, 1)
+
+[node name="Building" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(0, -120)
 
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
