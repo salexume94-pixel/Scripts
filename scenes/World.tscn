@@ -18,8 +18,13 @@ color = Color(0.12, 0.18, 0.12, 1)
 [node name="Building" parent="WorldContent" instance=ExtResource("4_building")]
 position = Vector2(0, -120)
 
-[node name="Chest" parent="WorldContent" instance=ExtResource("5_chest")]
+[node name="PotionChest" parent="WorldContent" instance=ExtResource("5_chest")]
 position = Vector2(240, -80)
+reward_item_id = "test_potion"
+
+[node name="SwordChest" parent="WorldContent" instance=ExtResource("5_chest")]
+position = Vector2(320, -80)
+reward_item_id = "test_sword"
 
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
