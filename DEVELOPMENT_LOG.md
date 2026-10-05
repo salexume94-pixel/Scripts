@@ -499,3 +499,50 @@ The World now contains:
 - Confirm there are no debugger, node-path, resource, or script errors.
 - Record the runtime results in this log before adding doors or interiors.
 - Continue using comments in scripts to explain each script and major section.
+
+### First Building Runtime Verification
+
+Ran `scenes/World.tscn` locally with F6 after pulling the first Building implementation.
+
+Verified:
+
+1. **Building presentation: PASS**
+   - The Building is visible in the World.
+
+2. **Building collision: PASS**
+   - The Player cannot walk through the Building.
+   - The physical wall collision is functioning correctly.
+
+3. **Building corner collision: PASS**
+   - The Building collision prevents the Player from entering through its corners.
+
+4. **Player movement around Building: PASS**
+   - The Player remains able to move around the Building normally.
+
+5. **Runtime stability: PASS**
+   - No debugger, node-path, resource, or script errors were observed.
+
+6. **Visual/collision alignment: FAIL**
+   - The Player sprite visually overlaps the Building sprite before the Building collision stops the Player.
+   - The collision system is functional, but the current wall placement does not yet provide the intended visual clearance between the Player and the Building.
+
+The Building collision is therefore functionally working but requires a geometry/alignment adjustment before the Building foundation is considered complete.
+
+### Building Collision Alignment Issue
+
+The current Building visual footprint is 192x128, while the wall collision shapes are positioned inward from the visual edges. Because the Player collision has a 16px radius, the Player visual can overlap the Building visual before the Player's collision reaches the wall.
+
+The next correction should align the Building's physical wall positions with its intended visual footprint while preserving the existing modular separation between Building presentation and collision.
+
+Do not add doors or interiors until this alignment issue is corrected and runtime verified.
+
+### Next Work
+
+- Correct the Building wall collision positions so the Player sprite does not visibly overlap the Building.
+- Pull/run the corrected Building locally.
+- Re-test all four walls and the corners.
+- Confirm normal movement around the Building remains intact.
+- Confirm World boundary collision still works.
+- Confirm no debugger, node-path, resource, or script errors.
+- Record the corrected runtime result before adding a door or interior.
+- Continue using comments in scripts to explain each script and major section.
