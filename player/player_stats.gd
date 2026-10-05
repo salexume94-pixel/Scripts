@@ -28,6 +28,16 @@ extends Node
 var equipment_attack_bonus: int = 0
 var equipment_defense_bonus: int = 0
 
+## Apply direct damage for combat systems and temporary development testing.
+## The returned value is the actual HP lost after clamping at zero.
+func take_damage(amount: int) -> int:
+	if amount <= 0:
+		return 0
+
+	var old_hp := hp
+	hp = maxi(hp - amount, 0)
+	return old_hp - hp
+
 
 func restore_hp(amount: int) -> int:
 	# Restore HP without allowing it to exceed the Player's maximum.
