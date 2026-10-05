@@ -1,18 +1,9 @@
 extends CanvasLayer
 ## Displays the Player's Character and Inventory screen.
 ##
-## This script is responsible only for presenting Player information and
-## handling the screen's open/closed state. It does not own stats, inventory,
-## or item definitions.
-##
-## The screen is divided into two purposes:
-## - Character information reads values from PlayerStats.
-## - Inventory controls display the PlayerInventory contents and selection.
-##
-## The same reusable HUD is placed in World and Interior so the interface
-## remains available after scene transitions.
-##
-## Pressing I toggles the screen while the game is running.
+## This script presents Player information and requests gameplay actions from
+## the appropriate systems. It does not own stats, inventory, item definitions,
+## or equipment.
 
 @onready var screen: Control = $Screen
 @onready var level_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/LevelLabel
@@ -23,28 +14,32 @@ extends CanvasLayer
 @onready var magic_attack_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MagicAttackLabel
 @onready var magic_defense_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MagicDefenseLabel
 @onready var speed_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/SpeedLabel
+@onready var equipment_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentLabel
+@onready var unequip_button: Button = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/UnequipButton
 @onready var inventory_grid: GridContainer = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/InventoryGrid
 @onready var item_name_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemName
 @onready var item_description_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemDescription
 @onready var item_quantity_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemQuantity
+@onready var item_action_button: Button = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemActionButton
 
+const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 const TEST_ITEMS_SCRIPT = preload("res://items/test_items.gd")
+const ITEM_USE_SYSTEM = preload("res://systems/item_use_system.gd")
 
-# The selected item ID belongs to the UI only. Inventory ownership remains
-# inside PlayerInventory and is never changed by this value.
 var selected_item_id: String = ""
 
 
 func _ready() -> void:
-	# Start closed so the game world remains visible and Player movement remains
-	# enabled until the screen is opened.
+	# Start closed so the world remains active until the Player opens the HUD.
 	screen.visible = false
+	unequip_button.pressed.connect(_on_unequip_button_pressed)
+	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	_set_player_movement_enabled(true)
 	_refresh_screen()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# I toggles the character screen because this HUD owns its visibility.
+	# I toggles the Character/Inventory screen.
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_I:
 			screen.visible = not screen.visible
@@ -55,39 +50,27 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	# Refresh while visible so changes made by other systems are reflected
-	# immediately without requiring the screen to be reopened.
+	# Refresh visible values so item and equipment changes appear immediately.
 	if screen.visible:
 		_refresh_screen()
 
 
 func _refresh_screen() -> void:
-	# Locate the active Player in the current gameplay scene. Both World and
-	# Interior use the same Player scene structure.
+	# Locate the active Player in the current gameplay scene.
 	var player := get_tree().current_scene.get_node_or_null("Player")
-
 	if player == null:
 		_show_missing_player()
 		return
 
 	_refresh_character_stats(player)
+	_refresh_equipment(player)
 	_refresh_inventory(player)
 
 
 func _refresh_character_stats(player: Node) -> void:
-	# PlayerStats is the authoritative source for character values. The HUD
-	# only reads these values and formats them for presentation.
+	# PlayerStats is the authoritative source for resulting character values.
 	var stats: Node = player.get_node_or_null("PlayerStats")
-
 	if stats == null:
-		level_label.text = "Level: --"
-		hp_label.text = "HP: --"
-		mp_label.text = "MP: --"
-		attack_label.text = "Attack: --"
-		defense_label.text = "Defense: --"
-		magic_attack_label.text = "Magic Attack: --"
-		magic_defense_label.text = "Magic Defense: --"
-		speed_label.text = "Speed: --"
 		return
 
 	level_label.text = "Level: %d" % stats.get("level")
@@ -100,22 +83,39 @@ func _refresh_character_stats(player: Node) -> void:
 	speed_label.text = "Speed: %d" % stats.get("speed")
 
 
-func _refresh_inventory(player: Node) -> void:
-	# PlayerInventory owns the item quantities. The HUD rebuilds only its
-	# visual slots from that read-only inventory snapshot.
-	var inventory = player.get_node_or_null("PlayerInventory")
+func _refresh_equipment(player: Node) -> void:
+	# PlayerEquipment owns equipped item IDs. The HUD only formats their names.
+	var equipment = player.get_node_or_null("PlayerEquipment")
+	if equipment == null:
+		equipment_label.text = "Weapon: --"
+		unequip_button.visible = false
+		return
 
+	var equipped: Dictionary = equipment.get_equipped_items()
+	if equipped.has("weapon"):
+		var definitions: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
+		var item_id: String = equipped["weapon"]
+		var display_name := item_id
+		if definitions.has(item_id):
+			display_name = definitions[item_id].get("display_name")
+		equipment_label.text = "Weapon: %s" % display_name
+		unequip_button.visible = true
+	else:
+		equipment_label.text = "Weapon: None"
+		unequip_button.visible = false
+
+
+func _refresh_inventory(player: Node) -> void:
+	# PlayerInventory owns quantities. The HUD only creates visual controls.
+	var inventory = player.get_node_or_null("PlayerInventory")
 	if inventory == null:
 		_clear_inventory_ui()
-		item_name_label.text = "Inventory unavailable"
-		item_description_label.text = ""
-		item_quantity_label.text = ""
+		_clear_item_details()
 		return
 
 	var inventory_items: Dictionary = inventory.get_inventory()
 	var item_definitions: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
 
-	# If an item disappeared since the last refresh, clear the stale selection.
 	if not inventory_items.has(selected_item_id):
 		selected_item_id = ""
 
@@ -129,7 +129,6 @@ func _refresh_inventory(player: Node) -> void:
 	for item_id in inventory_items:
 		_create_inventory_slot(item_id, inventory_items[item_id], item_definitions)
 
-	# Keep the selected item's details visible after the grid is rebuilt.
 	if selected_item_id != "":
 		_show_item_details(selected_item_id, inventory_items, item_definitions)
 	else:
@@ -137,8 +136,7 @@ func _refresh_inventory(player: Node) -> void:
 
 
 func _create_inventory_slot(item_id: String, quantity: int, item_definitions: Dictionary) -> void:
-	# Each inventory entry becomes a button so the Player can select an item.
-	# The button is presentation only and does not modify inventory data.
+	# Each inventory entry becomes a selectable button.
 	var slot := Button.new()
 	slot.custom_minimum_size = Vector2(110, 64)
 	slot.text = _get_item_display_name(item_id, item_definitions) + "\nx%d" % quantity
@@ -148,7 +146,7 @@ func _create_inventory_slot(item_id: String, quantity: int, item_definitions: Di
 
 
 func _add_empty_inventory_slot() -> void:
-	# Show an explicit empty state instead of leaving a blank inventory area.
+	# Show an explicit empty state when no items are owned.
 	var slot := Label.new()
 	slot.custom_minimum_size = Vector2(110, 64)
 	slot.text = "Inventory is empty."
@@ -158,52 +156,84 @@ func _add_empty_inventory_slot() -> void:
 
 
 func _on_inventory_slot_pressed(item_id: String) -> void:
-	# Selection changes only which item the details panel displays.
-	# Item use, equipping, and consumption remain separate future systems.
+	# Selection is UI state only. Gameplay actions use the separate action button.
 	selected_item_id = item_id
-
-	var player := get_tree().current_scene.get_node_or_null("Player")
-	if player == null:
-		return
-
-	var inventory = player.get_node_or_null("PlayerInventory")
-	if inventory == null:
-		return
-
-	var inventory_items: Dictionary = inventory.get_inventory()
-	var item_definitions: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
-	_show_item_details(item_id, inventory_items, item_definitions)
+	_refresh_screen()
 
 
 func _show_item_details(item_id: String, inventory_items: Dictionary, item_definitions: Dictionary) -> void:
-	# Translate the selected item ID into readable data for the details panel.
+	# Display item data and expose the action appropriate to its item type.
 	if not inventory_items.has(item_id):
 		_clear_item_details()
 		return
 
-	var display_name := _get_item_display_name(item_id, item_definitions)
-	var description := "No description available."
+	var item: Resource = item_definitions.get(item_id)
+	if item == null:
+		item_name_label.text = item_id
+		item_description_label.text = "No item definition available."
+		item_quantity_label.text = "Quantity: %d" % inventory_items[item_id]
+		item_action_button.visible = false
+		return
 
-	if item_definitions.has(item_id):
-		description = item_definitions[item_id].get("description")
-
-	item_name_label.text = display_name
-	item_description_label.text = description
+	item_name_label.text = item.get("display_name")
+	item_description_label.text = item.get("description")
 	item_quantity_label.text = "Quantity: %d" % inventory_items[item_id]
+
+	match item.get("item_type"):
+		ITEM_DATA_SCRIPT.ItemType.CONSUMABLE:
+			item_action_button.text = "Use"
+			item_action_button.visible = true
+		ITEM_DATA_SCRIPT.ItemType.EQUIPMENT:
+			item_action_button.text = "Equip"
+			item_action_button.visible = true
+		_:
+			item_action_button.visible = false
+
+
+func _on_item_action_button_pressed() -> void:
+	# The HUD requests an action but does not implement its gameplay effect.
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null or selected_item_id == "":
+		return
+
+	var definitions: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
+	var item: Resource = definitions.get(selected_item_id)
+	if item == null:
+		return
+
+	match item.get("item_type"):
+		ITEM_DATA_SCRIPT.ItemType.CONSUMABLE:
+			ITEM_USE_SYSTEM.use_item(player, item)
+		ITEM_DATA_SCRIPT.ItemType.EQUIPMENT:
+			var equipment = player.get_node_or_null("PlayerEquipment")
+			if equipment != null:
+				equipment.equip_item(item)
+
+	_refresh_screen()
+
+
+func _on_unequip_button_pressed() -> void:
+	# PlayerEquipment owns unequipping. The HUD only requests it.
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null:
+		return
+
+	var equipment = player.get_node_or_null("PlayerEquipment")
+	if equipment != null:
+		equipment.unequip_slot("weapon")
+
+	_refresh_screen()
 
 
 func _get_item_display_name(item_id: String, item_definitions: Dictionary) -> String:
-	# Test item definitions currently provide readable names. Unknown IDs fall
-	# back to the stable item ID so the UI remains usable as the catalog grows.
+	# Unknown IDs fall back to their stable identifier.
 	if item_definitions.has(item_id):
 		return item_definitions[item_id].get("display_name")
-
 	return item_id
 
 
 func _clear_inventory_slots() -> void:
-	# Remove only the temporary slot controls created by the previous refresh.
-	# Inventory data itself is never touched here.
+	# Remove only temporary visual controls. Inventory data is untouched.
 	for child in inventory_grid.get_children():
 		child.queue_free()
 
@@ -213,10 +243,11 @@ func _clear_item_details() -> void:
 	item_name_label.text = "Select an item"
 	item_description_label.text = "Choose an inventory slot to view its details."
 	item_quantity_label.text = ""
+	item_action_button.visible = false
 
 
 func _show_missing_player() -> void:
-	# Keep the HUD readable if a gameplay scene is ever opened without Player.
+	# Keep the HUD readable if a gameplay scene ever lacks a Player.
 	level_label.text = "Player not found."
 	hp_label.text = ""
 	mp_label.text = ""
@@ -225,19 +256,19 @@ func _show_missing_player() -> void:
 	magic_attack_label.text = ""
 	magic_defense_label.text = ""
 	speed_label.text = ""
+	equipment_label.text = "Weapon: --"
+	unequip_button.visible = false
 	_clear_inventory_ui()
 	_clear_item_details()
 
 
 func _clear_inventory_ui() -> void:
-	# Clear the visual inventory without changing the actual inventory owner.
+	# Clear only visual inventory controls.
 	_clear_inventory_slots()
 
 
 func _set_player_movement_enabled(enabled: bool) -> void:
-	# The Character screen temporarily disables only the Player movement system.
-	# Other gameplay systems remain active, keeping this menu lightweight rather
-	# than pausing the entire SceneTree.
+	# Disable only Player movement rather than pausing the entire SceneTree.
 	var player := get_tree().current_scene.get_node_or_null("Player")
 	if player == null:
 		return
