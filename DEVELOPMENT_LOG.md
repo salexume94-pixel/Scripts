@@ -568,3 +568,20 @@ The corrected implementation has **not yet been runtime verified**. The next tes
 - Confirm no debugger, node-path, resource, or script errors.
 - Record the corrected runtime result before adding a door or interior.
 - Continue using comments in scripts to explain each script and major section.
+
+### Building Collision Alignment Runtime Verification
+
+Ran `scenes/World.tscn` locally after pulling the Building collision alignment correction.
+
+Verified:
+1. Player stops at the visible Building edge without visually overlapping the Building.
+2. Top wall collision PASS.
+3. Bottom wall collision PASS.
+4. Left wall collision PASS.
+5. Right wall collision PASS.
+6. Building corner collision PASS.
+7. Player movement around the Building PASS.
+8. World boundary collision remains PASS.
+9. Runtime stability PASS with no reported debugger, node-path, resource, or script errors.
+
+The Building collision alignment issue is resolved. The Building is ready for the next isolated system: a door/entrance and interior transition.
