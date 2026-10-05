@@ -13,6 +13,11 @@ extends Node
 # The actual movement is performed on this player node.
 var player: CharacterBody2D
 
+# Movement can be temporarily disabled by game UI such as the Character
+# screen. Keeping this state here means the movement system remains the owner
+# of whether movement input is currently allowed.
+var movement_enabled: bool = true
+
 
 func _ready() -> void:
 	# The movement script is expected to be a child of the player's
@@ -21,6 +26,12 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	# Stop here if movement has been disabled by another gameplay system, such
+	# as a full-screen Character/Inventory menu.
+	if not movement_enabled:
+		player.velocity = Vector2.ZERO
+		return
+
 	# Stop here if the player reference could not be found.
 	# This prevents errors when trying to move a nonexistent player.
 	if player == null:
@@ -52,3 +63,14 @@ func _physics_process(_delta: float) -> void:
 	# move_and_slide() also handles collision-based sliding against
 	# other physics bodies.
 	player.move_and_slide()
+
+
+func set_movement_enabled(enabled: bool) -> void:
+	# Public control point for menus and other gameplay states that need to
+	# temporarily prevent the Player from moving.
+	movement_enabled = enabled
+
+	if not enabled and player != null:
+		# Clear existing velocity immediately so opening the menu also stops any
+		# movement that was already in progress.
+		player.velocity = Vector2.ZERO
