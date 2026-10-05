@@ -242,3 +242,54 @@ Runtime verification required:
 - Confirm the Player stops immediately when the HUD opens.
 - Close the HUD with **I** and confirm movement resumes normally.
 - Confirm World/Interior transitions and inventory behavior remain unchanged.
+
+
+### Item Behavior, Use, and Equipment Foundation
+
+Implemented the first functional item behavior layer while preserving the one-primary-job architecture.
+
+Updated:
+- items/item_data.gd
+- items/test_items.gd
+- player/player_stats.gd
+- player/player_equipment.gd
+- systems/game_state.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+
+Created:
+- systems/item_use_system.gd
+
+ItemData now defines behavior data for consumables, equipment, currency, materials, and a future key-item category. It also carries consumable HP/MP restoration values and equipment slot/stat bonus data.
+
+Test item behavior:
+- Test Potion restores 25 HP and consumes exactly one item when it has an effect.
+- Test Sword is weapon equipment with +5 Attack.
+- Test Gold is a currency item and is not treated as a consumable.
+
+Ownership responsibilities remain separated:
+- ItemData = item definition and behavior data.
+- PlayerInventory = item quantities.
+- PlayerEquipment = equipped item ownership and equipment changes.
+- PlayerStats = resulting HP/MP and combat stat values.
+- ItemUseSystem = applies consumable effects.
+- InventoryCharacterHUD = displays state and requests actions.
+
+Equipment is transferred from inventory to PlayerEquipment while equipped and returned to inventory when unequipped. GameState keeps the equipped-item snapshot through scene transitions, and a newly created Player reapplies stored equipment modifiers to PlayerStats.
+
+The HUD now provides Use for consumables, Equip for equipment, current weapon display, weapon unequip, and immediate stat refresh after actions.
+
+### Runtime Verification Required: Item Behavior
+
+Run locally after pulling the latest commits:
+- Project opens without parse errors.
+- Open the Character/Inventory HUD.
+- Reduce Player HP before using Test Potion.
+- Select Test Potion and press Use.
+- Confirm HP increases by 25, one potion is removed, and an empty stack disappears.
+- Attempt to use a potion at full HP and confirm it is not consumed.
+- Obtain Test Sword, select it, and press Equip.
+- Confirm the sword leaves inventory, Weapon displays Test Sword, and Attack increases from 10 to 15.
+- Press Unequip Weapon and confirm the sword returns to inventory and Attack returns to 10.
+- Transition World -> Interior -> World and confirm equipped state and resulting stats persist.
+- Confirm no Godot debugger errors occur.
