@@ -345,3 +345,51 @@ This allows the item loop to be tested now:
 4. Select Test Potion.
 5. Press Use.
 6. Confirm HP increases by 25 and one potion is consumed.
+
+
+### Item Behavior Runtime Verification
+
+The item behavior loop has now been runtime verified locally.
+
+Verified:
+- Test Potion can be picked up from a Potion Chest.
+- Test Potion quantities stack correctly from `x1` to `x2`.
+- Test Sword can be picked up when the inventory does not already contain one.
+- A second Test Sword cannot be picked up when the existing sword has reached its `max_stack_size` of 1.
+- Test Sword can be equipped from the Character/Inventory HUD.
+- Test Sword can be unequipped and returned to the inventory.
+- Equipment changes therefore correctly move the item between PlayerInventory and PlayerEquipment.
+
+The verified item path is now:
+
+`Chest -> ItemData -> PlayerInventory -> HUD -> PlayerEquipment -> PlayerStats`
+
+### Debug System Separation
+
+The temporary Test Damage control has been moved into the project's debug architecture.
+
+Created:
+- `systems/debug_system.gd`
+
+Updated:
+- `ui/inventory_character_hud.gd`
+- `ui/InventoryCharacterHUD.tscn`
+
+Architecture:
+- `DebugSystem` owns development-only test actions.
+- `InventoryCharacterHUD` presents the debug control and requests the action.
+- `PlayerStats` remains responsible for applying the resulting damage.
+- The Test Damage control is now grouped under a dedicated **DEBUG** section in the Character HUD.
+- The debug control is only visible in Godot debug builds.
+
+This keeps development/testing behavior out of the normal Character HUD logic while preserving the ability to damage the Player for potion testing.
+
+Runtime verification required after this change:
+- Pull the latest commits.
+- Open the Character HUD in a debug build.
+- Confirm the **DEBUG** section contains Test Damage.
+- Press Test Damage and confirm HP decreases by 25.
+- Use Test Potion and confirm HP is restored by 25 and one potion is consumed.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
