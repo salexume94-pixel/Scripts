@@ -36,8 +36,10 @@ var selected_item_id: String = ""
 
 
 func _ready() -> void:
-	# Start closed so the game world remains visible.
+	# Start closed so the game world remains visible and Player movement remains
+	# enabled until the screen is opened.
 	screen.visible = false
+	_set_player_movement_enabled(true)
 	_refresh_screen()
 
 
@@ -46,6 +48,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_I:
 			screen.visible = not screen.visible
+			_set_player_movement_enabled(not screen.visible)
 
 			if screen.visible:
 				_refresh_screen()
@@ -229,3 +232,18 @@ func _show_missing_player() -> void:
 func _clear_inventory_ui() -> void:
 	# Clear the visual inventory without changing the actual inventory owner.
 	_clear_inventory_slots()
+
+
+func _set_player_movement_enabled(enabled: bool) -> void:
+	# The Character screen temporarily disables only the Player movement system.
+	# Other gameplay systems remain active, keeping this menu lightweight rather
+	# than pausing the entire SceneTree.
+	var player := get_tree().current_scene.get_node_or_null("Player")
+	if player == null:
+		return
+
+	var movement = player.get_node_or_null("PlayerMovement")
+	if movement == null:
+		return
+
+	movement.set_movement_enabled(enabled)
