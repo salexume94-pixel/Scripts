@@ -297,7 +297,7 @@ The World scene now keeps the major responsibilities as separate siblings:
 
 - WorldContent contains the actual World visual/content nodes.
 - WorldPresentation owns presentation behavior and the Camera2D.
-- Player remains a separate gameplay actor instance.
+- Player remains a separate World child instance.
 
 WorldFloor was moved back under WorldContent instead of being nested inside WorldPresentation. This keeps World content separate from camera/presentation control and follows the project's one-primary-job architecture.
 
@@ -452,4 +452,50 @@ The World foundation now has:
 - Define the permanent World visual/terrain responsibility before replacing the temporary WorldFloor.
 - Begin the first building as a self-contained World object after the World foundation remains stable.
 - Keep building presentation, collision, and interaction responsibilities separated.
+- Continue using comments in scripts to explain each script and major section.
+
+### First Building Foundation
+
+Created the first reusable building as a self-contained World object.
+
+Created:
+
+- `world/building.gd`
+- `world/Building.tscn`
+
+The Building scene currently contains:
+
+- `Building` root
+- `BuildingVisual` for the temporary rectangular presentation
+- `BuildingCollision` as a `StaticBody2D`
+- Four independent wall `CollisionShape2D` nodes
+
+`world/building.gd` configures the four wall shapes at runtime using a 192x128 building footprint and 16px wall thickness.
+
+The visual and physical wall system remain separate. The building script does not handle Player movement, camera behavior, doors, interiors, or interaction.
+
+The first Building instance has been placed under `WorldContent` in `scenes/World.tscn`, positioned at `(0, -120)`.
+
+### Current Status
+
+The first building is implemented on GitHub but **NOT YET RUNTIME VERIFIED**.
+
+The World now contains:
+
+- A 1200x800 temporary WorldFloor.
+- Working four-edge World boundaries.
+- A working Player and movement system.
+- A working camera.
+- A reusable Building scene with separate visual and collision responsibilities.
+
+### Next Work
+
+- Pull the first Building implementation into the local project.
+- Run `scenes/World.tscn` with F6.
+- Verify the building is visible.
+- Walk into all four building walls and confirm the Player cannot pass through them.
+- Test the building corners.
+- Confirm the Player can still move normally around the building.
+- Confirm there are no debugger, node-path, resource, or script errors.
+- Record the runtime results in this log before adding doors or interiors.
 - Continue using comments in scripts to explain each script and major section.
