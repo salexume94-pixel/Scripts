@@ -21,7 +21,7 @@ static func resolve_damage(base_damage: int, damage_type: int, enemy_data: Resou
 	var result_type := "damage"
 	var multiplier := 1.0
 
-	switch affinity:
+	match affinity:
 		AFFINITIES.Type.WEAK:
 			# Weakness increases damage and consumes only half a Press Turn.
 			multiplier = 1.5
