@@ -12,6 +12,7 @@ const SLIME: Resource = preload("res://enemies/definitions/slime.tres")
 const SLIME_RESIST: Resource = preload("res://enemies/definitions/slime_resist.tres")
 const SLIME_NULL: Resource = preload("res://enemies/definitions/slime_null.tres")
 const SLIME_DRAIN: Resource = preload("res://enemies/definitions/slime_drain.tres")
+const SLIME_REPEL: Resource = preload("res://enemies/definitions/slime_repel.tres")
 
 static func get_enemy(enemy_id: String) -> Resource:
 	# Resolve a stable enemy ID to its shared EnemyData Resource.
@@ -24,6 +25,8 @@ static func get_enemy(enemy_id: String) -> Resource:
 			return SLIME_NULL
 		"slime_drain":
 			return SLIME_DRAIN
+		"slime_repel":
+			return SLIME_REPEL
 		_:
 			return null
 
@@ -35,4 +38,5 @@ static func get_all_enemies() -> Array[Resource]:
 		SLIME_RESIST,
 		SLIME_NULL,
 		SLIME_DRAIN,
+		SLIME_REPEL,
 	]
