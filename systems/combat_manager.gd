@@ -194,8 +194,8 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.enemy_id = enemy_data.enemy_id
 	combat_state.enemy_max_hp = enemy_data.max_hp
 	combat_state.enemy_hp = enemy_data.max_hp
-	combat_state.player_press_turns = 4
-	combat_state.player_press_turns_remaining = 4.0
+	combat_state.player_press_turns = 2
+	combat_state.player_press_turns_remaining = 2.0
 	if enemy_data.actions.is_empty():
 		return false
 
@@ -221,7 +221,7 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_log.clear()
 	_append_combat_log("COMBAT: %s entered battle." % enemy_data.display_name)
 	_append_combat_log("ENEMY AI: %s profile selected." % selected_behavior.profile_id)
-	_append_combat_log("PLAYER TURN: 4 Press Turns available.")
+	_append_combat_log("PLAYER TURN: 2 Press Turns available.")
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
@@ -340,20 +340,21 @@ func player_defend() -> bool:
 	_resolve_player_action_end("Player defends.")
 	return true
 func player_pass() -> bool:
-	# Pass spends one full Press Turn without changing combat stats or HP.
+	# Pass ends the Player Turn immediately, surrendering all remaining Press Turns.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
 		return false
 	if active_combat.player_press_turns_remaining <= 0.0:
 		return false
 
-	consume_player_press_turn(1.0)
+	active_combat.player_press_turns_remaining = 0.0
+	player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
 	_resolve_player_action_end("Player passes.")
 	return true
 
 func _resolve_player_action_end(action_text: String) -> void:
 	# Centralize the shared end-of-action flow for Defend and Pass so both actions
 	# obey the same Press Turn exhaustion rule as a normal Player action.
-	var action_label = action_text
+	_append_combat_log("PLAYER: %s" % action_text)
 	if active_combat.player_press_turns_remaining <= 0.0:
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
 		enemy_turn_started.emit()
