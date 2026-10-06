@@ -1,3 +1,17 @@
+## Current Development Order
+
+The current development order is fixed as follows. Complete each item in order before moving to the next item unless a blocking bug requires otherwise.
+
+1. **Equipment comparison/details**
+2. **Map labels**
+3. **Combat polish**
+4. **Balance**
+5. **Quest log**
+6. **Quests / Gated Areas**
+7. **Ending / Boss**
+
+---
+
 ### Combat Critical Test and Victory UI Corrections
 
 Corrected two runtime issues found during Critical/Accuracy verification.
