@@ -1,3 +1,24 @@
+### Character Menu Debug Options Removed
+
+Removed the development-only debug controls from the Character/Inventory menu.
+
+Updated:
+- `ui/inventory_character_hud.gd`
+- `ui/InventoryCharacterHUD.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Removed the Character menu's Debug panel and all test buttons.
+- Removed the HUD's debug button wiring and DebugSystem dependency.
+- Normal Character/Inventory functionality remains unchanged.
+- Debug functionality itself was not removed from the project; only its Character menu entry points were removed.
+
+Runtime verification required:
+- Open the Character/Inventory screen.
+- Confirm the Debug panel and test buttons are gone.
+- Confirm character stats, equipment, inventory, item details, Equip, and Unequip still function.
+- Confirm no debugger errors appear when opening or closing the menu.
+
 ### Equipment Comparison / Details: Initial Implementation
 
 Started the first item in the current development order: Equipment comparison/details.
