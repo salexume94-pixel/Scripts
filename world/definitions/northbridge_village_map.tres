@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="WorldMapData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_map_data.gd" id="1_map_data"]
+
+[resource]
+script = ExtResource("1_map_data")
+world_id = "northbridge_village"
+display_name = "Northbridge Village"
+world_bounds = Rect2(-1000, -1500, 2000, 3000)
+map_bounds = Rect2(0, 0, 400, 600)
