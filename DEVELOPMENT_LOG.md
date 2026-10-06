@@ -2115,3 +2115,12 @@ Continue using comments in scripts to explain each script and major section. Eac
 - The previous cleanup removed the resource declarations but left the action-array references, causing Godot resource parse failures.
 - Verified the four Slime AI test files no longer contain that stale reference.
 - Runtime verification required.
+
+
+## Combat Debug Test Actions Removed
+
+- Removed the temporary Critical Test and Miss Test controls from the Battle UI after Speed-based critical and miss behavior was verified.
+- Removed the corresponding Battle handlers and CombatManager debug-test methods.
+- Removed the obsolete guaranteed-test action Resources: `combat/definitions/critical_test.tres` and `combat/definitions/miss_test.tres`.
+- Player attacks now use only the normal authoritative combat action paths; no development-only test actions remain in the Battle HUD.
+- Runtime verification required: confirm the Battle UI contains only the normal combat actions and that regular Attack/Fire, Defend, Pass, Run, and Return to World continue to function without debugger errors.
