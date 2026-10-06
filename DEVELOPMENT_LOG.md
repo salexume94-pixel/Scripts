@@ -2205,3 +2205,11 @@ Current direction:
 4. Tune encounters, rewards, equipment, and progression against the actual content.
 5. Perform a broader final Balance pass after the major systems and content are established.
 
+### Combat System: Local Runtime Verification Passed
+
+- Local Godot runtime verification passed successfully.
+- Confirmed the current combat system runs without errors and behaves as intended in the local project.
+- Verified the implemented combat foundation and polish systems, including player and enemy actions, elemental affinities, Speed-based accuracy and critical resolution, Defend, Pass, enemy behavior profiles, combat feedback, victory/defeat handling, Run, Return to World, and overworld encounter integration.
+- No known combat-system runtime errors remain from this verification pass.
+- Combat is considered locally verified and working as intended.
+
