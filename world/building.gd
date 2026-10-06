@@ -10,11 +10,11 @@ extends Node2D
 ## This script owns the Building's local visual footprint and wall collision.
 ## It does not move the Player, control the camera, or handle interaction.
 
-## Shared location definition for this building.
-##
-## The resource supplies the stable world/location IDs that are passed to the
-## Door, so a building cannot silently point at a different world location.
-@export var location_data: WorldLocationData
+## The Resource base type is used here intentionally instead of the custom
+## WorldLocationData class name. Godot can parse this building script even when
+## the custom class cache has not been refreshed yet, while the resource itself
+## still contains the WorldLocationData script and exported fields.
+@export var location_data: Resource
 
 @export_file("*.tscn") var interior_scene: String = ""
 
@@ -24,32 +24,37 @@ const DOOR_WIDTH := 48.0
 
 
 func _ready() -> void:
-    # Every World building must have a location definition. Failing loudly
-    # here catches incomplete map integration during development instead of
-    # allowing the Door to carry empty or incorrect identity data.
+    # A building cannot configure its Door until a location resource exists.
+    # Using Resource.get() keeps this script independent from the custom-class
+    # registration while still reading the WorldLocationData fields.
     if location_data == null:
         push_error("Building '%s' has no WorldLocationData assigned." % name)
         return
 
-    if location_data.location_id.is_empty():
-        push_error("Building '%s' has a WorldLocationData with no location_id." % name)
-        return
+    var world_id: String = str(location_data.get("world_id"))
+    var location_id: String = str(location_data.get("location_id"))
 
-    if location_data.world_id.is_empty():
+    if world_id.is_empty():
         push_error("Building '%s' has a WorldLocationData with no world_id." % name)
         return
 
-    # A Building configures its own Door so destination identity stays attached
-    # to the building instance rather than being hidden in a shared Door scene.
+    if location_id.is_empty():
+        push_error("Building '%s' has a WorldLocationData with no location_id." % name)
+        return
+
+    # Configure the Door from the building's shared location definition.
+    # This preserves the existing transition system while removing duplicated
+    # location identity from the World scene itself.
     var door := $Door
-    door.world_id = location_data.world_id
-    door.location_id = location_data.location_id
+    door.world_id = world_id
+    door.location_id = location_id
     door.target_scene = interior_scene
 
+    # The building's collision is configured independently of location data.
+    # This must continue to run for every valid building instance.
     var half_width := BUILDING_SIZE.x / 2.0
     var half_height := BUILDING_SIZE.y / 2.0
     var collision_half_width := half_width + WALL_THICKNESS / 2.0
-    var collision_half_height := half_height + WALL_THICKNESS / 2.0
 
     _configure_wall(
         $BuildingCollision/TopWall,
@@ -62,6 +67,7 @@ func _ready() -> void:
         Vector2(WALL_THICKNESS, BUILDING_SIZE.y - WALL_THICKNESS),
         Vector2(-half_width, 0.0)
     )
+
     _configure_wall(
         $BuildingCollision/RightWall,
         Vector2(WALL_THICKNESS, BUILDING_SIZE.y - WALL_THICKNESS),
@@ -77,6 +83,7 @@ func _ready() -> void:
         Vector2(bottom_segment_width, WALL_THICKNESS),
         Vector2(-bottom_segment_offset, half_height)
     )
+
     _configure_wall(
         $BuildingCollision/BottomRightWall,
         Vector2(bottom_segment_width, WALL_THICKNESS),
