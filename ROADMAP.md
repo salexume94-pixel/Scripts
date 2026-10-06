@@ -29,20 +29,20 @@ Includes:
 
 ---
 
-### 2. Map / World Map Foundation - IN PROGRESS
+### 2. Map / World Map Foundation - IMPLEMENTED, RUNTIME VERIFICATION PENDING
 
 The project currently has a playable world, but it does not yet have a proper player-facing map system.
 
-The first foundation step is now implemented: reusable `WorldLocationData` and an authoritative `WorldLocationDatabase` have been added, with Tutorial Town registered as the first location definition. Existing Tutorial Town buildings are now bound to their corresponding location resources, while map coordinates and UI remain separate.
+The map foundation is now implemented as a reusable data/runtime/presentation stack. `WorldLocationData` provides stable location identity and logical map coordinates, `WorldMapData` defines each world's map metadata and coordinate conversion, `MapManager` tracks the Player's current map position, and the reusable World Map overlay displays Tutorial Town and its registered locations.
 
 Before adding map labels, establish the map foundation:
 
-- Define what the player-facing map represents. *(planned)*
-- Establish the world/map coordinate relationship. *(not started)*
-- Define map locations and points of interest in reusable data. *(WorldLocation foundation implemented; Tutorial Town buildings integrated; broader POI layer remains planned)*
-- Create the basic map UI. *(not started)*
-- Display the player's current position.
-- Support the current world and future regions without hard-coding presentation into gameplay systems. *(foundation established; Tutorial Town integration implemented; runtime verification pending)*
+- Define what the player-facing map represents. *(implemented: reusable world map overlay)*
+- Establish the world/map coordinate relationship. *(implemented: WorldMapData world-bounds to logical-map conversion)*
+- Define map locations and points of interest in reusable data. *(implemented: WorldLocationData map coordinates; Tutorial Town locations registered)*
+- Create the basic map UI. *(implemented: reusable WorldMap overlay opened with M)*
+- Display the player's current position. *(implemented: MapManager runtime position tracking)*
+- Support the current world and future regions without hard-coding presentation into gameplay systems. *(implemented: world map database + reusable presentation)*
 - Keep map data, world state, and map presentation separated according to ARCHITECTURE.md.
 
 The initial map should be deliberately simple. The goal is a reusable foundation, not a fully featured MMO map on the first pass.
