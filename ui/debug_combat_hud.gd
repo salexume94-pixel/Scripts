@@ -69,7 +69,7 @@ func _get_player_affinities() -> Array:
 			var stats := player.get_node_or_null("PlayerStats")
 			if stats != null:
 				return stats.get("affinities")
-	return []
+	return CombatManager.active_combat.player_affinities if CombatManager.is_in_combat() else []
 
 func _format_affinities(affinities: Array) -> String:
 	if affinities.is_empty():
