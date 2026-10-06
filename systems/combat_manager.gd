@@ -256,9 +256,8 @@ func player_attack(action: Resource = null) -> bool:
 	var selected_action: Resource = action if action != null else PLAYER_PHYSICAL_ACTION
 	var action_power := maxi(int(round(float(player_attack_value) * selected_action.power_multiplier)), 1)
 	var player_speed: int = 0
-	var player := current_scene.get_node_or_null("Player")
-	if player != null:
-		var player_stats := player.get_node_or_null("PlayerStats")
+	var player_stats_node := player.get_node_or_null("PlayerStats") if player != null else null
+	if player_stats_node != null:
 		if player_stats != null:
 			player_speed = int(player_stats.speed)
 	if player_speed <= 0:
