@@ -99,6 +99,10 @@ func add_combat_log(message: String) -> void:
 func get_last_enemy_action_name() -> String:
 	return active_combat.last_enemy_action_name if is_in_combat() else ""
 
+func get_enemy_behavior_profile_name() -> String:
+	# Expose the selected encounter profile to Battle without exposing CombatState.
+	return active_combat.enemy_behavior_profile.profile_id if is_in_combat() and active_combat.enemy_behavior_profile != null else "unknown"
+
 func get_last_player_damage_type() -> int:
 	# Expose the resolved Player damage type so Battle can present the action
 	# without reaching into CombatState directly.
@@ -190,13 +194,13 @@ func start_encounter(enemy_id: String) -> bool:
 	if selected_behavior == null:
 		selected_behavior = ENCOUNTER_BEHAVIOR_PROFILES[randi() % ENCOUNTER_BEHAVIOR_PROFILES.size()]
 	combat_state.enemy_behavior_profile = selected_behavior
-	_append_combat_log("ENEMY AI: %s profile selected." % selected_behavior.profile_id)
 
 	var first_action: Resource = enemy_data.actions[0]
 	combat_state.enemy_attack = first_action.power
 	active_combat = combat_state
 	combat_log.clear()
 	_append_combat_log("COMBAT: %s entered battle." % enemy_data.display_name)
+	_append_combat_log("ENEMY AI: %s profile selected." % selected_behavior.profile_id)
 	_append_combat_log("PLAYER TURN: 2 Press Turns available.")
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
