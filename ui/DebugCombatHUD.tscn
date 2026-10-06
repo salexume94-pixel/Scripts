@@ -12,15 +12,15 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
+anchor_bottom = 1.0
 offset_left = -242.0
 offset_top = 12.0
 offset_right = -12.0
 custom_minimum_size = Vector2(230, 0)
 custom_maximum_size = Vector2(230, -1)
-offset_bottom = 636.0
+offset_bottom = -12.0
 grow_horizontal = 0
-grow_vertical = 0
+grow_vertical = 2
 clip_contents = true
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
@@ -62,7 +62,6 @@ text = "Last Player action:"
 [node name="LastEnemy" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
 autowrap_mode = 3
-autowrap_mode = 2
 text = "Last Enemy action:"
 
 [node name="AITitle" type="Label" parent="Panel/Margin/Content"]
@@ -73,7 +72,7 @@ text = "AI DECISION TRACE"
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 size_flags_vertical = 3
-autowrap_mode = 2
+autowrap_mode = 3
 text = "AI trace unavailable."
 
 [node name="LogTitle" type="Label" parent="Panel/Margin/Content"]
