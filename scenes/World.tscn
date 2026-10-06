@@ -14,27 +14,131 @@
 [node name="WorldContent" type="Node2D" parent="." unique_id=137521038]
 
 [node name="WorldFloor" type="Polygon2D" parent="WorldContent" unique_id=137521041]
-polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
+polygon = PackedVector2Array(-1000, -1500, 1000, -1500, 1000, 1500, -1000, 1500)
 color = Color(0.12, 0.18, 0.12, 1)
 
-[node name="Building" parent="WorldContent" instance=ExtResource("4_building")]
-position = Vector2(0, -120)
+[node name="NorthForest" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-900, -1450, 900, -1450, 900, -1050, 500, -1050, 300, -1150, -100, -1080, -450, -1180, -900, -1080)
+color = Color(0.08, 0.14, 0.08, 1)
 
-[node name="PotionChest" parent="WorldContent" instance=ExtResource("5_chest")]
-position = Vector2(240, -80)
-reward_item_id = "potion"
+[node name="WestForest" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-950, -950, -650, -900, -700, -500, -820, -250, -760, 100, -900, 500, -950, 500)
+color = Color(0.08, 0.14, 0.08, 1)
 
-[node name="SwordChest" parent="WorldContent" instance=ExtResource("5_chest")]
-position = Vector2(320, -80)
-reward_item_id = "iron_sword"
+[node name="EastForest" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(950, -900, 700, -780, 760, -400, 680, -100, 820, 180, 700, 520, 950, 620)
+color = Color(0.08, 0.14, 0.08, 1)
 
-[node name="ShieldChest" parent="WorldContent" instance=ExtResource("5_chest")]
-position = Vector2(240, 40)
-reward_item_id = "wooden_shield"
+[node name="SouthForest" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-900, 1080, -450, 1160, -100, 1080, 300, 1170, 650, 1080, 900, 1160, 900, 1450, -900, 1450)
+color = Color(0.08, 0.14, 0.08, 1)
 
-[node name="ArmorChest" parent="WorldContent" instance=ExtResource("5_chest")]
-position = Vector2(320, 40)
-reward_item_id = "leather_armor"
+[node name="NorthRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-70, -1050, 70, -1050, 70, -220, -70, -220)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="SouthRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-70, 220, 70, 220, 70, 1050, -70, 1050)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="WestRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-720, -70, -220, -70, -220, 70, -720, 70)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="EastRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(220, -70, 720, -70, 720, 70, 220, 70)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="TownSquare" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-220, -180, 220, -180, 220, 180, -220, 180)
+color = Color(0.22, 0.25, 0.22, 1)
+
+[node name="Inn" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(-360, -300)
+
+[node name="ItemEquipmentShop" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(360, -300)
+
+[node name="Church" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(0, -600)
+
+[node name="Residence01" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(-650, -50)
+
+[node name="Residence02" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(650, -50)
+
+[node name="Residence03" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(-500, 330)
+
+[node name="Residence04" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(500, 330)
+
+[node name="Residence05" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(-360, 650)
+
+[node name="Residence06" parent="WorldContent" instance=ExtResource("4_building")]
+position = Vector2(360, 650)
+
+[node name="FarmWest" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-900, 650, -600, 650, -600, 900, -900, 900)
+color = Color(0.36, 0.31, 0.14, 1)
+
+[node name="FarmEast" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(600, 650, 900, 650, 900, 900, 600, 900)
+color = Color(0.36, 0.31, 0.14, 1)
+
+[node name="TownExit" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-120, 1010, 120, 1010, 120, 1080, -120, 1080)
+color = Color(0.45, 0.35, 0.18, 1)
+
+[node name="InnLabel" type="Label" parent="WorldContent"]
+position = Vector2(-410, -395)
+text = "INN"
+
+[node name="ShopLabel" type="Label" parent="WorldContent"]
+position = Vector2(275, -395)
+text = "ITEM / EQUIPMENT SHOP"
+
+[node name="ChurchLabel" type="Label" parent="WorldContent"]
+position = Vector2(-45, -695)
+text = "CHURCH"
+
+[node name="TownExitLabel" type="Label" parent="WorldContent"]
+position = Vector2(-55, 1090)
+text = "TOWN EXIT"
+
+[node name="NPC01" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(-140, -20)
+
+[node name="NPC02" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(140, -20)
+
+[node name="NPC03" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(-120, 140)
+
+[node name="NPC04" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(120, 140)
+
+[node name="NPC05" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(-250, -30)
+
+[node name="NPC06" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+position = Vector2(250, 30)
+
+[node name="QuestGiver" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-16, -20, 16, -20, 20, 0, 16, 20, -16, 20, -20, 0)
+position = Vector2(0, 60)
+
+[node name="QuestGiverLabel" type="Label" parent="WorldContent"]
+position = Vector2(-75, 85)
+text = "QUEST GIVER"
 
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
