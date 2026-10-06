@@ -48,3 +48,27 @@ enum LocationType {
 ## Controls whether the location is currently shown on the player-facing map.
 ## The location remains registered even when its marker is hidden.
 @export var map_visible: bool = true
+
+## Physical position of this location's entry region in its owning world.
+## This is used by the overworld to create reusable location-entry triggers.
+@export var world_position: Vector2 = Vector2.ZERO
+
+## Size of the physical entry region in the owning world.
+## A rectangular region allows the Player to approach from any direction.
+@export var world_entry_size: Vector2 = Vector2(160.0, 120.0)
+
+## Scene loaded when the Player enters this location from the owning world.
+@export_file("*.tscn") var entry_scene: String = ""
+
+## Player position used when the destination scene is entered.
+@export var entry_player_position: Vector2 = Vector2.ZERO
+
+## World identity assigned after entering the destination scene.
+@export var entry_world_id: String = ""
+
+## Location identity assigned after entering the destination scene.
+@export var entry_location_id: String = ""
+
+## Enables automatic entry-region creation for this location.
+## Locations can remain registered without becoming physical entrances yet.
+@export var entry_enabled: bool = false
