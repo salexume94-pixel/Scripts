@@ -29,7 +29,7 @@ func _ready() -> void:
 	# stale or invalid runtime data from creating impossible equipment states.
 	for slot in saved_equipment:
 		var item_id: String = saved_equipment[slot]
-		var item: ItemData = ITEM_DATABASE.get_item(item_id)
+		var item: Resource = ITEM_DATABASE.get_item(item_id)
 
 		if not _is_valid_equipment(item, slot):
 			continue
@@ -41,8 +41,8 @@ func _ready() -> void:
 
 		equipped_items[slot] = item_id
 		stats.apply_equipment_modifiers(
-			item.attack_bonus,
-			item.defense_bonus
+			item.get("attack_bonus"),
+			item.get("defense_bonus")
 		)
 
 	_sync_to_game_state()
@@ -53,8 +53,8 @@ func equip_item(item: Resource) -> bool:
 	if item == null or item.get_script() != ITEM_DATA_SCRIPT:
 		return false
 
-	var item_data: ItemData = item as ItemData
-	if not _is_valid_equipment(item_data, item_data.equipment_slot):
+	var item_data: Resource = item
+	if not _is_valid_equipment(item_data, item_data.get("equipment_slot")):
 		return false
 
 	var inventory: Node = get_parent().get_node_or_null("PlayerInventory")
@@ -72,7 +72,7 @@ func equip_item(item: Resource) -> bool:
 	# to inventory before the new item can replace it.
 	if equipped_items.has(slot):
 		var old_item_id: String = equipped_items[slot]
-		var old_item: ItemData = ITEM_DATABASE.get_item(old_item_id)
+		var old_item: Resource = ITEM_DATABASE.get_item(old_item_id)
 		if old_item == null or not _unequip_slot(slot, old_item, inventory, stats):
 			return false
 
@@ -80,10 +80,10 @@ func equip_item(item: Resource) -> bool:
 	if not inventory.remove_item(item_data):
 		return false
 
-	equipped_items[slot] = item_data.item_id
+	equipped_items[slot] = item_data.get("item_id")
 	stats.apply_equipment_modifiers(
-		item_data.attack_bonus,
-		item_data.defense_bonus
+		item_data.get("attack_bonus"),
+		item_data.get("defense_bonus")
 	)
 	_sync_to_game_state()
 	return true
@@ -100,7 +100,7 @@ func unequip_slot(slot: int) -> bool:
 		return false
 
 	var item_id: String = equipped_items[slot]
-	var item: ItemData = ITEM_DATABASE.get_item(item_id)
+	var item: Resource = ITEM_DATABASE.get_item(item_id)
 	if item == null:
 		return false
 
@@ -125,7 +125,7 @@ func get_equipped_items() -> Dictionary:
 	return equipped_items.duplicate()
 
 
-func get_equipped_item(slot: int) -> ItemData:
+func get_equipped_item(slot: int) -> Resource:
 	# Return the definition currently occupying a specific equipment slot.
 	if not equipped_items.has(slot):
 		return null
@@ -150,12 +150,12 @@ func get_equipment_slot_name(slot: int) -> String:
 			return "None"
 
 
-func _is_valid_equipment(item: ItemData, slot: int) -> bool:
+func _is_valid_equipment(item: Resource, slot: int) -> bool:
 	# An item must be equipment and must name one of the supported slots.
-	if item == null or item.item_type != ITEM_DATA_SCRIPT.ItemType.EQUIPMENT:
+	if item == null or item.get("item_type") != ITEM_DATA_SCRIPT.ItemType.EQUIPMENT:
 		return false
 
-	if item.item_id.is_empty():
+	if item.get("item_id").is_empty():
 		return false
 
 	return slot in [
