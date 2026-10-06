@@ -28,4 +28,4 @@ class_name PlayerActionData
 @export_range(0.0, 100.0) var critical_chance: float = 0.0
 
 ## Damage multiplier applied when the action critically hits.
-@export_range(1.0, 10.0) var critical_multiplier: float = 2.0
+@export_range(1.0, 10.0) var critical_multiplier: float = 1.5
