@@ -1961,3 +1961,13 @@ Continue using comments in scripts to explain each script and major section. Eac
 - These methods expose existing `CombatState` values to the Battle presentation layer without moving combat logic into the UI.
 - No combat resolution behavior was changed.
 - Runtime verification required: launch Battle, perform normal and special attacks, and confirm result feedback appears without debugger errors.
+
+
+### Combat Regression Fix
+
+- Set the current Player Press Turn count to two.
+- Changed Pass to spend all remaining Press Turns and immediately advance to Enemy Turn.
+- Restored the Battle combat log display and connected it to CombatManager updates.
+- Restored visible Enemy Behavior profile display for the active encounter.
+- Confirmed the four shared behavior profiles remain present and encounter startup still selects a configured profile or randomly selects one of the four shared profiles when none is configured.
+- Runtime verification required for Press Turns, Pass, combat log, and profile display.
