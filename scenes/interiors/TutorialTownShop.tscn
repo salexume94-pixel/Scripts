@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/interior.gd" id="2_interior"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
+[ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_interior_presentation"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
+[ext_resource type="PackedScene" path="res://world/Chest.tscn" id="6_chest"]
+
+[node name="Interior" type="Node2D"]
+script = ExtResource("2_interior")
+
+[node name="InteriorContent" type="Node2D" parent="."]
+
+[node name="InteriorFloor" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(-240, -160, 240, -160, 240, 160, -240, 160)
+color = Color(0.20, 0.25, 0.30, 1)
+
+[node name="LocationLabel" type="Label" parent="InteriorContent"]
+position = Vector2(-110, -130)
+text = "ITEM / EQUIPMENT SHOP"
+
+[node name="ExitDoor" parent="InteriorContent" instance=ExtResource("3_door")]
+position = Vector2(0, 160)
+target_scene = "res://scenes/World.tscn"
+target_player_position = Vector2(0, -8)
+use_return_position = true
+
+[node name="Counter" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(-190, -95, 190, -95, 190, -55, -190, -55)
+color = Color(0.35, 0.35, 0.40, 1)
+
+[node name="WeaponRack" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(-190, 10, -120, 10, -120, 90, -190, 90)
+color = Color(0.45, 0.32, 0.18, 1)
+
+[node name="ArmorRack" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(120, 10, 190, 10, 190, 90, 120, 90)
+color = Color(0.32, 0.36, 0.42, 1)
+
+[node name="SwordChest" parent="InteriorContent" instance=ExtResource("6_chest")]
+position = Vector2(-155, 120)
+reward_item_id = "iron_sword"
+
+
+[node name="InteriorPresentation" type="Node2D" parent="."]
+script = ExtResource("4_interior_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="InteriorPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 120)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")
