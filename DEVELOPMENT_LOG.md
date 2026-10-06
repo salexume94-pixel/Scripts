@@ -1952,3 +1952,12 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Explicitly typed `result_type` as String and `damage` as int in `_on_player_attack_performed()`.
 - No combat behavior was changed; this is a compile-time typing fix only.
 - Runtime verification still required on the local Godot project.
+
+
+### Battle Combat Result Accessors Restored
+
+- Fixed a runtime error where `combat/battle.gd` requested Player combat-result accessors that were missing from `systems/combat_manager.gd` after enemy AI integration.
+- Restored typed accessors for Player affinity, result type, resolved damage, and critical-hit state.
+- These methods expose existing `CombatState` values to the Battle presentation layer without moving combat logic into the UI.
+- No combat resolution behavior was changed.
+- Runtime verification required: launch Battle, perform normal and special attacks, and confirm result feedback appears without debugger errors.
