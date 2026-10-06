@@ -98,8 +98,12 @@ func player_attack() -> bool:
 	active_combat.last_damage = damage
 	active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage, 0)
 
-	# Keep the encounter on the Player turn until enemy behavior is implemented.
-	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+	# Reaching zero HP resolves the encounter immediately. A surviving enemy
+	# remains on the Player turn until enemy behavior is implemented.
+	if active_combat.enemy_hp <= 0:
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
+	else:
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
 
@@ -169,3 +173,9 @@ func get_phase() -> int:
 	if not is_in_combat():
 		return -1
 	return active_combat.phase
+
+
+func is_victory() -> bool:
+	# Provide a simple victory check for presentation without exposing
+	# CombatState implementation details to the Battle UI.
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.VICTORY
