@@ -36,6 +36,9 @@ class_name EnemyData
 ## Speed value reserved for future turn-order and enemy behavior systems.
 @export_range(0, 99999) var speed: int = 0
 
+## Actions this enemy can perform. The first action is the current basic action.
+@export var actions: Array[Resource] = []
+
 ## Experience awarded when this enemy is defeated.
 @export_range(0, 999999) var experience_reward: int = 0
 
