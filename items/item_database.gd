@@ -11,15 +11,15 @@ extends Node
 ## New item Resource files can be added here without changing the systems that
 ## consume them.
 
-const POTION: ItemData = preload("res://items/definitions/potion.tres")
-const IRON_SWORD: ItemData = preload("res://items/definitions/iron_sword.tres")
-const WOODEN_SHIELD: ItemData = preload("res://items/definitions/wooden_shield.tres")
-const LEATHER_HELM: ItemData = preload("res://items/definitions/leather_helm.tres")
-const LEATHER_ARMOR: ItemData = preload("res://items/definitions/leather_armor.tres")
-const POWER_RING: ItemData = preload("res://items/definitions/power_ring.tres")
-const GOLD: ItemData = preload("res://items/definitions/gold.tres")
+const POTION: Resource = preload("res://items/definitions/potion.tres")
+const IRON_SWORD: Resource = preload("res://items/definitions/iron_sword.tres")
+const WOODEN_SHIELD: Resource = preload("res://items/definitions/wooden_shield.tres")
+const LEATHER_HELM: Resource = preload("res://items/definitions/leather_helm.tres")
+const LEATHER_ARMOR: Resource = preload("res://items/definitions/leather_armor.tres")
+const POWER_RING: Resource = preload("res://items/definitions/power_ring.tres")
+const GOLD: Resource = preload("res://items/definitions/gold.tres")
 
-static func get_item(item_id: String) -> ItemData:
+static func get_item(item_id: String) -> Resource:
 	# Resolve a stable item ID to its shared Resource definition.
 	match item_id:
 		"potion":
@@ -39,7 +39,7 @@ static func get_item(item_id: String) -> ItemData:
 		_:
 			return null
 
-static func get_all_items() -> Array[ItemData]:
+static func get_all_items() -> Array[Resource]:
 	# Return every currently registered definition for tools and future catalogs.
 	return [
 		POTION,
