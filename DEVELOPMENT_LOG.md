@@ -2282,3 +2282,11 @@ Runtime verification:
 - The field reads the active combat behavior profile directly from `CombatManager.get_enemy_behavior_profile_name()`.
 - Enemy behavior information is presented as debug information rather than being treated as a combat-log entry.
 - Updated Debug Combat HUD node paths to match the scrollable HUD container.
+
+
+### Combat Debug HUD: Content Hierarchy Fix
+
+- Fixed the Debug Combat HUD labels that were still parented to the old non-scrollable `Content` path.
+- Moved all diagnostic labels, section headers, the combat log container, and help text under the HUD's scrollable `Scroll/Content` hierarchy.
+- This keeps all Debug Combat HUD text inside the 230-pixel panel width and allows the entire diagnostic display to scroll vertically.
+- Word wrapping remains enabled.
