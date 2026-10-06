@@ -1,49 +1,42 @@
 extends Node2D
-## Defines the reusable presentation and physical footprint of a World building.
+## Defines the reusable presentation, physical footprint, and destination identity
+## of a World building.
+##
+## Each building declares its world and location identity plus the interior scene
+## it belongs to. The Door receives that configuration at runtime, preventing a
+## building on one world map from silently using another world's destination.
 ##
 ## This script owns the Building's local visual footprint and wall collision.
 ## It does not move the Player, control the camera, or handle interaction.
-##
-## The collision walls form a clean rectangular outline around the visible
-## Building. The wall rectangles meet at their edges instead of overlapping
-## at the corners, which prevents the Player from being pushed or snagged
-## while walking around the exterior.
-##
-## The bottom wall is split around the Door so the entrance remains a real
-## physical opening.
+
+@export var world_id: String = ""
+@export var location_id: String = ""
+@export_file("*.tscn") var interior_scene: String = ""
 
 const BUILDING_SIZE := Vector2(192.0, 128.0)
 const WALL_THICKNESS := 16.0
 const DOOR_WIDTH := 48.0
-const PLAYER_VISUAL_CLEARANCE := 4.0
 
 
 func _ready() -> void:
-    # The visible Building extends 96 pixels left/right and 64 pixels
-    # up/down from its center. The collision outline extends 8 pixels beyond
-    # the visible edge, leaving the Player's 16-pixel collision radius enough
-    # room to keep the visible sprite about 4 pixels away.
-    #
-    # Each wall is positioned so adjacent walls meet cleanly at their edges.
-    # This avoids overlapping collision rectangles at the corners, which was
-    # causing the Player to be pushed away from the Building.
+    # A Building configures its own Door so destination data stays attached to
+    # the building instance rather than being hidden in a shared Door scene.
+    var door := $Door
+    door.world_id = world_id
+    door.location_id = location_id
+    door.target_scene = interior_scene
+
     var half_width := BUILDING_SIZE.x / 2.0
     var half_height := BUILDING_SIZE.y / 2.0
-
     var collision_half_width := half_width + WALL_THICKNESS / 2.0
     var collision_half_height := half_height + WALL_THICKNESS / 2.0
 
-    # Top wall:
-    # Its outer edge reaches the same exterior boundary as the side walls.
     _configure_wall(
         $BuildingCollision/TopWall,
         Vector2(collision_half_width * 2.0, WALL_THICKNESS),
         Vector2(0.0, -half_height)
     )
 
-    # Left and right walls:
-    # Their height stops at the inner edges of the top/bottom walls so the
-    # collision rectangles touch rather than overlap at the corners.
     _configure_wall(
         $BuildingCollision/LeftWall,
         Vector2(WALL_THICKNESS, BUILDING_SIZE.y - WALL_THICKNESS),
@@ -55,9 +48,6 @@ func _ready() -> void:
         Vector2(half_width, 0.0)
     )
 
-    # Bottom wall:
-    # Split the wall around the Door so the entrance remains open. The two
-    # segments extend to the same outer boundary as the side walls.
     var bottom_total_width := collision_half_width * 2.0
     var bottom_segment_width := (bottom_total_width - DOOR_WIDTH) / 2.0
     var bottom_segment_offset := DOOR_WIDTH / 2.0 + bottom_segment_width / 2.0
@@ -80,8 +70,6 @@ func _configure_wall(
     position: Vector2
 ) -> void:
     # Create the rectangle used by this wall and assign its local position.
-    # Keeping collision construction in one helper makes every wall follow
-    # the same rules and keeps the Building scene itself simple.
     var shape := RectangleShape2D.new()
     shape.size = size
     wall.shape = shape
