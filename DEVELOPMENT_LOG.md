@@ -1,3 +1,36 @@
+## 2026-10-06 - Fix Normal Slime AI Elemental Action Pool
+
+Runtime testing showed that overworld Slime encounters were only selecting Physical Attack and Heavy Attack, regardless of the displayed behavior profile.
+
+Root cause:
+- The normal `slime.tres` EnemyData only contained the Physical Attack and Heavy Attack actions.
+- The elemental EnemyActionData resources existed, but they were only included in the controlled `slime_ai_test` definition.
+- Because CombatManager can only select from `enemy_data.actions`, the encounter-level profiles had no elemental actions available to select.
+
+Updated:
+- `enemies/definitions/slime.tres`
+- `enemies/definitions/behavior_aggressive.tres`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added Fire, Water, Earth, Air, Light, and Dark actions to the normal Slime action pool.
+- The normal overworld Slime now exposes the same full elemental action set required to test encounter-level behavior profiles.
+- Aligned Aggressive's `weakness_selection_chance` with Weakness Hunter at 65%, preserving the intended Aggressive = Weakness Hunter targeting plus stronger-action preference design.
+
+Expected runtime behavior:
+- Balanced: can select Physical or any elemental action according to normal weights.
+- Weakness Hunter: should target the Player's current weakness approximately 65% of the time.
+- Aggressive: should target the Player's current weakness approximately 65% of the time and favor stronger actions within the selected pool.
+- Defensive: should favor lower-power actions, so its current profile may still heavily favor basic Attack because no dedicated defensive enemy action exists yet.
+
+Runtime verification required:
+1. Pull the latest `enemy-ai-behavior` branch.
+2. Trigger normal overworld Slime encounters.
+3. Confirm elemental actions now appear in Enemy Turns.
+4. Confirm the displayed profile actually changes which elemental/physical actions are favored.
+5. For Weakness Hunter and Aggressive, set the Player weakness and verify the matching elemental action is selected regularly.
+6. Confirm no parse, resource-loading, or debugger errors occur.
+
 ## 2026-10-06 - Enemy AI Defensive Parse Fix
 
 Fixed a Godot 4 GDScript parse error in systems/combat_manager.gd caused by inferred local types inside the Defensive behavior branch.
