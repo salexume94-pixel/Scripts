@@ -1,5 +1,11 @@
 [gd_scene format=3 uid="uid://bryx83e7q5338"]
 
+[sub_resource type="CircleShape2D" id="NPCShape"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="NPCShapeQuest"]
+radius = 20.0
+
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
@@ -134,33 +140,68 @@ text = "CHURCH"
 position = Vector2(-55, 1090)
 text = "TOWN EXIT"
 
-[node name="NPC01" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+[node name="NPC01" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(-140, -20)
 
-[node name="NPC02" type="Polygon2D" parent="WorldContent"]
+[node name="NPC01Visual" type="Polygon2D" parent="WorldContent/NPC01"]
 polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC01Collision" type="CollisionShape2D" parent="WorldContent/NPC01"]
+shape = SubResource("NPCShape")
+
+[node name="NPC02" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(140, -20)
 
-[node name="NPC03" type="Polygon2D" parent="WorldContent"]
+[node name="NPC02Visual" type="Polygon2D" parent="WorldContent/NPC02"]
 polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC02Collision" type="CollisionShape2D" parent="WorldContent/NPC02"]
+shape = SubResource("NPCShape")
+
+[node name="NPC03" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(-120, 140)
 
-[node name="NPC04" type="Polygon2D" parent="WorldContent"]
+[node name="NPC03Visual" type="Polygon2D" parent="WorldContent/NPC03"]
 polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC03Collision" type="CollisionShape2D" parent="WorldContent/NPC03"]
+shape = SubResource("NPCShape")
+
+[node name="NPC04" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(120, 140)
 
-[node name="NPC05" type="Polygon2D" parent="WorldContent"]
+[node name="NPC04Visual" type="Polygon2D" parent="WorldContent/NPC04"]
 polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC04Collision" type="CollisionShape2D" parent="WorldContent/NPC04"]
+shape = SubResource("NPCShape")
+
+[node name="NPC05" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(-250, -30)
 
-[node name="NPC06" type="Polygon2D" parent="WorldContent"]
+[node name="NPC05Visual" type="Polygon2D" parent="WorldContent/NPC05"]
 polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC05Collision" type="CollisionShape2D" parent="WorldContent/NPC05"]
+shape = SubResource("NPCShape")
+
+[node name="NPC06" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(250, 30)
 
-[node name="QuestGiver" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-16, -20, 16, -20, 20, 0, 16, 20, -16, 20, -20, 0)
+[node name="NPC06Visual" type="Polygon2D" parent="WorldContent/NPC06"]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="NPC06Collision" type="CollisionShape2D" parent="WorldContent/NPC06"]
+shape = SubResource("NPCShape")
+
+[node name="QuestGiver" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(0, 60)
+
+[node name="QuestGiverVisual" type="Polygon2D" parent="WorldContent/QuestGiver"]
+polygon = PackedVector2Array(-16, -20, 16, -20, 20, 0, 16, 20, -16, 20, -20, 0)
+
+[node name="QuestGiverCollision" type="CollisionShape2D" parent="WorldContent/QuestGiver"]
+shape = SubResource("NPCShapeQuest")
 
 [node name="QuestGiverLabel" type="Label" parent="WorldContent"]
 position = Vector2(-75, 85)
