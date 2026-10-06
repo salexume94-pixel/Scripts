@@ -13,10 +13,10 @@ extends StaticBody2D
 ## on Godot's global class-name cache being refreshed first.
 
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
-const TEST_ITEMS_SCRIPT = preload("res://items/test_items.gd")
+const ITEM_DATABASE = preload("res://items/item_database.gd")
 
 ## Stable item ID used to choose the development reward for this chest.
-@export var reward_item_id: String = TEST_ITEMS_SCRIPT.TEST_POTION
+@export var reward_item_id: String = "potion"
 
 # Tracks whether the Player is currently close enough to interact.
 var player_in_range: bool = false
@@ -68,12 +68,11 @@ func open_chest() -> void:
 	if inventory == null:
 		return
 
-	# Create the temporary development reward used to prove that the Chest
-	# can pass an ItemData object into the Player's inventory.
-	var test_items: Dictionary = TEST_ITEMS_SCRIPT.create_test_items()
-	var reward: Resource = test_items.get(reward_item_id)
+	# Resolve the configured reward ID through the authoritative item catalog.
+	# The Chest owns the reward event, while ItemDatabase owns the definition.
+	var reward: Resource = ITEM_DATABASE.get_item(reward_item_id)
 
-	# Confirm that the generated Resource is actually an ItemData Resource.
+	# Refuse invalid IDs rather than creating or inventing item data at runtime.
 	if reward == null or reward.get_script() != ITEM_DATA_SCRIPT:
 		return
 
