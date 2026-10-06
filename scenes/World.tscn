@@ -1,11 +1,5 @@
 [gd_scene format=3 uid="uid://bryx83e7q5338"]
 
-[sub_resource type="CircleShape2D" id="NPCShape"]
-radius = 16.0
-
-[sub_resource type="CircleShape2D" id="NPCShapeQuest"]
-radius = 20.0
-
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
@@ -13,6 +7,12 @@ radius = 20.0
 [ext_resource type="PackedScene" path="res://world/Chest.tscn" id="5_chest"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="6_inventory_hud"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="8_quest_log"]
+
+[sub_resource type="CircleShape2D" id="NPCShape"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="NPCShapeQuest"]
+radius = 20.0
 
 [node name="World" type="Node2D" unique_id=119908091]
 
