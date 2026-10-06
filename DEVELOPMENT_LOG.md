@@ -2100,3 +2100,10 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Future enemy definitions can pull an elemental action from that shared catalog when the enemy is explicitly assigned that element.
 - Enemy AI continues to select only from the active EnemyData `actions` array, so an elemental action is unavailable to an enemy unless it has been assigned to that enemy.
 - Runtime verification required: confirm Slime encounters only select Basic, Heavy, Fire, and Defend actions, and confirm the AI test variants no longer select unrelated elemental attacks.
+
+
+## Slime AI Resource Parse Fix
+
+- Removed stale `ExtResource("9_slime_dark_attack")` entries left behind after restricting Slime AI test definitions to Fire.
+- This fixes the resource-loader parse errors that prevented the four Slime AI test definitions and `EnemyDatabase` from loading.
+- Runtime verification required.
