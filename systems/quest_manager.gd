@@ -242,7 +242,7 @@ func get_save_data() -> Dictionary:
 func load_save_data(data: Dictionary) -> void:
 	# Restore only known quest IDs and valid objective IDs. Invalid save data is
 	# ignored instead of allowing a malformed file to create arbitrary state.
-	if not data.has("quest_states") or not data["quest_states"] is Dictionary:
+	if not data.has("quest_states") or typeof(data["quest_states"]) != TYPE_DICTIONARY:
 		return
 
 	var saved_states: Dictionary = data["quest_states"]
@@ -253,7 +253,7 @@ func load_save_data(data: Dictionary) -> void:
 			continue
 
 		var saved_state: Dictionary = saved_states[quest_id]
-		if not saved_state is Dictionary:
+		if typeof(saved_state) != TYPE_DICTIONARY:
 			continue
 
 		var state_value: int = int(saved_state.get("state", QuestState.NOT_STARTED))
