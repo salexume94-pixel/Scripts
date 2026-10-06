@@ -906,3 +906,34 @@ Runtime verification required:
 
 Continue using comments in scripts to explain each script and major section.
 \n\n### Combat Foundation: Victory and Run Resolution\n\nImplemented the next Combat Foundation step after runtime verification showed that the enemy could reach 0 HP but the Battle scene had no resolution path.\n\nUpdated:\n- combat/combat_state.gd\n- systems/combat_manager.gd\n- combat/battle.gd\n- scenes/Battle.tscn\n- DEVELOPMENT_LOG.md\n\nChanges:\n- CombatManager now changes the combat phase to VICTORY when enemy HP reaches 0.\n- Battle UI detects the victory phase and prevents further attacks.\n- Victory displays an explicit Return to World button.\n- Added a Run button that immediately ends the active encounter and returns the Player to the scene and position recorded when combat began.\n- CombatManager exposes a presentation-safe victory check instead of making the Battle UI depend on CombatState implementation details.\n- Existing temporary enemy HP and direct Player Attack damage remain unchanged.\n- No victory rewards are granted yet because progression and loot belong to later systems.\n\nRuntime verification required:\n- Pull the latest commit.\n- Start Test Battle (Slime) from the DEBUG menu.\n- Confirm Run returns to the World and places the Player at the position where the battle started.\n- Start another test battle and reduce Enemy HP to 0.\n- Confirm the Battle state changes to VICTORY.\n- Confirm Attack is disabled after victory.\n- Confirm Run is replaced by Return to World.\n- Confirm Return to World returns the Player to the recorded World position.\n- Confirm no Godot debugger errors occur.\n\nContinue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.\n
+
+### Combat Foundation: Battle Resolution Controls
+
+Corrected the Battle resolution implementation after runtime testing showed that the previous GitHub update was not present in the files being executed locally.
+
+Updated:
+- combat/battle.gd
+- scenes/Battle.tscn
+- systems/combat_manager.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added the actual Run button and connected it to CombatManager.end_combat().
+- Added the actual Return to World victory button and connected it to CombatManager.end_combat().
+- CombatManager now changes the active phase to VICTORY when enemy HP reaches zero.
+- Battle disables Attack after victory and switches from Run to Return to World.
+- Battle UI now refreshes its controls after every Player attack.
+- Corrected stale comments that described damage and victory handling as future work.
+
+The previous attempted resolution change was not present in the fetched main-branch Battle files, so this update explicitly verifies and replaces the actual current files rather than assuming the earlier commits were applied.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Start Test Battle (Slime) from DEBUG.
+- Confirm Run is visible during combat and returns to World.
+- Start another battle and attack until Enemy HP reaches 0.
+- Confirm VICTORY appears, Attack is disabled, and Return to World is visible.
+- Confirm Return to World returns the Player to the original World position.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
