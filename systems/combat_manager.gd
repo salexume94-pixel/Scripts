@@ -630,7 +630,7 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	# If the requested pool is empty, fall back to the other pool rather than
 	# skipping the enemy turn. This is important for enemies with no elemental
 	# weakness action or no valid non-weakness action.
-	if total_weight <= 0.0 and (behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER or behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE):
+	if total_weight <= 0.0 and (behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE):
 		target_weakness_actions = not target_weakness_actions
 		return _select_enemy_action_from_pool(enemy_data, behavior, target_weakness_actions)
 
