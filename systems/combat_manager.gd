@@ -478,7 +478,9 @@ func _resolve_enemy_turn() -> void:
 		"drain":
 			new_hp = mini(current_hp + damage, saved_stats.get("max_hp", current_hp))
 		"repel":
-			new_hp = maxi(current_hp - damage, 0)
+			# Repel reflects the resolved damage back to the attacking Enemy.
+			# The Player takes no damage from the original attack.
+			active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage, 0)
 		"miss", "nullify":
 			pass
 	saved_stats["hp"] = new_hp
