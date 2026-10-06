@@ -21,6 +21,11 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 ## Damage category used to resolve the target's elemental affinity.
 @export var damage_type: int = DAMAGE_TYPES.Type.PHYSICAL
 
+## Marks this action as a defensive turn rather than a damage-dealing attack.
+## CombatManager handles the actual defensive effect; the action Resource only
+## identifies the action so every enemy can share the same behavior framework.
+@export var is_defend: bool = false
+
 ## Relative chance used when an enemy has multiple available actions.
 ## A value of 0 removes the action from normal weighted selection.
 @export_range(0.0, 9999.0) var selection_weight: float = 1.0
