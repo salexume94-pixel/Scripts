@@ -2250,3 +2250,12 @@ Runtime verification:
 - Uses Godot's smart word-wrap mode so diagnostic text wraps within the fixed-width HUD instead of expanding horizontally.
 - AI Trace and Combat Log already had wrapping enabled.
 - Runtime verification required after pulling `main`.
+
+
+### Combat Debug HUD: Viewport Confinement Fix
+
+- Confirmed the Debug Combat HUD was extending beyond the player's 1152x648 viewport when using anchor-based vertical sizing.
+- Reworked the HUD panel to use explicit viewport coordinates: x=910..1140 and y=12..636.
+- The panel is now fixed at 230x624 pixels and remains fully inside the 1152x648 gameplay viewport.
+- Word wrapping remains enabled for the diagnostic text so long entries stay within the HUD width.
+- Runtime verification passed: the Debug Combat HUD is fully visible and confined within the player's viewport.
