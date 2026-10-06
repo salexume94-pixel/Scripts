@@ -7,3 +7,4 @@ script = ExtResource("1_enemy_action")
 action_id = "slime_attack"
 display_name = "Attack"
 power = 10
+selection_weight = 1.0
