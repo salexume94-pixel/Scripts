@@ -937,3 +937,141 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Development Checkpoint: Combat Foundation Complete Through Battle Resolution
+
+This entry records the current implementation checkpoint before moving development to a new chat.
+
+The project has progressed through the initial World, Player, Item, Inventory, Equipment, Interaction, and Combat foundations. The current Combat Foundation is functional through basic battle resolution and has been runtime verified locally.
+
+#### World and Player Foundation
+
+Implemented and previously runtime verified:
+- World scene hierarchy and presentation.
+- 1152x648, 16:9 project viewport configuration.
+- Player movement and collision.
+- Camera following the Player.
+- World boundaries.
+- Building exterior and collision.
+- Building Door and Interior scene transition.
+- Interior layout and ExitDoor.
+- Reusable World Chests.
+- Shared Player interaction system.
+- E-key interaction for Chests and Doors.
+- Door collision preventing physical traversal without interaction.
+- Reliable nearest-interactable targeting.
+- Character/Inventory HUD with movement locking.
+
+#### Item, Inventory, and Equipment Foundation
+
+Implemented:
+- Typed ItemData definitions.
+- ItemDatabase as the authoritative item-definition mapping.
+- Resource-based item definitions for Potion, Iron Sword, Wooden Shield, Leather Helm, Leather Armor, Power Ring, and Gold.
+- PlayerInventory with quantities, stack limits, add/remove operations, and GameState synchronization.
+- PlayerEquipment with Weapon, Shield, Head, Body, and Accessory slots.
+- Equipment validation, equip/unequip, stat modifier application, and inventory/equipment ownership transfer.
+- Runtime PlayerStats persistence through GameState.
+- Consumable item-use system.
+- Character HUD inventory selection, item details, Use/Equip/Unequip controls, equipment comparison, and stat display.
+- Development-only DEBUG controls.
+
+The verified item path is:
+
+`Chest -> ItemData -> PlayerInventory -> HUD -> PlayerEquipment -> PlayerStats`
+
+#### Combat Foundation
+
+Implemented:
+- `combat/combat_state.gd` as the data-only active encounter state.
+- `systems/combat_manager.gd` as the combat flow/state coordinator.
+- `combat/battle.gd` as Battle-scene presentation and input handling.
+- `scenes/Battle.tscn` as the current Battle UI.
+- CombatManager registered as an autoload.
+- Combat encounter start and return-to-origin scene handling.
+- Temporary test enemy ID: `slime`.
+- Temporary enemy HP: 50 / 50.
+- Player Attack action.
+- Player Attack reads the Player's authoritative Attack stat.
+- Basic damage calculation: damage equals Player Attack, minimum 1.
+- Enemy HP application with a lower bound of 0.
+- CombatState records the latest attack and damage values.
+- Battle UI displays enemy HP and attack results.
+- Victory phase when enemy HP reaches 0.
+- Attack is disabled after victory.
+- Run action during active combat.
+- Return to World after victory.
+- Player returns to the recorded World position after Run or Victory.
+- Battle resolution controls are now functioning as intended.
+
+The current verified combat flow is:
+
+`DEBUG -> Test Battle (Slime) -> Battle -> Attack -> Enemy HP reaches 0 -> VICTORY -> Return to World`
+
+The alternate escape flow is:
+
+`DEBUG -> Test Battle (Slime) -> Battle -> Run -> World`
+
+#### Debug Battle Entry Point
+
+The Character/Inventory DEBUG panel now provides:
+- Test Damage (-25 HP).
+- Test Battle (Slime).
+
+The Test Battle control routes through DebugSystem rather than allowing the HUD to directly own combat startup.
+
+A Godot parse error caused by calling a non-static DebugSystem function through a preloaded script was corrected by making `start_test_battle()` static.
+
+#### Latest Runtime Verification
+
+The latest Battle resolution implementation has been tested locally and is confirmed working as intended:
+- No Godot console/debugger errors.
+- Test Battle (Slime) starts correctly.
+- Attack works correctly.
+- Enemy HP decreases correctly.
+- Enemy HP can reach 0 without going below 0.
+- Victory activates when enemy HP reaches 0.
+- Attack is disabled after victory.
+- Return to World is available after victory.
+- Run is available during active combat.
+- Run returns to World.
+- Victory return returns the Player to the originating World position.
+
+This closes the current Combat Foundation checkpoint.
+
+#### Current Architecture Rule
+
+The project continues to follow:
+
+**A script should do one primary job.**
+
+Scripts should contain comments explaining what the script is responsible for and the purpose of each major section. This commenting standard is now a standing project requirement.
+
+#### Not Yet Implemented
+
+The following remain future work:
+- EnemyData and authoritative enemy definitions.
+- Enemy instances and enemy stats.
+- Enemy turns and enemy attacks.
+- Player Defense.
+- Final combat damage formula using both offensive and defensive stats.
+- Defeat/death handling.
+- Combat rewards.
+- XP and leveling.
+- Gold and loot progression.
+- Full save/load to disk.
+- Persistent World/chest state.
+- Quests and quest log.
+- NPCs and gated areas.
+- Additional World content.
+- Final combat polish and expanded Battle UI.
+
+#### Next Development Priority
+
+The next Combat Foundation step is:
+
+`Player Defense -> Enemy Turn -> Enemy Attack -> Player Turn`
+
+This will establish the first complete alternating combat loop before moving into authoritative EnemyData and the Enemy Foundation.
+
