@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyActionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy_action_data.gd" id="1_enemy_action"]
+
+[resource]
+script = ExtResource("1_enemy_action")
+action_id = "slime_heavy_attack"
+display_name = "Heavy Attack"
+power = 14
+selection_weight = 1.0
