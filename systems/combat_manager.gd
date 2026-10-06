@@ -2,8 +2,8 @@ extends Node
 ## Coordinates the runtime combat encounter and Battle-scene lifecycle.
 ##
 ## CombatManager owns combat flow and state. It does not own enemy definitions
-## or draw the Battle UI. Player actions consume Press Turns here so the combat
-## resource remains authoritative outside the presentation layer.
+## or draw the Battle UI. Player and enemy actions are resolved here so the
+## combat rules remain authoritative outside the presentation layer.
 
 const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
@@ -14,7 +14,8 @@ var return_player_position: Vector2 = Vector2.ZERO
 
 signal player_attack_performed(attack_value: int)
 signal player_press_turns_changed(remaining: float)
-signal enemy_turn_started
+signal enemy_turn_startedsignal enemy_attack_performed(damage: int)
+signal player_defeated
 
 func is_in_combat() -> bool:
 	return active_combat != null
@@ -39,6 +40,7 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.enemy_hp = 50
 	combat_state.player_press_turns = 4
 	combat_state.player_press_turns_remaining = 4.0
+	combat_state.enemy_attack = 10
 	active_combat = combat_state
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
@@ -73,10 +75,10 @@ func player_attack() -> bool:
 	if active_combat.enemy_hp <= 0:
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
 	elif active_combat.player_press_turns_remaining <= 0.0:
-		# Enemy behavior is not implemented yet, so this only establishes the
-		# phase transition that the future enemy turn will occupy.
+		# All Player actions are spent, so the enemy receives its turn.
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
 		enemy_turn_started.emit()
+		_resolve_enemy_turn()
 	else:
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 
@@ -94,14 +96,40 @@ func consume_player_press_turn(amount: float) -> void:
 	)
 	player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
 
-func end_enemy_turn() -> bool:
-	# Temporary enemy-turn transition. The real enemy action will replace this.
+func _resolve_enemy_turn() -> void:
+	# Resolve the temporary enemy action after the Battle UI has had a chance to
+	# display the ENEMY TURN state. The timer also makes the turn readable during
+	# testing instead of changing phases in the same frame.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN:
-		return false
+		return
+	await get_tree().create_timer(0.75).timeout
+	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN:
+		return
+
+	var saved_stats: Dictionary = GameState.get_player_stats()
+	if saved_stats.is_empty():
+		return
+
+	var player_defense: int = saved_stats.get("defense", 0)
+	var damage := maxi(active_combat.enemy_attack - player_defense, 1)
+	var current_hp: int = saved_stats.get("hp", saved_stats.get("max_hp", 0))
+	var new_hp := maxi(current_hp - damage, 0)
+	saved_stats["hp"] = new_hp
+	GameState.set_player_stats(saved_stats)
+	active_combat.last_enemy_damage = damage
+	enemy_attack_performed.emit(damage)
+
+	if new_hp <= 0:
+		# Defeat is recorded now, but the actual defeat/recovery flow remains a
+		# later system so this step only establishes the combat state correctly.
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.DEFEAT
+		player_defeated.emit()
+		return
+
+	# The enemy's turn is complete, so restore the Player's full Press Turn set.
 	active_combat.player_press_turns_remaining = float(active_combat.player_press_turns)
 	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
-	return true
 
 func get_enemy_hp() -> int:
 	return active_combat.enemy_hp if is_in_combat() else 0
@@ -115,10 +143,16 @@ func get_player_press_turns() -> int:
 	return active_combat.player_press_turns if is_in_combat() else 0
 func get_player_press_turns_remaining() -> float:
 	return active_combat.player_press_turns_remaining if is_in_combat() else 0.0
+func get_last_enemy_damage() -> int:
+	return active_combat.last_enemy_damage if is_in_combat() else 0
 func is_player_turn() -> bool:
 	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 func is_enemy_turn() -> bool:
 	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+func is_victory() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.VICTORY
+func is_defeat() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.DEFEAT
 
 func end_combat() -> bool:
 	if not is_in_combat():
@@ -137,5 +171,3 @@ func get_active_enemy_id() -> String:
 	return active_combat.enemy_id if is_in_combat() else ""
 func get_phase() -> int:
 	return active_combat.phase if is_in_combat() else -1
-func is_victory() -> bool:
-	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.VICTORY
