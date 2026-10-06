@@ -1,3 +1,28 @@
+### Combat Affinity: Drain Press Turn Cost Correction
+
+Updated Drain after runtime verification confirmed its healing behavior was correct but its Press Turn cost was not.
+
+Updated:
+- combat/combat_rules.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Drain still converts the resolved damage into healing for the target.
+- Healing remains capped at the target's maximum HP.
+- Drain now consumes all 4 Press Turns.
+- No Battle UI or enemy-definition changes were needed because Press Turn cost belongs in CombatRules.
+
+Runtime verification required:
+- Start Test Battle (Fire Drain).
+- Lower the Drain Slime below maximum HP.
+- Use Fire and confirm the enemy heals by the resolved amount.
+- Confirm enemy HP does not exceed maximum HP.
+- Confirm all 4 Press Turns are depleted.
+- Confirm Enemy Turn begins when Drain resolves.
+- Confirm Player HP is unchanged by Drain.
+- Confirm existing Weak, Normal, Resist, and Null behavior remains unchanged.
+- Confirm no Godot debugger errors occur.
+
 ### Combat Affinity: Drain Implementation
 
 Implemented the Fire Drain affinity as the next elemental combat step.
