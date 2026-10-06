@@ -799,3 +799,31 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section.
+
+
+### Combat Foundation: Enemy HP State
+
+Implemented Step 3 of the Combat Foundation: enemy HP state.
+
+Updated:
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- scenes/Battle.tscn
+
+Changes:
+- Added enemy maximum HP and current HP to CombatState.
+- New development encounters initialize a temporary enemy at 50 / 50 HP.
+- CombatManager exposes current and maximum enemy HP to presentation.
+- Battle UI displays enemy HP.
+- Player Attack still does not reduce HP. Damage calculation and HP modification remain the next step.
+- The temporary 50 HP value will be replaced by authoritative EnemyData during the Enemy Foundation.
+
+Runtime verification required:
+- Pull the latest commit.
+- Confirm the project opens without parse errors.
+- Confirm an active Battle displays Enemy HP: 50 / 50.
+- Confirm Attack does not change enemy HP yet.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section.
