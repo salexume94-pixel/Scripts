@@ -201,7 +201,6 @@ func player_defend() -> bool:
 	consume_player_press_turn(1.0)
 	_resolve_player_action_end("Player defends.")
 	return true
-
 func player_pass() -> bool:
 	# Pass spends one full Press Turn without changing combat stats or HP.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
@@ -217,7 +216,8 @@ func _resolve_player_action_end(action_text: String) -> void:
 	# Centralize the shared end-of-action flow for Defend and Pass so both actions
 	# obey the same Press Turn exhaustion rule as a normal Player action.
 	var action_label = action_text
-	if active_combat.player_press_turns_remaining <= 0.0:		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+	if active_combat.player_press_turns_remaining <= 0.0:
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
 		enemy_turn_started.emit()
 		_resolve_enemy_turn()
 
@@ -227,7 +227,7 @@ func get_last_player_action_text() -> String:
 
 func consume_player_press_turn(amount: float) -> void:
 	# Keep the resource between zero and its configured maximum.
-	if not is_in_combat():
+	if not is_in_combat():	if not is_in_combat():
 		return
 	active_combat.player_press_turns_remaining = clampf(
 		active_combat.player_press_turns_remaining - amount,
