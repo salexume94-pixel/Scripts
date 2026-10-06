@@ -436,4 +436,3 @@ func _select_enemy_action_from_pool(enemy_data: Resource, behavior: Resource, ta
 			last_enemy_ai_debug.append("AI SELECTED: %s" % entry.action.display_name)
 			return entry.action
 	return weighted_actions.back().action
-)
