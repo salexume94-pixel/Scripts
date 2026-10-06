@@ -38,6 +38,7 @@ offset_right = 480.0
 offset_bottom = 268.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(480, 268)
 scale = Vector2(0.82, 0.82)
 
 [node name="Margin" type="MarginContainer" parent="Screen/Panel"]
