@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "tutorial_town"
+world_id = "tutorial_world"
+display_name = "Tutorial Town"
+location_type = 1
+description = "The player's starting town and the first safe settlement in the world."
+story_significant = true
