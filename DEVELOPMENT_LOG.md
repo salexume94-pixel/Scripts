@@ -1,3 +1,41 @@
+### Combat Affinity: Drain Implementation
+
+Implemented the Fire Drain affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_drain.tres
+- enemies/definitions/slime_drain.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Drain enemy definition without changing the existing affinity test enemies.
+- Registered `slime_drain` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Drain)`.
+- Existing CombatRules Drain behavior remains authoritative: the resolved Fire damage becomes healing for the target, capped at maximum HP, and consumes 1 full Press Turn.
+- Drain testing is isolated from the other affinity tests.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Drain)` appears in DEBUG.
+- Start the Fire Drain encounter without parse, resource, or debugger errors.
+- Use Physical Attack first to lower the Drain Slime below maximum HP.
+- Use Fire and confirm the enemy HP increases by the resolved Fire damage amount.
+- Confirm enemy HP cannot exceed maximum HP.
+- Confirm Fire Drain consumes exactly 1 full Press Turn.
+- Confirm the Player takes no damage from Drain.
+- Confirm combat continues normally.
+- Confirm existing Weak, Normal, Resist, and Null tests remain unchanged.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Runtime verification is pending.
+- Repel remains after Drain.
+
 ### Combat Affinity: Null Press Turn Cost Correction
 
 Updated Null after runtime verification.
