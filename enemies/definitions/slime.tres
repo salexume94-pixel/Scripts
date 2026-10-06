@@ -1,14 +1,31 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://enemies/enemy_data.gd" id="1_enemy_data"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_attack.tres" id="2_slime_attack"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_heavy_attack.tres" id="3_slime_heavy_attack"]
-[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_weak.tres" id="4_slime_fire_weak"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_attack.tres" id="4_slime_fire_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_water_attack.tres" id="5_slime_water_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_earth_attack.tres" id="6_slime_earth_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_air_attack.tres" id="7_slime_air_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_light_attack.tres" id="8_slime_light_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_dark_attack.tres" id="9_slime_dark_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_weak.tres" id="10_slime_fire_weak"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_defend.tres" id="11_slime_defend"]
 
 [resource]
 script = ExtResource("1_enemy_data")
-actions = Array[ExtResource("2_slime_attack")]([ExtResource("2_slime_attack"), ExtResource("3_slime_heavy_attack")])
-affinities = Array[ExtResource("4_slime_fire_weak")]([ExtResource("4_slime_fire_weak")])
+actions = Array[ExtResource("2_slime_attack")]([
+	ExtResource("2_slime_attack"),
+	ExtResource("3_slime_heavy_attack"),
+	ExtResource("4_slime_fire_attack"),
+	ExtResource("5_slime_water_attack"),
+	ExtResource("6_slime_earth_attack"),
+	ExtResource("7_slime_air_attack"),
+	ExtResource("8_slime_light_attack"),
+	ExtResource("9_slime_dark_attack"),
+	ExtResource("11_slime_defend")
+])
+affinities = Array[ExtResource("10_slime_fire_weak")]([ExtResource("10_slime_fire_weak")])
 enemy_id = "slime"
 display_name = "Slime"
 level = 1
