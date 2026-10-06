@@ -12,6 +12,10 @@ var inventory_items: Dictionary = {}
 var equipment_items: Dictionary = {}
 var player_stats: Dictionary = {}
 
+## Prevents a freshly completed encounter from immediately starting another one
+## after the World scene is restored. This is runtime state only.
+var encounter_cooldown_until_msec: int = 0
+
 
 func get_inventory() -> Dictionary:
 	# Return a copy so other systems can inspect global inventory state without
@@ -46,3 +50,15 @@ func set_player_stats(stats: Dictionary) -> void:
 	# intentionally not stored here because PlayerEquipment reapplies them after
 	# PlayerStats has been restored.
 	player_stats = stats.duplicate()
+
+
+func set_encounter_cooldown(seconds: float) -> void:
+	# Store the cooldown globally because the World encounter system is recreated
+	# when the World scene is loaded after combat.
+	encounter_cooldown_until_msec = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+func is_encounter_cooldown_active() -> bool:
+	# Time-based cooldown survives World scene replacement without tying combat
+	# lifecycle code to the World scene instance.
+	return Time.get_ticks_msec() < encounter_cooldown_until_msec
