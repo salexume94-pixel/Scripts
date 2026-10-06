@@ -29,7 +29,7 @@ Includes:
 
 ---
 
-### 2. Map / World Map Foundation - IMPLEMENTED, RUNTIME VERIFICATION PENDING
+### 2. Map / World Map Foundation - COMPLETE, RUNTIME VERIFIED
 
 The project currently has a playable world, but it does not yet have a proper player-facing map system.
 
@@ -46,6 +46,12 @@ Before adding map labels, establish the map foundation:
 - Keep map data, world state, and map presentation separated according to ARCHITECTURE.md.
 
 The initial map should be deliberately simple. The goal is a reusable foundation, not a fully featured MMO map on the first pass.
+
+Current world-layer extension:
+- Playable World Map scene added as the larger world layer outside Tutorial Town.
+- Tutorial Town can transition to the World Map and back.
+- World Map uses its own WorldContext and WorldMapData definition so MapManager can distinguish the two layers.
+- M remains the player-facing map overlay and now reads the active world layer.
 
 ---
 
