@@ -135,7 +135,6 @@ func player_attack(action: Resource = null) -> bool:
 			var current_hp: int = stats_to_update.get("hp", stats_to_update.get("max_hp", 0))
 			stats_to_update["hp"] = maxi(current_hp - damage_result.damage, 0)
 			GameState.set_player_stats(stats_to_update)
-			active_combat.last_damage = 0
 
 	consume_player_press_turn(damage_result.turn_cost)
 
