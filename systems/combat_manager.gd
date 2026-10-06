@@ -9,6 +9,9 @@ const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
 const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
+## The current enemy action is stored separately from the enemy definition so
+## CombatState can keep only the active encounter data.
+
 var active_combat: Resource = null
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
@@ -50,7 +53,10 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.enemy_hp = enemy_data.max_hp
 	combat_state.player_press_turns = 4
 	combat_state.player_press_turns_remaining = 4.0
-	combat_state.enemy_attack = enemy_data.attack
+	if enemy_data.actions.is_empty():
+		return false
+	var first_action: Resource = enemy_data.actions[0]
+	combat_state.enemy_attack = first_action.power
 	active_combat = combat_state
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
