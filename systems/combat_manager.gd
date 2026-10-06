@@ -470,6 +470,9 @@ func _resolve_enemy_turn() -> void:
 	var enemy_speed: int = int(enemy_data.speed) if enemy_data != null else 0
 	var enemy_accuracy: float = clampf(100.0 - float(player_speed), 0.0, 100.0)
 	var enemy_critical_chance: float = clampf(float(enemy_speed), 0.0, 100.0)
+	# Enemy Speed determines the critical chance for every enemy damage action,
+	# including Basic Attack, Heavy Attack, and elemental attacks. Action data
+	# controls the critical multiplier, not the Speed-derived chance.
 	var enemy_critical_multiplier: float = maxf(enemy_action.critical_multiplier, 1.5)
 	var damage_result: Dictionary = COMBAT_RULES.resolve_damage_against_affinities(
 		base_damage,
