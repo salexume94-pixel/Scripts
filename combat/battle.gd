@@ -29,11 +29,16 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 	var damage_type_name := DAMAGE_TYPES.get_display_name(CombatManager.get_last_player_damage_type())
 	var result_type := CombatManager.get_last_player_result_type()
 	var damage := CombatManager.get_last_damage()
+	var critical := CombatManager.get_last_player_critical()
 
 	if CombatManager.is_victory():
 		action_label.text = "Enemy defeated! %s %s." % [damage_type_name, affinity_name]
+	elif result_type == "miss":
+		action_label.text = "Player %s attack misses (%s)." % [damage_type_name, affinity_name]
 	elif result_type == "drain":
 		action_label.text = "Player %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
+	elif critical:
+		action_label.text = "CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
 	elif result_type == "repel":
 		action_label.text = "Player %s attack is repelled (%s)." % [damage_type_name, affinity_name]
 	elif CombatManager.is_enemy_turn():
@@ -115,10 +120,14 @@ func _update_combat_controls() -> void:
 	var fire_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/FireButton") as Button
 	var defend_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/DefendButton") as Button
 	var pass_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/PassButton") as Button
+	var critical_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/CriticalTestButton") as Button
+	var miss_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/MissTestButton") as Button
 	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/RunButton") as Button
 	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
 	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
+		return
+	if critical_test_button == null or miss_test_button == null:
 		return
 	var victory := CombatManager.is_victory()
 	var defeat := CombatManager.is_defeat()
@@ -127,6 +136,8 @@ func _update_combat_controls() -> void:
 	fire_button.disabled = victory or defeat or not player_turn
 	defend_button.disabled = victory or defeat or not player_turn
 	pass_button.disabled = victory or defeat or not player_turn
+	critical_test_button.disabled = victory or defeat or not player_turn
+	miss_test_button.disabled = victory or defeat or not player_turn
 	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
 	if state_label != null:
@@ -144,6 +155,12 @@ func _on_attack_pressed() -> void:
 
 func _on_fire_pressed() -> void:
 	CombatManager.player_attack(FIRE_ACTION)
+
+func _on_critical_test_pressed() -> void:
+	CombatManager.player_critical_test()
+
+func _on_miss_test_pressed() -> void:
+	CombatManager.player_miss_test()
 func _on_run_pressed() -> void:
 	CombatManager.end_combat()
 func _on_victory_pressed() -> void:
