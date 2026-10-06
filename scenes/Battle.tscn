@@ -42,6 +42,17 @@ layout_mode = 2
 text = "Combat Foundation"
 horizontal_alignment = 1
 
+[node name="ActionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Choose an action."
+horizontal_alignment = 1
+
+[node name="AttackButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Attack"
+
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/AttackButton" to="." method="_on_attack_pressed"]
+
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Combat state is active. Player actions and enemy systems are added in later steps."
