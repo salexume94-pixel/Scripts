@@ -765,3 +765,37 @@ Runtime verification required:
 - Confirm the Battle scene opens without errors.
 - Verify a future encounter call can enter Battle and preserve the originating scene/Player position for return.
 - Confirm no Godot debugger errors occur.
+
+
+### Combat Foundation: Player Attack
+
+Implemented Step 2 of the Combat Foundation: the Player Attack action.
+
+Updated:
+- `combat/combat_state.gd`
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+
+Changes:
+- Added a Player Attack command to CombatManager.
+- Player Attack reads the authoritative Player Attack stat from PlayerStats/GameState.
+- CombatState records the most recent Player Attack value.
+- Battle UI now provides an **Attack** button.
+- Battle presentation reports the Attack value through a CombatManager signal.
+- CombatManager remains responsible for combat state/action logic while Battle remains responsible for presentation.
+- Enemy HP and damage application are intentionally not implemented yet. Those belong to the following Combat Foundation steps.
+
+Current combat flow:
+
+`Battle -> Attack button -> CombatManager.player_attack() -> CombatState.last_player_attack -> Battle UI`
+
+Runtime verification required:
+- Pull the latest commit.
+- Enter the Battle scene through the existing combat flow when an encounter trigger is added.
+- Confirm the Attack button is visible and clickable.
+- Confirm pressing Attack displays the Player's current Attack value.
+- Confirm no HP is changed yet.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section.
