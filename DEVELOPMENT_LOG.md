@@ -2342,3 +2342,32 @@ Updated:
 - `ARCHITECTURE.md`
 
 No runtime gameplay changes were made in this documentation/planning update.
+
+
+### Tutorial Town Collision and Door Context Fix
+
+Fixed two Tutorial Town runtime issues:
+
+Updated:
+- `world/door.gd`
+- `systems/scene_manager.gd`
+- `scenes/World.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Tutorial Town NPCs and the Quest Giver are now `StaticBody2D` nodes with dedicated collision shapes, so the Player can no longer walk through them.
+- NPC visual polygons remain separate child nodes from their physical collision, preserving the project's visual/collision separation.
+- SceneManager now retains the active world/location identity across scene transitions.
+- Interior exit Doors inherit the world/location identity established by the Door that entered the interior.
+- This prevents the reusable `Interior.tscn` exit Door from producing the `Door has no world_id configured` error.
+- Existing Player placement through SceneManager remains unchanged, so leaving a Tutorial Town building returns the Player to the configured World position instead of the town center.
+
+Runtime verification required:
+1. Pull the latest `main`.
+2. Start Tutorial Town and walk into each NPC and the Quest Giver. Confirm the Player cannot pass through them.
+3. Enter a Tutorial Town building.
+4. Leave through the interior Exit Door.
+5. Confirm no `world_id` or `location_id` Door errors appear.
+6. Confirm the Player returns to the correct configured position outside the building rather than the town center.
+7. Enter and leave multiple Tutorial Town buildings to confirm the location context updates correctly for each building.
+8. Confirm no Godot debugger or resource errors occur.
