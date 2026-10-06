@@ -534,3 +534,29 @@ Runtime verification required:
 - Press **E** near the Door and confirm it transitions to the Interior.
 - In the Interior, press **E** near the ExitDoor and confirm it returns to the World.
 - Walking into either Door without pressing **E** must not transition.
+
+
+### Interaction System Targeting Rewrite
+
+The previous Area2D-overlap interaction implementation was still allowing incorrect Door selection in runtime. Interaction targeting has therefore been simplified and made explicit.
+
+Updated:
+- `systems/interaction_system.gd`
+- `world/chest.gd`
+- `world/door.gd`
+- `world/Chest.tscn`
+- `world/Door.tscn`
+
+The shared InteractionSystem now searches the current scene for objects in the `interactable` group and selects the nearest object within an 80-pixel interaction distance. Chest and Door register themselves with that group when they enter the scene.
+
+The old Chest and Door Area2D interaction trigger shapes are no longer used for selecting targets. This removes physics overlap state from the E-key decision and prevents an unrelated Door from being selected while interacting with a Chest.
+
+Chest interaction receives the actual Player reference from InteractionSystem and can only grant its configured item. Door interaction remains the only path that calls SceneManager for scene transitions.
+
+Runtime verification required:
+- E near a Chest must grant the Chest item and keep the Player in the current scene.
+- E near a Chest must never call SceneManager.
+- E near the World Door must enter the Interior.
+- E near the Interior ExitDoor must return to World.
+- E away from all interactables must do nothing.
+- Walking into a Door without E must not transition.
