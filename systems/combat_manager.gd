@@ -29,8 +29,6 @@ var last_enemy_ai_debug: Array[String] = []
 var combat_log: Array[String] = []
 signal combat_log_updated
 
-## Debug-only actions use the same resolution path as normal Player actions.
-## They exist only to make accuracy and critical behavior deterministic to test.
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
 
@@ -223,7 +221,7 @@ func start_encounter(enemy_id: String) -> bool:
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
-func player_attack(action: Resource = null, debug_context: String = "") -> bool:
+func player_attack(action: Resource = null) -> bool:
 	# Resolve a Player action against the enemy's affinity.
 	# Action data supplies the damage type and power multiplier, while this
 	# coordinator applies the shared Press Turn and damage rules.
@@ -273,15 +271,6 @@ func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 		critical_chance,
 		selected_action.critical_multiplier
 	)
-	# Record the actual rolls used by the shared combat resolver so the Basic
-	# Attack path can be verified directly from the combat log.
-	var accuracy_roll: float = float(damage_result.get("accuracy_roll", -1.0))
-	var resolved_accuracy: float = float(damage_result.get("accuracy", accuracy))
-	var critical_roll: float = float(damage_result.get("critical_roll", -1.0))
-	var resolved_critical_chance: float = float(damage_result.get("critical_chance", critical_chance))
-	if not debug_context.is_empty():
-		_append_combat_log("%s: real Basic Attack resolution." % debug_context)
-
 	active_combat.last_player_attack = action_power
 	active_combat.last_damage = damage_result.damage
 	active_combat.last_player_damage_type = selected_action.damage_type
@@ -350,16 +339,6 @@ func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
-
-func player_critical_test() -> bool:
-	# Debug-test the real Player Attack path using the Player Speed-derived
-	# critical chance. No guaranteed critical modifier is used.
-	return player_attack(null, "CRITICAL TEST")
-
-func player_miss_test() -> bool:
-	# Debug-test the real Player Attack path using the Enemy Speed-derived
-	# accuracy. No guaranteed miss modifier is used.
-	return player_attack(null, "MISS TEST")
 
 func player_defend() -> bool:
 	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
