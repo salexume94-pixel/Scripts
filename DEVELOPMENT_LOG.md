@@ -1,3 +1,25 @@
+## 2026-10-06 - Restore CombatManager Battle Presentation API
+
+Runtime testing after the Enemy AI changes exposed a compatibility gap between `combat/battle.gd` and `systems/combat_manager.gd`: Battle was calling presentation/state accessors that were missing from the current CombatManager branch.
+
+Updated:
+- systems/combat_manager.gd
+
+Changes:
+- Restored Battle state queries for victory, defeat, Player turn, and Enemy turn.
+- Restored enemy ID, enemy HP/max HP, Press Turn, combat log, and last enemy action accessors.
+- Restored the public combat-log append method used by Battle's Defend and Pass presentation.
+- Restored Player weakness display and weakness cycling against the active encounter snapshot.
+- Restored combat termination through the saved World scene and Player position.
+
+Runtime verification required:
+1. Pull the latest enemy-ai-behavior branch.
+2. Start Test Battle (Enemy AI).
+3. Confirm Battle opens without missing-function errors.
+4. Confirm enemy ID, HP, Press Turns, combat log, and Player weakness display populate.
+5. Confirm Enemy AI turns continue to resolve.
+6. Confirm Run/Victory returns to the saved World location without debugger errors.
+
 ## 2026-10-06 - Fix Enemy Action Accuracy/Critical Data
 
 Runtime testing exposed a missing EnemyActionData field: CombatManager passes enemy action accuracy and critical-hit values into the shared CombatRules resolver, but EnemyActionData did not define those properties. This caused the Enemy Turn to fail when the AI selected an action.
