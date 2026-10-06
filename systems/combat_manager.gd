@@ -321,6 +321,12 @@ func get_last_player_damage_type() -> int:
 	return active_combat.last_player_damage_type if is_in_combat() else DAMAGE_TYPES.Type.PHYSICAL
 func get_last_player_result_type() -> String:
 	return active_combat.last_player_result_type if is_in_combat() else ""
+
+func get_last_player_critical() -> bool:
+	# Return whether the most recent Player action resolved as a critical hit.
+	# Battle uses this getter only for presentation; the combat result itself
+	# remains stored in CombatState and resolved by CombatRules.
+	return active_combat.last_player_critical if is_in_combat() else false
 func is_player_turn() -> bool:
 	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 func is_enemy_turn() -> bool:
