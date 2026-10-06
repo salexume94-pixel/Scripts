@@ -26,6 +26,6 @@ position = Vector2(-104, 0)
 position = Vector2(104, 0)
 
 [node name="Door" parent="." instance=ExtResource("2_door")]
-position = Vector2(0, 72)
+position = Vector2(0, 64)
 target_scene = "res://scenes/Interior.tscn"
 target_player_position = Vector2(0, 120)
