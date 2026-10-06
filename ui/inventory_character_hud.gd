@@ -48,6 +48,9 @@ func _ready() -> void:
 	var test_null_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestNullBattleButton") as Button
 	if test_null_battle_button != null:
 		test_null_battle_button.pressed.connect(_on_test_null_battle_button_pressed)
+	var test_drain_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDrainBattleButton") as Button
+	if test_drain_battle_button != null:
+		test_drain_battle_button.pressed.connect(_on_test_drain_battle_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
@@ -309,6 +312,12 @@ func _on_test_null_battle_button_pressed() -> void:
 	# Start the controlled Fire Null encounter so nullification can be verified
 	# independently from the existing Weak and Resist encounters.
 	DEBUG_SYSTEM.start_test_battle("slime_null")
+
+
+func _on_test_drain_battle_button_pressed() -> void:
+	# Start the controlled Fire Drain encounter so healing can be verified
+	# independently from the other affinity tests.
+	DEBUG_SYSTEM.start_test_battle("slime_drain")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:
