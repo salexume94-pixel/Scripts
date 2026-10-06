@@ -10,3 +10,5 @@ display_name = "Item / Equipment Shop"
 location_type = 2
 description = "Tutorial Town's shop for supplies and equipment."
 story_significant = true
+map_position = Vector2(272, 240)
+map_visible = true
