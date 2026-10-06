@@ -1,3 +1,44 @@
+### Enemy Action Selection Foundation
+
+Implemented the first action-selection layer for enemies.
+
+Updated:
+- `enemies/enemy_action_data.gd`
+- `combat/combat_state.gd`
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added a configurable `selection_weight` to EnemyActionData.
+- CombatManager now selects an enemy action using weighted random selection rather than always taking the first action.
+- Actions with a weight of 0 are ignored by normal selection.
+- CombatState records the ID and display name of the action selected for the current enemy turn.
+- Battle UI now reports the selected enemy action name when the enemy attacks.
+- The Slime currently has only one action, so its runtime behavior and 10-power attack remain unchanged.
+- Existing Player Defense damage calculation, Press Turns, Victory, Run, and defeat behavior remain unchanged.
+
+This establishes the foundation for enemies with multiple actions without moving action-selection rules into the Battle UI or EnemyData resources.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Confirm the project opens without parse errors.
+- Start Debug -> Test Battle (Slime).
+- Spend all four Player Press Turns without defeating the Slime.
+- Confirm the enemy turn resolves normally.
+- Confirm the Battle result identifies the action as `Attack`.
+- Confirm the Slime still deals 1 damage under the current Player Defense calculation.
+- Confirm combat returns to PLAYER TURN with four Press Turns.
+- Confirm Victory and Run still work.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- The Slime currently has only one action, so weighted selection cannot yet demonstrate different choices.
+- Enemy AI is not implemented. Weighted selection is only the reusable selection mechanism.
+- Action effects, elemental types, accuracy, status effects, and conditional behavior remain future work.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
 ### Enemy Action Foundation
 
 Implemented the first enemy-action layer on top of the authoritative EnemyData foundation.
