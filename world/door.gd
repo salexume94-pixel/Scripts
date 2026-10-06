@@ -56,7 +56,7 @@ func interact(player: Node) -> void:
     # position before the scene is replaced. The reusable interior can then
     # restore that position when its ExitDoor is used.
     var should_set_return_position := not use_return_position
-    var return_position := player.global_position
+    var return_position: Vector2 = player.global_position
 
     SceneManager.change_scene(
         target_scene,
