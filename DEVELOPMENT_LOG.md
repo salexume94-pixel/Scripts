@@ -855,3 +855,30 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section.
+
+
+### Combat Debug Entry Point
+
+Added a controlled Debug-menu entry point for starting the Combat Foundation during development.
+
+Updated:
+- systems/debug_system.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+
+Changes:
+- Added a Test Battle (Slime) button to the existing DEBUG panel.
+- The HUD requests the test action from DebugSystem instead of calling CombatManager directly.
+- DebugSystem requests CombatManager.start_encounter("slime").
+- CombatManager remains responsible for combat state creation and Battle scene transition.
+- The debug entry point uses the controlled temporary slime enemy ID while EnemyData is not yet authoritative.
+
+Runtime verification required:
+- Pull the latest commit.
+- Open the Character/Inventory screen with I.
+- Confirm the DEBUG panel contains Test Battle (Slime).
+- Press Test Battle (Slime) and confirm the Battle scene opens.
+- Confirm the encounter displays slime and Enemy HP 50 / 50.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section.
