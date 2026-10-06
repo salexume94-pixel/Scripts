@@ -26,6 +26,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if encounter_started or player == null:
 		return
+	if GameState.is_encounter_cooldown_active():
+		# Ignore movement while the post-combat cooldown is active. This prevents
+		# Run from dropping the Player directly into another encounter.
+		last_player_position = player.global_position
+		distance_since_check = 0.0
+		return
 	if CombatManager.is_in_combat():
 		return
 
