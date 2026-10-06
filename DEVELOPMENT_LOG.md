@@ -1321,3 +1321,21 @@ Runtime verification required:
 - Defensive: confirm Heavy Attack is rarely or never selected and the basic lower-power Attack is favored.
 - Confirm all three profiles still use the same EnemyData, EnemyActionData, EnemyBehaviorProfile, and CombatManager selector.
 - Confirm no Godot debugger errors occur.
+
+## 2026-10-06 Aggressive AI Inherits Weakness Hunter Behavior
+
+Updated Aggressive Enemy AI so it uses the same weakness-targeting framework as Weakness Hunter.
+
+Changes:
+- Aggressive now rolls against `weakness_selection_chance` to choose the Player's weakness pool or the non-weakness pool.
+- When the weakness pool is selected, Aggressive applies the configured `weakness_weight_multiplier` and `weakness_priority` just like Weakness Hunter.
+- Aggressive then applies its stronger-action power bias within the selected pool.
+- The selector fallback now handles both Weakness Hunter and Aggressive when the requested pool contains no usable actions.
+
+Resulting distinction:
+- **Weakness Hunter:** prioritizes the Player's weakness.
+- **Aggressive:** prioritizes the Player's weakness using the same targeting behavior, then favors stronger actions.
+- **Balanced:** uses normal weighted selection without weakness targeting or power bias.
+- **Defensive:** favors safer/lower-power actions according to its profile.
+
+Runtime verification required: confirm Aggressive targets the current Player weakness at approximately its configured probability and favors stronger actions within that selected pool.
