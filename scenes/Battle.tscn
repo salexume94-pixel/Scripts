@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(520, 280)
+custom_minimum_size = Vector2(520, 320)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
@@ -42,6 +42,10 @@ horizontal_alignment = 1
 [node name="ActionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Choose an action."
+horizontal_alignment = 1
+[node name="PlayerHPLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Player HP: 100 / 100"
 horizontal_alignment = 1
 [node name="EnemyHPLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
@@ -66,5 +70,5 @@ visible = false
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/VictoryButton" to="." method="_on_victory_pressed"]
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Press Turn combat foundation. Weakness and enemy actions are added in later steps."
+text = "Press Turn combat. Each normal Attack costs 1 turn. The Slime attacks after all four are spent."
 horizontal_alignment = 1
