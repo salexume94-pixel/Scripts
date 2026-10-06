@@ -1467,3 +1467,32 @@ Runtime verification required:
 2. Confirm the Battle UI displays one of Balanced, Aggressive, Weakness Hunter, or Defensive.
 3. Repeat multiple encounters and verify the displayed profile changes across the four available profiles over a sufficient sample.
 4. Confirm the displayed profile matches the AI behavior observed during the battle.
+
+
+## 2026-10-06 Victory Return-to-World Button Fix
+
+Runtime testing found that defeating the enemy correctly changed CombatState to **VICTORY**, but the Battle scene had no `VictoryButton` node.
+
+`combat/battle.gd` already expected `VictoryButton` in `_update_combat_controls()`. Because the node was missing, that function returned early before updating the victory controls, so the player never received the return-to-world option.
+
+Updated:
+- `scenes/Battle.tscn`
+
+Changes:
+- Added the missing `VictoryButton` to the Battle UI.
+- Set its label to **Return to World**.
+- Connected its `pressed` signal to the existing `_on_victory_pressed()` handler.
+- No CombatManager victory logic was changed because the combat state was already being set correctly.
+
+Expected runtime behavior:
+1. Player reduces the enemy HP to 0.
+2. Combat enters **VICTORY**.
+3. Battle UI displays **VICTORY**.
+4. Normal combat actions are disabled.
+5. **Return to World** becomes visible.
+6. Selecting it calls the existing `CombatManager.end_combat()` flow and returns the Player to the saved overworld position.
+
+Runtime verification required:
+- Confirm the Return to World button appears immediately after killing the Slime.
+- Confirm selecting it returns to the World.
+- Confirm no Godot debugger errors occur.
