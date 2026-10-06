@@ -12,6 +12,8 @@ extends CanvasLayer
 
 var notification_generation: int = 0
 
+const ITEM_DATABASE = preload("res://items/item_database.gd")
+
 
 func _ready() -> void:
 	# Start closed so opening the World does not interrupt gameplay.
@@ -87,6 +89,11 @@ func _create_quest_entry(quest: Resource, show_progress: bool) -> Control:
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	container.add_child(description)
 
+	var rewards := Label.new()
+	rewards.text = _format_rewards(quest)
+	rewards.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	container.add_child(rewards)
+
 	for objective in quest.get("objectives"):
 		var objective_id: String = str(objective.get("objective_id", ""))
 		var objective_text: String = str(objective.get("description", ""))
@@ -117,6 +124,24 @@ func _create_quest_entry(quest: Resource, show_progress: bool) -> Control:
 		container.add_child(objective_label)
 
 	return container
+
+
+func _format_rewards(quest: Resource) -> String:
+	# Rewards are definition data at this stage. A future reward application
+	# system can grant them when the quest completes without changing the UI.
+	var rewards: Array = quest.get("rewards")
+	if rewards.is_empty():
+		return "Rewards: None"
+
+	var labels: Array[String] = []
+	for reward in rewards:
+		var item_id: String = str(reward.get("item_id", ""))
+		var quantity: int = max(int(reward.get("quantity", 1)), 1)
+		var item: Resource = ITEM_DATABASE.get_item(item_id)
+		var display_name := item.get("display_name") if item != null else item_id
+		labels.append("%s x%d" % [display_name, quantity])
+
+	return "Rewards: " + ", ".join(labels)
 
 
 func _show_notification(message: String) -> void:
