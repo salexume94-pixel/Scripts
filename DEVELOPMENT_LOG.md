@@ -1,3 +1,27 @@
+### Combat Affinity: Null Press Turn Cost Correction
+
+Updated Null after runtime verification.
+
+Updated:
+- combat/combat_rules.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Nullification still deals 0 damage and leaves enemy HP unchanged.
+- Nullification now consumes 2 full Press Turns instead of 1.
+- Weak remains 0.5 Press Turns.
+- Normal remains 1 Press Turn.
+- Resist remains 1 Press Turn.
+
+Runtime verification required:
+- Start Test Battle (Fire Null).
+- Confirm Fire deals 0 damage.
+- Confirm enemy HP is unchanged.
+- Confirm exactly 2 full Press Turns are consumed.
+- Confirm combat continues normally.
+- Confirm existing Weak, Normal, and Resist behavior remains unchanged.
+- Confirm no Godot debugger errors occur.
+
 ### Combat Affinity: Null Implementation
 
 Implemented the Fire Null affinity as the next elemental combat step.
