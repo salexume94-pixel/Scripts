@@ -68,7 +68,7 @@ static func resolve_damage_against_affinities(
 
 	match affinity:
 		AFFINITIES.Type.WEAK:
-			multiplier = 1.5
+			multiplier = 2.0
 			turn_cost = 0.5
 		AFFINITIES.Type.RESIST:
 			multiplier = 0.5
