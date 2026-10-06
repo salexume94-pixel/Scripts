@@ -223,7 +223,7 @@ func start_encounter(enemy_id: String) -> bool:
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
-func player_attack(action: Resource = null) -> bool:
+func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 	# Resolve a Player action against the enemy's affinity.
 	# Action data supplies the damage type and power multiplier, while this
 	# coordinator applies the shared Press Turn and damage rules.
@@ -273,6 +273,8 @@ func player_attack(action: Resource = null) -> bool:
 		critical_chance,
 		selected_action.critical_multiplier
 	)
+	if not debug_context.is_empty():
+		_append_combat_log("%s: Player Speed %d -> %.0f%% critical; Enemy Speed %d -> %.0f%% accuracy." % [debug_context, player_speed, critical_chance, enemy_speed, accuracy])
 
 	active_combat.last_player_attack = action_power
 	active_combat.last_damage = damage_result.damage
@@ -331,12 +333,12 @@ func player_attack(action: Resource = null) -> bool:
 func player_critical_test() -> bool:
 	# Debug-test the real Player Attack path using the Player Speed-derived
 	# critical chance. No guaranteed critical modifier is used.
-	return player_attack()
+	return player_attack(null, "CRITICAL TEST")
 
 func player_miss_test() -> bool:
 	# Debug-test the real Player Attack path using the Enemy Speed-derived
 	# accuracy. No guaranteed miss modifier is used.
-	return player_attack()
+	return player_attack(null, "MISS TEST")
 
 func player_defend() -> bool:
 	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
