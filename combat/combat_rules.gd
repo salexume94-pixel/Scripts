@@ -16,7 +16,7 @@ static func resolve_damage(
 	enemy_data: Resource,
 	accuracy: float = 100.0,
 	critical_chance: float = 0.0,
-	critical_multiplier: float = 2.0
+	critical_multiplier: float = 1.5
 ) -> Dictionary:
 	## Resolve Player damage against an EnemyData definition.
 	## This remains the existing public entry point for Player attacks.
