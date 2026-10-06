@@ -59,6 +59,14 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Attack"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/AttackButton" to="." method="_on_attack_pressed"]
+[node name="DefendButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Defend"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/DefendButton" to="." method="_on_defend_pressed"]
+[node name="PassButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Pass"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/PassButton" to="." method="_on_pass_pressed"]
 [node name="RunButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Run"
