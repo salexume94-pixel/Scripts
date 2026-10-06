@@ -2031,3 +2031,10 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Critical Test and Miss Test now invoke the same Basic Attack resolution path and only add diagnostic logging showing the calculated critical chance and accuracy. They no longer use guaranteed critical/miss action resources.
 - Runtime verification required: confirm Basic Attack can produce normal/critical outcomes according to Player Speed and can hit/miss according to Enemy Speed, and confirm the bottom action bar remains visible as combat-log history grows.
 - After both debug checks pass, remove the Critical Test and Miss Test controls and their handlers.
+
+
+### Speed-Based Basic Attack Roll Verification
+- Updated `combat/combat_rules.gd` so Player attack accuracy and critical resolution use explicit 0-100 rolls and return the resolved chance and roll values with the result.
+- Updated `systems/combat_manager.gd` so every Player attack, including the normal Basic Attack, logs the actual Player Speed-derived critical chance/roll and Enemy Speed-derived accuracy chance/roll used by the shared resolver.
+- This keeps the Basic Attack authoritative through the shared combat rules instead of using separate debug-only calculations.
+- Runtime verification required: confirm the combat log shows the expected Speed-derived percentages and rolls, and confirm critical/miss outcomes match those rolls.
