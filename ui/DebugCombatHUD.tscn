@@ -46,10 +46,15 @@ layout_mode = 2
 text = "DEBUG COMBAT HUD"
 horizontal_alignment = 1
 
-[node name="Status" type="Label" parent="Panel/Margin/Content"]
+[node name="Status" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
 text = "Status:"
+
+[node name="EnemyBehavior" type="Label" parent="Panel/Margin/Scroll/Content"]
+layout_mode = 2
+autowrap_mode = 3
+text = "Enemy Behavior:"
 
 [node name="TargetAffinities" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
@@ -94,7 +99,7 @@ size_flags_vertical = 3
 [node name="Log" type="Label" parent="Panel/Margin/Scroll/Content/LogScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-autowrap_mode = 2
+autowrap_mode = 3
 text = "Combat log unavailable."
 
 [node name="Help" type="Label" parent="Panel/Margin/Content"]
