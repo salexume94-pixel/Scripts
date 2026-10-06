@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Enemy AI is profile-driven. Enemy definitions provide available actions, behavior profiles describe how those actions should be prioritized, and `CombatManager` applies the selected action during combat.
+Enemy AI is profile-driven. Enemy definitions provide available actions, behavior profiles describe how those actions should be prioritized, and the encounter selects the profile used for that battle. `CombatManager` applies the selected action during combat.
 
 The system is designed so new enemy types can reuse the same AI framework without adding enemy-specific branches to `CombatManager`.
 
@@ -16,7 +16,7 @@ It owns:
 - Enemy identity and display name
 - Base stats
 - Available actions
-- Optional behavior profile
+- Optional fixed behavior profile for controlled encounters
 - Elemental affinities
 - Rewards
 
@@ -48,14 +48,14 @@ Current strategies:
 - `WEAKNESS_HUNTER`
 - `DEFENSIVE`
 
-Profiles are Resources, so different enemy definitions can use different behavior without changing combat code.
+Profiles are Resources. An enemy with no fixed profile receives one of the shared profiles randomly when the encounter starts, while controlled/debug enemies can keep a fixed profile.
 
 ### CombatManager
 
 `systems/combat_manager.gd` owns the active encounter and performs action selection.
 
 The selector:
-1. Reads the enemy's behavior profile.
+1. Reads the behavior profile selected for the current encounter.
 2. Calculates a weight for each usable action.
 3. Applies strategy-specific modifiers.
 4. Avoids configured unfavorable affinities.
@@ -75,9 +75,9 @@ Use this for enemies that do not need a strong tactical preference.
 
 ### Aggressive
 
-Favors higher-power actions.
+Uses the same weakness-targeting behavior as Weakness Hunter, then favors higher-power actions within the selected weakness or non-weakness pool.
 
-The strongest available action can receive up to twice its base selection weight, while weaker actions retain a chance to be selected.
+This makes Aggressive a more forceful form of weakness hunting rather than a separate targeting strategy.
 
 ### Weakness Hunter
 
@@ -154,7 +154,7 @@ Verify:
 1. An enemy with no actions does not leave combat stuck.
 2. An enemy with all actions at zero selection weight does not leave combat stuck.
 3. A profile that rejects every weighted candidate falls back to a usable action.
-4. An enemy without a behavior profile uses the shared Balanced profile.
+4. An enemy without a fixed behavior profile receives a random shared profile when the encounter begins.
 5. Changing the Player's weakness does not require changing the enemy behavior profile.
 
 ## Design Boundary
@@ -176,8 +176,8 @@ Those systems should be added only when the combat design requires them.
 
 Future enemies should normally be created by combining:
 
-`EnemyData + EnemyActionData + EnemyBehaviorProfile`
+`EnemyData + EnemyActionData + optional fixed EnemyBehaviorProfile`
 
-rather than adding enemy-specific selection logic to `CombatManager`.
+with encounter-level profile selection handled by `CombatManager`. Controlled encounters can provide a fixed profile, while normal encounters can use the shared random profile pool.
 
 This keeps the AI reusable as the enemy roster grows.
