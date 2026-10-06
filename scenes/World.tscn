@@ -20,11 +20,19 @@ position = Vector2(0, -120)
 
 [node name="PotionChest" parent="WorldContent" instance=ExtResource("5_chest")]
 position = Vector2(240, -80)
-reward_item_id = "test_potion"
+reward_item_id = "potion"
 
 [node name="SwordChest" parent="WorldContent" instance=ExtResource("5_chest")]
 position = Vector2(320, -80)
-reward_item_id = "test_sword"
+reward_item_id = "iron_sword"
+
+[node name="ShieldChest" parent="WorldContent" instance=ExtResource("5_chest")]
+position = Vector2(240, 40)
+reward_item_id = "wooden_shield"
+
+[node name="ArmorChest" parent="WorldContent" instance=ExtResource("5_chest")]
+position = Vector2(320, 40)
+reward_item_id = "leather_armor"
 
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
