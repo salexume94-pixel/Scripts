@@ -21,6 +21,9 @@ enum Phase {
 @export var phase: Phase = Phase.PLAYER_TURN
 @export var enemy_hp: int = 0
 
+# Stores maximum HP separately so presentation can show the enemy health state.
+@export var enemy_max_hp: int = 0
+
 # Stores the most recent player attack value for the combat presentation and
 # later damage system. The value is calculated by CombatManager from PlayerStats.
 @export var last_player_attack: int = 0
