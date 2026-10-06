@@ -39,6 +39,10 @@ class_name EnemyData
 ## Actions this enemy can perform. The first action is the current basic action.
 @export var actions: Array[Resource] = []
 
+## Optional profile that changes how CombatManager prioritizes these actions.
+## Enemies without a profile use the shared balanced behavior.
+@export var behavior_profile: Resource = null
+
 ## Elemental and physical reactions for this enemy.
 ## Damage types not listed here use the Normal affinity.
 @export var affinities: Array[Resource] = []
