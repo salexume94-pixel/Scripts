@@ -22,6 +22,7 @@ GameState="*res://systems/game_state.gd"
 CombatManager="*res://systems/combat_manager.gd"
 QuestManager="*res://systems/quest_manager.gd"
 DialogueManager="*res://systems/dialogue_manager.gd"
+MapManager="*res://systems/map_manager.gd"
 
 [display]
 
