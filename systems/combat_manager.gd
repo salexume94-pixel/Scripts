@@ -350,6 +350,12 @@ func _resolve_enemy_turn() -> void:
 
 	var enemy_action: Resource = _select_enemy_action(enemy_data_for_active_combat())
 	if enemy_action == null:
+		# An enemy with no usable actions must never leave combat stuck in Enemy
+		# Turn. Record the edge case and safely return control to the Player.
+		_append_combat_log("ENEMY: No valid action available. Enemy Turn skipped.")
+		active_combat.player_press_turns_remaining = float(active_combat.player_press_turns)
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+		player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
 		return
 
 	# Store the selected action in CombatState so the presentation layer can
@@ -453,6 +459,13 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 				# Aggressive enemies prefer stronger actions while retaining their
 				# configured relative weights.
 				weight *= lerpf(1.0, 2.0, clampf(float(action.power) / float(max_power), 0.0, 1.0))
+			ENEMY_BEHAVIOR_PROFILE.Strategy.DEFENSIVE:
+				# Defensive enemies favor lower-power actions. This is intentionally
+				# expressed as a profile preference so future defensive skills can
+				# use the same selector without requiring enemy-specific code.
+				var power_ratio := clampf(float(action.power) / float(max_power), 0.0, 1.0)
+				var defensive_factor := (1.0 - power_ratio) * behavior.defensive_power_preference
+				weight *= lerpf(1.0, 2.0, defensive_factor)
 			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
 				# First choose whether this turn belongs to the weakness or
 				# non-weakness pool. Then preserve configured weights inside that pool.
@@ -489,6 +502,12 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		return _select_enemy_action_from_pool(enemy_data, behavior, target_weakness_actions)
 
 	if total_weight <= 0.0:
+		# Edge-case safety: if profile rules eliminate every weighted action,
+		# choose the first usable action rather than leaving the encounter stalled.
+		for action in enemy_data.actions:
+			if action != null and action.selection_weight > 0.0:
+				last_enemy_ai_debug.append("AI FALLBACK: %s" % action.display_name)
+				return action
 		return null
 
 	var roll := randf() * total_weight
