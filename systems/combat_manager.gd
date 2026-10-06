@@ -13,6 +13,12 @@ const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack
 const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_test.tres")
 const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
 const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
+const ENCOUNTER_BEHAVIOR_PROFILES: Array[Resource] = [
+	preload("res://enemies/definitions/behavior_balanced.tres"),
+	preload("res://enemies/definitions/behavior_aggressive.tres"),
+	preload("res://enemies/definitions/behavior_weakness_hunter.tres"),
+	preload("res://enemies/definitions/behavior_defensive.tres"),
+]
 const AFFINITIES = preload("res://combat/affinities.gd")
 const ENEMY_BEHAVIOR_PROFILE = preload("res://enemies/enemy_behavior_profile.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
@@ -175,6 +181,16 @@ func start_encounter(enemy_id: String) -> bool:
 	var player_stats_node := player.get_node_or_null("PlayerStats")
 	if player_stats_node != null:
 		combat_state.player_affinities = player_stats_node.get("affinities").duplicate(true)
+
+	# Choose the AI profile for this encounter. Enemy definitions may provide
+	# a fixed profile for controlled encounters and debug tests. Normal enemies
+	# without a fixed profile receive one of the shared profiles at random when
+	# the battle begins, so the same enemy can behave differently between battles.
+	var selected_behavior: Resource = enemy_data.behavior_profile
+	if selected_behavior == null:
+		selected_behavior = ENCOUNTER_BEHAVIOR_PROFILES[randi() % ENCOUNTER_BEHAVIOR_PROFILES.size()]
+	combat_state.enemy_behavior_profile = selected_behavior
+	_append_combat_log("ENEMY AI: %s profile selected." % selected_behavior.profile_id)
 
 	var first_action: Resource = enemy_data.actions[0]
 	combat_state.enemy_attack = first_action.power
@@ -419,6 +435,16 @@ func enemy_data_for_active_combat() -> Resource:
 		return null
 	return ENEMY_DATABASE.get_enemy(active_combat.enemy_id)
 
+func _get_active_enemy_behavior(enemy_data: Resource) -> Resource:
+	# Return the profile selected for this specific encounter. The profile lives
+	# in CombatState so AI decisions remain tied to the battle instance rather
+	# than changing the source EnemyData Resource.
+	if is_in_combat() and active_combat.enemy_behavior_profile != null:
+		return active_combat.enemy_behavior_profile
+	if enemy_data != null and enemy_data.behavior_profile != null:
+		return enemy_data.behavior_profile
+	return DEFAULT_ENEMY_BEHAVIOR
+
 func _select_enemy_action(enemy_data: Resource) -> Resource:
 	# Select from the enemy's available actions using both configured weights and
 	# the enemy's behavior profile. Weakness hunters explicitly reserve a
@@ -427,9 +453,7 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	if enemy_data == null or enemy_data.actions.is_empty():
 		return null
 
-	var behavior: Resource = enemy_data.behavior_profile
-	if behavior == null:
-		behavior = DEFAULT_ENEMY_BEHAVIOR
+	var behavior: Resource = _get_active_enemy_behavior(enemy_data)
 
 	var total_weight := 0.0
 	var weighted_actions: Array[Dictionary] = []
