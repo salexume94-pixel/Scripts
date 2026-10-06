@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://world/world_map_world.gd" id="1_world_map"]
 [ext_resource type="Script" path="res://world/world_context.gd" id="2_world_context"]
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="3_player"]
-[ext_resource type="PackedScene" path="res://world/Door.tscn" id="4_door"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="7_world_boundaries"]
@@ -62,13 +61,6 @@ position = Vector2(0, 700)
 [node name="TutorialTownLabel" type="Label" parent="WorldMapContent"]
 position = Vector2(-90, 620)
 text = "TUTORIAL TOWN"
-
-[node name="TutorialTownExit" parent="WorldMapContent" instance=ExtResource("4_door")]
-position = Vector2(0, 620)
-target_scene = "res://scenes/World.tscn"
-target_player_position = Vector2(0, 1010)
-world_id = "tutorial_town"
-location_id = "tutorial_town"
 
 [node name="WorldLabel" type="Label" parent="WorldMapContent"]
 position = Vector2(-80, -900)
