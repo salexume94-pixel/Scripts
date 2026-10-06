@@ -69,6 +69,14 @@ fit_content = false
 layout_mode = 2
 text = "Press Turns: ● ● ● ●"
 horizontal_alignment = 1
+[node name="WeaknessControls" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+[node name="CycleWeaknessButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/WeaknessControls"]
+layout_mode = 2
+text = "Cycle Weakness"
+
 [node name="ActionButtons" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 alignment = 1
