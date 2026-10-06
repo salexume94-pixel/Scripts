@@ -1,41 +1,36 @@
 extends StaticBody2D
 ## Handles the behavior of a reusable World chest.
 ##
-## This script is responsible for the chest's World interaction state and
-## deciding when its reward is granted. It does not define the item itself
-## or store the Player's inventory.
+## This script is responsible for the chest's interaction state and deciding
+## when its reward is granted. It does not define the item or store inventory.
 ##
-## ItemData defines the reward, while PlayerInventory stores it. Keeping
-## those responsibilities separate preserves the project's one-primary-job
+## ItemData defines the reward, while PlayerInventory stores it. Keeping those
+## responsibilities separate preserves the project's one-primary-job
 ## architecture.
-##
-## The item scripts are explicitly preloaded so this scene does not depend
-## on Godot's global class-name cache being refreshed first.
 
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 const ITEM_DATABASE = preload("res://items/item_database.gd")
 
-## Stable item ID used to choose the development reward for this chest.
+## Stable item ID used to choose the reward for this chest.
 @export var reward_item_id: String = "potion"
+
 # Tracks whether this chest has already been opened.
 # A chest can only be opened once in this initial implementation.
 var is_opened: bool = false
 
 
-func interact(_player: Node) -> void:
-	# The shared InteractionSystem calls this method when the Player presses E
-	# near the Chest. The Chest owns the reward and open-state behavior.
-	open_chest()
+func interact(player: Node) -> void:
+	# The shared InteractionSystem passes the Player that pressed E.
+	# Using that reference prevents the Chest from accidentally interacting
+	# with a different Player node or performing scene-related behavior.
+	open_chest(player)
 
 
-func open_chest() -> void:
+func open_chest(player: Node) -> void:
 	# Prevent duplicate opening calls if the function is triggered again.
 	if is_opened:
 		return
 
-	# Find the active Player from the current gameplay scene. The interaction
-	# system already verified that this Chest is within interaction range.
-	var player: Node = get_tree().current_scene.get_node_or_null("Player")
 	if player == null:
 		return
 
@@ -65,4 +60,3 @@ func open_chest() -> void:
 
 	# Change the visible Chest to show that it has been opened.
 	$ChestVisual.color = Color(0.65, 0.45, 0.18, 1.0)
-
