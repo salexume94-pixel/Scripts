@@ -23,11 +23,19 @@ target_player_position = Vector2(0, -8)
 
 [node name="PotionChest" parent="InteriorContent" instance=ExtResource("6_chest")]
 position = Vector2(-140, -80)
-reward_item_id = "test_potion"
+reward_item_id = "potion"
 
 [node name="SwordChest" parent="InteriorContent" instance=ExtResource("6_chest")]
 position = Vector2(140, -80)
-reward_item_id = "test_sword"
+reward_item_id = "iron_sword"
+
+[node name="HelmChest" parent="InteriorContent" instance=ExtResource("6_chest")]
+position = Vector2(-140, 0)
+reward_item_id = "leather_helm"
+
+[node name="RingChest" parent="InteriorContent" instance=ExtResource("6_chest")]
+position = Vector2(140, 0)
+reward_item_id = "power_ring"
 
 [node name="InteriorPresentation" type="Node2D" parent="."]
 script = ExtResource("4_interior_presentation")
