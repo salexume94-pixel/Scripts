@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/npc.gd" id="1_npc"]
+
+[sub_resource type="CircleShape2D" id="NPCShape"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="NPCShapeQuest"]
+radius = 20.0
+
+[node name="NPC" type="StaticBody2D"]
+script = ExtResource("1_npc")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("NPCShape")
