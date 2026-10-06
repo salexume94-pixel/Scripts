@@ -28,3 +28,7 @@ enum Strategy {
 ## Minimum selection weight retained after profile adjustments.
 ## Zero means the action may be completely excluded by the profile.
 @export_range(0.0, 9999.0) var minimum_selection_weight: float = 0.0
+
+## Multiplier applied when the AI selected the same action on the previous enemy turn.
+## This preserves a known weakness priority without making one action repeat forever.
+@export_range(0.0, 1.0) var repeat_action_multiplier: float = 0.5
