@@ -146,4 +146,16 @@ Existing mechanics should be redesigned and implemented according to this archit
 
 Named locations that may have gameplay and story significance should be represented as reusable world data rather than only as scene-node names or UI text.
 
-A location definition should provide a stable location ID and player-facing name, with room for future metadata such as location type and story significance. World scene nodes may reference these definitions while remaining responsible for their physical presentation and interaction behavior.
+`world/world_location_data.gd` defines the reusable `WorldLocationData` Resource. It provides:
+- Stable location ID
+- Owning world ID
+- Player-facing name
+- Location type
+- Optional description
+- Story-significance metadata
+
+`world/world_location_database.gd` is the authoritative catalog for location definitions. Gameplay scenes may continue to carry stable IDs for their physical/runtime context, but reusable player-facing location metadata should come from the location definition rather than being duplicated in UI code.
+
+Location definitions must remain separate from map presentation. Map coordinates and world-to-map conversion are intentionally reserved for the Map / World Map Foundation task.
+
+World scene nodes remain responsible for physical presentation and interaction behavior. The location data resource does not perform scene transitions, track Player position, own quest state, or render UI.
