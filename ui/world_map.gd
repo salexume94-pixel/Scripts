@@ -90,7 +90,11 @@ func _draw() -> void:
 		if not bool(location_resource.get("map_visible")):
 			continue
 
-		var location_map_position: Vector2 = location_resource.get("map_position")
+		var location_map_position_variant = location_resource.get("map_position")
+		if not location_map_position_variant is Vector2:
+			continue
+
+		var location_map_position := location_map_position_variant as Vector2
 		_draw_location_marker(location_resource, location_map_position)
 
 	# Draw the Player after locations so the current position is always visible.
@@ -136,15 +140,7 @@ func _draw_location_marker(location: Resource, map_position: Vector2) -> void:
 		return
 
 	var logical_bounds: Rect2 = map_data.get("map_bounds")
-	var normalized := Vector2(
-		inverse_lerp(logical_bounds.position.x, logical_bounds.end.x, map_position.x),
-		inverse_lerp(logical_bounds.position.y, logical_bounds.end.y, map_position.y)
-	)
-
-	var screen_position := Vector2(
-		lerp(map_rect.position.x, map_rect.end.x, normalized.x),
-		lerp(map_rect.position.y, map_rect.end.y, normalized.y)
-	)
+	var screen_position := _map_to_screen_position(logical_bounds, map_position)
 
 	var location_type := int(location.get("location_type"))
 	var marker_radius := 7.0 if location_type == 1 else 5.0
@@ -183,3 +179,17 @@ func _draw_player_marker(map_position: Vector2) -> void:
 	draw_circle(screen_position, 8.0, Color(0.95, 0.95, 0.95, 1.0))
 	draw_circle(screen_position, 4.0, Color(0.15, 0.35, 0.90, 1.0))
 	draw_circle(screen_position, 10.0, Color(0.90, 0.90, 0.90, 0.9), false, 2.0)
+
+
+func _map_to_screen_position(logical_bounds: Rect2, map_position: Vector2) -> Vector2:
+	# Convert logical map coordinates into the visible panel. Keeping this
+	# conversion in one helper keeps location and Player markers consistent.
+	var normalized := Vector2(
+		inverse_lerp(logical_bounds.position.x, logical_bounds.end.x, map_position.x),
+		inverse_lerp(logical_bounds.position.y, logical_bounds.end.y, map_position.y)
+	)
+
+	return Vector2(
+		lerp(map_rect.position.x, map_rect.end.x, normalized.x),
+		lerp(map_rect.position.y, map_rect.end.y, normalized.y)
+	)
