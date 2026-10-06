@@ -46,4 +46,4 @@ position = Vector2(0, 120)
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
 
-[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")
+[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")]
