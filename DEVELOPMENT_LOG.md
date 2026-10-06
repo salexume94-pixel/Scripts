@@ -1,3 +1,42 @@
+### Combat Affinity: Resist Implementation
+
+Implemented the Fire Resist affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_resist.tres
+- enemies/definitions/slime_resist.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Resist enemy definition without changing the existing Slime's Fire Weak behavior.
+- Registered `slime_resist` in EnemyDatabase so CombatManager can resolve it through the authoritative enemy catalog.
+- Added a DEBUG entry point labeled `Test Battle (Fire Resist)`.
+- The existing CombatRules Resist behavior remains authoritative: Fire damage is reduced to 0.5x and consumes one full Press Turn.
+- Kept Resist testing separate from the normal Fire Weak test so both affinity behaviors can be verified independently.
+- No runtime verification has been claimed yet.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Open the Character/Inventory DEBUG panel.
+- Confirm `Test Battle (Fire Resist)` appears.
+- Start the Fire Resist encounter without debugger/parse/resource errors.
+- Confirm Fire against Resist deals exactly 0.5x the Player Attack damage.
+- Confirm the Fire Resist action consumes exactly one full Press Turn.
+- Confirm the enemy remains alive and combat continues normally.
+- Confirm the existing Fire Weak Slime test still reports Weak, 1.5x damage, and 0.5 Press Turn.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Resist has been implemented and provided a controlled runtime test encounter, but runtime verification is still pending.
+- Null, Drain, and Repel remain the next affinity implementations/tests.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Player Fire Action for Elemental Runtime Testing
 
 Added the first real elemental Player action so the Slime's Fire weakness can be runtime verified.
