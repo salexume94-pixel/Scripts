@@ -19,7 +19,6 @@ extends CanvasLayer
 @onready var speed_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/SpeedLabel
 @onready var equipment_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentLabel
 @onready var equipment_grid: VBoxContainer = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentGrid
-@onready var test_damage_button: Button = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDamageButton
 @onready var inventory_grid: GridContainer = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/InventoryGrid
 @onready var item_name_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemName
 @onready var item_description_label: Label = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox/ItemDescription
@@ -30,7 +29,6 @@ extends CanvasLayer
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
 const ITEM_DATABASE = preload("res://items/item_database.gd")
 const ITEM_USE_SYSTEM = preload("res://systems/item_use_system.gd")
-const DEBUG_SYSTEM = preload("res://systems/debug_system.gd")
 
 var selected_item_id: String = ""
 
@@ -38,24 +36,7 @@ var selected_item_id: String = ""
 func _ready() -> void:
 	# Start closed so the world remains active until the Player opens the HUD.
 	screen.visible = false
-	test_damage_button.pressed.connect(_on_test_damage_button_pressed)
-	var test_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestBattleButton") as Button
-	if test_battle_button != null:
-		test_battle_button.pressed.connect(_on_test_battle_button_pressed)
-	var test_resist_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestResistBattleButton") as Button
-	if test_resist_battle_button != null:
-		test_resist_battle_button.pressed.connect(_on_test_resist_battle_button_pressed)
-	var test_null_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestNullBattleButton") as Button
-	if test_null_battle_button != null:
-		test_null_battle_button.pressed.connect(_on_test_null_battle_button_pressed)
-	var test_drain_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDrainBattleButton") as Button
-	if test_drain_battle_button != null:
-		test_drain_battle_button.pressed.connect(_on_test_drain_battle_button_pressed)
-	var test_repel_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestRepelBattleButton") as Button
-	if test_repel_battle_button != null:
-		test_repel_battle_button.pressed.connect(_on_test_repel_battle_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
-	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
 	_refresh_screen()
 
@@ -335,46 +316,6 @@ func _on_item_action_button_pressed() -> void:
 				equipment.equip_item(item)
 
 	_refresh_screen()
-
-
-func _on_test_damage_button_pressed() -> void:
-	# The HUD only requests the debug action. DebugSystem owns the test behavior
-	# so normal Character/Inventory presentation remains separate from testing.
-	var player: Node = get_tree().current_scene.get_node_or_null("Player")
-	if player == null:
-		return
-
-	DEBUG_SYSTEM.test_damage(player, 25)
-	_refresh_screen()
-
-
-func _on_test_battle_button_pressed() -> void:
-	# The HUD only requests the debug action. DebugSystem owns the development
-	# entry point while CombatManager owns the actual combat state transition.
-	DEBUG_SYSTEM.start_test_battle("slime")
-
-
-func _on_test_resist_battle_button_pressed() -> void:
-	# Start the controlled Fire Resist encounter so affinity behavior can be
-	# verified without changing the normal Slime weakness test.
-	DEBUG_SYSTEM.start_test_battle("slime_resist")
-
-
-func _on_test_null_battle_button_pressed() -> void:
-	# Start the controlled Fire Null encounter so nullification can be verified
-	# independently from the existing Weak and Resist encounters.
-	DEBUG_SYSTEM.start_test_battle("slime_null")
-
-
-func _on_test_drain_battle_button_pressed() -> void:
-	# Start the controlled Fire Drain encounter so healing can be verified
-	# independently from the other affinity tests.
-	DEBUG_SYSTEM.start_test_battle("slime_drain")
-
-func _on_test_repel_battle_button_pressed() -> void:
-	# Start the controlled Fire Repel encounter so reflected damage can be
-	# verified independently from the other affinity tests.
-	DEBUG_SYSTEM.start_test_battle("slime_repel")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:
