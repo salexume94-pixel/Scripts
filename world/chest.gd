@@ -17,10 +17,6 @@ const ITEM_DATABASE = preload("res://items/item_database.gd")
 
 ## Stable item ID used to choose the development reward for this chest.
 @export var reward_item_id: String = "potion"
-
-# Tracks whether the Player is currently close enough to interact.
-var player_in_range: bool = false
-
 # Tracks whether this chest has already been opened.
 # A chest can only be opened once in this initial implementation.
 var is_opened: bool = false
@@ -70,18 +66,3 @@ func open_chest() -> void:
 	# Change the visible Chest to show that it has been opened.
 	$ChestVisual.color = Color(0.65, 0.45, 0.18, 1.0)
 
-
-func _on_interaction_area_body_entered(body: Node2D) -> void:
-	# Only the Player should activate this Chest's interaction range.
-	if body.name != "Player":
-		return
-
-	player_in_range = true
-
-
-func _on_interaction_area_body_exited(body: Node2D) -> void:
-	# Only clear the interaction state when the Player leaves the range.
-	if body.name != "Player":
-		return
-
-	player_in_range = false
