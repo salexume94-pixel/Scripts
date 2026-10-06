@@ -60,28 +60,31 @@ Labels should be driven by map/world data rather than scattered UI-specific stri
 
 ---
 
-### 4. Combat Polish
+### 4. Combat Polish - COMPLETE
 
-Continue polishing combat presentation and usability after the map work.
+The planned Combat Polish work has been implemented and runtime verified.
 
-Current combat foundation already includes:
-- Player and enemy actions
-- Elemental affinities
+Completed:
+- Player and enemy combat actions
+- Elemental affinity presentation and resolution
 - Speed-based accuracy and critical resolution
 - Defend and Pass
 - Enemy behavior profiles
-- Combat feedback
+- Combat feedback and turn-state presentation
 - Victory/defeat handling
 - Run and Return to World
 - Overworld encounter integration
+- Combat Debug HUD and diagnostic presentation
 
-Remaining polish should focus on presentation, clarity, feel, and issues discovered during continued runtime testing rather than replacing the existing combat architecture.
+Combat remains subject to ongoing balance and presentation refinement as new content is added, but the current roadmap-level Combat Polish task is complete.
 
 ---
 
-### 5. Balance
+### 5. Balance - ONGOING WORLD-BUILDING CONSTRAINT
 
 Balance is an ongoing constraint during world building, not something that must wait until the end.
+
+A broader final balance pass remains planned after sufficient world, enemy, equipment, quest, and progression content exists.
 
 Continue evaluating:
 - Enemy difficulty
@@ -98,7 +101,7 @@ A broader balance pass should happen after enough world, enemy, equipment, quest
 
 ---
 
-### 6. Quest Log - FOUNDATION IMPLEMENTED
+### 6. Quest Log - FOUNDATION IMPLEMENTED, RUNTIME VERIFICATION PENDING
 
 The Quest Log foundation has been implemented.
 
@@ -112,7 +115,7 @@ Current foundation includes:
 - Quest Log UI
 - Save/load serialization boundary
 
-The next quest-related work is actual quest content and its connections to world systems.
+The remaining work for this roadmap item is the documented runtime verification pass. The next quest-related development task after verification is actual quest content and its connections to world systems.
 
 ---
 
