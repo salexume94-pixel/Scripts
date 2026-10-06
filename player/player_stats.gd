@@ -13,6 +13,11 @@ extends Node
 ## progress or current health.
 
 const DEFAULT_FIRE_WEAK = preload("res://player/definitions/player_fire_weak.tres")
+const DEFAULT_WATER_WEAK = preload("res://player/definitions/player_water_weak.tres")
+const DEFAULT_EARTH_WEAK = preload("res://player/definitions/player_earth_weak.tres")
+const DEFAULT_AIR_WEAK = preload("res://player/definitions/player_air_weak.tres")
+const DEFAULT_LIGHT_WEAK = preload("res://player/definitions/player_light_weak.tres")
+const DEFAULT_DARK_WEAK = preload("res://player/definitions/player_dark_weak.tres")
 
 @export var level: int = 1
 @export var experience: int = 0
@@ -29,12 +34,19 @@ const DEFAULT_FIRE_WEAK = preload("res://player/definitions/player_fire_weak.tre
 @export var magic_defense: int = 10
 @export var speed: int = 10
 
-## Known elemental/physical reactions for this Player.
+## Elemental weakness definitions available to the Player.
 ##
-## The initial development configuration gives the Player a Fire weakness so
-## Enemy AI can be runtime-tested against a real known weakness. Future systems
-## can replace or extend this list through equipment, progression, or effects.
-@export var affinities: Array[Resource] = [DEFAULT_FIRE_WEAK]
+## The combat test screen cycles which one is active. Only one elemental
+## weakness is marked Weak at a time so Enemy AI can be tested against each
+## element independently. The definitions themselves remain reusable data.
+@export var affinities: Array[Resource] = [
+	DEFAULT_FIRE_WEAK,
+	DEFAULT_WATER_WEAK,
+	DEFAULT_EARTH_WEAK,
+	DEFAULT_AIR_WEAK,
+	DEFAULT_LIGHT_WEAK,
+	DEFAULT_DARK_WEAK,
+]
 
 # Equipment modifiers are tracked separately so an equipment change can be
 # reversed cleanly without losing the Player's underlying base statistics.
@@ -100,7 +112,6 @@ func restore_mp(amount: int) -> int:
 		return 0
 
 	var old_mp := mp
-	mp = mini(mp + amount, max_mp)
 	mp = mini(mp + amount, max_mp)
 	_sync_to_game_state()
 	return mp - old_mp
