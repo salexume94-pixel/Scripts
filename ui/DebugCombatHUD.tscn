@@ -61,37 +61,37 @@ layout_mode = 2
 autowrap_mode = 3
 text = "Target affinities:"
 
-[node name="PlayerAffinities" type="Label" parent="Panel/Margin/Content"]
+[node name="PlayerAffinities" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
 text = "Player affinities:"
 
-[node name="LastPlayer" type="Label" parent="Panel/Margin/Content"]
+[node name="LastPlayer" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
 text = "Last Player action:"
 
-[node name="LastEnemy" type="Label" parent="Panel/Margin/Content"]
+[node name="LastEnemy" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
 text = "Last Enemy action:"
 
-[node name="AITitle" type="Label" parent="Panel/Margin/Content"]
+[node name="AITitle" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 text = "AI DECISION TRACE"
 
-[node name="AITrace" type="Label" parent="Panel/Margin/Content"]
+[node name="AITrace" type="Label" parent="Panel/Margin/Scroll/Content"]
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
 size_flags_vertical = 3
 autowrap_mode = 3
 text = "AI trace unavailable."
 
-[node name="LogTitle" type="Label" parent="Panel/Margin/Content"]
+[node name="LogTitle" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 text = "COMBAT LOG"
 
-[node name="LogScroll" type="ScrollContainer" parent="Panel/Margin/Content"]
+[node name="LogScroll" type="ScrollContainer" parent="Panel/Margin/Scroll/Content"]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 3
@@ -102,7 +102,7 @@ size_flags_horizontal = 3
 autowrap_mode = 3
 text = "Combat log unavailable."
 
-[node name="Help" type="Label" parent="Panel/Margin/Content"]
+[node name="Help" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 text = "F3: Toggle debug HUD"
 horizontal_alignment = 1
