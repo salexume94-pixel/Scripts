@@ -1358,3 +1358,22 @@ Runtime verification required:
 2. Confirm the selected profile remains unchanged for the duration of each battle.
 3. Confirm the existing fixed AI test encounters still use their intended profiles.
 4. Confirm no debugger errors occur when starting combat or taking Enemy Turns.
+
+## 2026-10-06 Overworld Enemy Encounter Testing
+
+Added a real overworld path into the Enemy AI system so profile selection can be tested without using the debug HUD.
+
+Changes:
+- Added `systems/world_encounter_system.gd` to monitor Player travel distance and perform random encounter checks.
+- Added the encounter system to `scenes/World.tscn`.
+- The current test encounter uses the existing `slime` EnemyData definition.
+- The overworld performs an encounter roll every 64 pixels of Player travel with a 50% encounter chance.
+- When an encounter occurs, the existing `CombatManager.start_encounter()` path is used, so normal encounter-level AI profile selection remains authoritative.
+
+Runtime verification required:
+1. Start the game and move around the overworld without using the debug AI buttons.
+2. Confirm a Slime battle starts after normal movement.
+3. Confirm the combat log reports the selected AI profile.
+4. Repeat enough encounters to observe Balanced, Aggressive, Weakness Hunter, and Defensive profiles appearing randomly.
+5. Confirm the selected profile remains stable for each individual battle.
+6. Confirm no debugger errors occur during overworld movement or encounter transitions.
