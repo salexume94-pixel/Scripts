@@ -116,7 +116,7 @@ func _update_combat_controls() -> void:
 	var critical_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/CriticalTestButton") as Button
 	var miss_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/MissTestButton") as Button
 	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/RunButton") as Button
-	var cycle_weakness_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/CycleWeaknessButton") as Button
+	var cycle_weakness_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/WeaknessControls/CycleWeaknessButton") as Button
 	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
 	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or cycle_weakness_button == null or victory_button == null:
