@@ -32,8 +32,8 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 
 	var affinity_name := AFFINITIES.get_display_name(CombatManager.get_last_player_affinity())
 	var damage_type_name := DAMAGE_TYPES.get_display_name(CombatManager.get_last_player_damage_type())
-	var result_type := CombatManager.get_last_player_result_type()
-	var damage := CombatManager.get_last_damage()
+	var result_type: String = CombatManager.get_last_player_result_type()
+	var damage: int = CombatManager.get_last_damage()
 	var critical: bool = CombatManager.get_last_player_critical()
 
 	if CombatManager.is_victory():
