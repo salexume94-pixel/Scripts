@@ -39,3 +39,12 @@ enum LocationType {
 ## The flag does not itself trigger story content. It is metadata for systems
 ## that may need to distinguish ordinary locations from important ones.
 @export var story_significant: bool = false
+
+## Logical map-space position for this location.
+## This is deliberately separate from a scene node's world position so map
+## presentation can use a stable coordinate system independent of world pixels.
+@export var map_position: Vector2 = Vector2.ZERO
+
+## Controls whether the location is currently shown on the player-facing map.
+## The location remains registered even when its marker is hidden.
+@export var map_visible: bool = true
