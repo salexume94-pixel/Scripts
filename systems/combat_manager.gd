@@ -12,6 +12,8 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
 const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_test.tres")
 const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
+const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
+const AFFINITIES = preload("res://combat/affinities.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
@@ -63,6 +65,14 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.player_press_turns_remaining = 4.0
 	if enemy_data.actions.is_empty():
 		return false
+
+	# Capture the Player's configured affinities before replacing the World scene.
+	# Enemy AI uses this encounter snapshot so selection does not depend on the
+	# Battle presentation scene or a recreated Player node.
+	var player_stats_node := player.get_node_or_null("PlayerStats")
+	if player_stats_node != null:
+		combat_state.player_affinities = player_stats_node.get("affinities").duplicate()
+
 	var first_action: Resource = enemy_data.actions[0]
 	combat_state.enemy_attack = first_action.power
 	active_combat = combat_state
@@ -275,28 +285,76 @@ func enemy_data_for_active_combat() -> Resource:
 	return ENEMY_DATABASE.get_enemy(active_combat.enemy_id)
 
 func _select_enemy_action(enemy_data: Resource) -> Resource:
-	# Choose one available action using its configured relative weight.
-	# This keeps selection rules in CombatManager while action definitions remain
-	# reusable Resources.
+	# Select from the enemy's available actions using both configured weights and
+	# the enemy's behavior profile. Known Player weaknesses can raise an action's
+	# priority, while harmful affinities can remove an action from consideration.
 	if enemy_data == null or enemy_data.actions.is_empty():
 		return null
 
+	var behavior: Resource = enemy_data.behavior_profile
+	if behavior == null:
+		behavior = DEFAULT_ENEMY_BEHAVIOR
+
 	var total_weight := 0.0
+	var weighted_actions: Array[Dictionary] = []
+	var max_power := 1
 	for action in enemy_data.actions:
-		if action != null and action.selection_weight > 0.0:
-			total_weight += action.selection_weight
+		if action != null:
+			max_power = maxi(max_power, action.power)
+
+	for action in enemy_data.actions:
+		if action == null or action.selection_weight <= 0.0:
+			continue
+
+		var weight: float = action.selection_weight
+		var player_affinity := _get_player_affinity(action.damage_type)
+
+		match behavior.strategy:
+			behavior.Strategy.AGGRESSIVE:
+				# Aggressive enemies prefer stronger actions while retaining their
+				# configured relative weights.
+				weight *= lerpf(1.0, 2.0, clampf(float(action.power) / float(max_power), 0.0, 1.0))
+			behavior.Strategy.WEAKNESS_HUNTER:
+				# Weakness hunters strongly prioritize actions that exploit a known
+				# Player weakness.
+				if player_affinity == AFFINITIES.Type.WEAK:
+					weight *= action.weakness_weight_multiplier * behavior.weakness_priority
+
+		if player_affinity != AFFINITIES.Type.NORMAL and player_affinity != AFFINITIES.Type.WEAK:
+			weight *= behavior.unfavorable_affinity_multiplier
+
+		if weight > 0.0:
+			weight = maxf(weight, behavior.minimum_selection_weight)
+
+		if weight > 0.0:
+			weighted_actions.append({"action": action, "weight": weight})
+			total_weight += weight
+
 	if total_weight <= 0.0:
 		return null
 
 	var roll := randf() * total_weight
-	for action in enemy_data.actions:
-		if action == null or action.selection_weight <= 0.0:
-			continue
-		roll -= action.selection_weight
+	for entry in weighted_actions:
+		roll -= entry.weight
 		if roll < 0.0:
-			return action
+			return entry.action
 
-	return null
+	return weighted_actions.back().action
+
+
+func _get_player_affinity(damage_type: int) -> int:
+	# Resolve the Player's captured affinity for an enemy action's damage type.
+	# Unconfigured damage types are intentionally treated as Normal.
+	if not is_in_combat():
+		return AFFINITIES.Type.NORMAL
+
+	for entry in active_combat.player_affinities:
+		if entry == null:
+			continue
+		if entry.damage_type == damage_type:
+			return entry.affinity
+
+	return AFFINITIES.Type.NORMAL
 
 func get_last_enemy_action_name() -> String:
 	return active_combat.last_enemy_action_name if is_in_combat() else ""
