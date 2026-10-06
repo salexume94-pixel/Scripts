@@ -112,7 +112,7 @@ autowrap_mode = 2
 
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Use Actions during the Player Turn. TEST ACTIONS are development-only."
+text = "Use Actions during the Player Turn."
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -167,23 +167,6 @@ custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 text = "Run"
 [connection signal="pressed" from="BottomActionBar/ActionVBox/RunButton" to="." method="_on_run_pressed"]
-
-[node name="TestHeader" type="Label" parent="BottomActionBar/ActionVBox"]
-layout_mode = 2
-text = "TEST ACTIONS"
-horizontal_alignment = 1
-
-[node name="CriticalTestButton" type="Button" parent="BottomActionBar/ActionVBox"]
-custom_minimum_size = Vector2(0, 18)
-layout_mode = 2
-text = "Critical Test"
-[connection signal="pressed" from="BottomActionBar/ActionVBox/CriticalTestButton" to="." method="_on_critical_test_pressed"]
-
-[node name="MissTestButton" type="Button" parent="BottomActionBar/ActionVBox"]
-custom_minimum_size = Vector2(0, 18)
-layout_mode = 2
-text = "Miss Test"
-[connection signal="pressed" from="BottomActionBar/ActionVBox/MissTestButton" to="." method="_on_miss_test_pressed"]
 
 [node name="VictoryButton" type="Button" parent="BottomActionBar/ActionVBox"]
 custom_minimum_size = Vector2(0, 18)
