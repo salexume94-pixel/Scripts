@@ -2290,3 +2290,31 @@ Runtime verification:
 - Moved all diagnostic labels, section headers, the combat log container, and help text under the HUD's scrollable `Scroll/Content` hierarchy.
 - This keeps all Debug Combat HUD text inside the 230-pixel panel width and allows the entire diagnostic display to scroll vertically.
 - Word wrapping remains enabled.
+
+
+### Roadmap Correction: Map Foundation Before Map Labels
+
+Created ROADMAP.md as the dedicated development-order document.
+
+Corrected the previous roadmap ordering so **Map / World Map Foundation** comes before **Map Labels**. The project currently has a playable world but does not yet have a proper player-facing map system, so implementing labels before the map foundation would be premature.
+
+Added roadmap guidance for:
+- Separating roadmap planning from the historical development log.
+- Establishing reusable map/location data before adding map labels.
+- Creating a basic map UI and player-position display.
+- Keeping map data, world state, and presentation separated according to ARCHITECTURE.md.
+- Treating balance as an ongoing world-building constraint rather than only a final pass.
+- Preserving the existing Quest Log foundation and using QuestManager as the authoritative quest runtime owner.
+- Following the established GitHub -> local pull -> Godot runtime verification workflow.
+
+The corrected immediate development order is:
+1. Equipment Comparison / Details - complete.
+2. **Map / World Map Foundation - next.**
+3. Map Labels.
+4. Combat Polish.
+5. Balance.
+6. Quest Log foundation - implemented.
+7. Quests / Gated Areas.
+8. Ending / Boss.
+
+No map implementation was added in this documentation-only change.
