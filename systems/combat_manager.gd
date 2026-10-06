@@ -103,6 +103,22 @@ func get_enemy_behavior_profile_name() -> String:
 	# Expose the selected encounter profile to Battle without exposing CombatState.
 	return active_combat.enemy_behavior_profile.profile_id if is_in_combat() and active_combat.enemy_behavior_profile != null else "unknown"
 
+func get_last_player_affinity() -> int:
+	# Expose the resolved Player attack affinity for Battle presentation.
+	return active_combat.last_player_affinity if is_in_combat() else AFFINITIES.Type.NORMAL
+
+func get_last_player_result_type() -> String:
+	# Expose the resolved Player action result for Battle presentation.
+	return active_combat.last_player_result_type if is_in_combat() else "damage"
+
+func get_last_damage() -> int:
+	# Expose the resolved damage value for Battle presentation.
+	return active_combat.last_damage if is_in_combat() else 0
+
+func get_last_player_critical() -> bool:
+	# Expose the resolved critical flag for Battle presentation.
+	return active_combat.last_player_critical if is_in_combat() else false
+
 func get_last_player_damage_type() -> int:
 	# Expose the resolved Player damage type so Battle can present the action
 	# without reaching into CombatState directly.
