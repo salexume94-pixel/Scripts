@@ -18,7 +18,7 @@ enum Phase {
 @export var enemy_hp: int = 0
 @export var enemy_max_hp: int = 0
 
-# Four full Press Turns are available to the Player at the start of a round.
+# The configured Press Turn count is available to the Player at the start of a round.
 # A fractional value allows weakness and critical actions to consume half turns.
 @export var player_press_turns: int = 4
 @export var player_press_turns_remaining: float = 4.0
