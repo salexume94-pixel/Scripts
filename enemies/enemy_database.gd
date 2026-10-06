@@ -14,6 +14,9 @@ const SLIME_NULL: Resource = preload("res://enemies/definitions/slime_null.tres"
 const SLIME_DRAIN: Resource = preload("res://enemies/definitions/slime_drain.tres")
 const SLIME_REPEL: Resource = preload("res://enemies/definitions/slime_repel.tres")
 const SLIME_AI_TEST: Resource = preload("res://enemies/definitions/slime_ai_test.tres")
+const SLIME_AI_BALANCED_TEST: Resource = preload("res://enemies/definitions/slime_ai_balanced_test.tres")
+const SLIME_AI_AGGRESSIVE_TEST: Resource = preload("res://enemies/definitions/slime_ai_aggressive_test.tres")
+const SLIME_AI_DEFENSIVE_TEST: Resource = preload("res://enemies/definitions/slime_ai_defensive_test.tres")
 
 static func get_enemy(enemy_id: String) -> Resource:
 	# Resolve a stable enemy ID to its shared EnemyData Resource.
@@ -30,6 +33,12 @@ static func get_enemy(enemy_id: String) -> Resource:
 			return SLIME_REPEL
 		"slime_ai_test":
 			return SLIME_AI_TEST
+		"slime_ai_balanced_test":
+			return SLIME_AI_BALANCED_TEST
+		"slime_ai_aggressive_test":
+			return SLIME_AI_AGGRESSIVE_TEST
+		"slime_ai_defensive_test":
+			return SLIME_AI_DEFENSIVE_TEST
 		_:
 			return null
 
@@ -43,4 +52,7 @@ static func get_all_enemies() -> Array[Resource]:
 		SLIME_DRAIN,
 		SLIME_REPEL,
 		SLIME_AI_TEST,
+		SLIME_AI_BALANCED_TEST,
+		SLIME_AI_AGGRESSIVE_TEST,
+		SLIME_AI_DEFENSIVE_TEST,
 	]
