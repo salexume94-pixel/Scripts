@@ -75,6 +75,7 @@ static func resolve_damage_against_affinities(
 		AFFINITIES.Type.NULLIFY:
 			damage = 0
 			turn_cost = 2.0
+			result_type = "nullify"
 		AFFINITIES.Type.DRAIN:
 			result_type = "drain"
 			turn_cost = 4.0
