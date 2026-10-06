@@ -410,5 +410,11 @@ func end_combat() -> bool:
 
 func get_active_enemy_id() -> String:
 	return active_combat.enemy_id if is_in_combat() else ""
-func get_phase() -> int:
-	return active_combat.phase if is_in_combat() else -1
+	
+func get_active_enemy_name() -> String:
+	if not is_in_combat():
+		return ""
+	var enemy_data: Resource = enemy_data_for_active_combat()
+	if enemy_data == null:
+		return active_combat.enemy_id
+	return enemy_data.display_name
