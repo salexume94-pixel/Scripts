@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "tutorial_town_entry"
+world_id = "world_map"
+display_name = "Tutorial Town"
+location_type = 1
+description = "The entrance to Tutorial Town from the wider world."
+story_significant = true
+map_position = Vector2(400, 400)
+map_visible = true
