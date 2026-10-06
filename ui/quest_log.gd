@@ -138,7 +138,7 @@ func _format_rewards(quest: Resource) -> String:
 		var item_id: String = str(reward.get("item_id", ""))
 		var quantity: int = max(int(reward.get("quantity", 1)), 1)
 		var item: Resource = ITEM_DATABASE.get_item(item_id)
-		var display_name := item.get("display_name") if item != null else item_id
+		var display_name: String = str(item.get("display_name")) if item != null else item_id
 		labels.append("%s x%d" % [display_name, quantity])
 
 	return "Rewards: " + ", ".join(labels)
@@ -147,7 +147,7 @@ func _format_rewards(quest: Resource) -> String:
 func _show_notification(message: String) -> void:
 	# Use a generation token so an older timer cannot hide a newer notification.
 	notification_generation += 1
-	var generation := notification_generation
+	var generation: int = notification_generation
 	notification_label.text = message
 	notification_label.visible = true
 
