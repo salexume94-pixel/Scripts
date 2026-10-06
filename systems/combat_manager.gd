@@ -126,6 +126,16 @@ func _resolve_enemy_turn() -> void:
 	if saved_stats.is_empty():
 		return
 
+	var enemy_action: Resource = _select_enemy_action(enemy_data_for_active_combat())
+	if enemy_action == null:
+		return
+
+	# Store the selected action in CombatState so the presentation layer can
+	# report exactly what the enemy performed without owning selection logic.
+	active_combat.enemy_attack = enemy_action.power
+	active_combat.last_enemy_action_id = enemy_action.action_id
+	active_combat.last_enemy_action_name = enemy_action.display_name
+
 	var player_defense: int = saved_stats.get("defense", 0)
 	var damage := maxi(active_combat.enemy_attack - player_defense, 1)
 	var current_hp: int = saved_stats.get("hp", saved_stats.get("max_hp", 0))
@@ -146,6 +156,40 @@ func _resolve_enemy_turn() -> void:
 	active_combat.player_press_turns_remaining = float(active_combat.player_press_turns)
 	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
+
+func enemy_data_for_active_combat() -> Resource:
+	# Resolve the authoritative definition again when an enemy action is needed.
+	# The database remains the single source of truth for available actions.
+	if not is_in_combat():
+		return null
+	return ENEMY_DATABASE.get_enemy(active_combat.enemy_id)
+
+func _select_enemy_action(enemy_data: Resource) -> Resource:
+	# Choose one available action using its configured relative weight.
+	# This keeps selection rules in CombatManager while action definitions remain
+	# reusable Resources.
+	if enemy_data == null or enemy_data.actions.is_empty():
+		return null
+
+	var total_weight := 0.0
+	for action in enemy_data.actions:
+		if action != null and action.selection_weight > 0.0:
+			total_weight += action.selection_weight
+	if total_weight <= 0.0:
+		return null
+
+	var roll := randf() * total_weight
+	for action in enemy_data.actions:
+		if action == null or action.selection_weight <= 0.0:
+			continue
+		roll -= action.selection_weight
+		if roll < 0.0:
+			return action
+
+	return null
+
+func get_last_enemy_action_name() -> String:
+	return active_combat.last_enemy_action_name if is_in_combat() else ""
 
 func get_enemy_hp() -> int:
 	return active_combat.enemy_hp if is_in_combat() else 0
