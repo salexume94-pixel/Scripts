@@ -21,6 +21,7 @@ color = Color(0.18, 0.18, 0.22, 1)
 position = Vector2(0, 160)
 target_scene = "res://scenes/World.tscn"
 target_player_position = Vector2(0, -8)
+use_return_position = true
 
 [node name="PotionChest" parent="InteriorContent" instance=ExtResource("6_chest")]
 position = Vector2(-140, -80)
