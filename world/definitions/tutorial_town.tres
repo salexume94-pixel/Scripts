@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_location_data")
 location_id = "tutorial_town"
-world_id = "tutorial_world"
+world_id = "tutorial_town"
 display_name = "Tutorial Town"
 location_type = 1
 description = "The player's starting town and the first safe settlement in the world."
