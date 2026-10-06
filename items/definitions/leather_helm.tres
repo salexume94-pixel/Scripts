@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = "leather_helm"
+display_name = "Leather Helm"
+description = "A light helm that grants +2 Defense."
+item_type = 1
+equipment_slot = 3
+defense_bonus = 2
+max_stack_size = 1
