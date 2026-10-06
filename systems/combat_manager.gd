@@ -9,6 +9,7 @@ const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
 const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
 const COMBAT_RULES = preload("res://combat/combat_rules.gd")
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
+const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
@@ -63,10 +64,10 @@ func start_encounter(enemy_id: String) -> bool:
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
-func player_attack(damage_type: int = DAMAGE_TYPES.Type.PHYSICAL) -> bool:
-	# Resolve the Player's current basic attack against the enemy's affinity.
-	# The optional damage type lets future skills reuse this combat path without
-	# duplicating Press Turn and affinity logic.
+func player_attack(action: Resource = null) -> bool:
+	# Resolve a Player action against the enemy's affinity.
+	# Action data supplies the damage type and power multiplier, while this
+	# coordinator applies the shared Press Turn and damage rules.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
 		return false
 	if active_combat.player_press_turns_remaining <= 0.0:
@@ -93,15 +94,17 @@ func player_attack(damage_type: int = DAMAGE_TYPES.Type.PHYSICAL) -> bool:
 	if enemy_data == null:
 		return false
 
+	var selected_action: Resource = action if action != null else PLAYER_PHYSICAL_ACTION
+	var action_power := maxi(int(round(float(player_attack_value) * selected_action.power_multiplier)), 1)
 	var damage_result: Dictionary = COMBAT_RULES.resolve_damage(
-		maxi(player_attack_value, 1),
-		damage_type,
+		action_power,
+		selected_action.damage_type,
 		enemy_data
 	)
 
-	active_combat.last_player_attack = player_attack_value
+	active_combat.last_player_attack = action_power
 	active_combat.last_damage = damage_result.damage
-	active_combat.last_player_damage_type = damage_type
+	active_combat.last_player_damage_type = selected_action.damage_type
 	active_combat.last_player_affinity = damage_result.affinity
 	active_combat.last_player_result_type = damage_result.result_type
 
