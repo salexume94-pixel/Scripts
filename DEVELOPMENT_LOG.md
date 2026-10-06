@@ -2213,3 +2213,13 @@ Current direction:
 - No known combat-system runtime errors remain from this verification pass.
 - Combat is considered locally verified and working as intended.
 
+
+
+### Combat Debug HUD: Layout Issue Under Investigation
+
+- A separate Debug Combat HUD has been added for development/testing purposes without changing the underlying combat logic.
+- The Debug Combat HUD is currently displayed on the right side of the Battle screen alongside the normal in-game player Battle HUD.
+- Current issue: the Debug Combat HUD is overlapping the normal in-game Battle HUD. The overlap is specifically occurring at the left edge of the Debug Combat HUD, which intrudes into the centered Battle HUD.
+- Multiple layout adjustments have been made to move and resize the Debug Combat HUD, but local runtime verification of the final positioning is still required.
+- Current layout target: Actions on the left, the normal Battle HUD centered, and the Debug Combat HUD separated on the right side of the screen.
+- Runtime verification required: confirm the Debug Combat HUD no longer overlaps the normal Battle HUD at the 1152x648 project viewport.
