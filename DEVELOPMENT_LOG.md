@@ -1,3 +1,14 @@
+## 2026-10-06 - Enemy AI Defensive Parse Fix
+
+Fixed a Godot 4 GDScript parse error in systems/combat_manager.gd caused by inferred local types inside the Defensive behavior branch.
+
+Changed:
+- power_ratio now has an explicit float type.
+- defensive_factor now has an explicit float type.
+
+This restores CombatManager loading and therefore restores the combat autoload required by the Enemy AI debug encounters.
+
+Runtime verification remains pending after pulling the latest branch.
 ## 2026-10-06 - Enemy AI Behavior Profiles, Edge-Case Safety, and Final Framework Checkpoint
 
 Expanded the Enemy AI framework so multiple behavior profiles use the same action-selection system without enemy-specific logic.
