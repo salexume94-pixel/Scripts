@@ -20,7 +20,7 @@
 [ext_resource type="Resource" path="res://world/definitions/residence_05.tres" id="18_residence_05_location"]
 [ext_resource type="Resource" path="res://world/definitions/residence_06.tres" id="19_residence_06_location"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="20_world_map"]
-[ext_resource type="PackedScene" path="res://world/Door.tscn" id="22_world_exit_door"]
+[ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="23_world_exit_boundary"]
 
 [sub_resource type="CircleShape2D" id="NPCShape"]
 radius = 16.0
@@ -130,10 +130,6 @@ color = Color(0.36, 0.31, 0.14, 1)
 polygon = PackedVector2Array(600, 650, 900, 650, 900, 900, 600, 900)
 color = Color(0.36, 0.31, 0.14, 1)
 
-[node name="TownExit" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-120, 1010, 120, 1010, 120, 1080, -120, 1080)
-color = Color(0.45, 0.35, 0.18, 1)
-
 [node name="InnLabel" type="Label" parent="WorldContent"]
 position = Vector2(-410, -395)
 text = "INN"
@@ -145,17 +141,6 @@ text = "ITEM / EQUIPMENT SHOP"
 [node name="ChurchLabel" type="Label" parent="WorldContent"]
 position = Vector2(-45, -695)
 text = "CHURCH"
-
-[node name="TownExitLabel" type="Label" parent="WorldContent"]
-position = Vector2(-55, 1090)
-text = "TOWN EXIT"
-
-[node name="WorldMapExit" parent="WorldContent" instance=ExtResource("22_world_exit_door")]
-position = Vector2(0, 1080)
-target_scene = "res://scenes/WorldMapWorld.tscn"
-target_player_position = Vector2(0, 560)
-world_id = "world_map"
-location_id = "world_map"
 
 [node name="NPC01" parent="WorldContent" instance=ExtResource("9_npc")]
 npc_name = "Mara"
@@ -197,8 +182,13 @@ position = Vector2(0, 60)
 position = Vector2(-75, 85)
 text = "QUEST GIVER"
 
-[node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
-script = ExtResource("3_world_boundaries")
+[node name="WorldExitBoundary" type="Node2D" parent="."]
+script = ExtResource("23_world_exit_boundary")
+location_bounds = Rect2(-1000, -1500, 2000, 3000)
+target_scene = "res://scenes/WorldMapWorld.tscn"
+target_player_position = Vector2(0, 560)
+target_world_id = "world_map"
+target_location_id = "world_map"
 
 
 [node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
