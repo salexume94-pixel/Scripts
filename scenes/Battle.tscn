@@ -20,12 +20,12 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(600, 680)
+custom_minimum_size = Vector2(580, 600)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 3
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
@@ -43,7 +43,7 @@ text = "Player Weakness: Unknown"
 horizontal_alignment = 1
 
 [node name="CycleWeaknessButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Cycle Player Weakness"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CycleWeaknessButton" to="." method="_on_cycle_weakness_pressed"]
@@ -59,7 +59,7 @@ text = "PLAYER TURN"
 horizontal_alignment = 1
 
 [node name="ActionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 text = "Choose an action."
 horizontal_alignment = 1
@@ -96,8 +96,8 @@ text = "Press Turns: ● ● ● ●"
 horizontal_alignment = 1
 
 [node name="CombatLogScroll" type="ScrollContainer" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 90)
-custom_maximum_size = Vector2(-1, 90)
+custom_minimum_size = Vector2(0, 70)
+custom_maximum_size = Vector2(-1, 70)
 layout_mode = 2
 size_flags_vertical = 1
 vertical_scroll_mode = 1
@@ -115,31 +115,31 @@ text = "ACTIONS"
 horizontal_alignment = 1
 
 [node name="AttackButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Attack"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/AttackButton" to="." method="_on_attack_pressed"]
 
 [node name="FireButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Fire"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/FireButton" to="." method="_on_fire_pressed"]
 
 [node name="DefendButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Defend"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/DefendButton" to="." method="_on_defend_pressed"]
 
 [node name="PassButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Pass"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/PassButton" to="." method="_on_pass_pressed"]
 
 [node name="RunButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Run"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/RunButton" to="." method="_on_run_pressed"]
@@ -150,19 +150,19 @@ text = "TEST ACTIONS"
 horizontal_alignment = 1
 
 [node name="CriticalTestButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Critical Test"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CriticalTestButton" to="." method="_on_critical_test_pressed"]
 
 [node name="MissTestButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Miss Test"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/MissTestButton" to="." method="_on_miss_test_pressed"]
 
 [node name="VictoryButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 text = "Return to World"
 visible = false
