@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "northbridge_village_entry"
+world_id = "world_map"
+display_name = "Northbridge Village"
+location_type = 1
+description = "The entrance to Northbridge Village from the wider world."
+story_significant = false
+map_position = Vector2(400, 100)
+map_visible = true
+world_position = Vector2(0, -700)
+world_entry_size = Vector2(180, 140)
+entry_scene = "res://scenes/NorthbridgeVillage.tscn"
+entry_player_position = Vector2(0, -560)
+entry_world_id = "northbridge_village"
+entry_location_id = "northbridge_village"
+entry_enabled = true
