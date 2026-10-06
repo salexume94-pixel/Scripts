@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://world/definitions/residence_05.tres" id="18_residence_05_location"]
 [ext_resource type="Resource" path="res://world/definitions/residence_06.tres" id="19_residence_06_location"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="20_world_map"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="22_world_exit_door"]
 
 [sub_resource type="CircleShape2D" id="NPCShape"]
 radius = 16.0
