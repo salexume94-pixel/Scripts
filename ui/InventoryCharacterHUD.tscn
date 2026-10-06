@@ -143,6 +143,10 @@ text = "Test Battle (Slime)"
 layout_mode = 2
 text = "Test Battle (Fire Resist)"
 
+[node name="TestNullBattleButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
+layout_mode = 2
+text = "Test Battle (Fire Null)"
+
 [node name="Spacer" type="Control" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 size_flags_vertical = 3
