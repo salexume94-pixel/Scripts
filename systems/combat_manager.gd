@@ -117,6 +117,10 @@ func get_last_player_critical() -> bool:
 	# Expose the resolved critical flag for Battle presentation.
 	return active_combat.last_player_critical if is_in_combat() else false
 
+
+func get_last_enemy_critical() -> bool:
+	return active_combat.last_enemy_result_type == "damage" and active_combat.last_enemy_damage > 0 and active_combat.last_enemy_action_name != "" and false
+
 func get_last_player_damage_type() -> int:
 	# Expose the resolved Player damage type so Battle can present the action
 	# without reaching into CombatState directly.
@@ -279,10 +283,6 @@ func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 	var resolved_accuracy: float = float(damage_result.get("accuracy", accuracy))
 	var critical_roll: float = float(damage_result.get("critical_roll", -1.0))
 	var resolved_critical_chance: float = float(damage_result.get("critical_chance", critical_chance))
-	_append_combat_log(
-		"PLAYER ATTACK: Speed %d -> Critical %.1f%% (roll %.1f); Enemy Speed %d -> Accuracy %.1f%% (roll %.1f)." %
-		[player_speed, resolved_critical_chance, critical_roll, enemy_speed, resolved_accuracy, accuracy_roll]
-	)
 	if not debug_context.is_empty():
 		_append_combat_log("%s: real Basic Attack resolution." % debug_context)
 
@@ -314,7 +314,22 @@ func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 			active_combat.last_damage = 0
 
 	consume_player_press_turn(damage_result.turn_cost)
-	_append_combat_log("PLAYER: %s deals %d damage (%s)." % [selected_action.display_name, damage_result.damage, AFFINITIES.get_display_name(damage_result.affinity)])
+	match damage_result.result_type:
+		"miss":
+			_append_combat_log("PLAYER: %s MISSED. No damage dealt." % selected_action.display_name)
+		"damage":
+			if damage_result.critical:
+				_append_combat_log("PLAYER: %s CRITICAL! %d damage." % [selected_action.display_name, damage_result.damage])
+			else:
+				_append_combat_log("PLAYER: %s dealt %d damage." % [selected_action.display_name, damage_result.damage])
+		"drain":
+			_append_combat_log("PLAYER: %s drained %d HP." % [selected_action.display_name, damage_result.damage])
+		"repel":
+			_append_combat_log("PLAYER: %s was REPELLED. %d damage reflected." % [selected_action.display_name, damage_result.damage])
+		"nullify":
+			_append_combat_log("PLAYER: %s was NULLIFIED. No damage dealt." % selected_action.display_name)
+		_:
+			_append_combat_log("PLAYER: %s dealt %d damage." % [selected_action.display_name, damage_result.damage])
 
 	if damage_result.result_type == "repel":
 		var reflected_stats: Dictionary = GameState.get_player_stats()
@@ -471,10 +486,6 @@ func _resolve_enemy_turn() -> void:
 	var critical_roll: float = float(damage_result.get("critical_roll", -1.0))
 	var resolved_accuracy: float = float(damage_result.get("accuracy", enemy_accuracy))
 	var resolved_critical_chance: float = float(damage_result.get("critical_chance", enemy_critical_chance))
-	_append_combat_log(
-		"ENEMY ATTACK: Speed %d -> Critical %.1f%% (roll %.1f); Player Speed %d -> Accuracy %.1f%% (roll %.1f)." %
-		[enemy_speed, resolved_critical_chance, critical_roll, player_speed, resolved_accuracy, accuracy_roll]
-	)
 	var damage: int = damage_result.damage
 	active_combat.last_enemy_damage_type = enemy_action.damage_type
 	active_combat.last_enemy_affinity = damage_result.affinity
@@ -493,7 +504,22 @@ func _resolve_enemy_turn() -> void:
 	saved_stats["hp"] = new_hp
 	GameState.set_player_stats(saved_stats)
 	active_combat.last_enemy_damage = damage
-	_append_combat_log("ENEMY: %s deals %d damage (%s)." % [active_combat.last_enemy_action_name, damage, AFFINITIES.get_display_name(damage_result.affinity)])
+	match damage_result.result_type:
+		"miss":
+			_append_combat_log("ENEMY: %s MISSED. No damage dealt." % active_combat.last_enemy_action_name)
+		"damage":
+			if damage_result.critical:
+				_append_combat_log("ENEMY: %s CRITICAL! %d damage." % [active_combat.last_enemy_action_name, damage])
+			else:
+				_append_combat_log("ENEMY: %s dealt %d damage." % [active_combat.last_enemy_action_name, damage])
+		"drain":
+			_append_combat_log("ENEMY: %s drained %d HP." % [active_combat.last_enemy_action_name, damage])
+		"repel":
+			_append_combat_log("ENEMY: %s was REPELLED. %d damage reflected." % [active_combat.last_enemy_action_name, damage])
+		"nullify":
+			_append_combat_log("ENEMY: %s was NULLIFIED. No damage dealt." % active_combat.last_enemy_action_name)
+		_:
+			_append_combat_log("ENEMY: %s dealt %d damage." % [active_combat.last_enemy_action_name, damage])
 	enemy_attack_performed.emit(damage)
 
 	if new_hp <= 0:
