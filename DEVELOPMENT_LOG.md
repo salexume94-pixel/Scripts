@@ -1,3 +1,43 @@
+### Combat Affinity: Repel Implementation
+
+Implemented the Fire Repel affinity as the final affinity in the current elemental foundation.
+
+Added:
+- enemies/definitions/slime_fire_repel.tres
+- enemies/definitions/slime_repel.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Repel enemy definition without changing the existing affinity test enemies.
+- Registered `slime_repel` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Repel)`.
+- Existing CombatRules Repel behavior remains authoritative: resolved Fire damage is reflected back to the Player while the target takes no damage.
+- Repel testing is isolated from the other affinity tests.
+- Repel currently uses the standard 1 Press Turn cost until runtime behavior is verified and any intended cost correction is identified.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Repel)` appears in DEBUG.
+- Start the Fire Repel encounter without parse, resource, or debugger errors.
+- Use Fire against the Repel Slime.
+- Confirm the Repel Slime's HP is unchanged.
+- Confirm the Player takes the reflected damage.
+- Confirm the reflected damage matches the resolved Fire damage.
+- Confirm the Player's Press Turns decrease by 1 full turn.
+- Confirm combat continues normally after the reflected attack.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Runtime verification is pending.
+- Critical hits and accuracy remain the next combat rules layer.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Combat Affinity: Drain Press Turn Cost Correction
 
 Updated Drain after runtime verification confirmed its healing behavior was correct but its Press Turn cost was not.
