@@ -456,16 +456,19 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 
 		match behavior.strategy:
 			ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
-				# Aggressive enemies prefer stronger actions while retaining their
-				# configured relative weights.
-				weight *= lerpf(1.0, 2.0, clampf(float(action.power) / float(max_power), 0.0, 1.0))
+				# Aggressive enemies strongly prefer higher-power actions. The
+				# configurable exponent makes the difference visible in runtime
+				# testing instead of producing nearly identical random choices.
+				var aggressive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
+				weight *= pow(aggressive_power_ratio, behavior.power_bias_strength)
 			ENEMY_BEHAVIOR_PROFILE.Strategy.DEFENSIVE:
-				# Defensive enemies favor lower-power actions. This is intentionally
-				# expressed as a profile preference so future defensive skills can
-				# use the same selector without requiring enemy-specific code.
-				var power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
-				var defensive_factor: float = (1.0 - power_ratio) * behavior.defensive_power_preference
-				weight *= lerpf(1.0, 2.0, defensive_factor)
+				# Defensive behavior currently has no dedicated defend/guard action,
+				# so it uses action power as the available proxy: lower-power attacks
+				# are treated as safer choices. This keeps the profile framework
+				# functional until true defensive enemy actions are introduced.
+				var defensive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
+				var defensive_preference: float = 1.0 - defensive_power_ratio
+				weight *= pow(defensive_preference, behavior.power_bias_strength)
 			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
 				# First choose whether this turn belongs to the weakness or
 				# non-weakness pool. Then preserve configured weights inside that pool.
