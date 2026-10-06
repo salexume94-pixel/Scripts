@@ -1377,3 +1377,19 @@ Runtime verification required:
 4. Repeat enough encounters to observe Balanced, Aggressive, Weakness Hunter, and Defensive profiles appearing randomly.
 5. Confirm the selected profile remains stable for each individual battle.
 6. Confirm no debugger errors occur during overworld movement or encounter transitions.
+
+## 2026-10-06 Display Selected Enemy AI Profile In Battle
+
+Fixed the overworld AI verification flow so the selected behavior profile is visible in the Battle UI.
+
+Changes:
+- Preserved the selected profile in the combat log after CombatState is activated.
+- Added `CombatManager.get_enemy_behavior_profile_name()` as the presentation-safe accessor.
+- Added an `EnemyAIProfileLabel` to `Battle.tscn`.
+- Battle now displays the selected profile immediately when the encounter scene opens.
+
+Runtime verification required:
+1. Trigger a normal overworld Slime encounter.
+2. Confirm the Battle UI displays one of Balanced, Aggressive, Weakness Hunter, or Defensive.
+3. Repeat multiple encounters and verify the displayed profile changes across the four available profiles over a sufficient sample.
+4. Confirm the displayed profile matches the AI behavior observed during the battle.
