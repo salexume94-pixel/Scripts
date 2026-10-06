@@ -23,7 +23,8 @@ func _on_player_attack_performed(attack_value: int) -> void:
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label == null:
 		return
-	action_label.text = "Player attacks with %d Attack." % attack_value
+	action_label.text = "Player attacks for %d damage." % CombatManager.get_last_damage()
+	_update_enemy_hp_display()
 
 
 func _update_enemy_hp_display() -> void:
