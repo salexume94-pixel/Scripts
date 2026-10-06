@@ -1184,3 +1184,40 @@ Next Combat Foundation priority:
 - Replace temporary enemy values with the authoritative EnemyData system and establish the Enemy Foundation before adding weaknesses, critical hits, resistances, enemy AI, or additional combat effects.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+### Enemy Foundation: Authoritative EnemyData
+
+Implemented the first authoritative Enemy Foundation for combat.
+
+Added:
+- enemies/enemy_data.gd
+- enemies/enemy_database.gd
+- enemies/definitions/slime.tres
+
+Updated:
+- systems/combat_manager.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added EnemyData as a Resource containing an enemy's base combat and reward statistics.
+- Added EnemyDatabase as the catalog that resolves stable enemy IDs to EnemyData definitions.
+- Added the Slime as the first registered EnemyData definition.
+- Preserved the existing Slime combat values: 50 HP and 10 Attack.
+- Added additional foundation stats for Defense, Magic Attack, Magic Defense, Speed, experience reward, and gold reward without changing current combat behavior.
+- CombatManager now resolves the requested enemy through EnemyDatabase before creating an active encounter.
+- CombatState receives mutable encounter values from EnemyData instead of CombatManager hardcoding enemy HP and Attack.
+- Unknown enemy IDs now fail to start an encounter instead of silently creating an invalid enemy.
+- Existing Press Turn, Victory, Run, and Enemy Turn behavior is intentionally unchanged.
+
+Runtime verification required:
+- Sync the latest main branch locally.
+- Confirm the project imports the new enemies scripts and Slime Resource without errors.
+- Start Debug -> Test Battle (Slime).
+- Confirm the Battle still starts with Slime at 50 / 50 HP.
+- Confirm the Slime still attacks for the same damage under the existing Player Defense calculation.
+- Confirm the complete Press Turn loop, Victory, Run, and no-error behavior remain unchanged.
+
+Known limitation:
+- EnemyData is now authoritative for base enemy definitions, but level scaling, enemy actions/skills, elemental affinities, AI, rewards, and full defeat/recovery remain future systems.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
