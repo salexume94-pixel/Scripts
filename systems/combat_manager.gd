@@ -76,7 +76,7 @@ func start_encounter(enemy_id: String) -> bool:
 	# Battle presentation scene or a recreated Player node.
 	var player_stats_node := player.get_node_or_null("PlayerStats")
 	if player_stats_node != null:
-		combat_state.player_affinities = player_stats_node.get("affinities").duplicate()
+		combat_state.player_affinities = player_stats_node.get("affinities").duplicate(true)
 
 	var first_action: Resource = enemy_data.actions[0]
 	combat_state.enemy_attack = first_action.power
@@ -261,17 +261,39 @@ func _resolve_enemy_turn() -> void:
 	active_combat.last_enemy_action_name = enemy_action.display_name
 
 	var player_defense: int = saved_stats.get("defense", 0)
-	var damage := maxi(active_combat.enemy_attack - player_defense, 1)
+	var base_damage := maxi(active_combat.enemy_attack - player_defense, 1)
 	if active_combat.player_defending:
 		# Defend currently halves the final incoming damage, with a minimum of 1.
-		damage = maxi(int(ceil(float(damage) * 0.5)), 1)
+		base_damage = maxi(int(ceil(float(base_damage) * 0.5)), 1)
 	active_combat.player_defending = false
+
+	var damage_result: Dictionary = COMBAT_RULES.resolve_damage_against_affinities(
+		base_damage,
+		enemy_action.damage_type,
+		active_combat.player_affinities,
+		enemy_action.accuracy,
+		enemy_action.critical_chance,
+		enemy_action.critical_multiplier
+	)
+	var damage: int = damage_result.damage
+	active_combat.last_enemy_damage_type = enemy_action.damage_type
+	active_combat.last_enemy_affinity = damage_result.affinity
+	active_combat.last_enemy_result_type = damage_result.result_type
 	var current_hp: int = saved_stats.get("hp", saved_stats.get("max_hp", 0))
-	var new_hp := maxi(current_hp - damage, 0)
+	var new_hp := current_hp
+	match damage_result.result_type:
+		"damage":
+			new_hp = maxi(current_hp - damage, 0)
+		"drain":
+			new_hp = mini(current_hp + damage, saved_stats.get("max_hp", current_hp))
+		"repel":
+			new_hp = maxi(current_hp - damage, 0)
+		"miss", "nullify":
+			pass
 	saved_stats["hp"] = new_hp
 	GameState.set_player_stats(saved_stats)
 	active_combat.last_enemy_damage = damage
-	_append_combat_log("ENEMY: %s deals %d damage." % [active_combat.last_enemy_action_name, damage])
+	_append_combat_log("ENEMY: %s deals %d damage (%s)." % [active_combat.last_enemy_action_name, damage, AFFINITIES.get_display_name(damage_result.affinity)])
 	enemy_attack_performed.emit(damage)
 
 	if new_hp <= 0:
@@ -451,6 +473,51 @@ func get_combat_log() -> Array[String]:
 func add_combat_log(entry: String) -> void:
 	## Allow the Battle presentation layer to record non-damage actions.
 	_append_combat_log(entry)
+
+func cycle_player_weakness() -> bool:
+	## Cycle the active Player elemental weakness through Fire, Water, Earth,
+	## Air, Light, and Dark for deterministic Enemy AI testing.
+	if not is_in_combat() or active_combat.player_affinities.is_empty():
+		return false
+
+	var elemental_types: Array[int] = [
+		DAMAGE_TYPES.Type.FIRE,
+		DAMAGE_TYPES.Type.WATER,
+		DAMAGE_TYPES.Type.EARTH,
+		DAMAGE_TYPES.Type.AIR,
+		DAMAGE_TYPES.Type.LIGHT,
+		DAMAGE_TYPES.Type.DARK,
+	]
+	var current_index := 0
+	for entry in active_combat.player_affinities:
+		if entry == null:
+			continue
+		if entry.affinity == AFFINITIES.Type.WEAK:
+			var found_index := elemental_types.find(entry.damage_type)
+			if found_index >= 0:
+				current_index = found_index
+			break
+
+	var next_index := (current_index + 1) % elemental_types.size()
+	for entry in active_combat.player_affinities:
+		if entry == null:
+			continue
+		if entry.damage_type in elemental_types:
+			entry.affinity = AFFINITIES.Type.WEAK if entry.damage_type == elemental_types[next_index] else AFFINITIES.Type.NORMAL
+
+	_append_combat_log("PLAYER WEAKNESS: %s." % DAMAGE_TYPES.get_display_name(elemental_types[next_index]))
+	return true
+
+func get_player_weakness_debug() -> String:
+	## Return the active elemental weakness for Battle presentation.
+	if not is_in_combat():
+		return "None"
+	for entry in active_combat.player_affinities:
+		if entry == null:
+			continue
+		if entry.affinity == AFFINITIES.Type.WEAK:
+			return DAMAGE_TYPES.get_display_name(entry.damage_type)
+	return "None"
 
 func get_player_affinity_debug() -> Array[String]:
 	var result: Array[String] = []
