@@ -56,7 +56,7 @@ layout_mode = 2
 autowrap_mode = 3
 text = "Enemy Behavior:"
 
-[node name="TargetAffinities" type="Label" parent="Panel/Margin/Content"]
+[node name="TargetAffinities" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
 text = "Target affinities:"
