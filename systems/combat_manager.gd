@@ -58,6 +58,81 @@ func _get_player_affinity(damage_type: int) -> int:
 func is_in_combat() -> bool:
 	return active_combat != null
 
+func is_victory() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.VICTORY
+
+func is_defeat() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.DEFEAT
+
+func is_player_turn() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+
+func is_enemy_turn() -> bool:
+	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+
+func get_active_enemy_id() -> String:
+	return active_combat.enemy_id if is_in_combat() else ""
+
+func get_enemy_hp() -> int:
+	return active_combat.enemy_hp if is_in_combat() else 0
+
+func get_enemy_max_hp() -> int:
+	return active_combat.enemy_max_hp if is_in_combat() else 0
+
+func get_player_press_turns_remaining() -> float:
+	return active_combat.player_press_turns_remaining if is_in_combat() else 0.0
+
+func get_combat_log() -> Array[String]:
+	return combat_log.duplicate()
+
+func add_combat_log(message: String) -> void:
+	if message.is_empty():
+		return
+	_append_combat_log(message)
+
+func get_last_enemy_action_name() -> String:
+	return active_combat.last_enemy_action_name if is_in_combat() else ""
+
+func get_player_weakness_debug() -> String:
+	if not is_in_combat():
+		return "Unknown"
+	for affinity_data in active_combat.player_affinities:
+		if affinity_data == null:
+			continue
+		if affinity_data.affinity == AFFINITIES.Type.WEAK:
+			return DAMAGE_TYPES.get_display_name(affinity_data.damage_type)
+	return "None"
+
+func cycle_player_weakness() -> bool:
+	if not is_in_combat() or active_combat.player_affinities.is_empty():
+		return false
+	var weakness_index := -1
+	for i in range(active_combat.player_affinities.size()):
+		var affinity_data: Resource = active_combat.player_affinities[i]
+		if affinity_data != null and affinity_data.affinity == AFFINITIES.Type.WEAK:
+			weakness_index = i
+			break
+	if weakness_index < 0:
+		return false
+	var next_index := (weakness_index + 1) % active_combat.player_affinities.size()
+	for i in range(active_combat.player_affinities.size()):
+		var affinity_data: Resource = active_combat.player_affinities[i]
+		if affinity_data == null:
+			continue
+		affinity_data.affinity = AFFINITIES.Type.WEAK if i == next_index else AFFINITIES.Type.NORMAL
+	return true
+
+func end_combat() -> void:
+	if not is_in_combat():
+		return
+	var destination := return_scene_path
+	var destination_position := return_player_position
+	active_combat = null
+	combat_log.clear()
+	last_enemy_ai_debug.clear()
+	if not destination.is_empty():
+		SceneManager.change_scene(destination, destination_position)
+
 func start_encounter(enemy_id: String) -> bool:
 	# Start one encounter and record the Player return location.
 	if enemy_id.is_empty() or is_in_combat():
