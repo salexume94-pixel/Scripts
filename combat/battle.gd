@@ -32,19 +32,19 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 	var critical: bool = CombatManager.get_last_player_critical()
 
 	if critical:
-		action_label.text = "CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
+		action_label.text = "PLAYER: CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
 	elif CombatManager.is_victory():
-		action_label.text = "Enemy defeated! %s %s." % [damage_type_name, affinity_name]
+		action_label.text = "PLAYER: Enemy defeated! %s %s." % [damage_type_name, affinity_name]
 	elif result_type == "miss":
-		action_label.text = "Player %s attack misses (%s)." % [damage_type_name, affinity_name]
+		action_label.text = "PLAYER: %s attack misses (%s)." % [damage_type_name, affinity_name]
 	elif result_type == "drain":
-		action_label.text = "Player %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
+		action_label.text = "PLAYER: %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
 	elif result_type == "repel":
-		action_label.text = "Player %s attack is repelled (%s)." % [damage_type_name, affinity_name]
+		action_label.text = "PLAYER: %s attack is repelled (%s)." % [damage_type_name, affinity_name]
 	elif CombatManager.is_enemy_turn():
-		action_label.text = "Player %s attack deals %d damage (%s). Enemy turn." % [damage_type_name, damage, affinity_name]
+		action_label.text = "PLAYER: %s attack deals %d damage (%s). ENEMY TURN." % [damage_type_name, damage, affinity_name]
 	else:
-		action_label.text = "Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
+		action_label.text = "PLAYER: %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
 
 	_update_enemy_hp_display()
 	_update_player_hp_display()
@@ -59,29 +59,31 @@ func _on_defend_pressed() -> void:
 	if CombatManager.player_defend():
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "Player defends." if CombatManager.is_player_turn() else "Player defends. Enemy turn."
+			action_label.text = "PLAYER: Defend." if CombatManager.is_player_turn() else "PLAYER: Defend. ENEMY TURN."
 
 func _on_pass_pressed() -> void:
 	if CombatManager.player_pass():
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "Player passes." if CombatManager.is_player_turn() else "Player passes. Enemy turn."
+			action_label.text = "PLAYER: Pass." if CombatManager.is_player_turn() else "PLAYER: Pass. ENEMY TURN."
 
 func _on_enemy_turn_started() -> void:
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
-		action_label.text = "Player turn complete. Enemy turn."
+		action_label.text = "ENEMY TURN: %s is choosing an action..." % CombatManager.get_active_enemy_name()
 	_update_combat_controls()
 
 func _on_enemy_attack_performed(damage: int) -> void:
-	# Show the enemy result and refresh controls after the enemy turn completes.
+	# Show the enemy actor and selected action explicitly so AI testing is
+	# unambiguous even when the action name alone would not identify the actor.
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
+		var enemy_name := CombatManager.get_active_enemy_name()
 		var action_name := CombatManager.get_last_enemy_action_name()
 		if CombatManager.is_defeat():
-			action_label.text = "%s attacks for %d damage. Player defeated." % [action_name, damage]
+			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER DEFEATED." % [enemy_name, action_name, damage]
 		else:
-			action_label.text = "%s attacks for %d damage. Player turn." % [action_name, damage]
+			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER TURN." % [enemy_name, action_name, damage]
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
@@ -161,8 +163,10 @@ func _on_critical_test_pressed() -> void:
 
 func _on_miss_test_pressed() -> void:
 	CombatManager.player_miss_test()
+
 func _on_run_pressed() -> void:
 	CombatManager.end_combat()
+
 func _on_victory_pressed() -> void:
 	CombatManager.end_combat()
 
