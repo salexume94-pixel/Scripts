@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://world/Building.tscn" id="4_building"]
 [ext_resource type="PackedScene" path="res://world/Chest.tscn" id="5_chest"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="6_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="8_quest_log"]
 
 [node name="World" type="Node2D" unique_id=119908091]
 
@@ -52,3 +53,5 @@ script = ExtResource("2_world_presentation")
 [node name="Player" parent="." unique_id=137521040 instance=ExtResource("1_player")]
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("6_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("8_quest_log")]
