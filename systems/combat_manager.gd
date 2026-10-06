@@ -14,7 +14,8 @@ var return_player_position: Vector2 = Vector2.ZERO
 
 signal player_attack_performed(attack_value: int)
 signal player_press_turns_changed(remaining: float)
-signal enemy_turn_startedsignal enemy_attack_performed(damage: int)
+signal enemy_turn_started
+signal enemy_attack_performed(damage: int)
 signal player_defeated
 
 func is_in_combat() -> bool:
