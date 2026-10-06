@@ -444,6 +444,10 @@ func _append_combat_log(entry: String) -> void:
 func get_combat_log() -> Array[String]:
 	return combat_log.duplicate()
 
+func add_combat_log(entry: String) -> void:
+	## Allow the Battle presentation layer to record non-damage actions.
+	_append_combat_log(entry)
+
 func get_player_affinity_debug() -> Array[String]:
 	var result: Array[String] = []
 	if not is_in_combat():
