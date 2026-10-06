@@ -10,3 +10,4 @@ power = 12
 damage_type = 1
 selection_weight = 1.0
 weakness_weight_multiplier = 3.0
+critical_multiplier = 1.5
