@@ -384,6 +384,22 @@ func _resolve_enemy_turn() -> void:
 	active_combat.last_enemy_action_id = enemy_action.action_id
 	active_combat.last_enemy_action_name = enemy_action.display_name
 
+	if enemy_action.is_defend:
+		# Enemy Defend consumes the enemy turn without dealing damage. The next
+		# Player turn begins normally, and any Player Defend from the previous
+		# turn has now served its purpose and is cleared.
+		active_combat.player_defending = false
+		active_combat.last_enemy_damage = 0
+		active_combat.last_enemy_damage_type = enemy_action.damage_type
+		active_combat.last_enemy_affinity = AFFINITIES.Type.NORMAL
+		active_combat.last_enemy_result_type = "defend"
+		_append_combat_log("ENEMY: %s defends." % active_combat.last_enemy_action_name)
+		enemy_attack_performed.emit(0)
+		active_combat.player_press_turns_remaining = float(active_combat.player_press_turns)
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+		player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
+		return
+
 	var player_defense: int = saved_stats.get("defense", 0)
 	var base_damage := maxi(active_combat.enemy_attack - player_defense, 1)
 	if active_combat.player_defending:
