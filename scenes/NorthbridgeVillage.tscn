@@ -1,0 +1,122 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/world_context.gd" id="2_world_context"]
+[ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="3_world_exit_boundary"]
+[ext_resource type="Script" path="res://world/world_presentation.gd" id="4_world_presentation"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="6_quest_log"]
+[ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="7_world_map"]
+
+[sub_resource type="RectangleShape2D" id="BuildingShape"]
+size = Vector2(220, 150)
+
+[sub_resource type="RectangleShape2D" id="BridgeShape"]
+size = Vector2(180, 90)
+
+[node name="NorthbridgeVillage" type="Node2D"]
+
+[node name="WorldContext" type="Node" parent="."]
+script = ExtResource("2_world_context")
+world_id = "northbridge_village"
+location_id = "northbridge_village"
+
+[node name="WorldContent" type="Node2D" parent="."]
+
+[node name="WorldFloor" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-1000, -1500, 1000, -1500, 1000, 1500, -1000, 1500)
+color = Color(0.15, 0.20, 0.14, 1)
+
+[node name="NorthField" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-900, -1450, 900, -1450, 900, -700, -900, -700)
+color = Color(0.11, 0.18, 0.12, 1)
+
+[node name="VillageGreen" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-420, -420, 420, -420, 420, 420, -420, 420)
+color = Color(0.20, 0.24, 0.15, 1)
+
+[node name="NorthRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-55, -1500, 55, -1500, 55, -420, -55, -420)
+color = Color(0.34, 0.29, 0.21, 1)
+
+[node name="SouthRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-55, 420, 55, 420, 55, 1500, -55, 1500)
+color = Color(0.34, 0.29, 0.21, 1)
+
+[node name="WestRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-1000, -55, -420, -55, -420, 55, -1000, 55)
+color = Color(0.34, 0.29, 0.21, 1)
+
+[node name="EastRoad" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(420, -55, 1000, -55, 1000, 55, 420, 55)
+color = Color(0.34, 0.29, 0.21, 1)
+
+[node name="NorthHouse" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-360, -360, -100, -360, -100, -190, -360, -190)
+color = Color(0.34, 0.24, 0.17, 1)
+
+[node name="NorthHouseCollision" type="StaticBody2D" parent="WorldContent"]
+position = Vector2(-230, -275)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/NorthHouseCollision"]
+shape = SubResource("BuildingShape")
+
+[node name="EastHouse" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(100, -360, 360, -360, 360, -190, 100, -190)
+color = Color(0.34, 0.24, 0.17, 1)
+
+[node name="EastHouseCollision" type="StaticBody2D" parent="WorldContent"]
+position = Vector2(230, -275)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/EastHouseCollision"]
+shape = SubResource("BuildingShape")
+
+[node name="WestHouse" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-360, 190, -100, 190, -100, 360, -360, 360)
+color = Color(0.30, 0.22, 0.16, 1)
+
+[node name="WestHouseCollision" type="StaticBody2D" parent="WorldContent"]
+position = Vector2(-230, 275)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/WestHouseCollision"]
+shape = SubResource("BuildingShape")
+
+[node name="EastHouse" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(100, 190, 360, 190, 360, 360, 100, 360)
+color = Color(0.30, 0.22, 0.16, 1)
+
+[node name="EastHouseCollision" type="StaticBody2D" parent="WorldContent"]
+position = Vector2(230, 275)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/EastHouseCollision"]
+shape = SubResource("BuildingShape")
+
+[node name="Northbridge" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-90, -1000, 90, -1000, 90, -700, -90, -700)
+color = Color(0.38, 0.38, 0.40, 1)
+
+[node name="VillageSign" type="Label" parent="WorldContent"]
+position = Vector2(-150, -90)
+text = "NORTHBRIDGE VILLAGE"
+
+[node name="WorldExitBoundary" type="Node2D" parent="."]
+script = ExtResource("3_world_exit_boundary")
+location_bounds = Rect2(-1000, -1500, 2000, 3000)
+target_scene = "res://scenes/WorldMapWorld.tscn"
+target_player_position = Vector2(0, -560)
+target_world_id = "world_map"
+target_location_id = "world_map"
+
+[node name="WorldPresentation" type="Node2D" parent="."]
+script = ExtResource("4_world_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, -560)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("6_quest_log")]
+
+[node name="WorldMap" parent="." instance=ExtResource("7_world_map")]
