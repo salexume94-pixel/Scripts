@@ -25,3 +25,5 @@ enum Phase {
 
 @export var last_player_attack: int = 0
 @export var last_damage: int = 0
+@export var enemy_attack: int = 0
+@export var last_enemy_damage: int = 0
