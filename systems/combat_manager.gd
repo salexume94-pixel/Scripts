@@ -217,8 +217,7 @@ func _resolve_player_action_end(action_text: String) -> void:
 	# Centralize the shared end-of-action flow for Defend and Pass so both actions
 	# obey the same Press Turn exhaustion rule as a normal Player action.
 	var action_label = action_text
-	if active_combat.player_press_turns_remaining <= 0.0:
-		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+	if active_combat.player_press_turns_remaining <= 0.0:		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
 		enemy_turn_started.emit()
 		_resolve_enemy_turn()
 
@@ -333,6 +332,11 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 
 		if player_affinity != AFFINITIES.Type.NORMAL and player_affinity != AFFINITIES.Type.WEAK:
 			weight *= behavior.unfavorable_affinity_multiplier
+
+		# Discourage repeating the exact same action while preserving the profile's
+		# affinity and strategy preferences.
+		if active_combat.last_enemy_action_id == action.action_id:
+			weight *= behavior.repeat_action_multiplier
 
 		if weight > 0.0:
 			weight = maxf(weight, behavior.minimum_selection_weight)
