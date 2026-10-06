@@ -450,13 +450,30 @@ func _resolve_enemy_turn() -> void:
 		base_damage = maxi(int(ceil(float(base_damage) * 0.5)), 1)
 	active_combat.player_defending = false
 
+	# Enemy accuracy and critical chance use the same Speed-based rules as Player attacks:
+	# Player Speed determines the Enemy's miss chance, while Enemy Speed determines
+	# the Enemy's critical chance. Action data still supplies the critical multiplier.
+	var player_speed: int = int(saved_stats.get("speed", 0))
+	var enemy_data: Resource = enemy_data_for_active_combat()
+	var enemy_speed: int = int(enemy_data.speed) if enemy_data != null else 0
+	var enemy_accuracy: float = clampf(100.0 - float(player_speed), 0.0, 100.0)
+	var enemy_critical_chance: float = clampf(float(enemy_speed), 0.0, 100.0)
+	var enemy_critical_multiplier: float = maxf(enemy_action.critical_multiplier, 1.5)
 	var damage_result: Dictionary = COMBAT_RULES.resolve_damage_against_affinities(
 		base_damage,
 		enemy_action.damage_type,
 		active_combat.player_affinities,
-		enemy_action.accuracy,
-		enemy_action.critical_chance,
-		enemy_action.critical_multiplier
+		enemy_accuracy,
+		enemy_critical_chance,
+		enemy_critical_multiplier
+	)
+	var accuracy_roll: float = float(damage_result.get("accuracy_roll", -1.0))
+	var critical_roll: float = float(damage_result.get("critical_roll", -1.0))
+	var resolved_accuracy: float = float(damage_result.get("accuracy", enemy_accuracy))
+	var resolved_critical_chance: float = float(damage_result.get("critical_chance", enemy_critical_chance))
+	_append_combat_log(
+		"ENEMY ATTACK: Speed %d -> Critical %.1f%% (roll %.1f); Player Speed %d -> Accuracy %.1f%% (roll %.1f)." %
+		[enemy_speed, resolved_critical_chance, critical_roll, player_speed, resolved_accuracy, accuracy_roll]
 	)
 	var damage: int = damage_result.damage
 	active_combat.last_enemy_damage_type = enemy_action.damage_type
