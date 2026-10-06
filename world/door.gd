@@ -5,8 +5,9 @@ extends Area2D
 ## handled by the shared Player InteractionSystem, while SceneManager owns the
 ## actual scene-loading work.
 ##
-## The Door therefore exposes the same interact() contract as other world
-## interactables without knowing how the Player detected it.
+## The Door registers itself as an explicit interactable so it can only be
+## selected by the shared interaction system when the Player is actually
+## within the configured interaction distance.
 
 @export_file("*.tscn") var target_scene: String
 @export var target_player_position: Vector2 = Vector2.ZERO
@@ -14,9 +15,14 @@ extends Area2D
 var transition_started: bool = false
 
 
+func _ready() -> void:
+	# Register this Door with the shared interaction system.
+	add_to_group("interactable")
+
+
 func interact(_player: Node) -> void:
 	# The shared InteractionSystem calls this method when the Player presses E
-	# near the Door.
+	# while close enough to this Door.
 	if transition_started:
 		return
 
