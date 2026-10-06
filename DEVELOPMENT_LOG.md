@@ -1217,3 +1217,15 @@ Equipment now supports multiple slots with one item per slot:
   - `enemies/definitions/behavior_weakness_hunter.tres`
   - `systems/combat_manager.gd`
 - Runtime verification required: start **Test Battle (Enemy AI)**, set the Player weakness, allow many Enemy turns, and confirm the matching elemental action occurs roughly 2/3 of the time while other valid actions occur roughly 1/3 of the time.
+
+
+## 2026-10-06 Enemy AI Weakness Selection Ratio Adjustment
+
+- Reduced the weakness-hunter selection chance from **66.67%** to **65%**, targeting an approximate **13 weakness selections out of 20 enemy turns**.
+- Player weakness tracking remains unchanged. The AI still evaluates the current encounter affinity snapshot each time it selects an action.
+- The selection remains probabilistic, so 13/20 is a long-run target rather than a guaranteed count in every 20-turn block.
+- This reduces the frequency of weakness-targeting actions after runtime testing showed the previous 2-in-3 rate was too aggressive.
+- Updated files:
+  - `enemies/enemy_behavior_profile.gd`
+  - `enemies/definitions/behavior_weakness_hunter.tres`
+- Runtime verification required: run **Test Battle (Enemy AI)** for a larger sample of enemy turns, change the Player weakness during testing, and confirm the AI continues targeting the current weakness while averaging close to 13/20 over time.
