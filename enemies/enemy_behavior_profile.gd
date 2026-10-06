@@ -10,6 +10,7 @@ enum Strategy {
 	BALANCED,
 	AGGRESSIVE,
 	WEAKNESS_HUNTER,
+	DEFENSIVE,
 }
 
 ## Stable identifier used by enemy definitions and debugging.
@@ -37,3 +38,7 @@ enum Strategy {
 ## Multiplier applied when the AI selected the same action on the previous enemy turn.
 ## This preserves a known weakness priority without making one action repeat forever.
 @export_range(0.0, 1.0) var repeat_action_multiplier: float = 0.5
+
+## Controls how strongly Defensive behavior prefers lower-power actions.
+## A value of 1.0 keeps the full defensive preference; 0.0 disables it.
+@export_range(0.0, 1.0) var defensive_power_preference: float = 1.0
