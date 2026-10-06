@@ -1944,3 +1944,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Added controlled AI test enemy definitions and registered them in EnemyDatabase.
 - Kept the integration isolated on a temporary branch for verification before merging to main.
 - Remaining verification: run the game and confirm normal overworld encounters, all four behavior profiles, enemy elemental reactions, Enemy Defend, Player Defend/Pass, victory Return to World, and post-combat encounter cooldown together.
+
+
+### Battle Script Parse Error: Explicit Result Types
+
+- Fixed GDScript parse errors in `combat/battle.gd` caused by type inference from untyped CombatManager getter return values.
+- Explicitly typed `result_type` as String and `damage` as int in `_on_player_attack_performed()`.
+- No combat behavior was changed; this is a compile-time typing fix only.
+- Runtime verification still required on the local Godot project.
