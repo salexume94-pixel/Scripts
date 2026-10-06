@@ -718,3 +718,50 @@ The current implementation priority is:
 `Combat Foundation -> Enemy Foundation -> Progression -> Save/Load -> Quests and World Expansion`
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Combat Foundation: Encounter and State System
+
+Implemented Step 1 of the Combat Foundation: the runtime combat encounter/state layer.
+
+Created:
+- `combat/combat_state.gd`
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+- `systems/combat_manager.gd`
+
+Updated:
+- `systems/scene_manager.gd`
+- `project.godot`
+
+Changes:
+- Added `CombatState` as a data-only Resource representing the active encounter.
+- Added `CombatManager` as an autoload responsible for starting, tracking, and ending combat encounters.
+- CombatManager records the originating scene and Player position before entering Battle.
+- Added a placeholder Battle scene that reads the active enemy ID from CombatManager.
+- SceneManager now permits destination scenes without a Player node, which allows the separate Battle scene to exist without duplicating the Player.
+- CombatManager uses SceneManager for scene loading instead of owning scene-transition implementation.
+
+Current combat flow foundation:
+
+`World -> CombatManager.start_encounter(enemy_id) -> Battle -> CombatManager.end_combat() -> World`
+
+Not yet implemented:
+- Player attack.
+- Enemy HP and authoritative enemy stats.
+- Damage calculation.
+- Player defense.
+- Enemy attacks.
+- Victory/defeat resolution.
+- Final combat UI.
+
+Those systems remain separate steps so the combat foundation does not prematurely take ownership of Enemy or Player systems.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+Runtime verification required:
+- Pull the latest commit.
+- Confirm the project opens without parse errors.
+- Confirm the Battle scene opens without errors.
+- Verify a future encounter call can enter Battle and preserve the originating scene/Player position for return.
+- Confirm no Godot debugger errors occur.
