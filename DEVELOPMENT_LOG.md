@@ -1891,3 +1891,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Clarified the separate HP labels as `PLAYER HP` and `ENEMY HP`.
 - Kept the scrollable combat log as the detailed record of recent combat actions and damage.
 - Kept Fire visible as a normal Player combat action while Critical Test and Miss Test remain hidden.
+
+
+## 2026-10-06 - Combat Pace Adjustment
+
+- Reduced the Player's starting Press Turns from 4 to 2 to shorten encounters while the combat system is being tuned.
+- Reduced the restored Press Turn count after each enemy turn to the same configured value of 2.
+- Increased the visible scrollable combat log height from 80px to 160px.
+- The Press Turn count can be scaled back up later as combat pacing and enemy balance are tuned.
