@@ -27,7 +27,8 @@ enum Strategy {
 @export_range(0.0, 1.0) var weakness_selection_chance: float = 0.65
 
 ## Multiplier applied to actions that target an affinity other than Normal.
-## Harmful reactions such as Resist, Null, Drain, and Repel can be avoided.
+## Resist, Null, Drain, and Repel are treated as unfavorable outcomes for AI
+## selection, while Weak remains a favorable target.
 @export_range(0.0, 9999.0) var unfavorable_affinity_multiplier: float = 0.25
 
 ## Minimum selection weight retained after profile adjustments.
