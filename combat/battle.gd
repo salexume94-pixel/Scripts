@@ -10,9 +10,25 @@ extends Control
 ## Battle scene.
 
 func _ready() -> void:
-	# Refresh the placeholder display from CombatManager so the Battle scene
-	# visibly confirms which encounter is currently active.
+	# Refresh the display when the Battle scene opens and listen for combat
+	# actions so the UI can show the result of the Player Attack command.
+	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
 	_update_display()
+
+
+func _on_player_attack_performed(attack_value: int) -> void:
+	# The first combat step records the Player's attack value but does not yet
+	# apply damage. Enemy HP and damage calculation are separate later steps.
+	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
+	if action_label == null:
+		return
+	action_label.text = "Player attacks with %d Attack." % attack_value
+
+
+func _on_attack_pressed() -> void:
+	# Ask CombatManager to perform the combat action. The Battle UI does not
+	# calculate or modify combat values itself.
+	CombatManager.player_attack()
 
 
 func _update_display() -> void:
