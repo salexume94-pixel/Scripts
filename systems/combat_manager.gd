@@ -317,8 +317,9 @@ func enemy_data_for_active_combat() -> Resource:
 
 func _select_enemy_action(enemy_data: Resource) -> Resource:
 	# Select from the enemy's available actions using both configured weights and
-	# the enemy's behavior profile. Known Player weaknesses can raise an action's
-	# priority, while harmful affinities can remove an action from consideration.
+	# the enemy's behavior profile. Weakness hunters explicitly reserve a
+	# configurable share of their decisions for actions targeting the Player's
+	# known weakness instead of merely making those actions more likely.
 	if enemy_data == null or enemy_data.actions.is_empty():
 		return null
 
@@ -329,10 +330,18 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	var total_weight := 0.0
 	var weighted_actions: Array[Dictionary] = []
 	var max_power := 1
+	var target_weakness_actions := false
 	last_enemy_ai_debug.clear()
+
 	for action in enemy_data.actions:
 		if action != null:
 			max_power = maxi(max_power, action.power)
+
+	if behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
+		# For the Slime AI test profile this produces approximately 2 weakness
+		# attacks for every 1 non-weakness attack over a large sample. It is
+		# intentionally probabilistic, so individual sequences may vary.
+		target_weakness_actions = randf() < behavior.weakness_selection_chance
 
 	for action in enemy_data.actions:
 		if action == null or action.selection_weight <= 0.0:
@@ -347,9 +356,12 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 				# configured relative weights.
 				weight *= lerpf(1.0, 2.0, clampf(float(action.power) / float(max_power), 0.0, 1.0))
 			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
-				# Weakness hunters strongly prioritize actions that exploit a known
-				# Player weakness.
-				if player_affinity == AFFINITIES.Type.WEAK:
+				# First choose whether this turn belongs to the weakness or
+				# non-weakness pool. Then preserve configured weights inside that pool.
+				var is_weakness_action := player_affinity == AFFINITIES.Type.WEAK
+				if is_weakness_action != target_weakness_actions:
+					weight = 0.0
+				elif is_weakness_action:
 					weight *= action.weakness_weight_multiplier * behavior.weakness_priority
 
 		if player_affinity != AFFINITIES.Type.NORMAL and player_affinity != AFFINITIES.Type.WEAK:
@@ -371,6 +383,13 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		else:
 			last_enemy_ai_debug.append("AI: %s -> %s | REJECTED (weight 0)" % [action.display_name, affinity_name])
 
+	# If the requested pool is empty, fall back to the other pool rather than
+	# skipping the enemy turn. This is important for enemies with no elemental
+	# weakness action or no valid non-weakness action.
+	if total_weight <= 0.0 and behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
+		target_weakness_actions = not target_weakness_actions
+		return _select_enemy_action_from_pool(enemy_data, behavior, target_weakness_actions)
+
 	if total_weight <= 0.0:
 		return null
 
@@ -385,150 +404,36 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	return weighted_actions.back().action
 
 
-func _get_player_affinity(damage_type: int) -> int:
-	# Resolve the Player's captured affinity for an enemy action's damage type.
-	# Unconfigured damage types are intentionally treated as Normal.
-	if not is_in_combat():
-		return AFFINITIES.Type.NORMAL
+func _select_enemy_action_from_pool(enemy_data: Resource, behavior: Resource, target_weakness_actions: bool) -> Resource:
+	# Fallback selector used only when the requested weakness/non-weakness pool
+	# contains no valid actions.
+	var weighted_actions: Array[Dictionary] = []
+	var total_weight := 0.0
 
-	for entry in active_combat.player_affinities:
-		if entry == null:
+	for action in enemy_data.actions:
+		if action == null or action.selection_weight <= 0.0:
 			continue
-		if entry.damage_type == damage_type:
-			return entry.affinity
-
-	return AFFINITIES.Type.NORMAL
-
-func get_last_enemy_action_name() -> String:
-	return active_combat.last_enemy_action_name if is_in_combat() else ""
-
-func get_enemy_hp() -> int:
-	return active_combat.enemy_hp if is_in_combat() else 0
-func get_last_damage() -> int:
-	return active_combat.last_damage if is_in_combat() else 0
-func get_enemy_max_hp() -> int:
-	return active_combat.enemy_max_hp if is_in_combat() else 0
-func get_last_player_attack() -> int:
-	return active_combat.last_player_attack if is_in_combat() else 0
-func get_player_press_turns() -> int:
-	return active_combat.player_press_turns if is_in_combat() else 0
-func get_player_press_turns_remaining() -> float:
-	return active_combat.player_press_turns_remaining if is_in_combat() else 0.0
-func get_last_enemy_damage() -> int:
-	return active_combat.last_enemy_damage if is_in_combat() else 0
-func get_last_player_affinity() -> int:
-	return active_combat.last_player_affinity if is_in_combat() else 0
-func get_last_player_damage_type() -> int:
-	return active_combat.last_player_damage_type if is_in_combat() else DAMAGE_TYPES.Type.PHYSICAL
-func get_last_player_result_type() -> String:
-	return active_combat.last_player_result_type if is_in_combat() else ""
-
-func get_last_player_critical() -> bool:
-	# Return whether the most recent Player action resolved as a critical hit.
-	# Battle uses this getter only for presentation; the combat result itself
-	# remains stored in CombatState and resolved by CombatRules.
-	return active_combat.last_player_critical if is_in_combat() else false
-func is_player_turn() -> bool:
-	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
-func is_enemy_turn() -> bool:
-	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
-func is_victory() -> bool:
-	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.VICTORY
-func is_defeat() -> bool:
-	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.DEFEAT
-
-func end_combat() -> bool:
-	if not is_in_combat():
-		return false
-	active_combat = null
-	var destination := return_scene_path
-	var destination_position := return_player_position
-	return_scene_path = ""
-	return_player_position = Vector2.ZERO
-	if destination.is_empty():
-		return false
-	SceneManager.change_scene(destination, destination_position)
-	return true
-
-func get_active_enemy_id() -> String:
-	return active_combat.enemy_id if is_in_combat() else ""
-	
-func get_active_enemy_name() -> String:
-	if not is_in_combat():
-		return ""
-	var enemy_data: Resource = enemy_data_for_active_combat()
-	if enemy_data == null:
-		return active_combat.enemy_id
-	return enemy_data.display_name
-
-func _append_combat_log(entry: String) -> void:
-	combat_log.append(entry)
-	if combat_log.size() > 100:
-		combat_log.pop_front()
-	combat_log_updated.emit()
-
-func get_combat_log() -> Array[String]:
-	return combat_log.duplicate()
-
-func add_combat_log(entry: String) -> void:
-	## Allow the Battle presentation layer to record non-damage actions.
-	_append_combat_log(entry)
-
-func cycle_player_weakness() -> bool:
-	## Cycle the active Player elemental weakness through Fire, Water, Earth,
-	## Air, Light, and Dark for deterministic Enemy AI testing.
-	if not is_in_combat() or active_combat.player_affinities.is_empty():
-		return false
-
-	var elemental_types: Array[int] = [
-		DAMAGE_TYPES.Type.FIRE,
-		DAMAGE_TYPES.Type.WATER,
-		DAMAGE_TYPES.Type.EARTH,
-		DAMAGE_TYPES.Type.AIR,
-		DAMAGE_TYPES.Type.LIGHT,
-		DAMAGE_TYPES.Type.DARK,
-	]
-	var current_index := 0
-	for entry in active_combat.player_affinities:
-		if entry == null:
+		var player_affinity := _get_player_affinity(action.damage_type)
+		var is_weakness_action := player_affinity == AFFINITIES.Type.WEAK
+		if is_weakness_action != target_weakness_actions:
 			continue
-		if entry.affinity == AFFINITIES.Type.WEAK:
-			var found_index := elemental_types.find(entry.damage_type)
-			if found_index >= 0:
-				current_index = found_index
-			break
+		var weight: float = action.selection_weight
+		if is_weakness_action:
+			weight *= action.weakness_weight_multiplier * behavior.weakness_priority
+		if active_combat.last_enemy_action_id == action.action_id:
+			weight *= behavior.repeat_action_multiplier
+		if weight > 0.0:
+			weighted_actions.append({"action": action, "weight": weight})
+			total_weight += weight
 
-	var next_index := (current_index + 1) % elemental_types.size()
-	for entry in active_combat.player_affinities:
-		if entry == null:
-			continue
-		if entry.damage_type in elemental_types:
-			entry.affinity = AFFINITIES.Type.WEAK if entry.damage_type == elemental_types[next_index] else AFFINITIES.Type.NORMAL
+	if total_weight <= 0.0:
+		return null
 
-	_append_combat_log("PLAYER WEAKNESS: %s." % DAMAGE_TYPES.get_display_name(elemental_types[next_index]))
-	return true
-
-func get_player_weakness_debug() -> String:
-	## Return the active elemental weakness for Battle presentation.
-	if not is_in_combat():
-		return "None"
-	for entry in active_combat.player_affinities:
-		if entry == null:
-			continue
-		if entry.affinity == AFFINITIES.Type.WEAK:
-			return DAMAGE_TYPES.get_display_name(entry.damage_type)
-	return "None"
-
-func get_player_affinity_debug() -> Array[String]:
-	var result: Array[String] = []
-	if not is_in_combat():
-		return result
-	for entry in active_combat.player_affinities:
-		if entry == null:
-			continue
-		result.append("%s: %s" % [DAMAGE_TYPES.get_display_name(entry.damage_type), AFFINITIES.get_display_name(entry.affinity)])
-	return result
-
-func get_last_enemy_ai_debug() -> Array[String]:
-	## Return the most recent enemy action-selection trace for debug presentation.
-	return last_enemy_ai_debug.duplicate()
+	var roll := randf() * total_weight
+	for entry in weighted_actions:
+		roll -= entry.weight
+		if roll < 0.0:
+			last_enemy_ai_debug.append("AI SELECTED: %s" % entry.action.display_name)
+			return entry.action
+	return weighted_actions.back().action
+)
