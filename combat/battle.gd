@@ -150,7 +150,9 @@ func _scroll_combat_log_to_latest() -> void:
 	var scroll := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll") as ScrollContainer
 	if scroll == null:
 		return
-	scroll.scroll_vertical = scroll.get_v_scroll_bar().max_value
+	await get_tree().process_frame
+	await get_tree().process_frame
+	scroll.scroll_vertical = int(scroll.get_v_scroll_bar().max_value)
 
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
