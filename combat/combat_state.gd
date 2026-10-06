@@ -29,3 +29,6 @@ enum Phase {
 @export var last_enemy_action_id: String = ""
 @export var last_enemy_action_name: String = ""
 @export var last_enemy_damage: int = 0
+
+## Whether the Player has chosen Defend for the current enemy turn.
+@export var player_defending: bool = false
