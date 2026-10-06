@@ -140,3 +140,10 @@ The previous Prototype project may be used as a reference for existing gameplay 
 Its architecture should not be copied automatically.
 
 Existing mechanics should be redesigned and implemented according to this architecture.
+
+
+## World Location Data
+
+Named locations that may have gameplay and story significance should be represented as reusable world data rather than only as scene-node names or UI text.
+
+A location definition should provide a stable location ID and player-facing name, with room for future metadata such as location type and story significance. World scene nodes may reference these definitions while remaining responsible for their physical presentation and interaction behavior.
