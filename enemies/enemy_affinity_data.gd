@@ -10,7 +10,7 @@ const AFFINITIES = preload("res://combat/affinities.gd")
 ## affinity rules to be added without hardcoding enemy-specific behavior.
 
 ## Damage category this affinity applies to.
-@export var damage_type: int = DamageTypes.Type.PHYSICAL
+@export var damage_type: int = DAMAGE_TYPES.Type.PHYSICAL
 
 ## Reaction the enemy has to the selected damage category.
-@export var affinity: int = Affinities.Type.NORMAL
+@export var affinity: int = AFFINITIES.Type.NORMAL
