@@ -93,6 +93,11 @@ func add_combat_log(message: String) -> void:
 func get_last_enemy_action_name() -> String:
 	return active_combat.last_enemy_action_name if is_in_combat() else ""
 
+func get_last_player_damage_type() -> int:
+	# Expose the resolved Player damage type so Battle can present the action
+	# without reaching into CombatState directly.
+	return active_combat.last_player_damage_type if is_in_combat() else DAMAGE_TYPES.Type.PHYSICAL
+
 func get_player_weakness_debug() -> String:
 	if not is_in_combat():
 		return "Unknown"
