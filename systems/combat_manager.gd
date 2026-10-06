@@ -101,6 +101,42 @@ func player_attack() -> bool:
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
 
+func player_defend() -> bool:
+	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
+	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
+		return false
+	if active_combat.player_press_turns_remaining <= 0.0:
+		return false
+
+	active_combat.player_defending = true
+	consume_player_press_turn(1.0)
+	_resolve_player_action_end("Player defends.")
+	return true
+
+func player_pass() -> bool:
+	# Pass spends one full Press Turn without changing combat stats or HP.
+	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
+		return false
+	if active_combat.player_press_turns_remaining <= 0.0:
+		return false
+
+	consume_player_press_turn(1.0)
+	_resolve_player_action_end("Player passes.")
+	return true
+
+func _resolve_player_action_end(action_text: String) -> void:
+	# Centralize the shared end-of-action flow for Defend and Pass so both actions
+	# obey the same Press Turn exhaustion rule as a normal Player action.
+	var action_label = action_text
+	if active_combat.player_press_turns_remaining <= 0.0:
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+		enemy_turn_started.emit()
+		_resolve_enemy_turn()
+
+func get_last_player_action_text() -> String:
+	# Return the most recent non-attack action text for Battle presentation.
+	return "Player defends." if is_in_combat() and active_combat.player_defending else "Player passes."
+
 func consume_player_press_turn(amount: float) -> void:
 	# Keep the resource between zero and its configured maximum.
 	if not is_in_combat():
@@ -138,6 +174,10 @@ func _resolve_enemy_turn() -> void:
 
 	var player_defense: int = saved_stats.get("defense", 0)
 	var damage := maxi(active_combat.enemy_attack - player_defense, 1)
+	if active_combat.player_defending:
+		# Defend currently halves the final incoming damage, with a minimum of 1.
+		damage = maxi(int(ceil(float(damage) * 0.5)), 1)
+	active_combat.player_defending = false
 	var current_hp: int = saved_stats.get("hp", saved_stats.get("max_hp", 0))
 	var new_hp := maxi(current_hp - damage, 0)
 	saved_stats["hp"] = new_hp
