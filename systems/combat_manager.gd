@@ -66,8 +66,8 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.enemy_id = enemy_data.enemy_id
 	combat_state.enemy_max_hp = enemy_data.max_hp
 	combat_state.enemy_hp = enemy_data.max_hp
-	combat_state.player_press_turns = 4
-	combat_state.player_press_turns_remaining = 4.0
+	combat_state.player_press_turns = 2
+	combat_state.player_press_turns_remaining = 2.0
 	if enemy_data.actions.is_empty():
 		return false
 
@@ -83,7 +83,7 @@ func start_encounter(enemy_id: String) -> bool:
 	active_combat = combat_state
 	combat_log.clear()
 	_append_combat_log("COMBAT: %s entered battle." % enemy_data.display_name)
-	_append_combat_log("PLAYER TURN: 4 Press Turns available.")
+	_append_combat_log("PLAYER TURN: 2 Press Turns available.")
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
