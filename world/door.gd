@@ -1,36 +1,41 @@
 extends StaticBody2D
 ## Handles a reusable doorway that transitions the Player to another scene.
 ##
-## This script owns the Door's transition behavior and its physical blocking
-## body. Interaction input is handled by the shared Player InteractionSystem,
-## while SceneManager owns the actual scene-loading work.
-##
-## The Door is physically solid so the Player cannot simply walk through the
-## doorway. Pressing E while nearby is the intentional transition action.
+## The Door carries the world/location identity supplied by its parent Building.
+## This makes each doorway explicitly belong to the world map that owns it and
+## prevents future maps from relying on an unrelated shared destination.
 
 @export_file("*.tscn") var target_scene: String
 @export var target_player_position: Vector2 = Vector2.ZERO
+@export var world_id: String = ""
+@export var location_id: String = ""
 
 var transition_started: bool = false
 
 
 func _ready() -> void:
-	# Register this Door with the shared interaction system so E can select it.
-	add_to_group("interactable")
+    # Register this Door with the shared interaction system so E can select it.
+    add_to_group("interactable")
 
 
 func interact(_player: Node) -> void:
-	# The shared InteractionSystem calls this method when the Player presses E
-	# while close enough to this Door.
-	if transition_started:
-		return
+    # The shared InteractionSystem calls this method when the Player presses E.
+    if transition_started:
+        return
 
-	if target_scene.is_empty():
-		push_error("Door has no target scene configured.")
-		return
+    if world_id.is_empty():
+        push_error("Door has no world_id configured.")
+        return
 
-	transition_started = true
+    if location_id.is_empty():
+        push_error("Door has no location_id configured.")
+        return
 
-	# SceneManager performs the actual scene replacement and places the Player
-	# at the configured entry position in the destination scene.
-	SceneManager.change_scene(target_scene, target_player_position)
+    if target_scene.is_empty():
+        push_error("Door has no target scene configured.")
+        return
+
+    transition_started = true
+
+    # SceneManager performs the actual scene replacement and Player placement.
+    SceneManager.change_scene(target_scene, target_player_position)
