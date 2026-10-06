@@ -560,3 +560,25 @@ Runtime verification required:
 - E near the Interior ExitDoor must return to World.
 - E away from all interactables must do nothing.
 - Walking into a Door without E must not transition.
+
+
+### Door Collision and HUD Layout Fix
+
+Updated:
+- `world/Door.tscn`
+- `world/door.gd`
+- `ui/InventoryCharacterHUD.tscn`
+
+Door behavior was corrected so the Player cannot physically walk through a Door without interacting with it. The Door is now a solid `StaticBody2D` with a collision shape matching the doorway. Pressing **E** while within interaction range remains the intentional scene-transition action.
+
+The Character/Inventory HUD was also resized and centered for the project's 1152x648 viewport. The overall panel is scaled down, internal margins and spacing were reduced, and inventory/detail minimum heights were tightened so the complete HUD fits on screen without extending beyond the viewport.
+
+Runtime verification required:
+- Walking into a Door without pressing **E** must be blocked.
+- Pressing **E** near the World Door must enter the Interior.
+- Pressing **E** near the Interior ExitDoor must return to World.
+- The complete Character/Inventory HUD must be visible within the 1152x648 viewport.
+- HUD controls must remain clickable after resizing.
+- No Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
