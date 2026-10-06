@@ -1871,3 +1871,13 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Updated `systems/combat_manager.gd` to retain the most recent enemy AI action-selection trace, including each action's detected Player affinity, adjusted selection weight, rejected zero-weight actions, and the final selected action.
 - Updated `combat/battle.gd` to display that trace after an enemy action so runtime testing can directly verify whether an affinity is unfavorable and whether the behavior profile reduced or rejected the action.
 - Runtime verification of this diagnostic change is still pending.
+
+
+## 2026-10-06 - Combat Log and Player Affinity Visibility
+
+- Added a scrollable combat log to `scenes/Battle.tscn` for recent Player and enemy actions.
+- Added persistent combat-log storage to `systems/combat_manager.gd`, retaining the latest 100 entries.
+- Combat log records encounter start, Player attacks, enemy attacks, Defend, and Pass actions.
+- Added an explicit Player Affinities display so runtime testing can see configured elemental affinities directly instead of inferring them from AI behavior.
+- Enemy AI action-selection diagnostics remain visible for verification of affinity-based weighting.
+- Runtime verification of the new UI remains pending.
