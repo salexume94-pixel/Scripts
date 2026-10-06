@@ -1,3 +1,59 @@
+## 2026-10-06 - Enemy AI Behavior Profiles, Edge-Case Safety, and Final Framework Checkpoint
+
+Expanded the Enemy AI framework so multiple behavior profiles use the same action-selection system without enemy-specific logic.
+
+Updated:
+- enemies/enemy_behavior_profile.gd
+- enemies/definitions/behavior_aggressive.tres
+- enemies/definitions/behavior_defensive.tres
+- enemies/definitions/slime_ai_balanced_test.tres
+- enemies/definitions/slime_ai_aggressive_test.tres
+- enemies/definitions/slime_ai_defensive_test.tres
+- enemies/enemy_database.gd
+- systems/combat_manager.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added the Defensive behavior strategy to the shared EnemyBehaviorProfile system.
+- Defensive behavior favors lower-power actions and avoids unfavorable elemental affinities through the same profile modifiers already used by the other strategies.
+- Added a dedicated Defensive behavior profile Resource.
+- Added an Aggressive behavior profile Resource so the existing Aggressive strategy is directly testable through the same Resource-driven architecture.
+- Added Balanced, Aggressive, and Defensive Slime AI test encounters. These are controlled behavior-profile test definitions using the same action set rather than new gameplay enemy types.
+- Registered all three behavior-profile test encounters in EnemyDatabase.
+- Added debug HUD controls for Balanced, Aggressive, and Defensive AI tests while retaining the existing Weakness Hunter test.
+- Kept EnemyData responsible for enemy definitions, EnemyActionData responsible for action data, EnemyBehaviorProfile responsible for AI preferences, and CombatManager responsible for applying the selected behavior.
+- Added an Enemy Turn safety path for enemies with no valid action. Combat now logs the invalid-action condition, restores Player Turn, and avoids leaving the encounter permanently stuck in Enemy Turn.
+- Added a weighted-selection fallback that chooses the first usable action when profile modifiers eliminate every weighted candidate. This protects against configuration combinations that would otherwise produce no action.
+- Preserved the configurable 65% Weakness Hunter selection probability. This remains a profile setting rather than a universal rule for future enemies.
+
+Runtime verification checklist:
+1. Pull the latest `enemy-ai-behavior` branch.
+2. Start `Test Battle (Enemy AI)` and continue the existing 20-turn weakness sampling. Confirm weakness targeting remains in the expected approximate range.
+3. Start `Test AI (Balanced)`. Confirm selection remains broadly distributed according to the action weights and does not crash.
+4. Start `Test AI (Aggressive)`. Run enough Enemy Turns to confirm stronger actions, especially the Heavy Attack, are selected more often than under Balanced behavior.
+5. Start `Test AI (Defensive)`. Confirm lower-power actions are favored over the Heavy Attack and that unfavorable elemental reactions are avoided.
+6. Change Player weakness during the Weakness Hunter test and confirm the AI follows the new weakness without changing behavior-profile code.
+7. Confirm all four profiles can be selected through the same EnemyData -> EnemyBehaviorProfile -> CombatManager pipeline.
+8. Verify an enemy with no valid actions cannot leave combat stuck on Enemy Turn. The expected result is a logged skipped turn followed by Player Turn.
+9. Verify an enemy whose profile modifiers eliminate all weighted candidates falls back to a usable action rather than stalling.
+10. Confirm no parse, resource-loading, or debugger errors occur.
+
+Current Enemy AI framework status:
+- Weighted action selection: implemented.
+- Player elemental weakness consideration: implemented.
+- Weakness Hunter profile: implemented and runtime sampled.
+- Balanced profile: implemented.
+- Aggressive profile: implemented; runtime test prepared.
+- Defensive profile: implemented; runtime test prepared.
+- Shared behavior-profile architecture: implemented.
+- Enemy-specific hardcoded AI branches: none.
+- Edge-case action safety: implemented.
+- Runtime verification of the newly added profiles: pending local Godot testing.
+
+Future AI work remains optional and should only be added when the combat design requires it, such as status-effect evaluation, HP-threshold decisions, support behavior, multi-turn planning, or boss-specific strategy.
+
 ## 2026-10-06 - Restore CombatManager Battle Presentation API
 
 Runtime testing after the Enemy AI changes exposed a compatibility gap between `combat/battle.gd` and `systems/combat_manager.gd`: Battle was calling presentation/state accessors that were missing from the current CombatManager branch.
