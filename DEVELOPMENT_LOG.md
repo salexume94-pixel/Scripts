@@ -505,3 +505,12 @@ Verify:
 - No Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Item Definition Ownership Tightening
+
+Updated:
+- `player/player_inventory.gd`
+
+PlayerInventory now accepts only item IDs registered by ItemDatabase. This prevents arbitrary temporary Resource definitions from entering the persistent inventory and keeps the item-definition authority centralized in `items/item_database.gd`.
+
