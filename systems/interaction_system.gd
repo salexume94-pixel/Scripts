@@ -12,7 +12,11 @@ extends Node
 
 const MAX_INTERACTION_DISTANCE: float = 80.0
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
+	# Use _input instead of _unhandled_input so the shared interaction key is
+	# received even when a UI Control consumes the keyboard event first.
+	# This is important for NPC dialogue because the Player must still be able
+	# to press E while the dialogue UI is present.
 	# All world interactions use the same E-key input path.
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_E:
