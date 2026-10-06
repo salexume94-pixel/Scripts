@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bjyl5hcu0d8vb" path="res://world/world_presentation.gd" id="2_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="3_world_boundaries"]
-[ext_resource type="Script" path="res://systems/world_encounter_system.gd" id="7_world_encounter"]
 [ext_resource type="PackedScene" path="res://world/Building.tscn" id="4_building"]
 [ext_resource type="PackedScene" path="res://world/Chest.tscn" id="5_chest"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="6_inventory_hud"]
@@ -143,11 +142,6 @@ text = "QUEST GIVER"
 [node name="WorldBoundaries" type="Node2D" parent="." unique_id=137521042]
 script = ExtResource("3_world_boundaries")
 
-[node name="WorldEncounterSystem" type="Node" parent="."]
-script = ExtResource("7_world_encounter")
-enemy_id = "slime"
-distance_between_checks = 64.0
-encounter_chance = 0.5
 
 [node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
 script = ExtResource("2_world_presentation")
