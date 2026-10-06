@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlayerActionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://combat/player_action_data.gd" id="1_player_action"]
+
+[resource]
+script = ExtResource("1_player_action")
+action_id = "fire_attack"
+display_name = "Fire"
+damage_type = 1
+power_multiplier = 1.0

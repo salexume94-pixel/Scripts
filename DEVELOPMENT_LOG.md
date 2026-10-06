@@ -1,3 +1,384 @@
+### Combat Critical Test and Victory UI Corrections
+
+Corrected two runtime issues found during Critical/Accuracy verification.
+
+Updated:
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Critical results are now displayed before the victory message, so a critical hit that reduces the enemy to 0 HP is still explicitly reported as CRITICAL.
+- Restored the Critical Test and Miss Test Button nodes and their signal connections in Battle.tscn. The scene previously contained signal connections to missing nodes.
+- Restored the intended Battle UI path for testing critical and miss behavior.
+- The existing Return to World victory control remains responsible for leaving a completed battle.
+
+Runtime verification required:
+- Pull the latest combat-elemental-affinities branch.
+- Start a Slime battle and use Critical Test.
+- Confirm the ActionLabel explicitly says CRITICAL, including when the critical hit defeats the enemy.
+- Confirm the Critical Test consumes 0.5 Press Turns when the enemy survives.
+- Confirm Miss Test remains available and reports MISS.
+- Reduce the enemy to 0 HP and confirm Return to World is visible and exits the battle without requiring Run.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Critical/accuracy behavior is still Player-focused. Enemy accuracy, enemy critical hits, evasion, and final accuracy formulas remain future work.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
+### Combat Critical Hits and Accuracy: Initial Implementation
+
+Implemented the first accuracy and critical-hit layer for Player combat actions.
+
+Added:
+- combat/definitions/critical_test.tres
+- combat/definitions/miss_test.tres
+
+Updated:
+- combat/player_action_data.gd
+- combat/combat_rules.gd
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- PlayerActionData now supports action accuracy, critical chance, and critical damage multiplier.
+- CombatRules now resolves accuracy before affinity.
+- Misses deal 0 damage, leave both HP pools unchanged, and consume 1 full Press Turn.
+- Critical hits currently double the resolved damage and consume 0.5 Press Turns.
+- Critical hits are resolved after affinity so Weak and Critical can combine.
+- CombatState records whether the most recent Player action was critical.
+- Battle UI displays explicit MISS and CRITICAL results.
+- Added deterministic Critical Test and Miss Test actions so runtime verification does not depend on random chance.
+- Existing Physical, Fire, Weak, Resist, Null, Drain, Repel, Defend, Pass, Run, Victory, and Enemy Turn behavior remains routed through the existing combat architecture.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm the project opens without parse or resource errors.
+- Start a normal Slime battle.
+- Use Critical Test and confirm damage is exactly 2x the normal Physical damage.
+- Confirm Critical Test consumes 0.5 Press Turns.
+- Confirm the Battle UI explicitly reports CRITICAL.
+- Use Miss Test and confirm enemy HP is unchanged.
+- Confirm Player HP is unchanged after a miss.
+- Confirm Miss Test consumes 1 full Press Turn.
+- Confirm the Battle UI explicitly reports MISS.
+- Confirm normal Attack and Fire still behave correctly.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Accuracy and critical values are currently action-level data and Player-focused.
+- Enemy accuracy, enemy critical hits, evasion stats, and final accuracy formulas remain future work.
+- Critical behavior is intentionally isolated for runtime verification before expanding the rules.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
+### Combat Affinity: Repel Implementation
+
+Implemented the Fire Repel affinity as the final affinity in the current elemental foundation.
+
+Added:
+- enemies/definitions/slime_fire_repel.tres
+- enemies/definitions/slime_repel.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Repel enemy definition without changing the existing affinity test enemies.
+- Registered `slime_repel` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Repel)`.
+- Existing CombatRules Repel behavior remains authoritative: resolved Fire damage is reflected back to the Player while the target takes no damage.
+- Repel testing is isolated from the other affinity tests.
+- Repel currently uses the standard 1 Press Turn cost until runtime behavior is verified and any intended cost correction is identified.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Repel)` appears in DEBUG.
+- Start the Fire Repel encounter without parse, resource, or debugger errors.
+- Use Fire against the Repel Slime.
+- Confirm the Repel Slime's HP is unchanged.
+- Confirm the Player takes the reflected damage.
+- Confirm the reflected damage matches the resolved Fire damage.
+- Confirm the Player's Press Turns decrease by 1 full turn.
+- Confirm combat continues normally after the reflected attack.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Runtime verification is pending.
+- Critical hits and accuracy remain the next combat rules layer.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
+### Combat Affinity: Drain Press Turn Cost Correction
+
+Updated Drain after runtime verification confirmed its healing behavior was correct but its Press Turn cost was not.
+
+Updated:
+- combat/combat_rules.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Drain still converts the resolved damage into healing for the target.
+- Healing remains capped at the target's maximum HP.
+- Drain now consumes all 4 Press Turns.
+- No Battle UI or enemy-definition changes were needed because Press Turn cost belongs in CombatRules.
+
+Runtime verification required:
+- Start Test Battle (Fire Drain).
+- Lower the Drain Slime below maximum HP.
+- Use Fire and confirm the enemy heals by the resolved amount.
+- Confirm enemy HP does not exceed maximum HP.
+- Confirm all 4 Press Turns are depleted.
+- Confirm Enemy Turn begins when Drain resolves.
+- Confirm Player HP is unchanged by Drain.
+- Confirm existing Weak, Normal, Resist, and Null behavior remains unchanged.
+- Confirm no Godot debugger errors occur.
+
+### Combat Affinity: Drain Implementation
+
+Implemented the Fire Drain affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_drain.tres
+- enemies/definitions/slime_drain.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Drain enemy definition without changing the existing affinity test enemies.
+- Registered `slime_drain` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Drain)`.
+- Existing CombatRules Drain behavior remains authoritative: the resolved Fire damage becomes healing for the target, capped at maximum HP, and consumes 1 full Press Turn.
+- Drain testing is isolated from the other affinity tests.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Drain)` appears in DEBUG.
+- Start the Fire Drain encounter without parse, resource, or debugger errors.
+- Use Physical Attack first to lower the Drain Slime below maximum HP.
+- Use Fire and confirm the enemy HP increases by the resolved Fire damage amount.
+- Confirm enemy HP cannot exceed maximum HP.
+- Confirm Fire Drain consumes exactly 1 full Press Turn.
+- Confirm the Player takes no damage from Drain.
+- Confirm combat continues normally.
+- Confirm existing Weak, Normal, Resist, and Null tests remain unchanged.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Runtime verification is pending.
+- Repel remains after Drain.
+
+### Combat Affinity: Null Press Turn Cost Correction
+
+Updated Null after runtime verification.
+
+Updated:
+- combat/combat_rules.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Nullification still deals 0 damage and leaves enemy HP unchanged.
+- Nullification now consumes 2 full Press Turns instead of 1.
+- Weak remains 0.5 Press Turns.
+- Normal remains 1 Press Turn.
+- Resist remains 1 Press Turn.
+
+Runtime verification required:
+- Start Test Battle (Fire Null).
+- Confirm Fire deals 0 damage.
+- Confirm enemy HP is unchanged.
+- Confirm exactly 2 full Press Turns are consumed.
+- Confirm combat continues normally.
+- Confirm existing Weak, Normal, and Resist behavior remains unchanged.
+- Confirm no Godot debugger errors occur.
+
+### Combat Affinity: Null Implementation
+
+Implemented the Fire Null affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_null.tres
+- enemies/definitions/slime_null.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Null enemy definition without changing the existing Weak or Resist test enemies.
+- Registered `slime_null` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Null)`.
+- Existing CombatRules Nullify behavior remains authoritative: Fire damage is reduced to 0 and consumes one full Press Turn.
+- Null testing is isolated from the other affinity tests.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Null)` appears in DEBUG.
+- Start the Fire Null encounter without parse, resource, or debugger errors.
+- Use Fire and confirm damage is exactly 0.
+- Confirm Enemy HP does not change.
+- Confirm exactly one full Press Turn is consumed.
+- Confirm combat continues normally after the nullified attack.
+- Confirm existing Weak and Resist tests remain unchanged.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Null has been implemented and provided a controlled runtime test encounter, but runtime verification is pending.
+- Drain and Repel remain after Null.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
+### Combat Affinity: Resist Implementation
+
+Implemented the Fire Resist affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_resist.tres
+- enemies/definitions/slime_resist.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Resist enemy definition without changing the existing Slime's Fire Weak behavior.
+- Registered `slime_resist` in EnemyDatabase so CombatManager can resolve it through the authoritative enemy catalog.
+- Added a DEBUG entry point labeled `Test Battle (Fire Resist)`.
+- The existing CombatRules Resist behavior remains authoritative: Fire damage is reduced to 0.5x and consumes one full Press Turn.
+- Kept Resist testing separate from the normal Fire Weak test so both affinity behaviors can be verified independently.
+- No runtime verification has been claimed yet.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Open the Character/Inventory DEBUG panel.
+- Confirm `Test Battle (Fire Resist)` appears.
+- Start the Fire Resist encounter without debugger/parse/resource errors.
+- Confirm Fire against Resist deals exactly 0.5x the Player Attack damage.
+- Confirm the Fire Resist action consumes exactly one full Press Turn.
+- Confirm the enemy remains alive and combat continues normally.
+- Confirm the existing Fire Weak Slime test still reports Weak, 1.5x damage, and 0.5 Press Turn.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Resist has been implemented and provided a controlled runtime test encounter, but runtime verification is still pending.
+- Null, Drain, and Repel remain the next affinity implementations/tests.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
+### Player Fire Action for Elemental Runtime Testing
+
+Added the first real elemental Player action so the Slime's Fire weakness can be runtime verified.
+
+Created:
+- `combat/player_action_data.gd`
+- `combat/definitions/physical_attack.tres`
+- `combat/definitions/fire_attack.tres`
+
+Updated:
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added PlayerActionData as a reusable Resource for Player combat actions.
+- Player actions now define an action ID, display name, damage type, and Attack-stat power multiplier.
+- Moved the existing basic Physical Attack into a Physical Player action Resource.
+- Added a Fire Player action using the Player's Attack stat at 1.0x power.
+- Added a Fire button to the Battle UI.
+- Both Physical Attack and Fire use the same CombatManager and CombatRules resolution path.
+- The Slime's existing Fire Weak affinity can now be exercised through the Battle UI.
+- Existing Defend, Pass, Run, Victory, Enemy Turn, and Press Turn behavior remains unchanged.
+- This establishes the data-driven path needed for future elemental skills without hardcoding individual attacks into Battle.
+
+Runtime verification required:
+- Pull the `combat-elemental-affinities` branch.
+- Confirm the project starts without parse or resource-loading errors.
+- Start Test Battle (Slime).
+- Confirm both Attack and Fire are available during Player Turn.
+- Press Fire and confirm the Battle reports Fire / Weak.
+- Confirm Fire deals 1.5x the Player Attack value against the Slime.
+- Confirm Fire consumes exactly 0.5 Press Turns, leaving three full turns and one half turn after the first Fire action.
+- Confirm another Fire action can consume the remaining half turn and correctly exhaust the Player's Press Turns.
+- Confirm the enemy turn still resolves correctly after Press Turns are exhausted.
+- Confirm Physical Attack still reports Physical / Normal and consumes 1 full Press Turn.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Elemental Damage Types and Enemy Affinities
+
+Started the elemental combat foundation for the Press Turn system.
+
+Created:
+- `combat/damage_types.gd`
+- `combat/affinities.gd`
+- `combat/combat_rules.gd`
+- `enemies/enemy_affinity_data.gd`
+- `enemies/definitions/slime_fire_weak.tres`
+
+Updated:
+- `enemies/enemy_action_data.gd`
+- `enemies/enemy_data.gd`
+- `enemies/definitions/slime_attack.tres`
+- `enemies/definitions/slime_heavy_attack.tres`
+- `enemies/definitions/slime.tres`
+- `combat/combat_state.gd`
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added the shared damage types: Physical, Fire, Water, Earth, Air, Light, and Dark.
+- EnemyActionData now records the damage type of each action. Existing Slime attacks are explicitly Physical.
+- Added enemy affinity data with Normal, Weak, Resist, Null, Drain, and Repel states.
+- EnemyData now owns a list of affinity definitions. Damage types without a configured affinity default to Normal.
+- Added a reusable CombatRules layer for affinity resolution instead of placing combat math in Battle or enemy Resources.
+- Weak currently increases damage to 1.5x and consumes 0.5 Press Turns.
+- Normal currently deals normal damage and consumes 1 Press Turn.
+- Resist currently reduces damage to 0.5x and consumes 1 Press Turn.
+- Null currently prevents damage.
+- Drain currently heals the target by the resolved amount.
+- Repel currently reflects the resolved damage to the attacker.
+- The Player's existing basic Attack now resolves through the enemy affinity system and defaults to Physical damage.
+- Player attacks now consume the Press Turn cost returned by the affinity result, allowing Weak attacks to leave a half Press Turn.
+- Battle UI now reports the damage type and affinity result for Player attacks.
+- Added a Fire Weakness to the Slime as the first concrete enemy affinity definition. The current basic Player Attack remains Physical, so this weakness is ready for future elemental Player actions without changing the current test battle's normal Physical behavior.
+- Critical hits, accuracy/evasion, misses, and advanced Press Turn outcomes are intentionally not implemented yet.
+- Enemy AI behavior remains the next major combat layer after elemental/affinity math is runtime verified.
+
+Runtime verification required:
+- Pull the `combat-elemental-affinities` branch.
+- Confirm the project opens without parse errors.
+- Start Debug -> Test Battle (Slime).
+- Confirm the normal Physical Player Attack still deals its expected normal damage.
+- Confirm the Battle action text identifies the attack as Physical / Normal.
+- Confirm Press Turns still decrement correctly for a normal attack.
+- Confirm the Slime's Fire Weak affinity is loaded without Resource or parse errors.
+- Confirm the Battle scene displays correctly after combat.
+- Confirm no Godot debugger errors occur.
+- Future test: add a temporary Fire Player action and confirm Fire -> Weak produces increased damage and consumes only half a Press Turn.
+- Future tests should also cover Resist, Null, Drain, and Repel individually before adding critical-hit and accuracy systems.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
 ### Player Defend and Pass Actions
 
 Added two Player-turn actions to the Press Turn combat system.

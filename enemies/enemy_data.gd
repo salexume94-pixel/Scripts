@@ -39,6 +39,10 @@ class_name EnemyData
 ## Actions this enemy can perform. The first action is the current basic action.
 @export var actions: Array[Resource] = []
 
+## Elemental and physical reactions for this enemy.
+## Damage types not listed here use the Normal affinity.
+@export var affinities: Array[Resource] = []
+
 ## Experience awarded when this enemy is defeated.
 @export_range(0, 999999) var experience_reward: int = 0
 

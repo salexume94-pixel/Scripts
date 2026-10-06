@@ -42,6 +42,18 @@ func _ready() -> void:
 	var test_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestBattleButton") as Button
 	if test_battle_button != null:
 		test_battle_button.pressed.connect(_on_test_battle_button_pressed)
+	var test_resist_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestResistBattleButton") as Button
+	if test_resist_battle_button != null:
+		test_resist_battle_button.pressed.connect(_on_test_resist_battle_button_pressed)
+	var test_null_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestNullBattleButton") as Button
+	if test_null_battle_button != null:
+		test_null_battle_button.pressed.connect(_on_test_null_battle_button_pressed)
+	var test_drain_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDrainBattleButton") as Button
+	if test_drain_battle_button != null:
+		test_drain_battle_button.pressed.connect(_on_test_drain_battle_button_pressed)
+	var test_repel_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestRepelBattleButton") as Button
+	if test_repel_battle_button != null:
+		test_repel_battle_button.pressed.connect(_on_test_repel_battle_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
@@ -291,6 +303,29 @@ func _on_test_battle_button_pressed() -> void:
 	# The HUD only requests the debug action. DebugSystem owns the development
 	# entry point while CombatManager owns the actual combat state transition.
 	DEBUG_SYSTEM.start_test_battle("slime")
+
+
+func _on_test_resist_battle_button_pressed() -> void:
+	# Start the controlled Fire Resist encounter so affinity behavior can be
+	# verified without changing the normal Slime weakness test.
+	DEBUG_SYSTEM.start_test_battle("slime_resist")
+
+
+func _on_test_null_battle_button_pressed() -> void:
+	# Start the controlled Fire Null encounter so nullification can be verified
+	# independently from the existing Weak and Resist encounters.
+	DEBUG_SYSTEM.start_test_battle("slime_null")
+
+
+func _on_test_drain_battle_button_pressed() -> void:
+	# Start the controlled Fire Drain encounter so healing can be verified
+	# independently from the other affinity tests.
+	DEBUG_SYSTEM.start_test_battle("slime_drain")
+
+func _on_test_repel_battle_button_pressed() -> void:
+	# Start the controlled Fire Repel encounter so reflected damage can be
+	# verified independently from the other affinity tests.
+	DEBUG_SYSTEM.start_test_battle("slime_repel")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:

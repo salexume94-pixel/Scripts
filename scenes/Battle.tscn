@@ -59,6 +59,18 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Attack"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/AttackButton" to="." method="_on_attack_pressed"]
+[node name="FireButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Fire"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/FireButton" to="." method="_on_fire_pressed"]
+[node name="CriticalTestButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Critical Test"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CriticalTestButton" to="." method="_on_critical_test_pressed"]
+[node name="MissTestButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Miss Test"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/MissTestButton" to="." method="_on_miss_test_pressed"]
 [node name="DefendButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Defend"
@@ -78,5 +90,5 @@ visible = false
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/VictoryButton" to="." method="_on_victory_pressed"]
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Press Turn combat. Each normal Attack costs 1 turn. The Slime attacks after all four are spent."
+text = "Press Turn combat. Attack and Fire use Player action data. The Slime is weak to Fire."
 horizontal_alignment = 1

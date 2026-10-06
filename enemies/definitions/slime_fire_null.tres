@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EnemyAffinityData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy_affinity_data.gd" id="1_affinity"]
+[ext_resource type="Script" path="res://combat/affinities.gd" id="2_affinities"]
+
+[resource]
+script = ExtResource("1_affinity")
+damage_type = 1
+affinity = 3

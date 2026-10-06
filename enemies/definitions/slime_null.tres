@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://enemies/enemy_data.gd" id="1_enemy_data"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_attack.tres" id="2_slime_attack"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_heavy_attack.tres" id="3_slime_heavy_attack"]
-[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_weak.tres" id="4_slime_fire_weak"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_null.tres" id="4_slime_fire_null"]
 
 [resource]
 script = ExtResource("1_enemy_data")
 actions = Array[ExtResource("2_slime_attack")]([ExtResource("2_slime_attack"), ExtResource("3_slime_heavy_attack")])
-affinities = Array[ExtResource("4_slime_fire_weak")]([ExtResource("4_slime_fire_weak")])
-enemy_id = "slime"
-display_name = "Slime"
+affinities = Array[ExtResource("4_slime_fire_null")]([ExtResource("4_slime_fire_null")])
+enemy_id = "slime_null"
+display_name = "Null Slime"
 level = 1
 max_hp = 100
 attack = 10

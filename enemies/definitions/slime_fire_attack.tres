@@ -4,8 +4,9 @@
 
 [resource]
 script = ExtResource("1_enemy_action")
-action_id = "slime_heavy_attack"
-display_name = "Heavy Attack"
-power = 14
-damage_type = 0
+action_id = "slime_fire_attack"
+display_name = "Fire Attack"
+power = 12
+damage_type = 1
 selection_weight = 1.0
+weakness_weight_multiplier = 3.0

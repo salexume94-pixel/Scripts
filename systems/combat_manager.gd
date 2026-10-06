@@ -7,12 +7,20 @@ extends Node
 
 const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
 const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
+const COMBAT_RULES = preload("res://combat/combat_rules.gd")
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
+const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
+const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_test.tres")
+const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
 ## CombatState can keep only the active encounter data.
 
 var active_combat: Resource = null
+
+## Debug-only actions use the same resolution path as normal Player actions.
+## They exist only to make accuracy and critical behavior deterministic to test.
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
 
@@ -61,8 +69,10 @@ func start_encounter(enemy_id: String) -> bool:
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
-func player_attack() -> bool:
-	# A normal Attack consumes one full Press Turn.
+func player_attack(action: Resource = null) -> bool:
+	# Resolve a Player action against the enemy's affinity.
+	# Action data supplies the damage type and power multiplier, while this
+	# coordinator applies the shared Press Turn and damage rules.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
 		return false
 	if active_combat.player_press_turns_remaining <= 0.0:
@@ -71,24 +81,76 @@ func player_attack() -> bool:
 	var current_scene := get_tree().current_scene
 	if current_scene == null:
 		return false
+
+	var player_attack_value := 0
 	var player := current_scene.get_node_or_null("Player")
 	if player == null:
 		var saved_stats: Dictionary = GameState.get_player_stats()
 		if saved_stats.is_empty():
 			return false
-		active_combat.last_player_attack = saved_stats.get("attack", 0)
+		player_attack_value = saved_stats.get("attack", 0)
 	else:
 		var stats := player.get_node_or_null("PlayerStats")
 		if stats == null:
 			return false
-		active_combat.last_player_attack = stats.attack
+		player_attack_value = stats.attack
 
-	var damage := maxi(active_combat.last_player_attack, 1)
-	active_combat.last_damage = damage
-	active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage, 0)
-	consume_player_press_turn(1.0)
+	var enemy_data: Resource = enemy_data_for_active_combat()
+	if enemy_data == null:
+		return false
 
-	if active_combat.enemy_hp <= 0:
+	var selected_action: Resource = action if action != null else PLAYER_PHYSICAL_ACTION
+	var action_power := maxi(int(round(float(player_attack_value) * selected_action.power_multiplier)), 1)
+	var damage_result: Dictionary = COMBAT_RULES.resolve_damage(
+		action_power,
+		selected_action.damage_type,
+		enemy_data,
+		selected_action.accuracy,
+		selected_action.critical_chance,
+		selected_action.critical_multiplier
+	)
+
+	active_combat.last_player_attack = action_power
+	active_combat.last_damage = damage_result.damage
+	active_combat.last_player_damage_type = selected_action.damage_type
+	active_combat.last_player_affinity = damage_result.affinity
+	active_combat.last_player_result_type = damage_result.result_type
+	active_combat.last_player_critical = damage_result.critical
+
+	match damage_result.result_type:
+		"damage":
+			active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage_result.damage, 0)
+		"drain":
+			# Drain heals the target instead of damaging it.
+			active_combat.enemy_hp = mini(
+				active_combat.enemy_hp + damage_result.damage,
+				active_combat.enemy_max_hp
+			)
+		"miss":
+			# A miss consumes its Press Turn but does not change either HP pool.
+			pass
+		"repel":
+			# Repel reflects the resolved damage back to the Player.
+			var stats_to_update: Dictionary = GameState.get_player_stats()
+			var current_hp: int = stats_to_update.get("hp", stats_to_update.get("max_hp", 0))
+			stats_to_update["hp"] = maxi(current_hp - damage_result.damage, 0)
+			GameState.set_player_stats(stats_to_update)
+			active_combat.last_damage = 0
+
+	consume_player_press_turn(damage_result.turn_cost)
+
+	if damage_result.result_type == "repel":
+		var reflected_stats: Dictionary = GameState.get_player_stats()
+		if reflected_stats.get("hp", 0) <= 0:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.DEFEAT
+			player_defeated.emit()
+		elif active_combat.player_press_turns_remaining <= 0.0:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+			enemy_turn_started.emit()
+			_resolve_enemy_turn()
+		else:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+	elif active_combat.enemy_hp <= 0:
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
 	elif active_combat.player_press_turns_remaining <= 0.0:
 		# All Player actions are spent, so the enemy receives its turn.
@@ -100,6 +162,14 @@ func player_attack() -> bool:
 
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
+
+func player_critical_test() -> bool:
+	# Start a deterministic guaranteed-critical action for runtime testing.
+	return player_attack(PLAYER_CRITICAL_TEST_ACTION)
+
+func player_miss_test() -> bool:
+	# Start a deterministic guaranteed-miss action for runtime testing.
+	return player_attack(PLAYER_MISS_TEST_ACTION)
 
 func player_defend() -> bool:
 	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
@@ -245,6 +315,18 @@ func get_player_press_turns_remaining() -> float:
 	return active_combat.player_press_turns_remaining if is_in_combat() else 0.0
 func get_last_enemy_damage() -> int:
 	return active_combat.last_enemy_damage if is_in_combat() else 0
+func get_last_player_affinity() -> int:
+	return active_combat.last_player_affinity if is_in_combat() else 0
+func get_last_player_damage_type() -> int:
+	return active_combat.last_player_damage_type if is_in_combat() else DAMAGE_TYPES.Type.PHYSICAL
+func get_last_player_result_type() -> String:
+	return active_combat.last_player_result_type if is_in_combat() else ""
+
+func get_last_player_critical() -> bool:
+	# Return whether the most recent Player action resolved as a critical hit.
+	# Battle uses this getter only for presentation; the combat result itself
+	# remains stored in CombatState and resolved by CombatRules.
+	return active_combat.last_player_critical if is_in_combat() else false
 func is_player_turn() -> bool:
 	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 func is_enemy_turn() -> bool:

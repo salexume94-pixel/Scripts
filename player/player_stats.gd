@@ -12,6 +12,8 @@ extends Node
 ## HP/MP so recreating the Player during a scene transition does not reset
 ## progress or current health.
 
+const DEFAULT_FIRE_WEAK = preload("res://player/definitions/player_fire_weak.tres")
+
 @export var level: int = 1
 @export var experience: int = 0
 
@@ -26,6 +28,13 @@ extends Node
 @export var magic_attack: int = 10
 @export var magic_defense: int = 10
 @export var speed: int = 10
+
+## Known elemental/physical reactions for this Player.
+##
+## The initial development configuration gives the Player a Fire weakness so
+## Enemy AI can be runtime-tested against a real known weakness. Future systems
+## can replace or extend this list through equipment, progression, or effects.
+@export var affinities: Array[Resource] = [DEFAULT_FIRE_WEAK]
 
 # Equipment modifiers are tracked separately so an equipment change can be
 # reversed cleanly without losing the Player's underlying base statistics.
@@ -91,6 +100,7 @@ func restore_mp(amount: int) -> int:
 		return 0
 
 	var old_mp := mp
+	mp = mini(mp + amount, max_mp)
 	mp = mini(mp + amount, max_mp)
 	_sync_to_game_state()
 	return mp - old_mp
