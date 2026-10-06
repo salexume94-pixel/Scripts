@@ -53,6 +53,13 @@ func change_scene(
 	if not location_id.is_empty():
 		current_location_id = location_id
 
+	# When entering an interior, preserve the exact overworld position where
+	# the Player interacted with the building. The reusable interior ExitDoor
+	# can then return the Player to that same doorway instead of a fixed point.
+	if set_return_position:
+		return_player_position = return_position
+		has_return_player_position = true
+
 	# Store the destination Player position before the current scene is
 	# removed. The Player node from the old scene will not survive the change.
 	pending_player_position = player_position
