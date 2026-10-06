@@ -1,3 +1,29 @@
+## 2026-10-06 - Fix Enemy Action Accuracy/Critical Data
+
+Runtime testing exposed a missing EnemyActionData field: CombatManager passes enemy action accuracy and critical-hit values into the shared CombatRules resolver, but EnemyActionData did not define those properties. This caused the Enemy Turn to fail when the AI selected an action.
+
+Updated:
+- enemies/enemy_action_data.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added action-level accuracy with a default of 100%.
+- Added action-level critical chance with a default of 0%.
+- Added action-level critical multiplier with a default of 2x.
+- Existing enemy action Resources inherit these safe defaults without requiring every .tres definition to be edited immediately.
+- This keeps accuracy and critical-hit data owned by EnemyActionData while CombatRules remains responsible for resolving the result.
+
+Runtime verification required:
+1. Pull the latest enemy-ai-behavior branch.
+2. Start Test Battle (Enemy AI).
+3. Cycle Player weakness to Water.
+4. End the Player turn and confirm the Enemy Turn no longer throws the missing accuracy property error.
+5. Confirm the enemy action resolves and combat returns to Player Turn.
+6. Confirm no parse, resource-loading, or debugger errors occur.
+
+Known limitation:
+- Enemy accuracy and critical values now exist at the action-data layer, but enemy-specific tuning and broader runtime verification remain future work.
+
 ## 2026-10-06 - Expand Elemental Enemy AI and Player Weakness Testing
 
 Implemented a reusable six-element test foundation so Enemy AI can evaluate and use the full elemental set against a cycling Player weakness.
