@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://combat/battle.gd" id="1_battle"]
+[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="2_debug_hud"]
 
 [node name="Battle" type="Control"]
 layout_mode = 3
@@ -175,3 +176,5 @@ text = "Return to World"
 visible = false
 [connection signal="pressed" from="BottomActionBar/ActionVBox/VictoryButton" to="." method="_on_victory_pressed"]
 
+
+[node name="DebugCombatHUD" parent="." instance=ExtResource("2_debug_hud")]
