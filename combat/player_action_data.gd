@@ -3,11 +3,11 @@ class_name PlayerActionData
 ## Defines one action the Player can use during combat.
 ##
 ## This Resource contains Player action data only. CombatManager resolves the
-## action through the shared combat rules, while Battle is responsible only for
-## presenting the available actions and forwarding Player input.
+## action through shared combat rules, while Battle is responsible only for
+## presenting the action and forwarding Player input.
 ##
-## Keeping the action as data allows elemental attacks and future skills to use
-## the same combat resolution path without hardcoding each attack in Battle.
+## Accuracy and critical chance live here as action data so different skills
+## can have different reliability without hardcoding those values in combat UI.
 
 ## Stable identifier used to reference this action.
 @export var action_id: String = ""
@@ -20,3 +20,12 @@ class_name PlayerActionData
 
 ## Multiplier applied to the Player's Attack stat before affinity resolution.
 @export_range(0.0, 9999.0) var power_multiplier: float = 1.0
+
+## Chance for the action to successfully hit, expressed as a percentage.
+@export_range(0.0, 100.0) var accuracy: float = 100.0
+
+## Chance for a successful hit to become a critical hit, expressed as a percentage.
+@export_range(0.0, 100.0) var critical_chance: float = 0.0
+
+## Damage multiplier applied when the action critically hits.
+@export_range(1.0, 10.0) var critical_multiplier: float = 2.0
