@@ -158,4 +158,4 @@ Named locations that may have gameplay and story significance should be represen
 
 Location definitions must remain separate from map presentation. Map coordinates and world-to-map conversion are intentionally reserved for the Map / World Map Foundation task.
 
-World scene nodes remain responsible for physical presentation and interaction behavior. The location data resource does not perform scene transitions, track Player position, own quest state, or render UI.
+World scene nodes remain responsible for physical presentation and interaction behavior. Buildings now reference their `WorldLocationData` resource directly, and `world/building.gd` passes that resource's stable world/location IDs to the Door at runtime. This makes existing Tutorial Town buildings part of the shared location-data foundation without moving transition logic into the data resource. The location data resource itself does not perform scene transitions, track Player position, own quest state, or render UI.
