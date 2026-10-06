@@ -1075,3 +1075,38 @@ The next Combat Foundation step is:
 
 This will establish the first complete alternating combat loop before moving into authoritative EnemyData and the Enemy Foundation.
 
+
+
+### Press Turn Combat Foundation: Player Action Resource
+
+Implemented the first Press Turn-inspired combat layer.
+
+Updated:
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added four Player Press Turns to each new encounter.
+- Added fractional remaining-turn state so future weakness/critical actions can consume half turns.
+- Normal Player Attack currently consumes one full Press Turn.
+- Battle UI displays remaining Press Turns using full and half-turn symbols.
+- Exhausting the Player's Press Turns changes combat to ENEMY_TURN.
+- Added a temporary end_enemy_turn() transition that resets the Player's four Press Turns. This will be replaced by the real enemy action system.
+- Existing victory and Run resolution remain intact.
+- No weakness, critical, resistance, enemy damage, or final damage formula has been added yet.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Start Test Battle (Slime).
+- Confirm Battle starts with Press Turns: four full turns.
+- Confirm each Attack removes exactly one full Press Turn.
+- Confirm the fourth Attack changes the state to ENEMY TURN and disables Attack/Run.
+- Confirm the temporary enemy-turn transition resets the Player to four Press Turns and returns to PLAYER TURN.
+- Confirm victory still works if the enemy reaches 0 HP before the fourth action.
+- Confirm Run still works during the Player turn.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
