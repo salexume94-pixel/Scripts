@@ -2008,3 +2008,15 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Reduced container spacing, log viewport height, action text height, and button heights to preserve all Battle controls within the panel.
 - Kept the Battle HUD centered and full-screen anchored.
 - Runtime verification required on the user's actual display resolution.
+
+
+### Battle HUD Action Placement and Speed-Based Critical/Miss Debug Tests
+
+- Reduced Battle action button heights so the controls occupy less vertical space.
+- Changed the combat log viewport to expand into available vertical space, keeping the action controls at the bottom of the Battle panel while giving the log substantially more room.
+- Reworked the Critical Test to use the same Player Attack path as a normal attack instead of a guaranteed critical action.
+- Player critical chance is now derived from the Player Speed stat, clamped to 0-100%, and passed into the shared combat damage resolver.
+- Reworked the Miss Test to use the same Player Attack path as a normal attack instead of a guaranteed miss action.
+- Player attack accuracy is now derived from Enemy Speed as 100 minus Enemy Speed, clamped to 0-100%, and passed into the shared combat damage resolver.
+- Because both values are now applied inside the normal attack resolution path, regular Player attacks and the temporary debug tests use the same Speed-based critical/miss rules.
+- Runtime verification required: confirm Speed-based critical and miss outcomes, then remove the two debug buttons and obsolete guaranteed-test resources after both checks pass.
