@@ -60,12 +60,14 @@ func _on_press_turns_changed(_remaining: float) -> void:
 
 func _on_defend_pressed() -> void:
 	if CombatManager.player_defend():
+		CombatManager.add_combat_log("PLAYER: Defend.")
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
 			action_label.text = "PLAYER: Defend." if CombatManager.is_player_turn() else "PLAYER: Defend. ENEMY TURN."
 
 func _on_pass_pressed() -> void:
 	if CombatManager.player_pass():
+		CombatManager.add_combat_log("PLAYER: Pass.")
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
 			action_label.text = "PLAYER: Pass." if CombatManager.is_player_turn() else "PLAYER: Pass. ENEMY TURN."
