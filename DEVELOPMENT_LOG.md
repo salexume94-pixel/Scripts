@@ -1184,3 +1184,14 @@ Updated:
 - `ui/InventoryCharacterHUD.tscn`
 
 Equipment now supports multiple slots with one item per slot:
+
+## 2026-10-06 Enemy AI Weakness Selection Ratio
+
+- Updated the weakness-hunter behavior profile so weakness-targeting decisions use an explicit **66.67% selection chance**.
+- The remaining **33.33%** selects from non-weakness actions, preserving the intended behavior of approximately 2 weakness attacks for every 1 other attack over a large sample.
+- Individual sequences remain random, so a short run may produce patterns such as `EARTH, EARTH, WATER` or `EARTH, WATER, EARTH`.
+- Updated files:
+  - `enemies/enemy_behavior_profile.gd`
+  - `enemies/definitions/behavior_weakness_hunter.tres`
+  - `systems/combat_manager.gd`
+- Runtime verification required: start **Test Battle (Enemy AI)**, set the Player weakness, allow many Enemy turns, and confirm the matching elemental action occurs roughly 2/3 of the time while other valid actions occur roughly 1/3 of the time.
