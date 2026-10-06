@@ -173,11 +173,20 @@ func _unequip_slot(
 	inventory: Node,
 	stats: Node
 ) -> bool:
-	# Return the item to inventory first. If that fails, the equipped state and
-	# stat modifiers remain unchanged.
-	if not inventory.add_item(item):
-		return false
+	# Unequipping is treated as one ownership transaction. The item must either
+	# already be present in inventory or be successfully returned there before
+	# the equipment slot is cleared.
+	#
+	# The first case repairs a stale runtime state where the same item ID is
+	# already present in inventory. Because equipment stacks are limited, trying
+	# to add another copy would fail and make the HUD appear unable to unequip.
+	if not inventory.has_item(item):
+		if not inventory.add_item(item):
+			return false
 
+	# Only clear the equipment slot after inventory ownership is confirmed.
+	# This prevents a failed inventory transfer from leaving a half-updated
+	# equipment/stat state.
 	stats.remove_equipment_modifiers(
 		item.get("attack_bonus"),
 		item.get("defense_bonus")
