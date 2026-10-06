@@ -29,3 +29,12 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 ## matches a known Player weakness. The base selection weight is never replaced.
 ## This lets AI become more intelligent without changing existing action data.
 @export_range(0.0, 9999.0) var weakness_weight_multiplier: float = 3.0
+
+## Accuracy used by CombatRules when this action is resolved.
+@export_range(0.0, 100.0) var accuracy: float = 100.0
+
+## Critical-hit chance used by CombatRules when this action is resolved.
+@export_range(0.0, 100.0) var critical_chance: float = 0.0
+
+## Damage multiplier applied when this action scores a critical hit.
+@export_range(0.0, 9999.0) var critical_multiplier: float = 2.0
