@@ -1899,3 +1899,14 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Reduced the restored Press Turn count after each enemy turn to the same configured value of 2.
 - Increased the visible scrollable combat log height from 80px to 160px.
 - The Press Turn count can be scaled back up later as combat pacing and enemy balance are tuned.
+
+
+## 2026-10-06 - Combat UI and Enemy AI Selection Fixes
+
+- Updated `combat/battle.gd` so the combat log explicitly scrolls to its newest line whenever it refreshes.
+- Enabled RichTextLabel `scroll_following` in `scenes/Battle.tscn` so new entries remain visible at the bottom.
+- Reworked the Battle action buttons into a centered horizontal row, reducing the Battle panel's vertical footprint so the centered layout fits the 1152x648 viewport.
+- Tuned the weakness-hunter AI so Fire remains favored against the Player's known Fire weakness without dominating every selection.
+- Added a configurable behavior-profile repeat penalty so the same enemy action is discouraged immediately after it was used.
+- Reduced the test Fire action's weakness multiplier from 3.0 to 2.0 and set the weakness-hunter repeat multiplier to 0.25.
+- Runtime verification is still required for the Battle layout, combat-log auto-scroll, and AI action distribution.
