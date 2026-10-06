@@ -1,13 +1,12 @@
-extends Area2D
+extends StaticBody2D
 ## Handles a reusable doorway that transitions the Player to another scene.
 ##
-## This script owns only the Door's transition behavior. Interaction input is
-## handled by the shared Player InteractionSystem, while SceneManager owns the
-## actual scene-loading work.
+## This script owns the Door's transition behavior and its physical blocking
+## body. Interaction input is handled by the shared Player InteractionSystem,
+## while SceneManager owns the actual scene-loading work.
 ##
-## The Door registers itself as an explicit interactable so it can only be
-## selected by the shared interaction system when the Player is actually
-## within the configured interaction distance.
+## The Door is physically solid so the Player cannot simply walk through the
+## doorway. Pressing E while nearby is the intentional transition action.
 
 @export_file("*.tscn") var target_scene: String
 @export var target_player_position: Vector2 = Vector2.ZERO
@@ -16,7 +15,7 @@ var transition_started: bool = false
 
 
 func _ready() -> void:
-	# Register this Door with the shared interaction system.
+	# Register this Door with the shared interaction system so E can select it.
 	add_to_group("interactable")
 
 
