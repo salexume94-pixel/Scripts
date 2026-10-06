@@ -75,7 +75,6 @@ text = "Attack"
 [node name="FireButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Fire"
-visible = false
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/FireButton" to="." method="_on_fire_pressed"]
 [node name="CriticalTestButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
@@ -106,5 +105,5 @@ visible = false
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/VictoryButton" to="." method="_on_victory_pressed"]
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Press Turn combat. Attack and Fire use Player action data. The Slime is weak to Fire."
+text = "Press Turn combat. Choose an action, defend, pass, or run."
 horizontal_alignment = 1
