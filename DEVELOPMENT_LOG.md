@@ -2045,3 +2045,10 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Player action data and shared combat-rule defaults now use a 1.5x critical multiplier.
 - Miss resolution already returns exactly 0 damage and the Player attack path leaves Enemy HP unchanged on a miss.
 - Runtime verification required: confirm a logged critical applies 1.5x damage and a logged miss applies 0 damage.
+
+## Enemy Accuracy and Critical Resolution
+- Enemy attacks now use the same Speed-based resolution model as Player Basic Attacks.
+- Enemy Speed determines critical-hit chance, and Player Speed determines Enemy hit accuracy.
+- Enemy attacks use the action's critical multiplier, with a 1.5x minimum for the current combat standard.
+- Enemy attack rolls are written to the combat log so critical and miss outcomes can be verified against the calculated chances.
+- Runtime verification required: confirm Enemy criticals deal 1.5x damage and Enemy misses deal 0 damage.
