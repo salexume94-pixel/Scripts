@@ -29,7 +29,7 @@ func update_player_position(world_id: String, world_position: Vector2) -> void:
 
 	current_world_id = world_id
 	current_world_position = world_position
-	current_map_position = map_data.world_to_map(world_position)
+	current_map_position = map_data.call("world_to_map", world_position)
 	has_player_position = true
 
 func get_current_map() -> Resource:
@@ -38,7 +38,7 @@ func get_current_map() -> Resource:
 		return null
 	return WORLD_MAP_DATABASE.get_map(current_world_id)
 
-func get_current_location() -> WorldLocationData:
+func get_current_location() -> Resource:
 	# SceneManager owns the authoritative location context. MapManager only
 	# resolves that ID to shared location data when a caller needs it.
 	if SceneManager.current_location_id.is_empty():
