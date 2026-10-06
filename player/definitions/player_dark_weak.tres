@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="PlayerAffinityData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://player/player_affinity_data.gd" id="1_player_affinity"]
+
+[resource]
+script = ExtResource("1_player_affinity")
+damage_type = 6
+affinity = 1
