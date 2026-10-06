@@ -8,6 +8,7 @@ func _ready() -> void:
 	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
 	CombatManager.player_press_turns_changed.connect(_on_press_turns_changed)
 	CombatManager.enemy_turn_started.connect(_on_enemy_turn_started)
+	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
 	_update_display()
 	_update_enemy_hp_display()
 	_update_press_turn_display()
@@ -37,11 +38,32 @@ func _on_enemy_turn_started() -> void:
 		action_label.text = "Player turn complete. Enemy turn."
 	_update_combat_controls()
 
+func _on_enemy_attack_performed(damage: int) -> void:
+	# Show the enemy result and refresh controls after the enemy turn completes.
+	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
+	if action_label != null:
+		if CombatManager.is_defeat():
+			action_label.text = "Enemy attacks for %d damage. Player defeated." % damage
+		else:
+			action_label.text = "Enemy attacks for %d damage. Player turn." % damage
+	_update_player_hp_display()
+	_update_press_turn_display()
+	_update_combat_controls()
+
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
 	if hp_label == null:
 		return
 	hp_label.text = "Enemy HP: %d / %d" % [CombatManager.get_enemy_hp(), CombatManager.get_enemy_max_hp()]
+
+func _update_player_hp_display() -> void:
+	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerHPLabel")
+	if hp_label == null:
+		return
+	var stats: Dictionary = GameState.get_player_stats()
+	var hp: int = stats.get("hp", 0)
+	var max_hp: int = stats.get("max_hp", 0)
+	hp_label.text = "Player HP: %d / %d" % [hp, max_hp]
 
 func _update_press_turn_display() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PressTurnLabel")
@@ -65,13 +87,16 @@ func _update_combat_controls() -> void:
 	if attack_button == null or run_button == null or victory_button == null:
 		return
 	var victory := CombatManager.is_victory()
+	var defeat := CombatManager.is_defeat()
 	var player_turn := CombatManager.is_player_turn()
-	attack_button.disabled = victory or not player_turn
-	run_button.visible = not victory and player_turn
+	attack_button.disabled = victory or defeat or not player_turn
+	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
 	if state_label != null:
 		if victory:
 			state_label.text = "VICTORY"
+		elif defeat:
+			state_label.text = "DEFEAT"
 		elif CombatManager.is_enemy_turn():
 			state_label.text = "ENEMY TURN"
 		else:
