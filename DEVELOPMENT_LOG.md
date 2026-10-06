@@ -2059,3 +2059,9 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Player and Enemy attacks now explicitly report MISSED with no damage, CRITICAL with final damage, or normal final damage.
 - Battle feedback exposes enemy miss and critical outcomes.
 - Runtime verification required.
+
+
+## Combat Log Redundant Startup Entries
+- Removed the encounter-start entries for enemy battle entry, selected Enemy AI profile, and available Player Press Turns from the combat log.
+- These values remain displayed in the dedicated Battle HUD areas above the combat log, so the log now focuses on actual combat events and outcomes.
+- Runtime verification required: start a battle and confirm those three startup messages no longer appear in the scrolling combat log.
