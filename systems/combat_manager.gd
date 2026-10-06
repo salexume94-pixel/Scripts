@@ -114,7 +114,7 @@ func cycle_player_weakness() -> bool:
 			break
 	if weakness_index < 0:
 		return false
-	var next_index := (weakness_index + 1) % active_combat.player_affinities.size()
+	var next_index: int = (weakness_index + 1) % active_combat.player_affinities.size()
 	for i in range(active_combat.player_affinities.size()):
 		var affinity_data: Resource = active_combat.player_affinities[i]
 		if affinity_data == null:
