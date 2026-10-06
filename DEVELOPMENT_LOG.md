@@ -2020,3 +2020,14 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Player attack accuracy is now derived from Enemy Speed as 100 minus Enemy Speed, clamped to 0-100%, and passed into the shared combat damage resolver.
 - Because both values are now applied inside the normal attack resolution path, regular Player attacks and the temporary debug tests use the same Speed-based critical/miss rules.
 - Runtime verification required: confirm Speed-based critical and miss outcomes, then remove the two debug buttons and obsolete guaranteed-test resources after both checks pass.
+
+
+### Battle HUD Bottom Action Bar and Speed-Based Attack Debugging
+
+- Moved the Battle action controls into a dedicated bottom-of-screen action bar so combat-log growth cannot push the controls below the visible Battle HUD.
+- Kept the combat log in the centered combat information panel with a bounded scrolling viewport, independent of the bottom action bar.
+- Repointed Battle UI control lookups and signal paths to the new action bar.
+- Player Basic Attack now resolves through the shared Speed-based critical and accuracy calculations. Player Speed supplies critical chance; Enemy Speed determines Player accuracy.
+- Critical Test and Miss Test now invoke the same Basic Attack resolution path and only add diagnostic logging showing the calculated critical chance and accuracy. They no longer use guaranteed critical/miss action resources.
+- Runtime verification required: confirm Basic Attack can produce normal/critical outcomes according to Player Speed and can hit/miss according to Enemy Speed, and confirm the bottom action bar remains visible as combat-log history grows.
+- After both debug checks pass, remove the Critical Test and Miss Test controls and their handlers.
