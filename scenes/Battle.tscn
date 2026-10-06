@@ -43,7 +43,7 @@ text = "Player Weakness: Unknown"
 horizontal_alignment = 1
 
 [node name="CycleWeaknessButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 22)
+custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 text = "Cycle Player Weakness"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CycleWeaknessButton" to="." method="_on_cycle_weakness_pressed"]
@@ -59,7 +59,7 @@ text = "PLAYER TURN"
 horizontal_alignment = 1
 
 [node name="ActionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
 text = "Choose an action."
 horizontal_alignment = 1
@@ -96,10 +96,9 @@ text = "Press Turns: ● ● ● ●"
 horizontal_alignment = 1
 
 [node name="CombatLogScroll" type="ScrollContainer" parent="CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 70)
-custom_maximum_size = Vector2(-1, 70)
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
-size_flags_vertical = 1
+size_flags_vertical = 3
 vertical_scroll_mode = 1
 horizontal_scroll_mode = 3
 
