@@ -1,34 +1,33 @@
 extends Node
 ## Owns Player-to-world interaction input and interactable selection.
 ##
-## This system provides one shared E-key interaction path for NPCs, Chest, Door,
-## and future interactable objects. Individual interactables expose an interact()
-## method that owns their gameplay behavior.
+## This system provides one shared interaction path for NPCs, Chests, Doors,
+## and future interactable objects. Individual interactables expose an
+## interact() method that owns their gameplay behavior.
 ##
-## Interaction input is polled here instead of relying on InputEvent delivery.
-## This is deliberate: UI Controls and other input consumers can intercept
-## keyboard events, while polling the key state guarantees the Player's
-## interaction system still sees the E key.
+## The interaction key is registered as a real InputMap action at runtime.
+## This keeps interaction input centralized and avoids relying on raw keyboard
+## event propagation through the scene tree or UI Controls.
 
 const MAX_INTERACTION_DISTANCE: float = 80.0
+const INTERACT_ACTION: StringName = &"interact"
 
-# Tracks the previous frame's E-key state so holding E does not repeatedly
-# trigger interactions. A new interaction occurs only when E is newly pressed.
-var e_was_pressed: bool = false
+func _ready() -> void:
+	# Register the shared interaction action once. The action is created here
+	# so the system remains self-contained while still using Godot's standard
+	# input-action system.
+	if not InputMap.has_action(INTERACT_ACTION):
+		InputMap.add_action(INTERACT_ACTION)
 
+		var interact_key := InputEventKey.new()
+		interact_key.physical_keycode = KEY_E
+		InputMap.action_add_event(INTERACT_ACTION, interact_key)
 
 func _process(_delta: float) -> void:
-	# Read the physical E key directly. This bypasses input-event consumption
-	# by UI controls and makes the interaction key independent of input focus.
-	var e_is_pressed := Input.is_physical_key_pressed(KEY_E)
-
-	# Only react on the transition from "not pressed" to "pressed". This means
-	# holding E cannot repeatedly open dialogue or interact with an object.
-	if e_is_pressed and not e_was_pressed:
+	# Input.is_action_just_pressed() detects the initial E press only, so holding
+	# E cannot repeatedly interact with the same NPC or object.
+	if Input.is_action_just_pressed(INTERACT_ACTION):
 		_handle_interaction_input()
-
-	e_was_pressed = e_is_pressed
-
 
 func _handle_interaction_input() -> void:
 	# When dialogue is active, E dismisses the current line instead of
@@ -38,7 +37,6 @@ func _handle_interaction_input() -> void:
 		return
 
 	_interact_with_nearest()
-
 
 func _interact_with_nearest() -> void:
 	# The Player already has an InteractionArea. Its overlapping physics bodies
@@ -54,7 +52,6 @@ func _interact_with_nearest() -> void:
 	# Keep the distance-based search as a fallback for interactables that do not
 	# participate in the expected Area2D collision configuration.
 	_interact_by_distance()
-
 
 func _find_nearest_from_area(interaction_area: Area2D) -> Node:
 	# Only select bodies that explicitly belong to the shared interactable
@@ -86,7 +83,6 @@ func _find_nearest_from_area(interaction_area: Area2D) -> Node:
 			nearest = candidate
 
 	return nearest
-
 
 func _interact_by_distance() -> void:
 	# Find the closest explicitly registered interactable in the current scene.
