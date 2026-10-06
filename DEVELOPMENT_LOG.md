@@ -1,3 +1,30 @@
+### Combat Testing Adjustment: Slime Test HP
+
+Adjusted the Slime's test HP so the new enemy action-selection system can be exercised across multiple enemy turns.
+
+Updated:
+- `enemies/definitions/slime.tres`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Increased Slime maximum HP from 50 to 100.
+- This is a testing adjustment so the current Player Attack value does not defeat the Slime immediately after the first enemy turn.
+- Enemy action selection, Press Turn behavior, damage formulas, and Player stats were not changed.
+- The Slime can now survive multiple Player/Enemy turn cycles, making repeated action selection observable in one encounter.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Start Test Battle (Slime).
+- Confirm Enemy HP starts at 100 / 100.
+- Confirm four Player Attacks trigger the first Enemy Turn.
+- Confirm the selected action is displayed.
+- Continue the battle and confirm additional Enemy Turns can occur.
+- Confirm both Attack and Heavy Attack can be observed over repeated enemy turns.
+- Confirm existing damage, Press Turn, Victory, and Run behavior remains functional.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
 ### Enemy Action Selection: Multiple Slime Actions
 
 Expanded the enemy action foundation so the Slime now has two selectable actions.
