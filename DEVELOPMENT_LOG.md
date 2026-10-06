@@ -1,3 +1,41 @@
+### Combat Affinity: Null Implementation
+
+Implemented the Fire Null affinity as the next elemental combat step.
+
+Added:
+- enemies/definitions/slime_fire_null.tres
+- enemies/definitions/slime_null.tres
+
+Updated:
+- enemies/enemy_database.gd
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added a controlled Fire Null enemy definition without changing the existing Weak or Resist test enemies.
+- Registered `slime_null` in EnemyDatabase.
+- Added a DEBUG entry labeled `Test Battle (Fire Null)`.
+- Existing CombatRules Nullify behavior remains authoritative: Fire damage is reduced to 0 and consumes one full Press Turn.
+- Null testing is isolated from the other affinity tests.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm `Test Battle (Fire Null)` appears in DEBUG.
+- Start the Fire Null encounter without parse, resource, or debugger errors.
+- Use Fire and confirm damage is exactly 0.
+- Confirm Enemy HP does not change.
+- Confirm exactly one full Press Turn is consumed.
+- Confirm combat continues normally after the nullified attack.
+- Confirm existing Weak and Resist tests remain unchanged.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Null has been implemented and provided a controlled runtime test encounter, but runtime verification is pending.
+- Drain and Repel remain after Null.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Combat Affinity: Resist Implementation
 
 Implemented the Fire Resist affinity as the next elemental combat step.
