@@ -40,23 +40,28 @@ horizontal_alignment = 1
 
 [node name="Status" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
+autowrap_mode = 3
 text = "Status:"
 
 [node name="TargetAffinities" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
+autowrap_mode = 3
 text = "Target affinities:"
 
 [node name="PlayerAffinities" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
+autowrap_mode = 3
 text = "Player affinities:"
 
 [node name="LastPlayer" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
+autowrap_mode = 3
 autowrap_mode = 2
 text = "Last Player action:"
 
 [node name="LastEnemy" type="Label" parent="Panel/Margin/Content"]
 layout_mode = 2
+autowrap_mode = 3
 autowrap_mode = 2
 text = "Last Enemy action:"
 
