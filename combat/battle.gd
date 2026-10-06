@@ -198,14 +198,10 @@ func _update_combat_controls() -> void:
 	var fire_button := get_node_or_null("BottomActionBar/ActionVBox/FireButton") as Button
 	var defend_button := get_node_or_null("BottomActionBar/ActionVBox/DefendButton") as Button
 	var pass_button := get_node_or_null("BottomActionBar/ActionVBox/PassButton") as Button
-	var critical_test_button := get_node_or_null("BottomActionBar/ActionVBox/CriticalTestButton") as Button
-	var miss_test_button := get_node_or_null("BottomActionBar/ActionVBox/MissTestButton") as Button
 	var run_button := get_node_or_null("BottomActionBar/ActionVBox/RunButton") as Button
 	var victory_button := get_node_or_null("BottomActionBar/ActionVBox/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
 	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
-		return
-	if critical_test_button == null or miss_test_button == null:
 		return
 
 	var victory := CombatManager.is_victory()
@@ -217,8 +213,6 @@ func _update_combat_controls() -> void:
 	fire_button.disabled = victory or defeat or locked
 	defend_button.disabled = victory or defeat or locked
 	pass_button.disabled = victory or defeat or locked
-	critical_test_button.disabled = victory or defeat or locked
-	miss_test_button.disabled = victory or defeat or locked
 	run_button.disabled = victory or defeat or locked
 	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
@@ -245,22 +239,6 @@ func _on_fire_pressed() -> void:
 		return
 	action_resolving = true
 	if not CombatManager.player_attack(FIRE_ACTION):
-		action_resolving = false
-	_update_combat_controls()
-
-func _on_critical_test_pressed() -> void:
-	if action_resolving:
-		return
-	action_resolving = true
-	if not CombatManager.player_critical_test():
-		action_resolving = false
-	_update_combat_controls()
-
-func _on_miss_test_pressed() -> void:
-	if action_resolving:
-		return
-	action_resolving = true
-	if not CombatManager.player_miss_test():
 		action_resolving = false
 	_update_combat_controls()
 
