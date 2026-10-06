@@ -7,6 +7,7 @@ extends Node
 
 const MAP_DEFINITIONS: Array[Resource] = [
 	preload("res://world/definitions/tutorial_town_map.tres"),
+	preload("res://world/definitions/world_map.tres"),
 ]
 
 static func get_map(world_id: String) -> Resource:
