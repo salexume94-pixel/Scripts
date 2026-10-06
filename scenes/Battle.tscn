@@ -50,11 +50,6 @@ layout_mode = 2
 text = "Cycle Player Weakness"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CycleWeaknessButton" to="." method="_on_cycle_weakness_pressed"]
 
-[node name="EnemyBehaviorLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
-layout_mode = 2
-text = "Enemy Behavior: unknown"
-horizontal_alignment = 1
-
 [node name="StateLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "PLAYER TURN"
