@@ -9,6 +9,7 @@ extends StaticBody2D
 @export var target_player_position: Vector2 = Vector2.ZERO
 @export var world_id: String = ""
 @export var location_id: String = ""
+@export var use_return_position: bool = false
 
 var transition_started: bool = false
 
@@ -26,7 +27,7 @@ func _ready() -> void:
         location_id = SceneManager.current_location_id
 
 
-func interact(_player: Node) -> void:
+func interact(player: Node) -> void:
     # The shared InteractionSystem calls this method when the Player presses E.
     if transition_started:
         return
@@ -45,10 +46,23 @@ func interact(_player: Node) -> void:
 
     transition_started = true
 
-    # SceneManager performs the actual scene replacement and Player placement.
+    # Interior exits use the exact world position where the Player entered the
+    # building. This prevents every building from returning to town center.
+    var destination_position := target_player_position
+    if use_return_position and SceneManager.has_return_player_position:
+        destination_position = SceneManager.return_player_position
+
+    # A Door leading into an interior records the Player's current world
+    # position before the scene is replaced. The reusable interior can then
+    # restore that position when its ExitDoor is used.
+    var should_set_return_position := not use_return_position
+    var return_position := player.global_position
+
     SceneManager.change_scene(
         target_scene,
-        target_player_position,
+        destination_position,
         world_id,
-        location_id
+        location_id,
+        return_position,
+        should_set_return_position
     )
