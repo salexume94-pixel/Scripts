@@ -10,3 +10,5 @@ display_name = "Tutorial Town Church"
 location_type = 2
 description = "A peaceful church in Tutorial Town."
 story_significant = true
+map_position = Vector2(200, 180)
+map_visible = true
