@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://world/Door.tscn" id="4_door"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
+[ext_resource type="Script" path="res://world/world_boundaries.gd" id="7_world_boundaries"]
 
 [node name="WorldMapWorld" type="Node2D"]
 script = ExtResource("1_world_map")
@@ -72,6 +73,13 @@ location_id = "tutorial_town"
 [node name="WorldLabel" type="Label" parent="WorldMapContent"]
 position = Vector2(-80, -900)
 text = "WORLD MAP"
+
+[node name="WorldBoundaries" type="Node2D" parent="."]
+script = ExtResource("7_world_boundaries")
+left_bound = -1500.0
+right_bound = 1500.0
+top_bound = -1000.0
+bottom_bound = 1000.0
 
 [node name="WorldPresentation" type="Node2D" parent="."]
 script = ExtResource("6_world_presentation")
