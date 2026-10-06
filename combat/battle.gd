@@ -194,14 +194,14 @@ func _update_press_turn_display() -> void:
 	label.text = "Press Turns: " + symbols.strip_edges()
 
 func _update_combat_controls() -> void:
-	var attack_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/AttackButton") as Button
-	var fire_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/FireButton") as Button
-	var defend_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/DefendButton") as Button
-	var pass_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/PassButton") as Button
-	var critical_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/CriticalTestButton") as Button
-	var miss_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/MissTestButton") as Button
-	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/RunButton") as Button
-	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
+	var attack_button := get_node_or_null("BottomActionBar/ActionVBox/AttackButton") as Button
+	var fire_button := get_node_or_null("BottomActionBar/ActionVBox/FireButton") as Button
+	var defend_button := get_node_or_null("BottomActionBar/ActionVBox/DefendButton") as Button
+	var pass_button := get_node_or_null("BottomActionBar/ActionVBox/PassButton") as Button
+	var critical_test_button := get_node_or_null("BottomActionBar/ActionVBox/CriticalTestButton") as Button
+	var miss_test_button := get_node_or_null("BottomActionBar/ActionVBox/MissTestButton") as Button
+	var run_button := get_node_or_null("BottomActionBar/ActionVBox/RunButton") as Button
+	var victory_button := get_node_or_null("BottomActionBar/ActionVBox/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
 	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
 		return
