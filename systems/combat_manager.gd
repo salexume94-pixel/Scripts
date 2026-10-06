@@ -221,9 +221,6 @@ func start_encounter(enemy_id: String) -> bool:
 	combat_state.enemy_attack = first_action.power
 	active_combat = combat_state
 	combat_log.clear()
-	_append_combat_log("COMBAT: %s entered battle." % enemy_data.display_name)
-	_append_combat_log("ENEMY AI: %s profile selected." % selected_behavior.profile_id)
-	_append_combat_log("PLAYER TURN: 2 Press Turns available.")
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
