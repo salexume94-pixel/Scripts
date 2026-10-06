@@ -8,6 +8,9 @@ extends Node
 ## This autoload survives scene changes, which prevents the map state from
 ## being tied to one particular World scene instance.
 
+const WORLD_MAP_DATABASE = preload("res://world/world_map_database.gd")
+const WORLD_LOCATION_DATABASE = preload("res://world/world_location_database.gd")
+
 var current_world_id: String = ""
 var current_world_position: Vector2 = Vector2.ZERO
 var current_map_position: Vector2 = Vector2.ZERO
@@ -18,7 +21,7 @@ func update_player_position(world_id: String, world_position: Vector2) -> void:
 	if world_id.is_empty():
 		return
 
-	var map_data := WorldMapDatabase.get_map(world_id)
+	var map_data := WORLD_MAP_DATABASE.get_map(world_id)
 
 	if map_data == null:
 		push_error("MapManager could not find a map for world_id: %s" % world_id)
@@ -33,11 +36,11 @@ func get_current_map() -> Resource:
 	# The current world determines which map should be presented.
 	if current_world_id.is_empty():
 		return null
-	return WorldMapDatabase.get_map(current_world_id)
+	return WORLD_MAP_DATABASE.get_map(current_world_id)
 
 func get_current_location() -> WorldLocationData:
 	# SceneManager owns the authoritative location context. MapManager only
 	# resolves that ID to shared location data when a caller needs it.
 	if SceneManager.current_location_id.is_empty():
 		return null
-	return WorldLocationDatabase.get_location(SceneManager.current_location_id)
+	return WORLD_LOCATION_DATABASE.get_location(SceneManager.current_location_id)
