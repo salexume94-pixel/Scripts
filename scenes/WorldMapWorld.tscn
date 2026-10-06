@@ -1,0 +1,81 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/world_map_world.gd" id="1_world_map"]
+[ext_resource type="Script" path="res://world/world_context.gd" id="2_world_context"]
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="4_door"]
+[ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
+
+[node name="WorldMapWorld" type="Node2D"]
+script = ExtResource("1_world_map")
+
+[node name="WorldContext" type="Node" parent="."]
+script = ExtResource("2_world_context")
+world_id = "world_map"
+location_id = "world_map"
+
+[node name="WorldMapContent" type="Node2D" parent="."]
+
+[node name="WorldFloor" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1500, -1000, 1500, -1000, 1500, 1000, -1500, 1000)
+color = Color(0.10, 0.16, 0.12, 1)
+
+[node name="NorthRegion" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1500, -1000, 1500, -1000, 1500, -650, -800, -650, -1000, -500, -1500, -500)
+color = Color(0.07, 0.13, 0.08, 1)
+
+[node name="WestRegion" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1500, -500, -950, -500, -800, 0, -1000, 500, -1500, 500)
+color = Color(0.12, 0.18, 0.12, 1)
+
+[node name="EastRegion" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(800, -500, 1500, -500, 1500, 700, 850, 500, 700, 0)
+color = Color(0.12, 0.18, 0.12, 1)
+
+[node name="SouthRegion" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1000, 500, -800, 350, 0, 450, 800, 350, 1000, 500, 1500, 700, 1500, 1000, -1500, 1000, -1500, 500)
+color = Color(0.18, 0.16, 0.11, 1)
+
+[node name="NorthRoad" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-45, -1000, 45, -1000, 45, -300, -45, -300)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="SouthRoad" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-45, 300, 45, 300, 45, 1000, -45, 1000)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="WestRoad" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1200, -45, -300, -45, -300, 45, -1200, 45)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="EastRoad" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(300, -45, 1200, -45, 1200, 45, 300, 45)
+color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="TutorialTownMarker" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-80, -60, 80, -60, 80, 60, -80, 60)
+color = Color(0.28, 0.28, 0.32, 1)
+position = Vector2(0, 700)
+
+[node name="TutorialTownLabel" type="Label" parent="WorldMapContent"]
+position = Vector2(-90, 620)
+text = "TUTORIAL TOWN"
+
+[node name="TutorialTownExit" parent="WorldMapContent" instance=ExtResource("4_door")]
+position = Vector2(0, 620)
+target_scene = "res://scenes/World.tscn"
+target_player_position = Vector2(0, 1010)
+world_id = "tutorial_town"
+location_id = "tutorial_town"
+
+[node name="WorldLabel" type="Label" parent="WorldMapContent"]
+position = Vector2(-80, -900)
+text = "WORLD MAP"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(0, 560)
+
+[node name="WorldMap" parent="." instance=ExtResource("5_map")]
