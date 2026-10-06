@@ -2274,3 +2274,11 @@ Runtime verification:
   - Height: 624 pixels
 - Word wrapping remains enabled for diagnostic text.
 - Confirmed runtime behavior: the Debug Combat HUD is fully visible and contained within the player's viewport.
+
+
+### Combat Debug HUD: Enemy Behavior Profile Display
+
+- Added an **Enemy Behavior** diagnostic field to the Debug Combat HUD.
+- The field reads the active combat behavior profile directly from `CombatManager.get_enemy_behavior_profile_name()`.
+- Enemy behavior information is presented as debug information rather than being treated as a combat-log entry.
+- Updated Debug Combat HUD node paths to match the scrollable HUD container.
