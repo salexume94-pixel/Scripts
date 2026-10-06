@@ -14,6 +14,7 @@ const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_t
 const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
 const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
 const AFFINITIES = preload("res://combat/affinities.gd")
+const ENEMY_BEHAVIOR_PROFILE = preload("res://enemies/enemy_behavior_profile.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
@@ -310,11 +311,11 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		var player_affinity := _get_player_affinity(action.damage_type)
 
 		match behavior.strategy:
-			behavior.Strategy.AGGRESSIVE:
+			ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
 				# Aggressive enemies prefer stronger actions while retaining their
 				# configured relative weights.
 				weight *= lerpf(1.0, 2.0, clampf(float(action.power) / float(max_power), 0.0, 1.0))
-			behavior.Strategy.WEAKNESS_HUNTER:
+			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
 				# Weakness hunters strongly prioritize actions that exploit a known
 				# Player weakness.
 				if player_affinity == AFFINITIES.Type.WEAK:
