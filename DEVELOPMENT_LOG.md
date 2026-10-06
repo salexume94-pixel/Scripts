@@ -1,3 +1,48 @@
+### Combat Polish: Feedback and Turn Flow
+
+Implemented the first focused Combat Polish pass for combat feedback, turn flow, and Battle UI readability.
+
+Updated:
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+- `systems/combat_manager.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Player attack results now explicitly report damage, MISS, CRITICAL, Weak, Resist, Null, Drain, and Repel outcomes.
+- Victory attacks still report the resolved damage and critical result instead of hiding the final combat result behind the victory state.
+- Repel now preserves the reflected damage value for Battle presentation instead of overwriting it with 0.
+- Enemy turns now clearly announce ENEMY TURN before the delayed enemy action resolves.
+- Enemy action results now report the selected action name, damage dealt, and whether the Player was defeated or the Player Turn resumed.
+- Player and Enemy HP now have visible progress bars in addition to numeric HP labels.
+- Battle action controls are locked while an action or enemy turn is resolving, preventing accidental repeated inputs during the transition.
+- Defend and Pass now use the same input-lock and turn-resolution behavior as other Player actions.
+- Run is also blocked while an action is resolving.
+- Battle state text continues to identify PLAYER TURN, ENEMY TURN, VICTORY, and DEFEAT.
+- Battle action layout now separates normal Actions from development-only Test Actions.
+- The combat result label has a larger wrapped presentation area so longer results remain readable.
+- Existing combat rules, Press Turn costs, enemy selection, affinities, and action resolution remain authoritative in CombatManager/CombatRules rather than being duplicated in the UI.
+
+Not changed in this pass:
+- XP, gold, and item reward display/granting. EnemyData contains reward fields, but the current combat flow does not yet have an authoritative reward-grant path wired into victory, so no fake reward UI was added.
+- Defeat/recovery remains a separate system.
+
+Runtime verification required:
+- Start a normal battle and confirm PLAYER TURN is shown with all action buttons available.
+- Attack once and confirm the result clearly reports damage and affinity.
+- Verify the Enemy HP number and bar both decrease together.
+- Use Fire against Weak, Resist, Null, Drain, and Repel test enemies and confirm each result is explicitly reported.
+- Use Critical Test and confirm CRITICAL is visible, including when the hit defeats the enemy.
+- Use Miss Test and confirm MISS is visible with no HP change.
+- Use Defend and confirm the action locks while the enemy turn resolves, then returns to PLAYER TURN.
+- Use Pass and confirm the same clean turn transition.
+- Exhaust Press Turns and confirm controls remain locked during ENEMY TURN and re-enable on PLAYER TURN.
+- Confirm enemy action name and damage are displayed after the enemy attacks.
+- Confirm repeated clicks during the enemy-turn delay cannot trigger another action.
+- Reduce Player HP to 0 and confirm DEFEAT displays cleanly.
+- Defeat the enemy and confirm VICTORY plus Return to World still work.
+- Confirm no Godot debugger errors occur.
+
 ### Character Menu Debug Options Removed
 
 Removed the development-only debug controls from the Character/Inventory menu.
