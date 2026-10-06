@@ -5,23 +5,12 @@ extends Node
 ## future interactable objects. Individual interactables expose an interact()
 ## method that owns their gameplay behavior.
 ##
-## The system checks the Player's actual overlapping interaction Areas when E is
-## pressed. This is intentionally more reliable than trusting a cached list of
-## entered Areas, because a stale cached Door could otherwise remain selectable
-## after the Player has walked away from it.
+## Interaction targets are selected by explicit distance from the Player rather
+## than by Area2D overlap state. This keeps interaction selection independent
+## from physics-trigger timing and prevents a Door from being selected because
+## of a stale or unrelated Area2D overlap.
 
-@onready var interaction_area: Area2D = $InteractionArea
-
-var nearby_interactables: Array[Area2D] = []
-
-
-func _ready() -> void:
-	# Listen for interaction ranges entering and leaving the Player's shared
-	# detection area. The overlap query used during E input remains the
-	# authoritative check for what is actually interactable right now.
-	interaction_area.area_entered.connect(_on_area_entered)
-	interaction_area.area_exited.connect(_on_area_exited)
-
+const MAX_INTERACTION_DISTANCE: float = 80.0
 
 func _unhandled_input(event: InputEvent) -> void:
 	# All world interactions use the same E-key input path.
@@ -31,73 +20,39 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _interact_with_nearest() -> void:
-	# Refresh the cached list from the physics engine immediately before
-	# selecting a target. This prevents a previously entered Door or Chest from
-	# being selected after the Player has already moved away from it.
-	nearby_interactables.clear()
-
-	for area in interaction_area.get_overlapping_areas():
-		if area is Area2D and _get_interactable(area) != null:
-			nearby_interactables.append(area)
-
-	var nearest_area: Area2D = _get_nearest_interactable()
-	if nearest_area == null:
+	# Find the closest explicitly registered interactable in the current scene.
+	# Only objects inside the interaction distance can respond to E.
+	var player := get_parent() as Node2D
+	if player == null:
 		return
 
-	var interactable: Node = _get_interactable(nearest_area)
-	if interactable != null:
-		# Pass the actual Player that initiated the interaction so the
-		# interactable does not need to search the current scene for a Player.
-		interactable.interact(get_parent())
+	var nearest_interactable: Node = null
+	var nearest_distance := MAX_INTERACTION_DISTANCE
 
-
-func _get_nearest_interactable() -> Area2D:
-	# Choose the closest valid interaction target when multiple ranges overlap.
-	var nearest: Area2D = null
-	var nearest_distance := INF
-	var player: Node2D = get_parent() as Node2D
-
-	if player == null:
-		return null
-
-	for area in nearby_interactables:
-		var interactable: Node = _get_interactable(area)
-		if interactable == null:
+	for candidate in get_tree().get_nodes_in_group("interactable"):
+		if not is_instance_valid(candidate):
 			continue
 
-		var distance: float = player.global_position.distance_to(area.global_position)
+		if not candidate.has_method("interact"):
+			continue
+
+		var target := candidate as Node2D
+		if target == null:
+			continue
+
+		var distance: float = player.global_position.distance_to(
+			target.global_position
+		)
+
+		if distance > MAX_INTERACTION_DISTANCE:
+			continue
+
 		if distance < nearest_distance:
 			nearest_distance = distance
-			nearest = area
+			nearest_interactable = candidate
 
-	return nearest
-
-
-func _get_interactable(area: Area2D) -> Node:
-	# An interaction Area can either own interact() itself or belong to a
-	# parent node that owns the actual interactable behavior, such as a Chest.
-	if area == null:
-		return null
-
-	if area.has_method("interact"):
-		return area
-
-	var parent: Node = area.get_parent()
-	if parent != null and parent.has_method("interact"):
-		return parent
-
-	return null
-
-
-func _on_area_entered(area: Area2D) -> void:
-	# Only track Areas that expose the shared interaction contract.
-	if _get_interactable(area) == null:
-		return
-
-	if not nearby_interactables.has(area):
-		nearby_interactables.append(area)
-
-
-func _on_area_exited(area: Area2D) -> void:
-	# Stop considering an interaction target once its range is left.
-	nearby_interactables.erase(area)
+	if nearest_interactable != null:
+		# Pass the actual Player that initiated the interaction. The target
+		# object owns its own gameplay behavior and does not search the scene
+		# for another Player.
+		nearest_interactable.interact(player)
