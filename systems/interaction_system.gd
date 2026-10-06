@@ -2,13 +2,11 @@ extends Node
 ## Owns Player-to-world interaction target selection.
 ##
 ## The Player receives the E key and calls handle_interaction_input().
-## This system then chooses the nearest valid target. NPCs are checked first
-## so another nearby interactable cannot prevent an NPC from responding.
+## NPCs are checked before generic interactables so nearby Doors or Chests
+## cannot steal an interaction intended for an NPC.
 ##
-## A temporary on-screen diagnostic is also included while NPC interaction is
-## being debugged. It reports whether E reached this system, how many NPCs were
-## found, which target was selected, and whether interaction was attempted.
-## This makes the input path observable instead of requiring guesswork.
+## This script also contains temporary visible diagnostics. They show whether
+## E reached the interaction system and which target, if any, was selected.
 
 const MAX_INTERACTION_DISTANCE: float = 80.0
 
@@ -16,8 +14,8 @@ var debug_label: Label
 
 
 func _ready() -> void:
-    # Create the diagnostic overlay at runtime so no existing gameplay scene
-    # needs to be modified just to troubleshoot interaction input.
+    # Create the diagnostic overlay at runtime so no existing scene layout
+    # needs to be changed while we investigate the NPC interaction problem.
     var canvas := CanvasLayer.new()
     canvas.layer = 100
     add_child(canvas)
@@ -31,11 +29,12 @@ func _ready() -> void:
 
 
 func handle_interaction_input() -> void:
-    # First prove that the E key reached the Player and InteractionSystem.
-    _show_debug("E detected. Dialogue active: %s" % DialogueManager.is_active)
+    # This first message proves that the E key reached the Player and then
+    # reached InteractionSystem.
+    _show_debug("E detected. Dialogue active: %s" % str(DialogueManager.is_active))
 
-    # Dialogue has priority over world interaction. Pressing E while dialogue
-    # is active dismisses it and stops here.
+    # Dialogue always gets priority. Pressing E while dialogue is visible
+    # dismisses it instead of immediately interacting with another target.
     if DialogueManager.is_active:
         DialogueManager.clear_dialogue()
         _show_debug("E detected -> dialogue was active -> dialogue cleared.")
@@ -45,14 +44,11 @@ func handle_interaction_input() -> void:
     if _interact_with_nearest():
         get_viewport().set_input_as_handled()
     else:
+        var npc_count := get_tree().get_nodes_in_group("npc").size()
+        var interactable_count := get_tree().get_nodes_in_group("interactable").size()
         _show_debug(
-            "E detected -> NO target within %.0f px. NPC group count: %d | "
-            "Interactable count: %d"
-            % [
-                MAX_INTERACTION_DISTANCE,
-                get_tree().get_nodes_in_group("npc").size(),
-                get_tree().get_nodes_in_group("interactable").size()
-            ]
+            "E detected -> NO target within %d px. NPC group count: %d | Interactable count: %d"
+            % [int(MAX_INTERACTION_DISTANCE), npc_count, interactable_count]
         )
 
 
@@ -62,34 +58,39 @@ func _interact_with_nearest() -> bool:
         _show_debug("E detected -> ERROR: Player parent is not Node2D.")
         return false
 
-    # Check NPCs separately and first. NPCs are explicitly marked with the
-    # "npc" group, so their dialogue interaction does not depend on the generic
-    # interactable target list.
+    # NPCs are checked separately and first. Their dedicated group makes this
+    # path independent of the generic Door/Chest target selection.
     var npc := _find_nearest_in_group(player, "npc")
     if npc != null:
         var npc_target := npc as Node2D
         var npc_distance := player.global_position.distance_to(npc_target.global_position)
+        var npc_name := str(npc.get("npc_name"))
+
         _show_debug(
             "E detected -> NPC target: %s | distance: %.1f px | calling interact()"
-            % [npc.get("npc_name"), npc_distance]
+            % [npc_name, npc_distance]
         )
+
         npc.interact(player)
+
         _show_debug(
             "NPC interact() called for %s | Dialogue active: %s"
-            % [npc.get("npc_name"), DialogueManager.is_active]
+            % [npc_name, str(DialogueManager.is_active)]
         )
         return true
 
-    # Doors, Chests, and future interactables continue using the existing
-    # generic interaction group.
+    # Doors, Chests, and future generic interactables retain their existing
+    # interaction path when no NPC is close enough.
     var interactable := _find_nearest_in_group(player, "interactable")
     if interactable != null:
         var target := interactable as Node2D
         var distance := player.global_position.distance_to(target.global_position)
+
         _show_debug(
             "E detected -> Generic target: %s | distance: %.1f px | calling interact()"
             % [interactable.name, distance]
         )
+
         interactable.interact(player)
         return true
 
@@ -112,6 +113,7 @@ func _find_nearest_in_group(player: Node2D, group_name: String) -> Node:
             continue
 
         var distance := player.global_position.distance_to(target.global_position)
+
         if distance > MAX_INTERACTION_DISTANCE:
             continue
 
@@ -123,9 +125,9 @@ func _find_nearest_in_group(player: Node2D, group_name: String) -> Node:
 
 
 func _show_debug(message: String) -> void:
-    # Keep the most recent interaction diagnostic visible long enough to read.
-    # This is intentionally temporary and can be removed once NPC interaction
-    # is confirmed working.
+    # Update both the on-screen label and Godot's Output panel so we have two
+    # ways to see the exact point where interaction processing stops.
     if debug_label != null:
         debug_label.text = "INTERACTION DEBUG\n" + message
+
     print("InteractionDebug: ", message)
