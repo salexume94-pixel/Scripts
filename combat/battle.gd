@@ -138,11 +138,19 @@ func _update_enemy_behavior_display() -> void:
 	label.text = "Enemy Behavior: %s" % CombatManager.get_enemy_behavior_profile_name()
 
 func _update_combat_log_display() -> void:
-	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogLabel")
-	if label == null:
+	var scroll := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll") as ScrollContainer
+	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll/CombatLogLabel")
+	if scroll == null or label == null:
 		return
 	var entries: Array[String] = CombatManager.get_combat_log()
 	label.text = "\n".join(entries)
+	call_deferred("_scroll_combat_log_to_latest")
+
+func _scroll_combat_log_to_latest() -> void:
+	var scroll := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll") as ScrollContainer
+	if scroll == null:
+		return
+	scroll.scroll_vertical = scroll.get_v_scroll_bar().max_value
 
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
