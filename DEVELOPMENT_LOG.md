@@ -2318,3 +2318,27 @@ The corrected immediate development order is:
 8. Ending / Boss.
 
 No map implementation was added in this documentation-only change.
+
+
+### Tutorial Town Direction Established
+
+Updated the development plan to expand the existing `scenes/World.tscn` into the game's tutorial town and nearby beginner combat area before implementing the player-facing map UI.
+
+Planned town structure:
+- Inn
+- Item/equipment shop
+- Healing and save location
+- Town exit
+- Multiple NPCs
+- One dedicated quest-giving NPC
+- Nearby beginner combat area
+
+The healing/save location is explicitly intended to be a named world location in reusable world data so it can later carry story and lore significance rather than existing only as a mechanical healing point.
+
+The existing World scene remains the game's actual overworld/map space. No replacement overworld map is being introduced for this work.
+
+Updated:
+- `ROADMAP.md`
+- `ARCHITECTURE.md`
+
+No runtime gameplay changes were made in this documentation/planning update.
