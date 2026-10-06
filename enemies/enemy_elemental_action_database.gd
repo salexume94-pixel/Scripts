@@ -6,6 +6,8 @@ extends RefCounted
 ## actions it is intended to use. Future enemy definitions can pull any shared
 ## elemental action from this catalog when they need it.
 
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
+
 const FIRE: Resource = preload("res://enemies/definitions/slime_fire_attack.tres")
 const WATER: Resource = preload("res://enemies/definitions/slime_water_attack.tres")
 const EARTH: Resource = preload("res://enemies/definitions/slime_earth_attack.tres")
@@ -16,17 +18,17 @@ const DARK: Resource = preload("res://enemies/definitions/slime_dark_attack.tres
 static func get_action(damage_type: int) -> Resource:
 	# Resolve a shared elemental action by its damage type.
 	match damage_type:
-		1:
+		DAMAGE_TYPES.Type.FIRE:
 			return FIRE
-		2:
+		DAMAGE_TYPES.Type.WATER:
 			return WATER
-		3:
+		DAMAGE_TYPES.Type.EARTH:
 			return EARTH
-		4:
+		DAMAGE_TYPES.Type.AIR:
 			return AIR
-		5:
+		DAMAGE_TYPES.Type.LIGHT:
 			return LIGHT
-		6:
+		DAMAGE_TYPES.Type.DARK:
 			return DARK
 		_:
 			return null
