@@ -61,55 +61,55 @@ color = Color(0.22, 0.25, 0.22, 1)
 [node name="Inn" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_inn"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownInn.tscn"
 position = Vector2(-360, -300)
 
 [node name="ItemEquipmentShop" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_shop"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownShop.tscn"
 position = Vector2(360, -300)
 
 [node name="Church" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_church"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownChurch.tscn"
 position = Vector2(0, -600)
 
 [node name="Residence01" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_01"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence01.tscn"
 position = Vector2(-650, -50)
 
 [node name="Residence02" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_02"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence02.tscn"
 position = Vector2(650, -50)
 
 [node name="Residence03" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_03"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence03.tscn"
 position = Vector2(-500, 330)
 
 [node name="Residence04" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_04"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence04.tscn"
 position = Vector2(500, 330)
 
 [node name="Residence05" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_05"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence05.tscn"
 position = Vector2(-360, 650)
 
 [node name="Residence06" parent="WorldContent" instance=ExtResource("4_building")]
 world_id = "tutorial_town"
 location_id = "tutorial_town_residence_06"
-interior_scene = "res://scenes/Interior.tscn"
+interior_scene = "res://scenes/interiors/TutorialTownResidence06.tscn"
 position = Vector2(360, 650)
 
 [node name="FarmWest" type="Polygon2D" parent="WorldContent"]
