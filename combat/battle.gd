@@ -85,8 +85,7 @@ func _update_player_affinities() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerAffinityLabel")
 	if label == null:
 		return
-	var affinities := CombatManager.get_player_affinity_debug()
-	label.text = "Player Affinities: " + (", ".join(affinities) if not affinities.is_empty() else "None configured")
+	label.text = "Player Weakness: %s" % CombatManager.get_player_weakness_debug()
 
 func _update_combat_log() -> void:
 	var log := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLog")
@@ -117,9 +116,10 @@ func _update_combat_controls() -> void:
 	var critical_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/CriticalTestButton") as Button
 	var miss_test_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/MissTestButton") as Button
 	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/RunButton") as Button
+	var cycle_weakness_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionButtons/CycleWeaknessButton") as Button
 	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
-	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
+	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or cycle_weakness_button == null or victory_button == null:
 		return
 	if critical_test_button == null or miss_test_button == null:
 		return
@@ -133,6 +133,7 @@ func _update_combat_controls() -> void:
 	critical_test_button.disabled = victory or defeat or not player_turn
 	miss_test_button.disabled = victory or defeat or not player_turn
 	run_button.visible = not victory and not defeat and player_turn
+	cycle_weakness_button.disabled = victory or defeat or not player_turn
 	victory_button.visible = victory
 	if state_label != null:
 		if victory:
@@ -158,6 +159,10 @@ func _on_miss_test_pressed() -> void:
 
 func _on_run_pressed() -> void:
 	CombatManager.end_combat()
+
+func _on_cycle_weakness_pressed() -> void:
+	if CombatManager.cycle_player_weakness():
+		_update_player_affinities()
 
 func _on_victory_pressed() -> void:
 	CombatManager.end_combat()
