@@ -21,6 +21,16 @@ enum ItemType {
 	KEY_ITEM,
 }
 
+## Valid equipment locations. Each location can contain at most one item.
+enum EquipmentSlot {
+	NONE,
+	WEAPON,
+	SHIELD,
+	HEAD,
+	BODY,
+	ACCESSORY,
+}
+
 ## A stable identifier used by game systems to recognize this item.
 @export var item_id: String = ""
 
@@ -35,7 +45,7 @@ enum ItemType {
 
 ## The equipment slot used when this item is equipped.
 ## This remains empty for items that are not equipment.
-@export var equipment_slot: String = ""
+@export var equipment_slot: EquipmentSlot = EquipmentSlot.NONE
 
 ## HP restored when a consumable is used.
 @export_range(0, 9999) var heal_hp: int = 0
