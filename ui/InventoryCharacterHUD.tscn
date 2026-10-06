@@ -139,6 +139,10 @@ text = "Test Damage (-25 HP)"
 layout_mode = 2
 text = "Test Battle (Slime)"
 
+[node name="TestResistBattleButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
+layout_mode = 2
+text = "Test Battle (Fire Resist)"
+
 [node name="Spacer" type="Control" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 size_flags_vertical = 3
