@@ -25,8 +25,8 @@ enum Phase {
 
 # The configured Press Turn count is available to the Player at the start of a round.
 # A fractional value allows weakness and critical actions to consume half turns.
-@export var player_press_turns: int = 4
-@export var player_press_turns_remaining: float = 4.0
+@export var player_press_turns: int = 2
+@export var player_press_turns_remaining: float = 2.0
 
 @export var last_player_attack: int = 0
 @export var last_damage: int = 0
