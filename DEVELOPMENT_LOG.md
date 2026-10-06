@@ -1496,3 +1496,19 @@ Runtime verification required:
 - Confirm the Return to World button appears immediately after killing the Slime.
 - Confirm selecting it returns to the World.
 - Confirm no Godot debugger errors occur.
+
+
+## 2026-10-06 Enemy AI / Behavior Complete
+
+Runtime verification completed for the Enemy AI / Behavior layer.
+
+Confirmed:
+- All four enemy behavior profiles function normally: Balanced, Aggressive, Weakness Hunter, and Defensive.
+- Elemental weakness targeting works for the appropriate profiles.
+- Aggressive behavior combines weakness targeting with stronger-action preference.
+- Defensive behavior uses the enemy Defend action more frequently.
+- Defend is available across the enemy behavior framework and resolves without dealing damage.
+- Encounter-level behavior profile selection works during normal overworld Slime encounters.
+- The victory state and Return to World flow now complete the encounter correctly.
+
+Enemy AI / Behavior is considered complete. Future enemy types can use the same behavior framework without requiring a separate AI system.
