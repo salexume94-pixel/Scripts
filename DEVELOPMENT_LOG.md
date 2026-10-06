@@ -582,3 +582,32 @@ Runtime verification required:
 - No Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Sword Unequip, HUD Centering, and Door Alignment Fix
+
+Updated:
+- player/player_equipment.gd
+- ui/InventoryCharacterHUD.tscn
+- world/Building.tscn
+
+Reviewed:
+- scenes/Interior.tscn
+
+Changes:
+- Hardened PlayerEquipment unequip ownership handling so an already-present inventory copy of the equipped item does not block the unequip transaction. The equipment slot and stat modifiers are only cleared after inventory ownership is confirmed.
+- Added a center pivot to the scaled HUD panel so its 0.82 scale is applied around the panel center instead of the default top-left pivot. This keeps the complete HUD visually centered in the 1152x648 viewport while preserving the existing layout and controls.
+- Moved the World Building Door center from y=72 to y=64 so the Door is centered on the Building's visible bottom edge at y=64.
+- Confirmed the Interior ExitDoor is already centered at y=160, matching the InteriorFloor's visible bottom edge at y=160, so no coordinate change was required there.
+
+Runtime verification required:
+- Obtain and equip the Iron Sword.
+- Press Unequip on the Weapon row and confirm the sword returns to inventory and Attack returns to its previous value.
+- Confirm the HUD remains fully visible and is visually centered.
+- Confirm HUD buttons remain clickable.
+- Confirm the World Door is flush with the Building edge and still blocks walking without E.
+- Confirm E near the World Door still enters the Interior.
+- Confirm the Interior ExitDoor remains flush with the Interior floor edge and E still returns to World.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
