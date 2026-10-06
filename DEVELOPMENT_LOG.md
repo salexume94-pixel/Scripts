@@ -1,3 +1,57 @@
+## 2026-10-06 - Expand Elemental Enemy AI and Player Weakness Testing
+
+Implemented a reusable six-element test foundation so Enemy AI can evaluate and use the full elemental set against a cycling Player weakness.
+
+Updated:
+- combat/combat_rules.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- combat/combat_state.gd
+- scenes/Battle.tscn
+- player/player_stats.gd
+- player/definitions/player_water_weak.tres
+- player/definitions/player_earth_weak.tres
+- player/definitions/player_air_weak.tres
+- player/definitions/player_light_weak.tres
+- player/definitions/player_dark_weak.tres
+- enemies/definitions/slime_water_attack.tres
+- enemies/definitions/slime_earth_attack.tres
+- enemies/definitions/slime_air_attack.tres
+- enemies/definitions/slime_light_attack.tres
+- enemies/definitions/slime_dark_attack.tres
+- enemies/definitions/slime_ai_test.tres
+- DEVELOPMENT_LOG.md
+
+Changes:
+- The controlled Slime AI Test now has Physical, Fire, Water, Earth, Air, Light, and Dark actions.
+- Added reusable EnemyActionData definitions for Water, Earth, Air, Light, and Dark.
+- Expanded the Player affinity definitions to cover Fire, Water, Earth, Air, Light, and Dark.
+- The Player starts with Fire as the active elemental weakness.
+- Added a Cycle Weakness control to the Battle screen. It cycles the active weakness through Fire -> Water -> Earth -> Air -> Light -> Dark.
+- Player weakness cycling operates on the active CombatState copy, so the test selection does not permanently mutate the Player's saved combat state.
+- Enemy AI weakness evaluation now works against all six elemental damage types through the existing behavior-profile system.
+- Enemy elemental actions now resolve their actual damage against the Player's elemental affinity, so a selected attack can be verified as Weak/Normal/etc. rather than only being favored by the selector.
+- Extended CombatRules with a reusable affinity-list resolution path so both Player-targeted and Enemy-targeted elemental attacks use the same affinity math.
+- The combat log records the active Player weakness when it is cycled.
+- Corrected the combat-log update signal so new entries are emitted immediately instead of only after the 100-entry history limit.
+- Corrected the existing malformed Press Turn guard encountered while updating CombatManager.
+
+Runtime verification required:
+1. Pull the latest enemy-ai-behavior branch.
+2. Start Test Battle (Enemy AI).
+3. Confirm the Battle screen starts with Player Weakness: Fire.
+4. Press Cycle Weakness and confirm the displayed weakness changes in the order Fire, Water, Earth, Air, Light, Dark.
+5. Spend the Player turn without defeating the test enemy so the Enemy Turn occurs.
+6. With each weakness selected, verify the Enemy AI favors the corresponding elemental action.
+7. Confirm the selected elemental action's damage log reports Weak when it hits the matching Player weakness.
+8. Confirm changing the weakness causes the AI's preferred element to change.
+9. Confirm no parse, resource-loading, or debugger errors occur.
+10. Confirm the normal Test Battle (Slime) encounter remains unchanged.
+
+Known limitation:
+- This is still weighted heuristic AI. It does not yet make HP-threshold, status-effect, defensive, or multi-turn tactical decisions.
+- Runtime verification of the six-element cycle and cross-element AI selection is pending.
+
 ## 2026-10-06 - Enemy AI Runtime Verification Checkpoint
 
 - Runtime testing confirmed the revised Battle presentation is substantially clearer and the current Enemy AI test flow is functioning as intended.
