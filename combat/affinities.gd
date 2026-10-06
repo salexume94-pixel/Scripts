@@ -16,7 +16,7 @@ enum Type {
 
 static func get_display_name(affinity: int) -> String:
 	## Convert an affinity into readable text for Battle UI and debugging.
-	switch affinity:
+	match affinity:
 		Type.NORMAL:
 			return "Normal"
 		Type.WEAK:
