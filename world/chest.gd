@@ -26,28 +26,10 @@ var player_in_range: bool = false
 var is_opened: bool = false
 
 
-func _ready() -> void:
-	# Connect the interaction Area signals so the chest knows when the Player
-	# enters or leaves its interaction range.
-	$InteractionArea.body_entered.connect(_on_interaction_area_body_entered)
-	$InteractionArea.body_exited.connect(_on_interaction_area_body_exited)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	# Ignore input after the chest has already been opened.
-	if is_opened:
-		return
-
-	# Only accept the interaction key while the Player is within range.
-	if not player_in_range:
-		return
-
-	# The first chest test uses the E key directly.
-	# A shared interaction input system can replace this later without
-	# changing the chest's open/closed responsibilities.
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_E:
-			open_chest()
+func interact(_player: Node) -> void:
+	# The shared InteractionSystem calls this method when the Player presses E
+	# near the Chest. The Chest owns the reward and open-state behavior.
+	open_chest()
 
 
 func open_chest() -> void:
@@ -55,9 +37,9 @@ func open_chest() -> void:
 	if is_opened:
 		return
 
-	# Find the Player from the current World scene. The Chest is a child of
-	# WorldContent while the Player is a sibling under the World root.
-	var player := get_tree().current_scene.get_node_or_null("Player")
+	# Find the active Player from the current gameplay scene. The interaction
+	# system already verified that this Chest is within interaction range.
+	var player: Node = get_tree().current_scene.get_node_or_null("Player")
 	if player == null:
 		return
 
