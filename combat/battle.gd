@@ -13,10 +13,13 @@ func _ready() -> void:
 	CombatManager.player_press_turns_changed.connect(_on_press_turns_changed)
 	CombatManager.enemy_turn_started.connect(_on_enemy_turn_started)
 	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
+	CombatManager.combat_log_updated.connect(_update_combat_log)
 	_update_display()
 	_update_enemy_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
+	_update_combat_log()
+	_update_player_affinities()
 
 func _on_player_attack_performed(_attack_value: int) -> void:
 	# Present the resolved damage type and affinity without moving combat rules
@@ -104,6 +107,19 @@ func _update_player_hp_display() -> void:
 	var hp: int = stats.get("hp", 0)
 	var max_hp: int = stats.get("max_hp", 0)
 	hp_label.text = "Player HP: %d / %d" % [hp, max_hp]
+
+func _update_player_affinities() -> void:
+	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerAffinityLabel")
+	if label == null:
+		return
+	var affinities := CombatManager.get_player_affinity_debug()
+	label.text = "Player Affinities: " + (", ".join(affinities) if not affinities.is_empty() else "None configured")
+
+func _update_combat_log() -> void:
+	var log := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLog")
+	if log == null:
+		return
+	log.text = "\n".join(CombatManager.get_combat_log())
 
 func _update_press_turn_display() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PressTurnLabel")
