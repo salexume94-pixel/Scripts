@@ -1,5 +1,7 @@
 extends Resource
 class_name EnemyActionData
+
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 ## Defines one action an enemy can perform during combat.
 ##
 ## This Resource contains action data only. CombatManager decides when an
