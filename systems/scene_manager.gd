@@ -74,18 +74,17 @@ func _place_player() -> void:
 
 	var player := current_scene.get_node_or_null("Player") as Node2D
 
+	# Some destination scenes, such as the Battle scene, intentionally do not
+	# contain a Player node. In those cases there is nothing to place, but the
+	# scene transition itself succeeded and should still complete normally.
 	if player == null:
-		push_error(
-			"SceneManager could not find a Player node in scene: %s"
-			% current_scene.scene_file_path
-		)
 		has_pending_player_position = false
 		transition_in_progress = false
 		return
 
-	# Place the new Player at the destination position supplied by the Door.
-	# The destination scene's camera can then center itself on this position
-	# during its own _ready() processing.
+	# Place the new Player at the destination position supplied by the Door or
+	# CombatManager. The destination scene's camera can then center itself on
+	# this position during its own _ready() processing.
 	player.position = pending_player_position
 	has_pending_player_position = false
 	transition_in_progress = false
