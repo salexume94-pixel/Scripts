@@ -9,6 +9,15 @@
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="8_quest_log"]
 [ext_resource type="PackedScene" path="res://world/NPC.tscn" id="9_npc"]
 [ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="10_dialogue_box"]
+[ext_resource type="Resource" path="res://world/definitions/inn.tres" id="11_inn_location"]
+[ext_resource type="Resource" path="res://world/definitions/shop.tres" id="12_shop_location"]
+[ext_resource type="Resource" path="res://world/definitions/church.tres" id="13_church_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_01.tres" id="14_residence_01_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_02.tres" id="15_residence_02_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_03.tres" id="16_residence_03_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_04.tres" id="17_residence_04_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_05.tres" id="18_residence_05_location"]
+[ext_resource type="Resource" path="res://world/definitions/residence_06.tres" id="19_residence_06_location"]
 
 [sub_resource type="CircleShape2D" id="NPCShape"]
 radius = 16.0
@@ -61,56 +70,47 @@ polygon = PackedVector2Array(-220, -180, 220, -180, 220, 180, -220, 180)
 color = Color(0.22, 0.25, 0.22, 1)
 
 [node name="Inn" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_inn"
+location_data = ExtResource("11_inn_location")
 interior_scene = "res://scenes/interiors/TutorialTownInn.tscn"
 position = Vector2(-360, -300)
 
 [node name="ItemEquipmentShop" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_shop"
+location_data = ExtResource("12_shop_location")
 interior_scene = "res://scenes/interiors/TutorialTownShop.tscn"
 position = Vector2(360, -300)
 
 [node name="Church" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_church"
+location_data = ExtResource("13_church_location")
 interior_scene = "res://scenes/interiors/TutorialTownChurch.tscn"
 position = Vector2(0, -600)
 
 [node name="Residence01" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_01"
+location_data = ExtResource("14_residence_01_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence01.tscn"
 position = Vector2(-650, -50)
 
 [node name="Residence02" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_02"
+location_data = ExtResource("15_residence_02_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence02.tscn"
 position = Vector2(650, -50)
 
 [node name="Residence03" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_03"
+location_data = ExtResource("16_residence_03_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence03.tscn"
 position = Vector2(-500, 330)
 
 [node name="Residence04" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_04"
+location_data = ExtResource("17_residence_04_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence04.tscn"
 position = Vector2(500, 330)
 
 [node name="Residence05" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_05"
+location_data = ExtResource("18_residence_05_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence05.tscn"
 position = Vector2(-360, 650)
 
 [node name="Residence06" parent="WorldContent" instance=ExtResource("4_building")]
-world_id = "tutorial_town"
-location_id = "tutorial_town_residence_06"
+location_data = ExtResource("19_residence_06_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence06.tscn"
 position = Vector2(360, 650)
 
