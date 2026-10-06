@@ -51,7 +51,22 @@ Player-related systems such as:
 
 ### quests/
 
-Quest-related systems.
+Quest-related static data definitions and quest content catalogs.
+
+### Quest Runtime
+
+Quest runtime state is owned by `systems/quest_manager.gd`.
+
+Responsibilities:
+- Quest IDs and definition lookup
+- Quest state transitions
+- Objective progress tracking
+- Completion/failure state
+- Save/load serialization boundary
+
+Quest presentation is owned by `ui/quest_log.gd` and must not become the owner of quest state.
+
+World interactions and future gated-area systems should communicate with QuestManager rather than storing duplicate quest state.
 
 ### scenes/
 
