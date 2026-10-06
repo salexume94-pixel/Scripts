@@ -50,6 +50,9 @@ func start_encounter(enemy_id: String) -> bool:
 	# Enemy Foundation instead of being hard-coded into this combat layer.
 	var combat_state: Resource = COMBAT_STATE_SCRIPT.new()
 	combat_state.enemy_id = enemy_id
+	# Temporary controlled HP value until EnemyData becomes authoritative.
+	combat_state.enemy_max_hp = 50
+	combat_state.enemy_hp = combat_state.enemy_max_hp
 	active_combat = combat_state
 
 	# SceneManager owns actual scene loading, keeping transition responsibility
@@ -93,6 +96,20 @@ func player_attack() -> bool:
 	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
+
+
+func get_enemy_hp() -> int:
+	# Expose current enemy HP without allowing UI to modify combat state.
+	if not is_in_combat():
+		return 0
+	return active_combat.enemy_hp
+
+
+func get_enemy_max_hp() -> int:
+	# Expose maximum enemy HP for health presentation.
+	if not is_in_combat():
+		return 0
+	return active_combat.enemy_max_hp
 
 
 func get_last_player_attack() -> int:
