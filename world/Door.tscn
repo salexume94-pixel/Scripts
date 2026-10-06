@@ -10,6 +10,3 @@ script = ExtResource("1_door")
 
 [node name="DoorVisual" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-24, -8, 24, -8, 24, 8, -24, 8)
-
-[node name="DoorCollision" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_door")
