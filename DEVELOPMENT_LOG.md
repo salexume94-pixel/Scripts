@@ -1152,3 +1152,35 @@ Known limitation:
 - Enemy Attack, EnemyData, and defeat/recovery are still temporary/prototype implementations. These will be replaced by the authoritative Enemy Foundation and full combat resolution later.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+### Runtime Verification: Press Turn Combat Foundation Complete
+
+Runtime testing completed successfully for the current Press Turn combat foundation.
+
+Verified:
+- Test Battle starts correctly.
+- Battle UI loads correctly.
+- Player starts with four Press Turns.
+- Normal Attack works and consumes one full Press Turn.
+- Enemy HP decreases correctly and is clamped at 0.
+- Enemy reaching 0 HP produces Victory.
+- Attack is disabled after Victory.
+- Run is available during the Player Turn.
+- Run returns the Player to the original World position.
+- Exhausting all four Press Turns transitions to ENEMY TURN.
+- Enemy Turn resolves correctly.
+- Enemy attacks and Player HP is reduced correctly.
+- Combat returns to PLAYER TURN after the enemy action.
+- Four Press Turns are restored for the new Player Turn.
+- No Godot debugger errors occurred during testing.
+
+Current status:
+- The basic alternating Player Turn -> Enemy Turn -> Player Turn combat loop is functional in the local Godot runtime.
+- Victory and Run behavior are functional.
+- The temporary enemy attack and EnemyData implementation remain prototype systems.
+- Defeat state is implemented, but the full defeat/recovery flow is still pending.
+
+Next Combat Foundation priority:
+- Replace temporary enemy values with the authoritative EnemyData system and establish the Enemy Foundation before adding weaknesses, critical hits, resistances, enemy AI, or additional combat effects.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
