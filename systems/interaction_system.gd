@@ -29,10 +29,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _interact_with_nearest() -> void:
 	# Remove freed or invalid interaction areas before choosing a target.
-	nearby_interactables = nearby_interactables.filter(
-		func(area: Area2D) -> bool:
-			return is_instance_valid(area) and _get_interactable(area) != null
-	)
+	var valid_interactables: Array[Area2D] = []
+	for area in nearby_interactables:
+		if is_instance_valid(area) and _get_interactable(area) != null:
+			valid_interactables.append(area)
+	nearby_interactables = valid_interactables
 
 	var nearest_area: Area2D = _get_nearest_interactable()
 	if nearest_area == null:
