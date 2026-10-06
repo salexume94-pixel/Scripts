@@ -611,3 +611,29 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Player Stats Runtime Persistence Fix
+
+Fixed Player stat and HP resets caused by World <-> Interior scene transitions.
+
+Updated:
+- `systems/game_state.gd`
+- `player/player_stats.gd`
+
+Changes:
+- GameState now owns a runtime PlayerStats snapshot.
+- PlayerStats restores level, experience, max HP, current HP, max MP, current MP, base Attack, base Defense, Magic Attack, Magic Defense, and Speed when a new Player instance is created.
+- PlayerStats synchronizes current HP/MP changes back to GameState after damage and restoration.
+- Equipment-derived Attack and Defense bonuses are excluded from the saved base-stat snapshot so PlayerEquipment can safely reapply equipped-item modifiers after the new Player is created.
+- The first Player instance initializes GameState from its scene defaults, while later Player instances restore the existing runtime snapshot.
+
+Runtime verification required:
+- Reduce Player HP in the World.
+- Enter the Building Interior and confirm current HP is unchanged.
+- Leave the Interior and return to the World and confirm current HP is still unchanged.
+- Equip the Iron Sword and confirm Attack remains correct after both scene transitions.
+- Confirm MP, level, experience, and other PlayerStats values are preserved when changed.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
