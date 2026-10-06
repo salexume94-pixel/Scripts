@@ -1971,3 +1971,12 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Restored visible Enemy Behavior profile display for the active encounter.
 - Confirmed the four shared behavior profiles remain present and encounter startup still selects a configured profile or randomly selects one of the four shared profiles when none is configured.
 - Runtime verification required for Press Turns, Pass, combat log, and profile display.
+
+
+### Player Affinity Display and Weakness Cycler Restored
+
+- Restored visible Player elemental weakness information in the Battle UI.
+- Restored the Player Weakness cycler control and connected it to the existing CombatManager weakness-cycle logic.
+- Battle now refreshes the displayed weakness when an encounter starts and after cycling.
+- The encounter's Player affinity snapshot remains the source of truth used by Enemy AI and combat resolution.
+- Runtime verification required: confirm the current weakness is displayed at battle start and the Cycle Player Weakness control changes the displayed weakness as intended.
