@@ -1,3 +1,60 @@
+### Elemental Damage Types and Enemy Affinities
+
+Started the elemental combat foundation for the Press Turn system.
+
+Created:
+- `combat/damage_types.gd`
+- `combat/affinities.gd`
+- `combat/combat_rules.gd`
+- `enemies/enemy_affinity_data.gd`
+- `enemies/definitions/slime_fire_weak.tres`
+
+Updated:
+- `enemies/enemy_action_data.gd`
+- `enemies/enemy_data.gd`
+- `enemies/definitions/slime_attack.tres`
+- `enemies/definitions/slime_heavy_attack.tres`
+- `enemies/definitions/slime.tres`
+- `combat/combat_state.gd`
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added the shared damage types: Physical, Fire, Water, Earth, Air, Light, and Dark.
+- EnemyActionData now records the damage type of each action. Existing Slime attacks are explicitly Physical.
+- Added enemy affinity data with Normal, Weak, Resist, Null, Drain, and Repel states.
+- EnemyData now owns a list of affinity definitions. Damage types without a configured affinity default to Normal.
+- Added a reusable CombatRules layer for affinity resolution instead of placing combat math in Battle or enemy Resources.
+- Weak currently increases damage to 1.5x and consumes 0.5 Press Turns.
+- Normal currently deals normal damage and consumes 1 Press Turn.
+- Resist currently reduces damage to 0.5x and consumes 1 Press Turn.
+- Null currently prevents damage.
+- Drain currently heals the target by the resolved amount.
+- Repel currently reflects the resolved damage to the attacker.
+- The Player's existing basic Attack now resolves through the enemy affinity system and defaults to Physical damage.
+- Player attacks now consume the Press Turn cost returned by the affinity result, allowing Weak attacks to leave a half Press Turn.
+- Battle UI now reports the damage type and affinity result for Player attacks.
+- Added a Fire Weakness to the Slime as the first concrete enemy affinity definition. The current basic Player Attack remains Physical, so this weakness is ready for future elemental Player actions without changing the current test battle's normal Physical behavior.
+- Critical hits, accuracy/evasion, misses, and advanced Press Turn outcomes are intentionally not implemented yet.
+- Enemy AI behavior remains the next major combat layer after elemental/affinity math is runtime verified.
+
+Runtime verification required:
+- Pull the `combat-elemental-affinities` branch.
+- Confirm the project opens without parse errors.
+- Start Debug -> Test Battle (Slime).
+- Confirm the normal Physical Player Attack still deals its expected normal damage.
+- Confirm the Battle action text identifies the attack as Physical / Normal.
+- Confirm Press Turns still decrement correctly for a normal attack.
+- Confirm the Slime's Fire Weak affinity is loaded without Resource or parse errors.
+- Confirm the Battle scene displays correctly after combat.
+- Confirm no Godot debugger errors occur.
+- Future test: add a temporary Fire Player action and confirm Fire -> Weak produces increased damage and consumes only half a Press Turn.
+- Future tests should also cover Resist, Null, Drain, and Repel individually before adding critical-hit and accuracy systems.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
 ### Player Defend and Pass Actions
 
 Added two Player-turn actions to the Press Turn combat system.
