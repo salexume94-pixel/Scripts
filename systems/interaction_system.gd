@@ -2,57 +2,60 @@ extends Node
 ## Owns Player-to-world interaction input and interactable selection.
 ##
 ## This system provides one shared interaction path for NPCs, Chests, Doors,
-## and future interactable objects. Individual interactables only need to expose
-## an interact() method. The Player does not need to know what it is talking to.
+## and future interactable objects. Individual interactables expose an
+## interact() method and remain responsible for their own gameplay behavior.
 ##
-## Interaction is deliberately handled from the Player's InteractionSystem so
-## every interactable uses the same key, range, and dialogue-dismissal rules.
-## The target search uses the scene's interactable group and a distance check,
-## which keeps NPC interaction independent of physics-layer configuration.
+## Interaction is handled from a real key-press event instead of polling the
+## key every frame. This is important for scene transitions: the Player and its
+## InteractionSystem are recreated when a scene changes, so a frame-based
+## "previously pressed" flag could be reset while E is still held and cause a
+## Door to fire again in the newly loaded scene.
 
 const MAX_INTERACTION_DISTANCE: float = 80.0
-const INTERACT_KEY := KEY_E
+const INTERACT_ACTION: StringName = &"interact"
 
-var e_was_pressed: bool = false
+func _input(event: InputEvent) -> void:
+	# Only respond to an actual key-down event. Ignoring key-repeat events keeps
+	# one physical E press from producing multiple interactions.
+	if not event is InputEventKey:
+		return
 
-func _ready() -> void:
-	# Make sure this node is actively processing every frame. This is explicit
-	# because interaction is a core Player system and should not depend on the
-	# default processing state inherited from another scene.
-	process_mode = Node.PROCESS_MODE_INHERIT
-	set_process(true)
+	var key_event := event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
 
-func _process(_delta: float) -> void:
-	# Poll the physical E key directly. This avoids relying on InputMap setup or
-	# keyboard event propagation, both of which can be affected by UI Controls.
-	var e_is_pressed := Input.is_physical_key_pressed(INTERACT_KEY)
+	# Accept both the physical key and the logical keycode so the interaction
+	# remains reliable across keyboard layouts.
+	if key_event.physical_keycode != KEY_E and key_event.keycode != KEY_E:
+		return
 
-	# Only react to the initial key-down transition. Holding E therefore cannot
-	# repeatedly open and immediately close the same dialogue.
-	if e_is_pressed and not e_was_pressed:
-		_handle_interaction_input()
-
-	e_was_pressed = e_is_pressed
+	_handle_interaction_input()
 
 func _handle_interaction_input() -> void:
 	# Dialogue has priority over world interaction. Pressing E while a dialogue
 	# line is visible dismisses that line and stops here.
 	if DialogueManager.is_active:
 		DialogueManager.clear_dialogue()
+		get_viewport().set_input_as_handled()
 		return
 
-	_interact_with_nearest()
+	# Only mark the input handled if an actual interactable was found. This lets
+	# other game/UI systems continue receiving E when the Player is not near an
+	# interactable.
+	if _interact_with_nearest():
+		get_viewport().set_input_as_handled()
 
-func _interact_with_nearest() -> void:
+func _interact_with_nearest() -> bool:
 	var player := get_parent() as Node2D
 	if player == null:
-		return
+		return false
 
 	var nearest_interactable: Node = null
 	var nearest_distance := MAX_INTERACTION_DISTANCE
 
-	# Search only the explicitly registered interactable objects in the current
-	# scene. NPCs, Doors, and Chests all register themselves in this group.
+	# Search the current scene's interactable group rather than depending on
+	# Area2D collision layers. NPCs, Doors, and Chests all register themselves
+	# in this group during _ready().
 	for candidate in get_tree().get_nodes_in_group("interactable"):
 		if not is_instance_valid(candidate):
 			continue
@@ -66,7 +69,7 @@ func _interact_with_nearest() -> void:
 
 		var distance := player.global_position.distance_to(target.global_position)
 
-		# Objects at exactly the interaction limit are still considered valid.
+		# Objects at exactly the interaction limit are valid targets.
 		if distance > MAX_INTERACTION_DISTANCE:
 			continue
 
@@ -74,7 +77,10 @@ func _interact_with_nearest() -> void:
 			nearest_distance = distance
 			nearest_interactable = candidate
 
-	if nearest_interactable != null:
-		# Pass the actual Player instance so the interactable can use it for any
-		# object-specific behavior without performing its own Player lookup.
-		nearest_interactable.interact(player)
+	if nearest_interactable == null:
+		return false
+
+	# Pass the actual Player that initiated the interaction. The target owns its
+	# own behavior and does not need to search the scene for another Player.
+	nearest_interactable.interact(player)
+	return true
