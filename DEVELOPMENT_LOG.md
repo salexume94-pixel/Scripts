@@ -2052,3 +2052,10 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Enemy attacks use the action's critical multiplier, with a 1.5x minimum for the current combat standard.
 - Enemy attack rolls are written to the combat log so critical and miss outcomes can be verified against the calculated chances.
 - Runtime verification required: confirm Enemy criticals deal 1.5x damage and Enemy misses deal 0 damage.
+
+
+## Combat Outcome-Only Feedback
+- Removed Speed, accuracy, critical chance, and roll calculations from the player-facing combat log.
+- Player and Enemy attacks now explicitly report MISSED with no damage, CRITICAL with final damage, or normal final damage.
+- Battle feedback exposes enemy miss and critical outcomes.
+- Runtime verification required.
