@@ -34,8 +34,10 @@ static func resolve_damage(base_damage: int, damage_type: int, enemy_data: Resou
 			damage = 0
 			turn_cost = 2.0
 		AFFINITIES.Type.DRAIN:
-			# Drain turns the would-be damage into healing for the target.
+			# Drain turns the would-be damage into healing for the target and
+			# consumes the entire remaining Press Turn set.
 			result_type = "drain"
+			turn_cost = 4.0
 		AFFINITIES.Type.REPEL:
 			# Repel sends the would-be damage back to the attacker.
 			result_type = "repel"
