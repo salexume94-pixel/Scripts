@@ -2371,3 +2371,51 @@ Runtime verification required:
 6. Confirm the Player returns to the correct configured position outside the building rather than the town center.
 7. Enter and leave multiple Tutorial Town buildings to confirm the location context updates correctly for each building.
 8. Confirm no Godot debugger or resource errors occur.
+
+### Tutorial Town Unique Interiors and Door Return Position Fix
+
+Updated the Tutorial Town building system so each currently placed building uses its own interior scene instead of sharing the generic Interior.tscn.
+
+Added unique interior scenes for:
+- Tutorial Town Inn
+- Item / Equipment Shop
+- Church
+- Residence 01
+- Residence 02
+- Residence 03
+- Residence 04
+- Residence 05
+- Residence 06
+
+Each interior remains compatible with the existing reusable Player, Inventory/Character HUD, Quest Log, Interior presentation, and ExitDoor systems while having its own visual identity and furnishings.
+
+Also fixed the remaining return-position problem in systems/scene_manager.gd. The previous Door code calculated the Player's overworld position, but SceneManager was not actually storing that supplied return position. As a result, interior exits could fall back to the fixed destination position near the town center.
+
+SceneManager now stores the exact overworld Player position whenever a building Door enters an interior. Interior ExitDoors using use_return_position = true can therefore return the Player to the doorway they actually entered.
+
+Updated:
+- scenes/World.tscn
+- systems/scene_manager.gd
+- scenes/interiors/TutorialTownInn.tscn
+- scenes/interiors/TutorialTownShop.tscn
+- scenes/interiors/TutorialTownChurch.tscn
+- scenes/interiors/TutorialTownResidence01.tscn
+- scenes/interiors/TutorialTownResidence02.tscn
+- scenes/interiors/TutorialTownResidence03.tscn
+- scenes/interiors/TutorialTownResidence04.tscn
+- scenes/interiors/TutorialTownResidence05.tscn
+- scenes/interiors/TutorialTownResidence06.tscn
+- DEVELOPMENT_LOG.md
+
+NPC and Quest Giver collision from the previous fix remains in place and was not changed by this update.
+
+Runtime verification required:
+1. Pull the latest main.
+2. Enter the Inn and confirm it is the Inn interior.
+3. Exit the Inn and confirm the Player returns to the Inn doorway position.
+4. Enter the Item / Equipment Shop and confirm it is a different interior from the Inn.
+5. Exit the Shop and confirm the Player returns to the Shop doorway.
+6. Enter the Church and each Residence and confirm each has its own distinct interior.
+7. Enter and exit multiple buildings in sequence to confirm return positions do not get mixed between buildings.
+8. Confirm NPCs and the Quest Giver still block Player movement.
+9. Confirm no Godot debugger, parse, resource, Door context, or scene-transition errors occur.
