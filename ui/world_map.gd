@@ -10,6 +10,8 @@ extends Control
 ## the current Player marker. More advanced cartography can be added later
 ## without changing the underlying world/map data model.
 
+const WORLD_LOCATION_DATABASE = preload("res://world/world_location_database.gd")
+
 @export var map_rect: Rect2 = Rect2(230.0, 90.0, 692.0, 500.0)
 
 var _map_open: bool = false
@@ -78,7 +80,7 @@ func _draw() -> void:
 	_draw_grid(map_rect)
 
 	# Draw every registered location belonging to the current world.
-	for location_resource in WorldLocationDatabase.get_all_locations():
+	for location_resource in WORLD_LOCATION_DATABASE.get_all_locations():
 		if location_resource == null:
 			continue
 
@@ -145,7 +147,7 @@ func _draw_location_marker(location: Resource, map_position: Vector2) -> void:
 	)
 
 	var location_type := int(location.get("location_type"))
-	var marker_radius := 7.0 if location_type == WorldLocationData.LocationType.TOWN else 5.0
+	var marker_radius := 7.0 if location_type == 1 else 5.0
 
 	draw_circle(screen_position, marker_radius, Color(0.85, 0.85, 0.78, 1.0))
 	draw_circle(screen_position, marker_radius + 2.0, Color(0.15, 0.18, 0.15, 1.0), false, 1.5)
