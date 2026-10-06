@@ -827,3 +827,31 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section.
+
+
+### Combat Foundation: Damage Calculation and Enemy HP Application
+
+Implemented Step 4 of the Combat Foundation: basic Player damage calculation and enemy HP application.
+
+Updated:
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+
+Changes:
+- Player Attack now produces damage and reduces the active enemy's HP.
+- The current controlled formula is direct damage equal to the Player's Attack stat, with a minimum of 1 damage.
+- CombatState records the most recent damage result.
+- Battle UI reports the damage dealt and refreshes enemy HP after each attack.
+- Enemy HP cannot fall below 0.
+- Enemy turns, defense, victory/defeat resolution, and the final damage formula remain separate future systems.
+
+Runtime verification required:
+- Pull the latest commit.
+- Confirm the project opens without parse errors.
+- Confirm an active Battle starts at Enemy HP 50 / 50.
+- Press Attack and confirm HP decreases by the displayed damage amount.
+- Confirm repeated attacks cannot reduce HP below 0.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section.
