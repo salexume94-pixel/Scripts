@@ -1,3 +1,33 @@
+### Equipment Comparison / Details: Initial Implementation
+
+Started the first item in the current development order: Equipment comparison/details.
+
+Updated:
+- `ui/inventory_character_hud.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Equipped items now display their active Attack/Defense bonuses directly in the Character equipment list.
+- Equipment item details now show the equipment slot and the item's stat bonuses.
+- Equipment comparisons now explicitly show the currently equipped replacement item when one exists.
+- Equipment comparisons continue to project the resulting Attack and Defense values after replacing the item in the same slot.
+- Existing Equip, Unequip, inventory ownership, and PlayerStats modifier behavior remains unchanged.
+- The comparison remains UI-only and reads authoritative values from ItemData, PlayerEquipment, and PlayerStats.
+
+Runtime verification required:
+- Open the Character/Inventory screen.
+- Select each equipment item in inventory.
+- Confirm its slot and stat bonuses are displayed.
+- Confirm the comparison shows current -> projected Attack and Defense values with deltas.
+- Confirm selecting an item that replaces existing equipment identifies the currently equipped item.
+- Confirm equipped equipment rows display their bonuses.
+- Confirm Equip and Unequip still transfer inventory ownership and update Player stats correctly.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Equipment currently modifies Attack and Defense only. Magic Attack, Magic Defense, Speed, and other future equipment modifiers are not part of the current ItemData equipment model.
+- The visual layout may need further polish after runtime verification.
+
 ## Current Development Order
 
 The current development order is fixed as follows. Complete each item in order before moving to the next item unless a blocking bug requires otherwise.
