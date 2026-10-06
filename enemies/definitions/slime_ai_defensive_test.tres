@@ -12,7 +12,6 @@ actions = Array[ExtResource("2_slime_attack")]([
 	ExtResource("2_slime_attack"),
 	ExtResource("3_slime_heavy_attack"),
 	ExtResource("4_slime_fire_attack"),
-	ExtResource("9_slime_dark_attack")
 ])
 behavior_profile = ExtResource("10_behavior")
 enemy_id = "slime_ai_defensive_test"
