@@ -142,6 +142,10 @@ func end_combat() -> void:
 		return
 	var destination := return_scene_path
 	var destination_position := return_player_position
+	# Give the Player a short post-combat grace period before overworld
+	# encounter checks resume. The cooldown lives in GameState because the World
+	# encounter system is recreated during the scene transition.
+	GameState.set_encounter_cooldown(3.0)
 	active_combat = null
 	combat_log.clear()
 	last_enemy_ai_debug.clear()
