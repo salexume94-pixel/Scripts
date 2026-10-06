@@ -19,7 +19,7 @@ enum Phase {
 @export var enemy_max_hp: int = 0
 
 # Four full Press Turns are available to the Player at the start of a round.
-# A fractional value allows weakness actions to consume only half a turn.
+# A fractional value allows weakness and critical actions to consume half turns.
 @export var player_press_turns: int = 4
 @export var player_press_turns_remaining: float = 4.0
 
@@ -34,6 +34,7 @@ enum Phase {
 @export var last_player_damage_type: int = 0
 @export var last_player_affinity: int = 0
 @export var last_player_result_type: String = "damage"
+@export var last_player_critical: bool = false
 
 ## Whether the Player has chosen Defend for the current enemy turn.
 @export var player_defending: bool = false
