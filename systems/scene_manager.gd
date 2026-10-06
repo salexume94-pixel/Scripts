@@ -14,8 +14,19 @@ var pending_player_position: Vector2
 var has_pending_player_position: bool = false
 var transition_in_progress: bool = false
 
+# Identifies the world/location that owns the current scene transition context.
+# This survives scene replacement so generic interior exit doors know which
+# world location they are returning to.
+var current_world_id: String = ""
+var current_location_id: String = ""
 
-func change_scene(scene_path: String, player_position: Vector2) -> void:
+
+func change_scene(
+    scene_path: String,
+    player_position: Vector2,
+    world_id: String = "",
+    location_id: String = ""
+) -> void:
 	# Ignore additional transition requests while the current transition
 	# is waiting for Godot to finish changing scenes.
 	if transition_in_progress:
