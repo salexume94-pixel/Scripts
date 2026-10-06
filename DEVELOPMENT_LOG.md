@@ -2065,3 +2065,12 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Removed the encounter-start entries for enemy battle entry, selected Enemy AI profile, and available Player Press Turns from the combat log.
 - These values remain displayed in the dedicated Battle HUD areas above the combat log, so the log now focuses on actual combat events and outcomes.
 - Runtime verification required: start a battle and confirm those three startup messages no longer appear in the scrolling combat log.
+
+
+## Elemental Weakness Damage and Critical Interaction
+- Increased the shared Weak affinity damage multiplier from 1.5x to 2.0x.
+- The existing random Speed-based critical calculation remains active for elemental attacks because critical resolution occurs after affinity resolution in the shared combat rules.
+- A normal elemental attack against a Weak target now deals 2x base damage.
+- If that same elemental attack also rolls a critical, the 1.5x critical multiplier is additionally applied, producing 3x base damage before any other future modifiers.
+- Weakness still consumes 0.5 Press Turns, while a critical result also uses the existing 0.5 Press Turn cost.
+- Runtime verification required: confirm elemental attacks against a Weak target deal 2x damage, non-critical and critical outcomes both work, and critical elemental damage reaches 3x base damage when both conditions occur.
