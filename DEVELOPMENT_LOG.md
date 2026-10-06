@@ -1,3 +1,45 @@
+### Player Fire Action for Elemental Runtime Testing
+
+Added the first real elemental Player action so the Slime's Fire weakness can be runtime verified.
+
+Created:
+- `combat/player_action_data.gd`
+- `combat/definitions/physical_attack.tres`
+- `combat/definitions/fire_attack.tres`
+
+Updated:
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added PlayerActionData as a reusable Resource for Player combat actions.
+- Player actions now define an action ID, display name, damage type, and Attack-stat power multiplier.
+- Moved the existing basic Physical Attack into a Physical Player action Resource.
+- Added a Fire Player action using the Player's Attack stat at 1.0x power.
+- Added a Fire button to the Battle UI.
+- Both Physical Attack and Fire use the same CombatManager and CombatRules resolution path.
+- The Slime's existing Fire Weak affinity can now be exercised through the Battle UI.
+- Existing Defend, Pass, Run, Victory, Enemy Turn, and Press Turn behavior remains unchanged.
+- This establishes the data-driven path needed for future elemental skills without hardcoding individual attacks into Battle.
+
+Runtime verification required:
+- Pull the `combat-elemental-affinities` branch.
+- Confirm the project starts without parse or resource-loading errors.
+- Start Test Battle (Slime).
+- Confirm both Attack and Fire are available during Player Turn.
+- Press Fire and confirm the Battle reports Fire / Weak.
+- Confirm Fire deals 1.5x the Player Attack value against the Slime.
+- Confirm Fire consumes exactly 0.5 Press Turns, leaving three full turns and one half turn after the first Fire action.
+- Confirm another Fire action can consume the remaining half turn and correctly exhaust the Player's Press Turns.
+- Confirm the enemy turn still resolves correctly after Press Turns are exhausted.
+- Confirm Physical Attack still reports Physical / Normal and consumes 1 full Press Turn.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
 ### Elemental Damage Types and Enemy Affinities
 
 Started the elemental combat foundation for the Press Turn system.
