@@ -30,11 +30,18 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin"]
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 5
 
-[node name="Title" type="Label" parent="Panel/Margin/Content"]
+[node name="Title" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 text = "DEBUG COMBAT HUD"
 horizontal_alignment = 1
@@ -84,7 +91,7 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Log" type="Label" parent="Panel/Margin/Content/LogScroll"]
+[node name="Log" type="Label" parent="Panel/Margin/Scroll/Content/LogScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 autowrap_mode = 2
