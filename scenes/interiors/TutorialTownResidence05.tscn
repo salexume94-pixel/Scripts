@@ -1,0 +1,49 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/interior.gd" id="2_interior"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
+[ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_interior_presentation"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
+[ext_resource type="PackedScene" path="res://world/Chest.tscn" id="6_chest"]
+
+[node name="Interior" type="Node2D"]
+script = ExtResource("2_interior")
+
+[node name="InteriorContent" type="Node2D" parent="."]
+
+[node name="InteriorFloor" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(-240, -160, 240, -160, 240, 160, -240, 160)
+color = Color(0.28, 0.23, 0.18, 1)
+
+[node name="LocationLabel" type="Label" parent="InteriorContent"]
+position = Vector2(-110, -130)
+text = "RESIDENCE 05"
+
+[node name="ExitDoor" parent="InteriorContent" instance=ExtResource("3_door")]
+position = Vector2(0, 160)
+target_scene = "res://scenes/World.tscn"
+target_player_position = Vector2(0, -8)
+use_return_position = true
+
+[node name="Table" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(-55, -30, 55, -30, 55, 25, -55, 25)
+color = Color(0.38, 0.28, 0.18, 1)
+
+[node name="Bed" type="Polygon2D" parent="InteriorContent"]
+polygon = PackedVector2Array(120, 55, 195, 55, 195, 120, 120, 120)
+color = Color(0.42, 0.30, 0.30, 1)
+
+
+[node name="InteriorPresentation" type="Node2D" parent="."]
+script = ExtResource("4_interior_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="InteriorPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 120)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")
