@@ -9,3 +9,4 @@ strategy = 0
 weakness_priority = 1.0
 unfavorable_affinity_multiplier = 0.5
 minimum_selection_weight = 0.0
+defend_weight_multiplier = 1.0
