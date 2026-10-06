@@ -44,12 +44,33 @@ func handle_interaction_input() -> void:
     if _interact_with_nearest():
         get_viewport().set_input_as_handled()
     else:
+        # Report the nearest NPC even when it is outside the interaction range.
+        # This tells us whether the range is genuinely too small or whether
+        # Player and NPC positions are being calculated unexpectedly.
+        var player := get_parent() as Node2D
+        var nearest_npc := _find_nearest_any_distance(player, "npc")
         var npc_count := get_tree().get_nodes_in_group("npc").size()
         var interactable_count := get_tree().get_nodes_in_group("interactable").size()
-        _show_debug(
-            "E detected -> NO target within %d px. NPC group count: %d | Interactable count: %d"
-            % [int(MAX_INTERACTION_DISTANCE), npc_count, interactable_count]
-        )
+
+        if nearest_npc != null and player != null:
+            var nearest_target := nearest_npc as Node2D
+            var nearest_distance := player.global_position.distance_to(nearest_target.global_position)
+            _show_debug(
+                "E detected -> NO target within %d px | Nearest NPC: %s | Distance: %.1f px | NPCs: %d | Interactables: %d"
+                % [
+                    int(MAX_INTERACTION_DISTANCE),
+                    str(nearest_npc.get("npc_name")),
+                    nearest_distance,
+                    npc_count,
+                    interactable_count
+                ]
+            )
+        else:
+            _show_debug(
+                "E detected -> NO target within %d px | NPC group count: %d | Interactable count: %d"
+                % [int(MAX_INTERACTION_DISTANCE), npc_count, interactable_count]
+            )
+
 
 
 func _interact_with_nearest() -> bool:
@@ -95,6 +116,36 @@ func _interact_with_nearest() -> bool:
         return true
 
     return false
+
+
+func _find_nearest_any_distance(player: Node2D, group_name: String) -> Node:
+    # Unlike _find_nearest_in_group(), this diagnostic helper does not apply the
+    # interaction range. It finds the physically closest group member so we can
+    # see its true distance when no interaction target is available.
+    if player == null:
+        return null
+
+    var nearest: Node = null
+    var nearest_distance := INF
+
+    for candidate in get_tree().get_nodes_in_group(group_name):
+        if not is_instance_valid(candidate):
+            continue
+
+        if not candidate.has_method("interact"):
+            continue
+
+        var target := candidate as Node2D
+        if target == null:
+            continue
+
+        var distance := player.global_position.distance_to(target.global_position)
+
+        if distance < nearest_distance:
+            nearest_distance = distance
+            nearest = candidate
+
+    return nearest
 
 
 func _find_nearest_in_group(player: Node2D, group_name: String) -> Node:
