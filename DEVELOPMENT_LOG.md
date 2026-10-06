@@ -882,3 +882,26 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section.
+
+
+### Debug Battle Entry Point Parse Fix
+
+Fixed the DebugSystem battle test action so it can be called through the preloaded script from the HUD.
+
+Updated:
+- systems/debug_system.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Made `start_test_battle()` static, matching the existing static debug action pattern.
+- This resolves the Godot parse error caused by calling the function directly on the preloaded DebugSystem script.
+- The HUD can now load normally, allowing its `_ready()` logic to hide the Character/Inventory screen at game start.
+
+Runtime verification required:
+- Pull the latest commit.
+- Confirm the HUD is no longer displayed automatically when the game starts.
+- Press I to open the Character/Inventory HUD.
+- Confirm the DEBUG panel contains Test Battle (Slime).
+- Confirm Test Battle (Slime) opens the Battle scene without debugger errors.
+
+Continue using comments in scripts to explain each script and major section.
