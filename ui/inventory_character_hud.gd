@@ -125,9 +125,10 @@ func _refresh_equipment(player: Node) -> void:
 			row.text = "%s: None" % equipment.get_equipment_slot_name(slot)
 			row.disabled = true
 		else:
-			row.text = "%s: %s  [Unequip]" % [
+			row.text = "%s: %s  (%s)  [Unequip]" % [
 				equipment.get_equipment_slot_name(slot),
 				item.get("display_name"),
+				_get_item_bonus_summary(item),
 			]
 			row.pressed.connect(_on_unequip_slot_pressed.bind(slot))
 
@@ -257,14 +258,62 @@ func _get_item_comparison(item: Resource) -> String:
 	projected_attack += item.get("attack_bonus")
 	projected_defense += item.get("defense_bonus")
 
-	return "Comparison: Attack: %d -> %d (%+d)  |  Defense: %d -> %d (%+d)" % [
+	var details := "Slot: %s\nBonuses: %s" % [
+		_get_equipment_slot_name(item.get("equipment_slot")),
+		_get_item_bonus_summary(item),
+	]
+
+	if equipped != null:
+		details += "\nCurrently equipped: %s" % equipped.get("display_name")
+
+	details += "\n\nComparison:"
+	details += "\nAttack: %d -> %d (%+d)" % [
 		current_attack,
 		projected_attack,
 		projected_attack - current_attack,
+	]
+	details += "\nDefense: %d -> %d (%+d)" % [
 		current_defense,
 		projected_defense,
 		projected_defense - current_defense,
 	]
+
+	return details
+
+
+func _get_item_bonus_summary(item: Resource) -> String:
+	# Format only the stat bonuses that the item actually provides.
+	var bonuses: Array[String] = []
+
+	var attack_bonus: int = item.get("attack_bonus")
+	var defense_bonus: int = item.get("defense_bonus")
+
+	if attack_bonus != 0:
+		bonuses.append("Attack %+d" % attack_bonus)
+	if defense_bonus != 0:
+		bonuses.append("Defense %+d" % defense_bonus)
+
+	if bonuses.is_empty():
+		return "No stat bonuses"
+
+	return ", ".join(bonuses)
+
+
+func _get_equipment_slot_name(slot: int) -> String:
+	# Keep slot presentation in the HUD without duplicating equipment state.
+	match slot:
+		ITEM_DATA_SCRIPT.EquipmentSlot.WEAPON:
+			return "Weapon"
+		ITEM_DATA_SCRIPT.EquipmentSlot.SHIELD:
+			return "Shield"
+		ITEM_DATA_SCRIPT.EquipmentSlot.HEAD:
+			return "Head"
+		ITEM_DATA_SCRIPT.EquipmentSlot.BODY:
+			return "Body"
+		ITEM_DATA_SCRIPT.EquipmentSlot.ACCESSORY:
+			return "Accessory"
+		_:
+			return "None"
 
 
 func _on_item_action_button_pressed() -> void:
