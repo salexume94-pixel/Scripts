@@ -10,10 +10,10 @@ extends Node2D
 ## the system easy to resize later when the World grows beyond the current
 ## test area.
 
-@export var left_bound: float = -600.0
-@export var right_bound: float = 600.0
-@export var top_bound: float = -400.0
-@export var bottom_bound: float = 400.0
+@export var left_bound: float = -1000.0
+@export var right_bound: float = 1000.0
+@export var top_bound: float = -1500.0
+@export var bottom_bound: float = 1500.0
 
 @export var boundary_thickness: float = 32.0
 
