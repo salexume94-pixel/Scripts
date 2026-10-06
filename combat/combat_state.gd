@@ -5,10 +5,6 @@ class_name CombatState
 ## This Resource is data only. It does not start scenes, calculate damage, or
 ## control UI. CombatManager owns the active instance and uses this data to
 ## coordinate the combat flow.
-##
-## Enemy definitions and stats are intentionally represented by an enemy_id
-## for now. The Enemy Foundation will replace that identifier with the
-## authoritative enemy data system later.
 
 enum Phase {
 	PLAYER_TURN,
@@ -20,14 +16,12 @@ enum Phase {
 @export var enemy_id: String = ""
 @export var phase: Phase = Phase.PLAYER_TURN
 @export var enemy_hp: int = 0
-
-# Stores maximum HP separately so presentation can show the enemy health state.
 @export var enemy_max_hp: int = 0
 
-# Stores the most recent player attack value for the combat presentation and
-# later damage system. The value is calculated by CombatManager from PlayerStats.
-@export var last_player_attack: int = 0
+# Four full Press Turns are available to the Player at the start of a round.
+# A fractional value allows future weakness/critical actions to consume half.
+@export var player_press_turns: int = 4
+@export var player_press_turns_remaining: float = 4.0
 
-# Stores the damage produced by the most recent attack so the Battle UI can
-# report the result without calculating combat values itself.
+@export var last_player_attack: int = 0
 @export var last_damage: int = 0
