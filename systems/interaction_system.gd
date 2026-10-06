@@ -53,7 +53,8 @@ func _get_nearest_interactable() -> Area2D:
 		if interactable == null:
 			continue
 
-		var distance: float = global_position.distance_to(area.global_position)
+		var player: Node2D = get_parent() as Node2D
+		var distance: float = player.global_position.distance_to(area.global_position)
 		if distance < nearest_distance:
 			nearest_distance = distance
 			nearest = area
