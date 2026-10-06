@@ -20,12 +20,21 @@ var transition_in_progress: bool = false
 var current_world_id: String = ""
 var current_location_id: String = ""
 
+# Stores the exact Player position outside the building that was entered.
+# The reusable Interior scene uses this when the Player leaves, so every
+# building returns the Player to the doorway they actually entered rather than
+# to one hard-coded town-center coordinate.
+var return_player_position: Vector2 = Vector2.ZERO
+var has_return_player_position: bool = false
+
 
 func change_scene(
     scene_path: String,
     player_position: Vector2,
     world_id: String = "",
-    location_id: String = ""
+    location_id: String = "",
+    return_position: Vector2 = Vector2.ZERO,
+    set_return_position: bool = false
 ) -> void:
 	# Ignore additional transition requests while the current transition
 	# is waiting for Godot to finish changing scenes.
