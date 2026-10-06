@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "northbridge_village"
+world_id = "northbridge_village"
+display_name = "Northbridge Village"
+location_type = 1
+description = "A small settlement north of Tutorial Town, built around an old stone bridge."
+story_significant = false
+map_position = Vector2(400, 100)
+map_visible = true
