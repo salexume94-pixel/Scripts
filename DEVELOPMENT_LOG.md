@@ -1110,3 +1110,45 @@ Runtime verification required:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Press Turn Combat: Enemy Turn Transition and Temporary Enemy Attack
+
+Implemented the next step after runtime testing showed that exhausting all four Player Press Turns entered ENEMY_TURN but had no way to resolve that state.
+
+Updated:
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Added temporary enemy attack state to CombatState.
+- Exhausting all four Player Press Turns now starts the Enemy Turn.
+- The Battle UI displays ENEMY TURN while the enemy action is being resolved.
+- The temporary Slime enemy now has 10 Attack.
+- Enemy damage currently uses the Player's authoritative Defense stat with a minimum of 1 damage.
+- Player HP is updated through the existing GameState runtime snapshot.
+- The Battle UI now displays Player HP and the enemy attack result.
+- After the enemy action completes, the Player's four Press Turns are restored and combat returns to PLAYER TURN.
+- If the temporary enemy attack reduces Player HP to 0, CombatState enters DEFEAT. The full defeat/recovery flow remains a later system.
+- Existing victory and Run behavior remains in place.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Start Test Battle (Slime).
+- Confirm four Press Turns are available.
+- Attack four times without defeating the Slime.
+- Confirm the state changes to ENEMY TURN.
+- Confirm the Slime attacks after a short delay.
+- Confirm Player HP decreases according to the temporary enemy attack and Player Defense formula.
+- Confirm the Press Turn display returns to four full turns.
+- Confirm the state returns to PLAYER TURN and Attack becomes available again.
+- Confirm Run is available again during the new Player turn.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Enemy Attack, EnemyData, and defeat/recovery are still temporary/prototype implementations. These will be replaced by the authoritative Enemy Foundation and full combat resolution later.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
