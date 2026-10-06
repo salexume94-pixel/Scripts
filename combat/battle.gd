@@ -6,7 +6,9 @@ const FIRE_ACTION = preload("res://combat/definitions/fire_attack.tres")
 ## Presents Battle state and forwards player input to CombatManager.
 ##
 ## CombatManager owns Press Turns and combat rules. This script only presents
-## their current state and handles Battle button input.
+## their current state, reports resolved results, and handles Battle input.
+
+var action_resolving := false
 
 func _ready() -> void:
 	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
@@ -15,14 +17,17 @@ func _ready() -> void:
 	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
 	_update_display()
 	_update_enemy_hp_display()
+	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
 
 func _on_player_attack_performed(_attack_value: int) -> void:
-	# Present the resolved damage type and affinity without moving combat rules
-	# into the Battle UI.
+	# Present the resolved damage type, affinity, and outcome without moving
+	# combat rules into the Battle UI.
+	action_resolving = false
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label == null:
+		_update_combat_controls()
 		return
 
 	var affinity_name := AFFINITIES.get_display_name(CombatManager.get_last_player_affinity())
@@ -31,20 +36,23 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 	var damage := CombatManager.get_last_damage()
 	var critical: bool = CombatManager.get_last_player_critical()
 
-	if critical:
-		action_label.text = "CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
-	elif CombatManager.is_victory():
-		action_label.text = "Enemy defeated! %s %s." % [damage_type_name, affinity_name]
+	if CombatManager.is_victory():
+		if critical:
+			action_label.text = "CRITICAL! Enemy defeated. %s attack dealt %d damage." % [damage_type_name, damage]
+		else:
+			action_label.text = "Enemy defeated. %s attack dealt %d damage." % [damage_type_name, damage]
 	elif result_type == "miss":
-		action_label.text = "Player %s attack misses (%s)." % [damage_type_name, affinity_name]
+		action_label.text = "%s attack MISSED. No damage dealt." % damage_type_name
 	elif result_type == "drain":
-		action_label.text = "Player %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
+		action_label.text = "%s attack DRAINED %d HP from the enemy. (%s)" % [damage_type_name, damage, affinity_name]
 	elif result_type == "repel":
-		action_label.text = "Player %s attack is repelled (%s)." % [damage_type_name, affinity_name]
-	elif CombatManager.is_enemy_turn():
-		action_label.text = "Player %s attack deals %d damage (%s). Enemy turn." % [damage_type_name, damage, affinity_name]
+		action_label.text = "%s attack was REPELLED. %d damage reflected to Player. (%s)" % [damage_type_name, damage, affinity_name]
+	elif affinity_name == "Null":
+		action_label.text = "%s attack was NULLIFIED. No damage dealt." % damage_type_name
+	elif critical:
+		action_label.text = "CRITICAL! %s attack dealt %d damage. (%s)" % [damage_type_name, damage, affinity_name]
 	else:
-		action_label.text = "Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
+		action_label.text = "%s attack dealt %d damage. (%s)" % [damage_type_name, damage, affinity_name]
 
 	_update_enemy_hp_display()
 	_update_player_hp_display()
@@ -56,50 +64,78 @@ func _on_press_turns_changed(_remaining: float) -> void:
 	_update_combat_controls()
 
 func _on_defend_pressed() -> void:
+	if action_resolving:
+		return
+	action_resolving = true
 	if CombatManager.player_defend():
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "Player defends." if CombatManager.is_player_turn() else "Player defends. Enemy turn."
+			action_label.text = "Player DEFENDS. Incoming damage will be reduced on the enemy turn."
+		if not CombatManager.is_enemy_turn():
+			action_resolving = false
+	else:
+		action_resolving = false
+	_update_combat_controls()
 
 func _on_pass_pressed() -> void:
+	if action_resolving:
+		return
+	action_resolving = true
 	if CombatManager.player_pass():
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "Player passes." if CombatManager.is_player_turn() else "Player passes. Enemy turn."
+			action_label.text = "Player passes the turn."
+		if not CombatManager.is_enemy_turn():
+			action_resolving = false
+	else:
+		action_resolving = false
+	_update_combat_controls()
 
 func _on_enemy_turn_started() -> void:
+	action_resolving = true
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
-		action_label.text = "Player turn complete. Enemy turn."
+		action_label.text = "ENEMY TURN: resolving enemy action..."
 	_update_combat_controls()
 
 func _on_enemy_attack_performed(damage: int) -> void:
-	# Show the enemy result and refresh controls after the enemy turn completes.
+	# Show the enemy action and resolved damage after the enemy turn completes.
+	action_resolving = false
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
 		var action_name := CombatManager.get_last_enemy_action_name()
 		if CombatManager.is_defeat():
-			action_label.text = "%s attacks for %d damage. Player defeated." % [action_name, damage]
+			action_label.text = "%s deals %d damage. PLAYER DEFEATED." % [action_name, damage]
 		else:
-			action_label.text = "%s attacks for %d damage. Player turn." % [action_name, damage]
+			action_label.text = "%s deals %d damage. PLAYER TURN." % [action_name, damage]
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
 
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
+	var hp_bar := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPBar") as ProgressBar
 	if hp_label == null:
 		return
-	hp_label.text = "Enemy HP: %d / %d" % [CombatManager.get_enemy_hp(), CombatManager.get_enemy_max_hp()]
+	var hp := CombatManager.get_enemy_hp()
+	var max_hp := CombatManager.get_enemy_max_hp()
+	hp_label.text = "Enemy HP: %d / %d" % [hp, max_hp]
+	if hp_bar != null:
+		hp_bar.max_value = max_hp
+		hp_bar.value = hp
 
 func _update_player_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerHPLabel")
+	var hp_bar := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerHPBar") as ProgressBar
 	if hp_label == null:
 		return
 	var stats: Dictionary = GameState.get_player_stats()
 	var hp: int = stats.get("hp", 0)
 	var max_hp: int = stats.get("max_hp", 0)
 	hp_label.text = "Player HP: %d / %d" % [hp, max_hp]
+	if hp_bar != null:
+		hp_bar.max_value = max_hp
+		hp_bar.value = hp
 
 func _update_press_turn_display() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PressTurnLabel")
@@ -129,15 +165,19 @@ func _update_combat_controls() -> void:
 		return
 	if critical_test_button == null or miss_test_button == null:
 		return
+
 	var victory := CombatManager.is_victory()
 	var defeat := CombatManager.is_defeat()
 	var player_turn := CombatManager.is_player_turn()
-	attack_button.disabled = victory or defeat or not player_turn
-	fire_button.disabled = victory or defeat or not player_turn
-	defend_button.disabled = victory or defeat or not player_turn
-	pass_button.disabled = victory or defeat or not player_turn
-	critical_test_button.disabled = victory or defeat or not player_turn
-	miss_test_button.disabled = victory or defeat or not player_turn
+	var locked := action_resolving or not player_turn
+
+	attack_button.disabled = victory or defeat or locked
+	fire_button.disabled = victory or defeat or locked
+	defend_button.disabled = victory or defeat or locked
+	pass_button.disabled = victory or defeat or locked
+	critical_test_button.disabled = victory or defeat or locked
+	miss_test_button.disabled = victory or defeat or locked
+	run_button.disabled = victory or defeat or locked
 	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
 	if state_label != null:
@@ -145,24 +185,48 @@ func _update_combat_controls() -> void:
 			state_label.text = "VICTORY"
 		elif defeat:
 			state_label.text = "DEFEAT"
-		elif CombatManager.is_enemy_turn():
+		elif action_resolving and CombatManager.is_enemy_turn():
 			state_label.text = "ENEMY TURN"
 		else:
 			state_label.text = "PLAYER TURN"
 
 func _on_attack_pressed() -> void:
-	CombatManager.player_attack()
+	if action_resolving:
+		return
+	action_resolving = true
+	if not CombatManager.player_attack():
+		action_resolving = false
+	_update_combat_controls()
 
 func _on_fire_pressed() -> void:
-	CombatManager.player_attack(FIRE_ACTION)
+	if action_resolving:
+		return
+	action_resolving = true
+	if not CombatManager.player_attack(FIRE_ACTION):
+		action_resolving = false
+	_update_combat_controls()
 
 func _on_critical_test_pressed() -> void:
-	CombatManager.player_critical_test()
+	if action_resolving:
+		return
+	action_resolving = true
+	if not CombatManager.player_critical_test():
+		action_resolving = false
+	_update_combat_controls()
 
 func _on_miss_test_pressed() -> void:
-	CombatManager.player_miss_test()
+	if action_resolving:
+		return
+	action_resolving = true
+	if not CombatManager.player_miss_test():
+		action_resolving = false
+	_update_combat_controls()
+
 func _on_run_pressed() -> void:
+	if action_resolving:
+		return
 	CombatManager.end_combat()
+
 func _on_victory_pressed() -> void:
 	CombatManager.end_combat()
 
