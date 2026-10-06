@@ -39,6 +39,9 @@ func _ready() -> void:
 	# Start closed so the world remains active until the Player opens the HUD.
 	screen.visible = false
 	test_damage_button.pressed.connect(_on_test_damage_button_pressed)
+	var test_ai_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestAIBattleButton") as Button
+	if test_ai_battle_button != null:
+		test_ai_battle_button.pressed.connect(_on_test_ai_battle_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
@@ -282,6 +285,11 @@ func _on_test_damage_button_pressed() -> void:
 
 	DEBUG_SYSTEM.test_damage(player, 25)
 	_refresh_screen()
+
+
+func _on_test_ai_battle_button_pressed() -> void:
+	# Start the controlled Enemy AI encounter from the development HUD.
+	DEBUG_SYSTEM.start_test_battle("slime_ai_test")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:
