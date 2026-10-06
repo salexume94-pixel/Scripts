@@ -46,4 +46,9 @@ func interact(_player: Node) -> void:
     transition_started = true
 
     # SceneManager performs the actual scene replacement and Player placement.
-    SceneManager.change_scene(target_scene, target_player_position)
+    SceneManager.change_scene(
+        target_scene,
+        target_player_position,
+        world_id,
+        location_id
+    )
