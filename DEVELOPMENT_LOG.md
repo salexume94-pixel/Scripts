@@ -2074,3 +2074,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - If that same elemental attack also rolls a critical, the 1.5x critical multiplier is additionally applied, producing 3x base damage before any other future modifiers.
 - Weakness still consumes 0.5 Press Turns, while a critical result also uses the existing 0.5 Press Turn cost.
 - Runtime verification required: confirm elemental attacks against a Weak target deal 2x damage, non-critical and critical outcomes both work, and critical elemental damage reaches 3x base damage when both conditions occur.
+
+
+## Weakness Hunter Profile Consolidated into Aggressive
+- Removed the standalone behavior_weakness_hunter.tres profile because its weakness-targeting behavior is now part of the shared Aggressive profile.
+- Removed the obsolete WEAKNESS_HUNTER strategy enum and selection branch from enemies/enemy_behavior_profile.gd and systems/combat_manager.gd.
+- Updated the existing slime_ai_test definition to use the Aggressive profile so no enemy definition depends on the removed profile.
+- The remaining shared behavior profiles are Balanced, Aggressive, and Defensive.
+- Runtime verification required: confirm normal encounters and all three remaining profiles load and select correctly, and confirm the Aggressive profile still targets Player weaknesses as intended.
