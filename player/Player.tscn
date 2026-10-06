@@ -7,9 +7,13 @@
 [ext_resource type="Script" uid="uid://baf86xhgsoqwh" path="res://player/player_inventory.gd" id="5_70d11"]
 [ext_resource type="Script" uid="uid://d1hhpm4um168i" path="res://player/player_equipment.gd" id="6_70d11"]
 [ext_resource type="Script" uid="uid://8kpwsewt1f26" path="res://player/player_progression.gd" id="7_cw2d6"]
+[ext_resource type="Script" path="res://systems/interaction_system.gd" id="8_interaction"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5hmnj"]
 radius = 16.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
+radius = 56.0
 
 [node name="Player" type="CharacterBody2D" unique_id=64265925]
 script = ExtResource("1_p0vlq")
@@ -37,3 +41,13 @@ script = ExtResource("6_70d11")
 
 [node name="PlayerProgression" type="Node" parent="." unique_id=678276308]
 script = ExtResource("7_cw2d6")
+
+[node name="InteractionSystem" type="Node" parent="."]
+script = ExtResource("8_interaction")
+
+[node name="InteractionArea" type="Area2D" parent="InteractionSystem"]
+monitoring = true
+monitorable = false
+
+[node name="InteractionCollision" type="CollisionShape2D" parent="InteractionSystem/InteractionArea"]
+shape = SubResource("CircleShape2D_interaction")
