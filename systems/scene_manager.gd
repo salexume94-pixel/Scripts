@@ -36,6 +36,14 @@ func change_scene(
 		push_error("SceneManager cannot change to an empty scene path.")
 		return
 
+	# Update the persistent world/location context when a Door supplies it.
+	# Interior exit Doors can then inherit the same context when they are
+	# created from the reusable Interior scene.
+	if not world_id.is_empty():
+		current_world_id = world_id
+	if not location_id.is_empty():
+		current_location_id = location_id
+
 	# Store the destination Player position before the current scene is
 	# removed. The Player node from the old scene will not survive the change.
 	pending_player_position = player_position
