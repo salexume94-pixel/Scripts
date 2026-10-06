@@ -159,3 +159,19 @@ Named locations that may have gameplay and story significance should be represen
 Location definitions must remain separate from map presentation. Map coordinates and world-to-map conversion are intentionally reserved for the Map / World Map Foundation task.
 
 World scene nodes remain responsible for physical presentation and interaction behavior. Buildings now reference their `WorldLocationData` resource directly, and `world/building.gd` passes that resource's stable world/location IDs to the Door at runtime. This makes existing Tutorial Town buildings part of the shared location-data foundation without moving transition logic into the data resource. The location data resource itself does not perform scene transitions, track Player position, own quest state, or render UI.
+
+
+## World Map Foundation
+
+The world map system is separated into three responsibilities:
+
+- `world/world_map_data.gd` defines reusable metadata for a world's map, including its stable world ID, physical world bounds, and logical map bounds.
+- `world/world_map_database.gd` is the authoritative catalog of world map definitions.
+- `systems/map_manager.gd` owns the runtime Player map position and converts gameplay world coordinates into logical map coordinates.
+- `ui/world_map.gd` and `ui/WorldMap.tscn` own map presentation only.
+
+`WorldLocationData` now also contains a logical `map_position` and `map_visible` flag. Location definitions therefore remain the source of truth for named map markers, while the map UI only reads and presents that data.
+
+The Tutorial Town map currently represents the existing world bounds of -1000..1000 horizontally and -1500..1500 vertically with a reusable 400x600 logical map space. This relationship is defined by `tutorial_town_map.tres`, not by the UI.
+
+The map system is designed so future worlds can register their own `WorldMapData` and location definitions without changing the map presentation code. The current World scene includes the reusable map overlay, opened with M.
