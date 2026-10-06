@@ -115,7 +115,13 @@ text = "Run"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/MissTestButton" to="." method="_on_miss_test_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/DefendButton" to="." method="_on_defend_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/PassButton" to="." method="_on_pass_pressed"]
+[node name="VictoryButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Return to World"
+visible = false
+
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/RunButton" to="." method="_on_run_pressed"]
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/VictoryButton" to="." method="_on_victory_pressed"]
 
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
