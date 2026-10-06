@@ -1,3 +1,35 @@
+### Combat Encounter Regression: Overworld Encounter System Restored
+
+Runtime testing after switching from the `enemy-ai-behavior` branch to `main` showed that overworld combat encounters were no longer occurring.
+
+Root cause:
+- The overworld encounter system existed on `enemy-ai-behavior` but had not been carried onto `main`.
+- `scenes/World.tscn` therefore had no `WorldEncounterSystem` node, so movement could never call `CombatManager.start_encounter()`.
+
+Updated:
+- `systems/world_encounter_system.gd`
+- `systems/game_state.gd`
+- `systems/combat_manager.gd`
+- `scenes/World.tscn`
+
+Changes:
+- Restored the World encounter system to `main`.
+- Restored the configured Slime overworld encounter settings: 64 pixels between checks and 50% encounter chance per check.
+- Restored the runtime post-combat encounter cooldown in GameState.
+- Restored the three-second cooldown when ending combat so returning to the World does not immediately trigger another encounter.
+- CombatManager remains responsible for authoritative encounter creation and battle state.
+- The combat-polish changes remain intact.
+
+Runtime verification required:
+1. Pull the latest `main`.
+2. Start the game in the World.
+3. Move through the overworld for enough distance to cross multiple 64-pixel encounter checks.
+4. Confirm a Slime combat encounter can start automatically.
+5. Confirm the Player returns to the World after Run or Victory.
+6. Confirm another encounter does not trigger immediately during the three-second post-combat cooldown.
+7. Continue moving and confirm encounter checks resume afterward.
+8. Confirm no Godot debugger or parse errors occur.
+
 ### Combat Polish: Feedback and Turn Flow
 
 Implemented the first focused Combat Polish pass for combat feedback, turn flow, and Battle UI readability.
