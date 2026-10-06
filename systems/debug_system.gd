@@ -20,3 +20,10 @@ static func test_damage(player: Node, amount: int = 25) -> bool:
 
 	stats.take_damage(amount)
 	return true
+
+
+func start_test_battle(enemy_id: String = "slime") -> bool:
+	# Request a controlled combat encounter through CombatManager. The debug
+	# system provides the test entry point, while CombatManager remains the owner
+	# of combat state and scene transitions.
+	return CombatManager.start_encounter(enemy_id)
