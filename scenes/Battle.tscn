@@ -95,12 +95,17 @@ layout_mode = 2
 text = "Press Turns: ● ● ● ●"
 horizontal_alignment = 1
 
-[node name="CombatLogLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+[node name="CombatLogScroll" type="ScrollContainer" parent="CenterContainer/Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+size_flags_vertical = 3
+vertical_scroll_mode = 2
+
+[node name="CombatLogLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer/CombatLogScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Combat log loading..."
 autowrap_mode = 2
-vertical_alignment = 1
 
 [node name="ActionHeader" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
