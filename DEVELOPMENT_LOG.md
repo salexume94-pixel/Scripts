@@ -1,3 +1,52 @@
+### Enemy AI / Behavior
+Implemented the Enemy AI behavior layer for action selection.
+
+Updated:
+- enemies/enemy_behavior_profile.gd
+- enemies/definitions/behavior_balanced.tres
+- enemies/definitions/behavior_weakness_hunter.tres
+- enemies/enemy_data.gd
+- systems/combat_manager.gd
+- enemies/enemy_database.gd
+- enemies/definitions/slime_fire_attack.tres
+- enemies/definitions/slime_ai_test.tres
+- ui/inventory_character_hud.gd
+- ui/InventoryCharacterHUD.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Enemy action selection is now weighted instead of always selecting the first action.
+- EnemyData can optionally assign an EnemyBehaviorProfile. Enemies without a profile use the shared Balanced profile.
+- Added Balanced, Aggressive, and Weakness Hunter behavior strategies.
+- Aggressive behavior increases the relative priority of stronger actions.
+- Weakness Hunter behavior increases the priority of actions whose damage type matches a known Player Weak affinity.
+- Enemy AI avoids Player Resist, Null, Drain, and Repel reactions when the assigned behavior profile is configured to do so.
+- Player affinities are captured when an encounter starts, before the Battle scene replaces the World scene, and stored in CombatState for the duration of the encounter.
+- Added a controlled slime_ai_test enemy with Physical and Fire actions using the Weakness Hunter profile.
+- Added a Fire action to the AI test encounter so the Player's existing Fire weakness can be used to verify elemental-aware enemy selection.
+- Added a DEBUG entry point labeled Test Battle (Enemy AI) without changing the normal Slime encounter definition.
+- Battle presentation continues to report the selected enemy action through the existing CombatManager state, keeping selection logic out of the UI.
+
+Runtime/debug verification:
+- Static repository verification completed: the AI test encounter is registered, its behavior profile is assigned, its Fire action uses Fire damage, and the Player's default Fire Weak affinity is captured into CombatState at encounter start.
+- The controlled test encounter weights the Fire action above the Physical actions when the Player is Fire Weak, while retaining weighted random selection.
+- Local Godot runtime verification is still required. GitHub repository inspection cannot execute the Godot project.
+- Runtime checklist:
+  1. Pull enemy-ai-behavior.
+  2. Open the Character/Inventory DEBUG panel.
+  3. Start Test Battle (Enemy AI).
+  4. Spend four Player Press Turns without defeating the test enemy.
+  5. Confirm the Enemy Turn selects and displays an enemy action.
+  6. Repeat the encounter enough times to confirm Fire Attack is strongly favored while the Player is Fire Weak.
+  7. Confirm no parse, resource-loading, or debugger errors occur.
+  8. Confirm the normal Test Battle (Slime) encounter remains unchanged.
+
+Known limitation:
+- Enemy AI currently selects an action using weighted heuristics only. It does not yet account for HP thresholds, status effects, defensive needs, multi-turn planning, or battle context beyond Player elemental affinity.
+- Runtime verification must be performed in the local Godot project before this task can be marked fully runtime-verified.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Combat Critical Test and Victory UI Corrections
 
 Corrected two runtime issues found during Critical/Accuracy verification.
