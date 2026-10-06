@@ -91,8 +91,14 @@ func player_attack() -> bool:
 			return false
 		active_combat.last_player_attack = stats.attack
 
-	# Keep the action in the Player turn until enemy behavior exists. The future
-	# Enemy Foundation will consume this action when enemy turns are implemented.
+	# For this step, the Player's Attack value is the direct damage amount. This
+	# deliberately keeps the formula simple until the dedicated damage system is
+	# introduced, while still exercising the complete HP update path.
+	var damage := maxi(active_combat.last_player_attack, 1)
+	active_combat.last_damage = damage
+	active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage, 0)
+
+	# Keep the encounter on the Player turn until enemy behavior is implemented.
 	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
@@ -103,6 +109,13 @@ func get_enemy_hp() -> int:
 	if not is_in_combat():
 		return 0
 	return active_combat.enemy_hp
+
+
+func get_last_damage() -> int:
+	# Expose the most recent damage result for combat presentation.
+	if not is_in_combat():
+		return 0
+	return active_combat.last_damage
 
 
 func get_enemy_max_hp() -> int:
