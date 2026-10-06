@@ -1881,3 +1881,13 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Added an explicit Player Affinities display so runtime testing can see configured elemental affinities directly instead of inferring them from AI behavior.
 - Enemy AI action-selection diagnostics remain visible for verification of affinity-based weighting.
 - Runtime verification of the new UI remains pending.
+
+
+## 2026-10-06 - Simplified Battle Presentation
+
+- Simplified the Battle action/status text after Enemy AI option cycling was runtime-confirmed.
+- Enemy AI selection is now presented as only `AI SELECTED: <action>`; the per-action weight and affinity debug trace is no longer shown in the Battle UI.
+- Removed redundant Player/Enemy turn text from action results; turn ownership remains in the dedicated state label.
+- Clarified the separate HP labels as `PLAYER HP` and `ENEMY HP`.
+- Kept the scrollable combat log as the detailed record of recent combat actions and damage.
+- Kept Fire visible as a normal Player combat action while Critical Test and Miss Test remain hidden.
