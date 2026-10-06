@@ -1339,3 +1339,22 @@ Resulting distinction:
 - **Defensive:** favors safer/lower-power actions according to its profile.
 
 Runtime verification required: confirm Aggressive targets the current Player weakness at approximately its configured probability and favors stronger actions within that selected pool.
+
+## 2026-10-06 Encounter-Level Enemy AI Profile Selection
+
+Implemented encounter-level Enemy AI profile selection.
+
+Changes:
+- Normal enemy encounters without a fixed behavior profile now randomly select one of the shared Balanced, Aggressive, Weakness Hunter, or Defensive profiles when combat starts.
+- The selected profile is stored in `CombatState`, so the battle keeps one stable AI personality for its entire encounter.
+- Existing fixed behavior profiles remain supported for controlled/debug test enemies.
+- CombatManager now reads the profile selected for the active encounter instead of directly reading the source EnemyData profile for every decision.
+- Combat logs record which AI profile was selected when the encounter begins.
+
+This allows the same enemy definition to behave differently across separate battles without duplicating EnemyData resources for each AI personality.
+
+Runtime verification required:
+1. Start multiple normal Slime encounters and confirm the combat log reports different profiles across encounters over a sufficient sample.
+2. Confirm the selected profile remains unchanged for the duration of each battle.
+3. Confirm the existing fixed AI test encounters still use their intended profiles.
+4. Confirm no debugger errors occur when starting combat or taking Enemy Turns.
