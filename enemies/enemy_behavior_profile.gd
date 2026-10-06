@@ -39,6 +39,7 @@ enum Strategy {
 ## This preserves a known weakness priority without making one action repeat forever.
 @export_range(0.0, 1.0) var repeat_action_multiplier: float = 0.5
 
-## Controls how strongly Defensive behavior prefers lower-power actions.
-## A value of 1.0 keeps the full defensive preference; 0.0 disables it.
-@export_range(0.0, 1.0) var defensive_power_preference: float = 1.0
+## Controls how strongly Aggressive and Defensive behavior bias action power.
+## Higher values make the profile distinction more pronounced. A value of 0.0
+## disables the power bias while leaving normal action weights intact.
+@export_range(0.0, 5.0) var power_bias_strength: float = 0.0
