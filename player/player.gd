@@ -17,6 +17,11 @@ extends CharacterBody2D
 @onready var progression: Node = $PlayerProgression
 @onready var interaction_system: Node = $InteractionSystem
 
+func _ready() -> void:
+    # Register the Player with a shared group so world-level systems can find
+    # the active Player without depending on a hard-coded scene path.
+    add_to_group("player")
+
 
 func _input(event: InputEvent) -> void:
     # Receive the physical E key at the Player root. Keeping the input entry
