@@ -6,6 +6,7 @@ extends Node
 ## combat rules remain authoritative outside the presentation layer.
 
 const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
+const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 var active_combat: Resource = null
@@ -25,6 +26,12 @@ func start_encounter(enemy_id: String) -> bool:
 	# Start one encounter and record the Player return location.
 	if enemy_id.is_empty() or is_in_combat():
 		return false
+
+	# Resolve the requested enemy from the authoritative Resource catalog.
+	# Combat should never silently create an enemy from hardcoded fallback stats.
+	var enemy_data: Resource = ENEMY_DATABASE.get_enemy(enemy_id)
+	if enemy_data == null:
+		return false
 	var current_scene := get_tree().current_scene
 	if current_scene == null:
 		return false
@@ -34,14 +41,16 @@ func start_encounter(enemy_id: String) -> bool:
 	return_scene_path = current_scene.scene_file_path
 	return_player_position = player.global_position
 
-	# Temporary enemy values remain until EnemyData becomes authoritative.
+	# Copy the enemy definition into the active encounter state. The Resource is
+	# the source of truth for base values; CombatState owns only this encounter's
+	# mutable values such as current HP and Press Turns.
 	var combat_state: Resource = COMBAT_STATE_SCRIPT.new()
-	combat_state.enemy_id = enemy_id
-	combat_state.enemy_max_hp = 50
-	combat_state.enemy_hp = 50
+	combat_state.enemy_id = enemy_data.enemy_id
+	combat_state.enemy_max_hp = enemy_data.max_hp
+	combat_state.enemy_hp = enemy_data.max_hp
 	combat_state.player_press_turns = 4
 	combat_state.player_press_turns_remaining = 4.0
-	combat_state.enemy_attack = 10
+	combat_state.enemy_attack = enemy_data.attack
 	active_combat = combat_state
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
@@ -98,7 +107,7 @@ func consume_player_press_turn(amount: float) -> void:
 	player_press_turns_changed.emit(active_combat.player_press_turns_remaining)
 
 func _resolve_enemy_turn() -> void:
-	# Resolve the temporary enemy action after the Battle UI has had a chance to
+	# Resolve the enemy action after the Battle UI has had a chance to
 	# display the ENEMY TURN state. The timer also makes the turn readable during
 	# testing instead of changing phases in the same frame.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN:
