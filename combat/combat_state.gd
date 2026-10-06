@@ -27,3 +27,7 @@ enum Phase {
 # Stores the most recent player attack value for the combat presentation and
 # later damage system. The value is calculated by CombatManager from PlayerStats.
 @export var last_player_attack: int = 0
+
+# Stores the damage produced by the most recent attack so the Battle UI can
+# report the result without calculating combat values itself.
+@export var last_damage: int = 0
