@@ -2082,3 +2082,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Updated the existing slime_ai_test definition to use the Aggressive profile so no enemy definition depends on the removed profile.
 - The remaining shared behavior profiles are Balanced, Aggressive, and Defensive.
 - Runtime verification required: confirm normal encounters and all three remaining profiles load and select correctly, and confirm the Aggressive profile still targets Player weaknesses as intended.
+
+
+## Enemy Critical and Elemental Weakness Resolution Audit
+- Confirmed Enemy critical chance is derived from Enemy Speed in `systems/combat_manager.gd`, while Player Speed determines Enemy accuracy.
+- Confirmed Enemy elemental attacks resolve through the same affinity-aware combat rules as Player attacks, so a Fire attack against the Player's default Fire weakness receives the 2x weakness multiplier before the critical multiplier is applied.
+- Standard Enemy critical multiplier is now 1.5x, matching the Player critical rule; `slime_fire_attack.tres` explicitly uses 1.5x.
+- A Fire attack against the default Player Fire weakness therefore resolves at 2x normally and 3x when it also critically hits, before any future defense/balance changes to base damage.
+- Runtime verification required: compare Slime Attack and Fire Attack outcomes against the default Player Fire weakness and verify a displayed CRITICAL result has the expected increased final damage.
