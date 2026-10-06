@@ -16,6 +16,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	# All world interactions use the same E-key input path.
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_E:
+			# When dialogue is active, the same E key dismisses the current line.
+			# Return immediately so that one key press cannot dismiss the dialogue
+			# and interact with another NPC at the same time.
+			if DialogueManager.is_active:
+				DialogueManager.clear_dialogue()
+				return
+
 			_interact_with_nearest()
 
 
