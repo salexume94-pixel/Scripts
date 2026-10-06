@@ -5,30 +5,32 @@ extends Node
 ## and future interactable objects. Individual interactables expose an interact()
 ## method that owns their gameplay behavior.
 ##
-## The Player already has an InteractionArea. We use that Area2D to identify
-## nearby physics bodies, then keep distance-based selection as a fallback.
-## This makes interaction reliable for StaticBody2D NPCs while preserving the
-## existing behavior used by Doors and Chests.
+## Interaction input is polled here instead of relying on InputEvent delivery.
+## This is deliberate: UI Controls and other input consumers can intercept
+## keyboard events, while polling the key state guarantees the Player's
+## interaction system still sees the E key.
 
 const MAX_INTERACTION_DISTANCE: float = 80.0
 
+# Tracks the previous frame's E-key state so holding E does not repeatedly
+# trigger interactions. A new interaction occurs only when E is newly pressed.
+var e_was_pressed: bool = false
 
-func _input(event: InputEvent) -> void:
-	# Listen during the earliest input stage so UI Controls cannot prevent the
-	# Player's interaction key from reaching this system.
-	if not event is InputEventKey:
-		return
 
-	var key_event := event as InputEventKey
+func _process(_delta: float) -> void:
+	# Read the physical E key directly. This bypasses input-event consumption
+	# by UI controls and makes the interaction key independent of input focus.
+	var e_is_pressed := Input.is_physical_key_pressed(KEY_E)
 
-	# Accept the physical E key as well as the normal keycode. This prevents
-	# keyboard-layout differences from silently blocking interaction.
-	if not key_event.pressed or key_event.echo:
-		return
+	# Only react on the transition from "not pressed" to "pressed". This means
+	# holding E cannot repeatedly open dialogue or interact with an object.
+	if e_is_pressed and not e_was_pressed:
+		_handle_interaction_input()
 
-	if key_event.physical_keycode != KEY_E and key_event.keycode != KEY_E:
-		return
+	e_was_pressed = e_is_pressed
 
+
+func _handle_interaction_input() -> void:
 	# When dialogue is active, E dismisses the current line instead of
 	# immediately interacting with another nearby object.
 	if DialogueManager.is_active:
@@ -39,9 +41,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _interact_with_nearest() -> void:
-	# The InteractionArea is the Player's explicit interaction range. Its
-	# overlapping bodies are the first and most reliable source of nearby
-	# interactables because NPCs, Doors, and Chests are physics bodies.
+	# The Player already has an InteractionArea. Its overlapping physics bodies
+	# are checked first because NPCs, Doors, and Chests are StaticBody2D nodes.
 	var interaction_area := get_node_or_null("InteractionArea") as Area2D
 
 	if interaction_area != null:
@@ -50,8 +51,8 @@ func _interact_with_nearest() -> void:
 			nearby_target.interact(get_parent())
 			return
 
-	# Keep the distance-based search as a fallback for interactables that may
-	# not currently participate in Area2D collision detection.
+	# Keep the distance-based search as a fallback for interactables that do not
+	# participate in the expected Area2D collision configuration.
 	_interact_by_distance()
 
 
@@ -89,8 +90,8 @@ func _find_nearest_from_area(interaction_area: Area2D) -> Node:
 
 func _interact_by_distance() -> void:
 	# Find the closest explicitly registered interactable in the current scene.
-	# This fallback keeps existing interactions working even if a future
-	# interactable does not use compatible physics layers.
+	# This fallback keeps interaction working even if physics-layer settings
+	# prevent the InteractionArea from seeing a particular object.
 	var player := get_parent() as Node2D
 	if player == null:
 		return
