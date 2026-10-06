@@ -15,3 +15,7 @@ class_name EnemyActionData
 
 ## Base physical power used by the current basic damage calculation.
 @export_range(0, 99999) var power: int = 0
+
+## Relative chance used when an enemy has multiple available actions.
+## A value of 0 removes the action from normal weighted selection.
+@export_range(0.0, 9999.0) var selection_weight: float = 1.0
