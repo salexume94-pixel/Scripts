@@ -1,3 +1,52 @@
+### Combat Critical Hits and Accuracy: Initial Implementation
+
+Implemented the first accuracy and critical-hit layer for Player combat actions.
+
+Added:
+- combat/definitions/critical_test.tres
+- combat/definitions/miss_test.tres
+
+Updated:
+- combat/player_action_data.gd
+- combat/combat_rules.gd
+- combat/combat_state.gd
+- systems/combat_manager.gd
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- PlayerActionData now supports action accuracy, critical chance, and critical damage multiplier.
+- CombatRules now resolves accuracy before affinity.
+- Misses deal 0 damage, leave both HP pools unchanged, and consume 1 full Press Turn.
+- Critical hits currently double the resolved damage and consume 0.5 Press Turns.
+- Critical hits are resolved after affinity so Weak and Critical can combine.
+- CombatState records whether the most recent Player action was critical.
+- Battle UI displays explicit MISS and CRITICAL results.
+- Added deterministic Critical Test and Miss Test actions so runtime verification does not depend on random chance.
+- Existing Physical, Fire, Weak, Resist, Null, Drain, Repel, Defend, Pass, Run, Victory, and Enemy Turn behavior remains routed through the existing combat architecture.
+
+Runtime verification required:
+- Pull the latest `combat-elemental-affinities` branch.
+- Confirm the project opens without parse or resource errors.
+- Start a normal Slime battle.
+- Use Critical Test and confirm damage is exactly 2x the normal Physical damage.
+- Confirm Critical Test consumes 0.5 Press Turns.
+- Confirm the Battle UI explicitly reports CRITICAL.
+- Use Miss Test and confirm enemy HP is unchanged.
+- Confirm Player HP is unchanged after a miss.
+- Confirm Miss Test consumes 1 full Press Turn.
+- Confirm the Battle UI explicitly reports MISS.
+- Confirm normal Attack and Fire still behave correctly.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Accuracy and critical values are currently action-level data and Player-focused.
+- Enemy accuracy, enemy critical hits, evasion stats, and final accuracy formulas remain future work.
+- Critical behavior is intentionally isolated for runtime verification before expanding the rules.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Combat Affinity: Repel Implementation
 
 Implemented the Fire Repel affinity as the final affinity in the current elemental foundation.
