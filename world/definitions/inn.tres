@@ -10,3 +10,5 @@ display_name = "Tutorial Town Inn"
 location_type = 2
 description = "The inn in Tutorial Town, where travelers can rest and hear local stories."
 story_significant = true
+map_position = Vector2(128, 240)
+map_visible = true
