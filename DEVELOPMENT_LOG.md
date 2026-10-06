@@ -2124,3 +2124,26 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Removed the obsolete guaranteed-test action Resources: `combat/definitions/critical_test.tres` and `combat/definitions/miss_test.tres`.
 - Player attacks now use only the normal authoritative combat action paths; no development-only test actions remain in the Battle HUD.
 - Runtime verification required: confirm the Battle UI contains only the normal combat actions and that regular Attack/Fire, Defend, Pass, Run, and Return to World continue to function without debugger errors.
+
+
+## Balance as an Ongoing World-Building Constraint
+
+- Established that balance is not treated as a one-time isolated task before world building. Combat balance should be considered whenever new regions, enemies, equipment, encounters, quests, and rewards are designed.
+- Player/enemy damage and survivability should guide regional difficulty, expected encounter length, and enemy durability.
+- Speed-based critical and miss rates should differentiate enemy and player roles without allowing extreme Speed values to make combat disproportionately reliable or unreliable.
+- Elemental affinities should support meaningful combat decisions and regional/enemy identities. Current intended relationships remain Normal 1x, Weak 2x, Resist 0.5x, Null 0x, with Critical applying its separate 1.5x multiplier where applicable.
+- Press Turn costs should preserve the strategic value of exploiting weaknesses and critical hits without making non-exploit actions irrelevant.
+- Enemy action selection weights should be tuned alongside each enemy's intended role so elemental attacks, Heavy Attacks, Basic Attacks, and Defend occur at appropriate frequencies.
+- Balanced, Aggressive, and Defensive behavior profiles should remain reusable tools for differentiating enemy behavior without requiring separate AI implementations for each enemy.
+- XP, gold, and item rewards should reflect encounter difficulty and progression value rather than being assigned independently of combat strength.
+- Encounter pacing should be considered at the world level, including enemy density, encounter frequency, region difficulty, recovery opportunities, and how often the player is expected to fight.
+- New content should be balanced against the actual region and progression stage where it appears rather than assigning combat values in isolation.
+- A larger dedicated Balance pass remains useful after the major world, enemy, equipment, quest, and progression content exists, but balance checks should occur continuously during content development.
+
+Current direction:
+1. Use the existing combat rules as constraints while building world content.
+2. Establish regions and their intended difficulty/progression roles.
+3. Build enemy rosters around those regions using the existing action and behavior systems.
+4. Tune encounters, rewards, equipment, and progression against the actual content.
+5. Perform a broader final Balance pass after the major systems and content are established.
+
