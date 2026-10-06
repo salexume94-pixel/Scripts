@@ -1,3 +1,37 @@
+### Player Defend and Pass Actions
+
+Added two Player-turn actions to the Press Turn combat system.
+
+Updated:
+- `combat/combat_state.gd`
+- `systems/combat_manager.gd`
+- `combat/battle.gd`
+- `scenes/Battle.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added **Defend** as a full-turn Player action.
+- Defend marks the Player as defending and reduces the next enemy turn's final damage by 50%, with a minimum of 1.
+- Defend is cleared after the enemy attack, so it does not persist into later rounds.
+- Added **Pass** as a full-turn Player action.
+- Pass consumes one Press Turn without changing HP, stats, or enemy state.
+- Both actions use the existing Press Turn exhaustion flow, so spending the fourth action starts the Enemy Turn.
+- Added Defend and Pass buttons to the Battle UI.
+- Existing Attack, Run, Victory, Enemy Action Selection, and Press Turn behavior remains unchanged.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Start Test Battle (Slime).
+- Confirm Attack, Defend, Pass, and Run are available during Player Turn.
+- Confirm Defend consumes exactly one Press Turn.
+- Confirm Defend reduces the next enemy damage by 50% and then clears.
+- Confirm Pass consumes exactly one Press Turn and does not change HP.
+- Confirm using Defend or Pass as the fourth action starts Enemy Turn.
+- Confirm both actions remain unavailable during Enemy Turn and Victory/Defeat.
+- Confirm no Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
 ### Combat Testing Adjustment: Slime Test HP
 
 Adjusted the Slime's test HP so the new enemy action-selection system can be exercised across multiple enemy turns.
