@@ -42,4 +42,4 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 @export_range(0.0, 100.0) var critical_chance: float = 0.0
 
 ## Damage multiplier applied when this action scores a critical hit.
-@export_range(0.0, 9999.0) var critical_multiplier: float = 2.0
+@export_range(0.0, 9999.0) var critical_multiplier: float = 1.5
