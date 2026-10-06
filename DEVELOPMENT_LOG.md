@@ -2223,3 +2223,22 @@ Current direction:
 - Multiple layout adjustments have been made to move and resize the Debug Combat HUD, but local runtime verification of the final positioning is still required.
 - Current layout target: Actions on the left, the normal Battle HUD centered, and the Debug Combat HUD separated on the right side of the screen.
 - Runtime verification required: confirm the Debug Combat HUD no longer overlaps the normal Battle HUD at the 1152x648 project viewport.
+
+
+### Combat Debug HUD: Width Constraint Fix
+
+- Updated `ui/DebugCombatHUD.tscn` to constrain the Debug Combat HUD panel to a fixed 230-pixel width.
+- Added a matching minimum width so the panel keeps its intended size.
+- Enabled wrapping on the Last Player and Last Enemy diagnostic labels so their long runtime text cannot force the panel wider.
+- This specifically addresses the previously observed overlap where the **left edge of the Debug Combat HUD intruded into the centered Battle HUD**.
+- The intended layout remains: Actions on the left, normal Battle HUD centered, Debug Combat HUD separated on the right.
+- Runtime verification required at the 1152x648 project viewport.
+
+Runtime verification:
+1. Pull the latest `main`.
+2. Start a battle.
+3. Confirm the Debug Combat HUD remains on the right side.
+4. Confirm its left edge no longer overlaps the centered Battle HUD.
+5. Confirm long Player/Enemy diagnostic entries wrap inside the Debug HUD instead of expanding its width.
+6. Confirm the normal Battle HUD and left Actions bar remain unchanged.
+7. Confirm no Godot debugger or resource errors occur.
