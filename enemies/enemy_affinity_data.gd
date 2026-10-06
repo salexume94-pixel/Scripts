@@ -1,5 +1,8 @@
 extends Resource
 class_name EnemyAffinityData
+
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
+const AFFINITIES = preload("res://combat/affinities.gd")
 ## Defines one enemy affinity for one damage type.
 ##
 ## EnemyData owns a list of these Resources. Keeping each affinity as its own
