@@ -10,3 +10,5 @@ display_name = "Tutorial Town"
 location_type = 1
 description = "The player's starting town and the first safe settlement in the world."
 story_significant = true
+map_position = Vector2(200, 300)
+map_visible = true
