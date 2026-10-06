@@ -22,38 +22,17 @@ func _ready() -> void:
 	_update_player_affinities()
 
 func _on_player_attack_performed(_attack_value: int) -> void:
-	# Present the resolved damage type and affinity without moving combat rules
-	# into the Battle UI.
+	# Keep the action label concise. The combat log contains the resolved damage,
+	# affinity, and special result details.
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label == null:
 		return
-
-	var affinity_name := AFFINITIES.get_display_name(CombatManager.get_last_player_affinity())
 	var damage_type_name := DAMAGE_TYPES.get_display_name(CombatManager.get_last_player_damage_type())
-	var result_type := CombatManager.get_last_player_result_type()
-	var damage := CombatManager.get_last_damage()
-	var critical: bool = CombatManager.get_last_player_critical()
-
-	if critical:
-		action_label.text = "PLAYER: CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
-	elif CombatManager.is_victory():
-		action_label.text = "PLAYER: Enemy defeated! %s %s." % [damage_type_name, affinity_name]
-	elif result_type == "miss":
-		action_label.text = "PLAYER: %s attack misses (%s)." % [damage_type_name, affinity_name]
-	elif result_type == "drain":
-		action_label.text = "PLAYER: %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
-	elif result_type == "repel":
-		action_label.text = "PLAYER: %s attack is repelled (%s)." % [damage_type_name, affinity_name]
-	elif CombatManager.is_enemy_turn():
-		action_label.text = "PLAYER: %s attack deals %d damage (%s). ENEMY TURN." % [damage_type_name, damage, affinity_name]
-	else:
-		action_label.text = "PLAYER: %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
-
+	action_label.text = "PLAYER ACTION: %s" % damage_type_name
 	_update_enemy_hp_display()
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
-
 func _on_press_turns_changed(_remaining: float) -> void:
 	_update_press_turn_display()
 	_update_combat_controls()
@@ -63,43 +42,35 @@ func _on_defend_pressed() -> void:
 		CombatManager.add_combat_log("PLAYER: Defend.")
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "PLAYER: Defend." if CombatManager.is_player_turn() else "PLAYER: Defend. ENEMY TURN."
+			action_label.text = "PLAYER ACTION: Defend."
 
 func _on_pass_pressed() -> void:
 	if CombatManager.player_pass():
 		CombatManager.add_combat_log("PLAYER: Pass.")
 		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 		if action_label != null:
-			action_label.text = "PLAYER: Pass." if CombatManager.is_player_turn() else "PLAYER: Pass. ENEMY TURN."
+			action_label.text = "PLAYER ACTION: Pass."
 
 func _on_enemy_turn_started() -> void:
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
-		action_label.text = "ENEMY TURN: %s is choosing an action..." % CombatManager.get_active_enemy_name()
+		action_label.text = "ENEMY TURN"
 	_update_combat_controls()
 
-func _on_enemy_attack_performed(damage: int) -> void:
-	# Show the enemy actor and selected action explicitly so AI testing is
-	# unambiguous even when the action name alone would not identify the actor.
+func _on_enemy_attack_performed(_damage: int) -> void:
+	# Keep the action label focused on the AI decision. The combat log records
+	# the enemy action and resolved damage separately.
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
-		var enemy_name := CombatManager.get_active_enemy_name()
-		var action_name := CombatManager.get_last_enemy_action_name()
-		var ai_debug := CombatManager.get_last_enemy_ai_debug()
-		var decision_text := "\n".join(ai_debug)
-		if CombatManager.is_defeat():
-			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER DEFEATED.\n%s" % [enemy_name, action_name, damage, decision_text]
-		else:
-			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER TURN.\n%s" % [enemy_name, action_name, damage, decision_text]
+		action_label.text = "AI SELECTED: %s" % CombatManager.get_last_enemy_action_name()
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
-
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
 	if hp_label == null:
 		return
-	hp_label.text = "Enemy HP: %d / %d" % [CombatManager.get_enemy_hp(), CombatManager.get_enemy_max_hp()]
+	hp_label.text = "ENEMY HP: %d / %d" % [CombatManager.get_enemy_hp(), CombatManager.get_enemy_max_hp()]
 
 func _update_player_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerHPLabel")
@@ -108,7 +79,7 @@ func _update_player_hp_display() -> void:
 	var stats: Dictionary = GameState.get_player_stats()
 	var hp: int = stats.get("hp", 0)
 	var max_hp: int = stats.get("max_hp", 0)
-	hp_label.text = "Player HP: %d / %d" % [hp, max_hp]
+	hp_label.text = "PLAYER HP: %d / %d" % [hp, max_hp]
 
 func _update_player_affinities() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerAffinityLabel")
