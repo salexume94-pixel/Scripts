@@ -273,8 +273,18 @@ func player_attack(action: Resource = null, debug_context: String = "") -> bool:
 		critical_chance,
 		selected_action.critical_multiplier
 	)
+	# Record the actual rolls used by the shared combat resolver so the Basic
+	# Attack path can be verified directly from the combat log.
+	var accuracy_roll: float = float(damage_result.get("accuracy_roll", -1.0))
+	var resolved_accuracy: float = float(damage_result.get("accuracy", accuracy))
+	var critical_roll: float = float(damage_result.get("critical_roll", -1.0))
+	var resolved_critical_chance: float = float(damage_result.get("critical_chance", critical_chance))
+	_append_combat_log(
+		"PLAYER ATTACK: Speed %d -> Critical %.1f%% (roll %.1f); Enemy Speed %d -> Accuracy %.1f%% (roll %.1f)." %
+		[player_speed, resolved_critical_chance, critical_roll, enemy_speed, resolved_accuracy, accuracy_roll]
+	)
 	if not debug_context.is_empty():
-		_append_combat_log("%s: Player Speed %d -> %.0f%% critical; Enemy Speed %d -> %.0f%% accuracy." % [debug_context, player_speed, critical_chance, enemy_speed, accuracy])
+		_append_combat_log("%s: real Basic Attack resolution." % debug_context)
 
 	active_combat.last_player_attack = action_power
 	active_combat.last_damage = damage_result.damage
