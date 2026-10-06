@@ -1,3 +1,32 @@
+### Combat Critical Test and Victory UI Corrections
+
+Corrected two runtime issues found during Critical/Accuracy verification.
+
+Updated:
+- combat/battle.gd
+- scenes/Battle.tscn
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Critical results are now displayed before the victory message, so a critical hit that reduces the enemy to 0 HP is still explicitly reported as CRITICAL.
+- Restored the Critical Test and Miss Test Button nodes and their signal connections in Battle.tscn. The scene previously contained signal connections to missing nodes.
+- Restored the intended Battle UI path for testing critical and miss behavior.
+- The existing Return to World victory control remains responsible for leaving a completed battle.
+
+Runtime verification required:
+- Pull the latest combat-elemental-affinities branch.
+- Start a Slime battle and use Critical Test.
+- Confirm the ActionLabel explicitly says CRITICAL, including when the critical hit defeats the enemy.
+- Confirm the Critical Test consumes 0.5 Press Turns when the enemy survives.
+- Confirm Miss Test remains available and reports MISS.
+- Reduce the enemy to 0 HP and confirm Return to World is visible and exits the battle without requiring Run.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- Critical/accuracy behavior is still Player-focused. Enemy accuracy, enemy critical hits, evasion, and final accuracy formulas remain future work.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of each major section.
+
 ### Combat Critical Hits and Accuracy: Initial Implementation
 
 Implemented the first accuracy and critical-hit layer for Player combat actions.
