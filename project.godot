@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 SceneManager="*res://systems/scene_manager.gd"
 GameState="*res://systems/game_state.gd"
 CombatManager="*res://systems/combat_manager.gd"
+QuestManager="*res://systems/quest_manager.gd"
 
 [display]
 
