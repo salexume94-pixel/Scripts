@@ -2,6 +2,7 @@ extends Control
 
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const AFFINITIES = preload("res://combat/affinities.gd")
+const FIRE_ACTION = preload("res://combat/definitions/fire_attack.tres")
 ## Presents Battle state and forwards player input to CombatManager.
 ##
 ## CombatManager owns Press Turns and combat rules. This script only presents
@@ -111,17 +112,19 @@ func _update_press_turn_display() -> void:
 
 func _update_combat_controls() -> void:
 	var attack_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/AttackButton") as Button
+	var fire_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/FireButton") as Button
 	var defend_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/DefendButton") as Button
 	var pass_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/PassButton") as Button
 	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/RunButton") as Button
 	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
-	if attack_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
+	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
 		return
 	var victory := CombatManager.is_victory()
 	var defeat := CombatManager.is_defeat()
 	var player_turn := CombatManager.is_player_turn()
 	attack_button.disabled = victory or defeat or not player_turn
+	fire_button.disabled = victory or defeat or not player_turn
 	defend_button.disabled = victory or defeat or not player_turn
 	pass_button.disabled = victory or defeat or not player_turn
 	run_button.visible = not victory and not defeat and player_turn
@@ -138,6 +141,9 @@ func _update_combat_controls() -> void:
 
 func _on_attack_pressed() -> void:
 	CombatManager.player_attack()
+
+func _on_fire_pressed() -> void:
+	CombatManager.player_attack(FIRE_ACTION)
 func _on_run_pressed() -> void:
 	CombatManager.end_combat()
 func _on_victory_pressed() -> void:
