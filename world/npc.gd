@@ -8,12 +8,15 @@ extends StaticBody2D
 @export var npc_name: String = "Townsperson"
 @export_multiline var dialogue_text: String = "Hello there."
 
+
 func _ready() -> void:
-	# Register the NPC with the existing interaction system so the Player can
-	# select it with E using the same interaction range as Doors and Chests.
-	add_to_group("interactable")
+    # Keep NPCs in both groups so existing interaction behavior continues to
+    # work while InteractionSystem can also identify NPCs specifically.
+    add_to_group("interactable")
+    add_to_group("npc")
+
 
 func interact(_player: Node) -> void:
-	# NPC interaction only supplies the dialogue content. DialogueManager owns
-	# the active state and notifies the shared dialogue UI.
-	DialogueManager.show_dialogue(npc_name, dialogue_text)
+    # NPC interaction only supplies the dialogue content. DialogueManager owns
+    # the active state and notifies the shared dialogue UI.
+    DialogueManager.show_dialogue(npc_name, dialogue_text)
