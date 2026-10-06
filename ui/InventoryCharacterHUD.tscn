@@ -139,6 +139,18 @@ text = "Test Damage (-25 HP)"
 [node name="TestAIBattleButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
 layout_mode = 2
 text = "Test Battle (Enemy AI)"
+
+[node name="TestBalancedAIButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
+layout_mode = 2
+text = "Test AI (Balanced)"
+
+[node name="TestAggressiveAIButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
+layout_mode = 2
+text = "Test AI (Aggressive)"
+
+[node name="TestDefensiveAIButton" type="Button" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
+layout_mode = 2
+text = "Test AI (Defensive)"
 [node name="Spacer" type="Control" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 size_flags_vertical = 3
