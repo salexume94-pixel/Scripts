@@ -27,21 +27,29 @@ mouse_filter = 2
 
 [node name="Panel" type="PanelContainer" parent="Screen"]
 layout_mode = 0
-offset_left = 96.0
-offset_top = 56.0
-offset_right = 1056.0
-offset_bottom = 592.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -268.0
+offset_right = 480.0
+offset_bottom = 268.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.82, 0.82)
 
 [node name="Margin" type="MarginContainer" parent="Screen/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
 
 [node name="Columns" type="HBoxContainer" parent="Screen/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 16
 
 [node name="CharacterPanel" type="PanelContainer" parent="Screen/Panel/Margin/Columns"]
 custom_minimum_size = Vector2(300, 0)
@@ -49,14 +57,14 @@ layout_mode = 2
 
 [node name="CharacterMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
 
 [node name="CharacterVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 5
 
 [node name="Title" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
@@ -97,25 +105,25 @@ text = "Speed: 10"
 
 [node name="EquipmentLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
-text = "Weapon: None"
+text = "Equipment"
 
 [node name="EquipmentGrid" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 3
 
 [node name="DebugPanel" type="PanelContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 
 [node name="DebugMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
 [node name="DebugVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="DebugTitle" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox"]
 layout_mode = 2
@@ -141,14 +149,14 @@ size_flags_horizontal = 3
 
 [node name="InventoryMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
 
 [node name="InventoryVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="InventoryTitle" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
 layout_mode = 2
@@ -156,27 +164,27 @@ text = "INVENTORY"
 horizontal_alignment = 1
 
 [node name="InventoryGrid" type="GridContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
 size_flags_vertical = 3
 columns = 3
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
 
 [node name="ItemDetails" type="PanelContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
-custom_minimum_size = Vector2(0, 120)
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 
 [node name="DetailsMargin" type="MarginContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
 
 [node name="DetailsVBox" type="VBoxContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin"]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 3
 
 [node name="ItemName" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/ItemDetails/DetailsMargin/DetailsVBox"]
 layout_mode = 2
