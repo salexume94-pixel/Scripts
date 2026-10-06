@@ -17,6 +17,14 @@ func _ready() -> void:
     # Register this Door with the shared interaction system so E can select it.
     add_to_group("interactable")
 
+    # Interior exit doors are intentionally generic reusable scenes. When such
+    # a Door has no explicit world/location identity, inherit the location that
+    # opened the current scene from SceneManager.
+    if world_id.is_empty() and not SceneManager.current_world_id.is_empty():
+        world_id = SceneManager.current_world_id
+    if location_id.is_empty() and not SceneManager.current_location_id.is_empty():
+        location_id = SceneManager.current_location_id
+
 
 func interact(_player: Node) -> void:
     # The shared InteractionSystem calls this method when the Player presses E.
