@@ -37,6 +37,17 @@ layout_mode = 2
 text = "Combat Encounter: Unknown"
 horizontal_alignment = 1
 
+[node name="PlayerWeaknessLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Player Weakness: Unknown"
+horizontal_alignment = 1
+
+[node name="CycleWeaknessButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+text = "Cycle Player Weakness"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CycleWeaknessButton" to="." method="_on_cycle_weakness_pressed"]
+
 [node name="EnemyBehaviorLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Enemy Behavior: unknown"
