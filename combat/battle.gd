@@ -15,6 +15,7 @@ func _ready() -> void:
 	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
 	CombatManager.combat_log_updated.connect(_update_combat_log)
 	_update_display()
+	_update_enemy_ai_profile_display()
 	_update_enemy_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
@@ -66,6 +67,14 @@ func _on_enemy_attack_performed(_damage: int) -> void:
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
+func _update_enemy_ai_profile_display() -> void:
+	# Present the profile chosen for this specific encounter so runtime testing
+	# does not depend on reading the debug console.
+	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyAIProfileLabel")
+	if label == null:
+		return
+	label.text = "Enemy AI Profile: %s" % CombatManager.get_enemy_behavior_profile_name().capitalize()
+
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
 	if hp_label == null:
