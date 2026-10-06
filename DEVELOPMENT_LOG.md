@@ -1864,3 +1864,10 @@ Known limitation:
 - EnemyData is now authoritative for base enemy definitions, but level scaling, enemy actions/skills, elemental affinities, AI, rewards, and full defeat/recovery remain future systems.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+## 2026-10-06 - Enemy AI Debug Decision Trace
+
+- Updated `systems/combat_manager.gd` to retain the most recent enemy AI action-selection trace, including each action's detected Player affinity, adjusted selection weight, rejected zero-weight actions, and the final selected action.
+- Updated `combat/battle.gd` to display that trace after an enemy action so runtime testing can directly verify whether an affinity is unfavorable and whether the behavior profile reduced or rejected the action.
+- Runtime verification of this diagnostic change is still pending.
