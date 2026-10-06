@@ -11,4 +11,5 @@ weakness_selection_chance = 0.65
 unfavorable_affinity_multiplier = 0.0
 minimum_selection_weight = 0.0
 repeat_action_multiplier = 0.35
+defend_weight_multiplier = 0.35
 power_bias_strength = 3
