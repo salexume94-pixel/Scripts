@@ -1910,3 +1910,28 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Added a configurable behavior-profile repeat penalty so the same enemy action is discouraged immediately after it was used.
 - Reduced the test Fire action's weakness multiplier from 3.0 to 2.0 and set the weakness-hunter repeat multiplier to 0.25.
 - Runtime verification is still required for the Battle layout, combat-log auto-scroll, and AI action distribution.
+
+
+## 2026-10-06 - Enemy AI Runtime Presentation Checkpoint
+
+- Updated the Battle presentation so the active actor and selected enemy action are immediately distinguishable during runtime testing.
+- Enemy actions are shown as `AI SELECTED: <action>`, while Player actions use the `PLAYER ACTION` label and the dedicated turn-state label identifies the active turn.
+- Added separate `PLAYER HP` and `ENEMY HP` displays to remove ambiguity during combat testing.
+- Simplified the Battle presentation by removing verbose AI weighting/affinity diagnostics from the visible combat UI. The detailed combat log remains available for recent action and damage history.
+- Added automatic combat-log following so the newest entry remains visible during combat.
+- Centered the Battle action-button row and reduced the panel footprint so the Battle screen remains centered in the 1152x648 viewport.
+- Tuned the Weakness Hunter test behavior so the Player's Fire weakness still increases Fire priority, while a repeat-action penalty prevents Fire Attack from being treated as the only viable choice.
+- Reduced the test Fire action weakness multiplier from 3.0 to 2.0 and set the Weakness Hunter repeat-action multiplier to 0.25.
+- Corrected a temporary indentation/parse error in `systems/combat_manager.gd` introduced during the combat-flow update.
+
+Current runtime status:
+- The latest local runtime check confirmed the revised presentation is substantially clearer and the Battle flow is behaving as intended for the current test.
+- Enemy AI distribution still needs broader runtime sampling before the behavior layer is considered fully verified.
+- No new enemy types are implied by this checkpoint; the controlled AI test remains `Slime AI Test`.
+
+Next verification:
+1. Run the Enemy AI test encounter repeatedly.
+2. Confirm Fire is favored while the Player is Fire Weak.
+3. Confirm the same action is not selected indefinitely when alternatives remain valid.
+4. Confirm no parse, resource-loading, or debugger errors occur.
+5. Once verified, mark the Enemy AI behavior layer complete and proceed to the next development priority.
