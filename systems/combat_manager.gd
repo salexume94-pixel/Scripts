@@ -119,7 +119,7 @@ func get_last_player_critical() -> bool:
 
 
 func get_last_enemy_critical() -> bool:
-	return active_combat.last_enemy_result_type == "damage" and active_combat.last_enemy_damage > 0 and active_combat.last_enemy_action_name != "" and false
+	return active_combat.last_enemy_critical if is_in_combat() else false
 
 func get_last_player_damage_type() -> int:
 	# Expose the resolved Player damage type so Battle can present the action
@@ -451,6 +451,7 @@ func _resolve_enemy_turn() -> void:
 		active_combat.last_enemy_damage_type = enemy_action.damage_type
 		active_combat.last_enemy_affinity = AFFINITIES.Type.NORMAL
 		active_combat.last_enemy_result_type = "defend"
+		active_combat.last_enemy_critical = false
 		_append_combat_log("ENEMY: %s defends." % active_combat.last_enemy_action_name)
 		enemy_attack_performed.emit(0)
 		active_combat.player_press_turns_remaining = float(active_combat.player_press_turns)
@@ -490,6 +491,7 @@ func _resolve_enemy_turn() -> void:
 	active_combat.last_enemy_damage_type = enemy_action.damage_type
 	active_combat.last_enemy_affinity = damage_result.affinity
 	active_combat.last_enemy_result_type = damage_result.result_type
+	active_combat.last_enemy_critical = damage_result.critical
 	var current_hp: int = saved_stats.get("hp", saved_stats.get("max_hp", 0))
 	var new_hp := current_hp
 	match damage_result.result_type:
