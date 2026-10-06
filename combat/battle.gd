@@ -80,10 +80,12 @@ func _on_enemy_attack_performed(damage: int) -> void:
 	if action_label != null:
 		var enemy_name := CombatManager.get_active_enemy_name()
 		var action_name := CombatManager.get_last_enemy_action_name()
+		var ai_debug := CombatManager.get_last_enemy_ai_debug()
+		var decision_text := "\n".join(ai_debug)
 		if CombatManager.is_defeat():
-			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER DEFEATED." % [enemy_name, action_name, damage]
+			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER DEFEATED.\n%s" % [enemy_name, action_name, damage, decision_text]
 		else:
-			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER TURN." % [enemy_name, action_name, damage]
+			action_label.text = "ENEMY: %s uses %s for %d damage. PLAYER TURN.\n%s" % [enemy_name, action_name, damage, decision_text]
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
