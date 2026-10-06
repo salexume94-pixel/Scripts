@@ -1,3 +1,28 @@
+### Combat Dialogue Actor Clarity
+
+Updated the Battle presentation so Player and Enemy actions are explicitly identified during runtime debugging.
+
+Updated:
+- combat/battle.gd
+- systems/combat_manager.gd
+- DEVELOPMENT_LOG.md
+
+Changes:
+- Player combat messages now use an explicit `PLAYER:` prefix.
+- Enemy combat messages now use an explicit `ENEMY:` prefix.
+- Enemy Turn start now identifies the active enemy by display name and reports that it is choosing an action.
+- Enemy action results now identify both the enemy and the selected action, for example: `ENEMY: Slime uses Fire Attack for 12 damage. PLAYER TURN.`
+- Added a presentation-safe CombatManager getter for the active enemy display name so Battle does not resolve enemy definitions directly.
+- This keeps enemy selection logic in CombatManager while making Enemy AI runtime verification unambiguous.
+
+Runtime verification required:
+- Pull the latest `enemy-ai-behavior` branch.
+- Start Test Battle (Enemy AI).
+- Confirm the dialogue clearly distinguishes PLAYER and ENEMY actions.
+- Confirm Enemy Turn displays the active enemy name.
+- Confirm the selected enemy action name is visible after the Enemy Turn resolves.
+- Confirm no parse, resource-loading, or debugger errors occur.
+
 ### Enemy AI / Behavior
 Implemented the Enemy AI behavior layer for action selection.
 
