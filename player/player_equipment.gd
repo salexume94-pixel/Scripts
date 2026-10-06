@@ -66,7 +66,7 @@ func equip_item(item: Resource) -> bool:
 	if not inventory.has_item(item_data):
 		return false
 
-	var slot: int = item_data.equipment_slot
+	var slot: int = item_data.get("equipment_slot")
 
 	# If this slot is already occupied, the old item must successfully return
 	# to inventory before the new item can replace it.
@@ -169,7 +169,7 @@ func _is_valid_equipment(item: Resource, slot: int) -> bool:
 
 func _unequip_slot(
 	slot: int,
-	item: ItemData,
+	item: Resource,
 	inventory: Node,
 	stats: Node
 ) -> bool:
@@ -179,8 +179,8 @@ func _unequip_slot(
 		return false
 
 	stats.remove_equipment_modifiers(
-		item.attack_bonus,
-		item.defense_bonus
+		item.get("attack_bonus"),
+		item.get("defense_bonus")
 	)
 	equipped_items.erase(slot)
 	_sync_to_game_state()
