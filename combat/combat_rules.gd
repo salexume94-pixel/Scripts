@@ -30,8 +30,9 @@ static func resolve_damage(base_damage: int, damage_type: int, enemy_data: Resou
 			# Resistance reduces damage but still consumes a normal turn.
 			multiplier = 0.5
 		AFFINITIES.Type.NULLIFY:
-			# Nullification prevents damage entirely.
+			# Nullification prevents damage and consumes two Press Turns.
 			damage = 0
+			turn_cost = 2.0
 		AFFINITIES.Type.DRAIN:
 			# Drain turns the would-be damage into healing for the target.
 			result_type = "drain"
