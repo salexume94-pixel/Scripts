@@ -16,6 +16,10 @@ var active_combat: Resource = null
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
 
+# The Battle UI listens for this signal so presentation can react to a player
+# action without taking ownership of combat state or calculations.
+signal player_attack_performed(attack_value: int)
+
 
 func is_in_combat() -> bool:
 	# A non-null combat state means the game currently has an active encounter.
@@ -52,6 +56,51 @@ func start_encounter(enemy_id: String) -> bool:
 	# separate from combat state management.
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
+
+
+func player_attack() -> bool:
+	# The Player Attack action is the first real combat command. It reads the
+	# Player's authoritative Attack stat and records the action in CombatState.
+	# Enemy HP and damage application are intentionally deferred to the next
+	# Combat Foundation steps.
+	if not is_in_combat():
+		return false
+
+	if active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
+		return false
+
+	var current_scene := get_tree().current_scene
+	if current_scene == null:
+		return false
+
+	var player := current_scene.get_node_or_null("Player")
+	if player == null:
+		# The Battle scene is intentionally Player-less, so obtain the Player's
+		# attack value from the runtime snapshot maintained by PlayerStats.
+		# Combat damage will use the same authoritative stat later.
+		var saved_stats: Dictionary = GameState.get_player_stats()
+		if saved_stats.is_empty():
+			return false
+		active_combat.last_player_attack = saved_stats.get("attack", 0)
+	else:
+		var stats := player.get_node_or_null("PlayerStats")
+		if stats == null:
+			return false
+		active_combat.last_player_attack = stats.attack
+
+	# Keep the action in the Player turn until enemy behavior exists. The future
+	# Enemy Foundation will consume this action when enemy turns are implemented.
+	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+	player_attack_performed.emit(active_combat.last_player_attack)
+	return true
+
+
+func get_last_player_attack() -> int:
+	# Expose the most recent attack value to presentation without allowing the
+	# Battle UI to modify combat state directly.
+	if not is_in_combat():
+		return 0
+	return active_combat.last_player_attack
 
 
 func end_combat() -> bool:
