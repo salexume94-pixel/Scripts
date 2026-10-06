@@ -1,16 +1,21 @@
 extends Node2D
-## Defines the reusable presentation, physical footprint, and destination identity
+## Defines the reusable presentation, physical footprint, and location identity
 ## of a World building.
 ##
-## Each building declares its world and location identity plus the interior scene
-## it belongs to. The Door receives that configuration at runtime, preventing a
-## building on one world map from silently using another world's destination.
+## Each building references a WorldLocationData resource instead of storing
+## player-facing location metadata directly in the scene. This keeps the
+## building reusable and makes its location identity part of the same data
+## foundation used by the future map system.
 ##
 ## This script owns the Building's local visual footprint and wall collision.
 ## It does not move the Player, control the camera, or handle interaction.
 
-@export var world_id: String = ""
-@export var location_id: String = ""
+## Shared location definition for this building.
+##
+## The resource supplies the stable world/location IDs that are passed to the
+## Door, so a building cannot silently point at a different world location.
+@export var location_data: WorldLocationData
+
 @export_file("*.tscn") var interior_scene: String = ""
 
 const BUILDING_SIZE := Vector2(192.0, 128.0)
@@ -19,11 +24,26 @@ const DOOR_WIDTH := 48.0
 
 
 func _ready() -> void:
-    # A Building configures its own Door so destination data stays attached to
-    # the building instance rather than being hidden in a shared Door scene.
+    # Every World building must have a location definition. Failing loudly
+    # here catches incomplete map integration during development instead of
+    # allowing the Door to carry empty or incorrect identity data.
+    if location_data == null:
+        push_error("Building '%s' has no WorldLocationData assigned." % name)
+        return
+
+    if location_data.location_id.is_empty():
+        push_error("Building '%s' has a WorldLocationData with no location_id." % name)
+        return
+
+    if location_data.world_id.is_empty():
+        push_error("Building '%s' has a WorldLocationData with no world_id." % name)
+        return
+
+    # A Building configures its own Door so destination identity stays attached
+    # to the building instance rather than being hidden in a shared Door scene.
     var door := $Door
-    door.world_id = world_id
-    door.location_id = location_id
+    door.world_id = location_data.world_id
+    door.location_id = location_data.location_id
     door.target_scene = interior_scene
 
     var half_width := BUILDING_SIZE.x / 2.0
