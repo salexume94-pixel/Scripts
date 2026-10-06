@@ -1512,3 +1512,19 @@ Confirmed:
 - The victory state and Return to World flow now complete the encounter correctly.
 
 Enemy AI / Behavior is considered complete. Future enemy types can use the same behavior framework without requiring a separate AI system.
+
+
+## 2026-10-06 Roadmap Order Updated
+
+The development roadmap order has been explicitly updated. The next task is **Quests / Gated Areas**.
+
+Current roadmap:
+1. Equipment comparison/details
+2. Map labels
+3. Combat polish
+4. Balance
+5. Quest log
+6. Quests / Gated Areas
+7. Ending / boss
+
+This order supersedes the older roadmap ordering and should be used when determining the next development task.
