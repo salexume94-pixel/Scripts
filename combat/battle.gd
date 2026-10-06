@@ -10,16 +10,22 @@ const FIRE_ACTION = preload("res://combat/definitions/fire_attack.tres")
 
 var action_resolving := false
 
+func _on_combat_log_updated() -> void:
+	_update_combat_log_display()
+
 func _ready() -> void:
 	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
 	CombatManager.player_press_turns_changed.connect(_on_press_turns_changed)
 	CombatManager.enemy_turn_started.connect(_on_enemy_turn_started)
 	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
+	CombatManager.combat_log_updated.connect(_on_combat_log_updated)
 	_update_display()
 	_update_enemy_hp_display()
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
+	_update_enemy_behavior_display()
+	_update_combat_log_display()
 
 func _on_player_attack_performed(_attack_value: int) -> void:
 	# Present the resolved damage type, affinity, and outcome without moving
@@ -58,6 +64,7 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
+	_update_combat_log_display()
 
 func _on_press_turns_changed(_remaining: float) -> void:
 	_update_press_turn_display()
@@ -111,6 +118,19 @@ func _on_enemy_attack_performed(damage: int) -> void:
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
+
+func _update_enemy_behavior_display() -> void:
+	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyBehaviorLabel")
+	if label == null:
+		return
+	label.text = "Enemy Behavior: %s" % CombatManager.get_enemy_behavior_profile_name()
+
+func _update_combat_log_display() -> void:
+	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogLabel")
+	if label == null:
+		return
+	var entries: Array[String] = CombatManager.get_combat_log()
+	label.text = "\n".join(entries)
 
 func _update_enemy_hp_display() -> void:
 	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
