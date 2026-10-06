@@ -21,6 +21,8 @@ const BATTLE_SCENE := "res://scenes/Battle.tscn"
 ## CombatState can keep only the active encounter data.
 
 var active_combat: Resource = null
+## Debug trace of the most recent enemy action-selection decision.
+var last_enemy_ai_debug: Array[String] = []
 
 ## Debug-only actions use the same resolution path as normal Player actions.
 ## They exist only to make accuracy and critical behavior deterministic to test.
@@ -299,6 +301,7 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	var total_weight := 0.0
 	var weighted_actions: Array[Dictionary] = []
 	var max_power := 1
+	last_enemy_ai_debug.clear()
 	for action in enemy_data.actions:
 		if action != null:
 			max_power = maxi(max_power, action.power)
@@ -327,9 +330,13 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		if weight > 0.0:
 			weight = maxf(weight, behavior.minimum_selection_weight)
 
+		var affinity_name := AFFINITIES.get_display_name(player_affinity)
 		if weight > 0.0:
 			weighted_actions.append({"action": action, "weight": weight})
 			total_weight += weight
+			last_enemy_ai_debug.append("AI: %s -> %s | weight %.2f" % [action.display_name, affinity_name, weight])
+		else:
+			last_enemy_ai_debug.append("AI: %s -> %s | REJECTED (weight 0)" % [action.display_name, affinity_name])
 
 	if total_weight <= 0.0:
 		return null
@@ -338,8 +345,10 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 	for entry in weighted_actions:
 		roll -= entry.weight
 		if roll < 0.0:
+			last_enemy_ai_debug.append("AI SELECTED: %s" % entry.action.display_name)
 			return entry.action
 
+	last_enemy_ai_debug.append("AI SELECTED: %s" % weighted_actions.back().action.display_name)
 	return weighted_actions.back().action
 
 
@@ -418,3 +427,7 @@ func get_active_enemy_name() -> String:
 	if enemy_data == null:
 		return active_combat.enemy_id
 	return enemy_data.display_name
+
+func get_last_enemy_ai_debug() -> Array[String]:
+	## Return the most recent enemy action-selection trace for debug presentation.
+	return last_enemy_ai_debug.duplicate()
