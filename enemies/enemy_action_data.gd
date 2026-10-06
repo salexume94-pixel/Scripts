@@ -19,7 +19,7 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 @export_range(0, 99999) var power: int = 0
 
 ## Damage category used to resolve the target's elemental affinity.
-@export var damage_type: int = DamageTypes.Type.PHYSICAL
+@export var damage_type: int = DAMAGE_TYPES.Type.PHYSICAL
 
 ## Relative chance used when an enemy has multiple available actions.
 ## A value of 0 removes the action from normal weighted selection.
