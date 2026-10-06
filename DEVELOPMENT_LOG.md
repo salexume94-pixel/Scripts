@@ -1,3 +1,44 @@
+## 2026-10-06 - Enemy Defend Action and Post-Combat Encounter Cooldown
+
+Implemented the next Enemy AI behavior requirement: all enemy profiles can now choose Defend, with the Defensive profile giving it a stronger preference.
+
+Updated:
+- `enemies/enemy_action_data.gd`
+- `enemies/enemy_behavior_profile.gd`
+- `enemies/definitions/slime_defend.tres`
+- `enemies/definitions/slime.tres`
+- `enemies/definitions/behavior_balanced.tres`
+- `enemies/definitions/behavior_aggressive.tres`
+- `enemies/definitions/behavior_weakness_hunter.tres`
+- `enemies/definitions/behavior_defensive.tres`
+- `systems/combat_manager.gd`
+- `systems/game_state.gd`
+- `systems/world_encounter_system.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added a reusable `is_defend` property to EnemyActionData.
+- Added a Slime Defend action with zero damage power.
+- Added Defend to the normal overworld Slime action pool.
+- Added a configurable `defend_weight_multiplier` to EnemyBehaviorProfile.
+- Balanced retains normal Defend availability.
+- Aggressive de-prioritizes Defend while still allowing it.
+- Weakness Hunter allows Defend during its non-weakness decision pool.
+- Defensive gives Defend a stronger preference and uses a reduced power-bias strength so Defend competes meaningfully with lower-power attacks.
+- Enemy Defend consumes the enemy turn, deals no damage, logs the defensive action, and returns control to the Player.
+- Added a three-second post-combat encounter cooldown stored in GameState so the cooldown survives the World scene being recreated.
+- World encounter checks now ignore movement during that cooldown, preventing Run from immediately producing another encounter.
+
+Runtime verification required:
+1. Pull the latest `enemy-ai-behavior` branch.
+2. Run from an overworld Slime encounter and confirm another encounter does not immediately trigger after returning to the World.
+3. Verify Defend can appear under Balanced, Aggressive, and Weakness Hunter encounters.
+4. Verify Defensive encounters select Defend noticeably more often than the other profiles.
+5. Confirm Defend deals 0 damage and returns to Player Turn normally.
+6. Confirm a Player Defend still halves the next incoming enemy damage as before.
+7. Confirm elemental weakness targeting still works for Weakness Hunter and Aggressive.
+8. Confirm no parse, resource-loading, or debugger errors occur.
+
 ## 2026-10-06 - Fix Normal Slime AI Elemental Action Pool
 
 Runtime testing showed that overworld Slime encounters were only selecting Physical Attack and Heavy Attack, regardless of the displayed behavior profile.
