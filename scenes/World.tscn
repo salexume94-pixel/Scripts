@@ -142,7 +142,7 @@ text = "CHURCH"
 position = Vector2(-55, 1090)
 text = "TOWN EXIT"
 
-[node name="NPC01" type="StaticBody2D" parent="WorldContent"
+[node name="NPC01" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Mara"
 dialogue_text = "The innkeeper keeps the best stories in town. If you have time, stop in and listen."]
@@ -154,7 +154,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC01Collision" type="CollisionShape2D" parent="WorldContent/NPC01"]
 shape = SubResource("NPCShape")
 
-[node name="NPC02" type="StaticBody2D" parent="WorldContent"
+[node name="NPC02" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Jonas"
 dialogue_text = "The road north is quiet most days. Keep your eyes open once the trees get thicker."]
@@ -166,7 +166,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC02Collision" type="CollisionShape2D" parent="WorldContent/NPC02"]
 shape = SubResource("NPCShape")
 
-[node name="NPC03" type="StaticBody2D" parent="WorldContent"
+[node name="NPC03" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Elena"
 dialogue_text = "The shop carries useful supplies for travelers. Do not leave town without checking your equipment."]
@@ -178,7 +178,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC03Collision" type="CollisionShape2D" parent="WorldContent/NPC03"]
 shape = SubResource("NPCShape")
 
-[node name="NPC04" type="StaticBody2D" parent="WorldContent"
+[node name="NPC04" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Thomas"
 dialogue_text = "The church is a peaceful place. You should visit it before heading into dangerous territory."]
@@ -190,7 +190,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC04Collision" type="CollisionShape2D" parent="WorldContent/NPC04"]
 shape = SubResource("NPCShape")
 
-[node name="NPC05" type="StaticBody2D" parent="WorldContent"
+[node name="NPC05" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Rina"
 dialogue_text = "The farms outside town help keep everyone fed. Life here is simple, but that is not always a bad thing."]
@@ -202,7 +202,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC05Collision" type="CollisionShape2D" parent="WorldContent/NPC05"]
 shape = SubResource("NPCShape")
 
-[node name="NPC06" type="StaticBody2D" parent="WorldContent"
+[node name="NPC06" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Gareth"
 dialogue_text = "If you are heading beyond the town, make sure you are ready. The wilderness does not care how confident you feel."]
@@ -214,7 +214,7 @@ polygon = PackedVector2Array(-12, -16, 12, -16, 16, 0, 12, 16, -12, 16, -16, 0)
 [node name="NPC06Collision" type="CollisionShape2D" parent="WorldContent/NPC06"]
 shape = SubResource("NPCShape")
 
-[node name="QuestGiver" type="StaticBody2D" parent="WorldContent"
+[node name="QuestGiver" type="StaticBody2D" parent="WorldContent" groups=["interactable", "npc"]
 script = ExtResource("9_npc")
 npc_name = "Elder Rowan"
 dialogue_text = "You look like someone who might be able to help. There is work that needs doing around the town."]
