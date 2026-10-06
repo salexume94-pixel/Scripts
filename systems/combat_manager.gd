@@ -10,12 +10,17 @@ const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
 const COMBAT_RULES = preload("res://combat/combat_rules.gd")
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
+const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_test.tres")
+const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
 ## CombatState can keep only the active encounter data.
 
 var active_combat: Resource = null
+
+## Debug-only actions use the same resolution path as normal Player actions.
+## They exist only to make accuracy and critical behavior deterministic to test.
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
 
@@ -99,7 +104,10 @@ func player_attack(action: Resource = null) -> bool:
 	var damage_result: Dictionary = COMBAT_RULES.resolve_damage(
 		action_power,
 		selected_action.damage_type,
-		enemy_data
+		enemy_data,
+		selected_action.accuracy,
+		selected_action.critical_chance,
+		selected_action.critical_multiplier
 	)
 
 	active_combat.last_player_attack = action_power
@@ -107,6 +115,7 @@ func player_attack(action: Resource = null) -> bool:
 	active_combat.last_player_damage_type = selected_action.damage_type
 	active_combat.last_player_affinity = damage_result.affinity
 	active_combat.last_player_result_type = damage_result.result_type
+	active_combat.last_player_critical = damage_result.critical
 
 	match damage_result.result_type:
 		"damage":
@@ -117,6 +126,9 @@ func player_attack(action: Resource = null) -> bool:
 				active_combat.enemy_hp + damage_result.damage,
 				active_combat.enemy_max_hp
 			)
+		"miss":
+			# A miss consumes its Press Turn but does not change either HP pool.
+			pass
 		"repel":
 			# Repel reflects the resolved damage back to the Player.
 			var stats_to_update: Dictionary = GameState.get_player_stats()
@@ -150,6 +162,14 @@ func player_attack(action: Resource = null) -> bool:
 
 	player_attack_performed.emit(active_combat.last_player_attack)
 	return true
+
+func player_critical_test() -> bool:
+	# Start a deterministic guaranteed-critical action for runtime testing.
+	return player_attack(PLAYER_CRITICAL_TEST_ACTION)
+
+func player_miss_test() -> bool:
+	# Start a deterministic guaranteed-miss action for runtime testing.
+	return player_attack(PLAYER_MISS_TEST_ACTION)
 
 func player_defend() -> bool:
 	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
