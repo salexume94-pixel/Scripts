@@ -18,7 +18,7 @@ enum Type {
 
 static func get_display_name(damage_type: int) -> String:
 	## Convert a damage type into readable text for Battle UI and debugging.
-	switch damage_type:
+	match damage_type:
 		Type.PHYSICAL:
 			return "Physical"
 		Type.FIRE:
