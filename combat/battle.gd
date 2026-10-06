@@ -42,10 +42,11 @@ func _on_enemy_attack_performed(damage: int) -> void:
 	# Show the enemy result and refresh controls after the enemy turn completes.
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
-		if CombatManager.is_defeat():
-			action_label.text = "Enemy attacks for %d damage. Player defeated." % damage
-		else:
-			action_label.text = "Enemy attacks for %d damage. Player turn." % damage
+		var action_name := CombatManager.get_last_enemy_action_name()
+	if CombatManager.is_defeat():
+		action_label.text = "%s attacks for %d damage. Player defeated." % [action_name, damage]
+	else:
+		action_label.text = "%s attacks for %d damage. Player turn." % [action_name, damage]
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
