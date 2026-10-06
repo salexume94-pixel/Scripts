@@ -1,19 +1,29 @@
 extends StaticBody2D
-## Handles a reusable NPC that can be spoken to with the shared E interaction.
+## Reusable NPC behavior.
 ##
-## The NPC owns its identity and dialogue content, but it does not own the
-## dialogue UI. DialogueManager handles the active dialogue state so every NPC
-## can use the same presentation and dismissal behavior.
+## NPC scenes own their identity, collision, and interaction behavior.
+## DialogueManager owns the shared dialogue state, while DialogueBox owns
+## presentation. Keeping those responsibilities separate lets the same NPC
+## scene be reused on any future map without copying interaction logic.
 
 @export var npc_name: String = "Townsperson"
 @export_multiline var dialogue_text: String = "Hello there."
+@export var collision_radius: float = 16.0
 
 
 func _ready() -> void:
-    # Keep NPCs in both groups so existing interaction behavior continues to
-    # work while InteractionSystem can also identify NPCs specifically.
+    # The NPC scene is the authoritative source for these groups. This also
+    # protects dynamically created NPCs from forgetting to register as
+    # interactable targets.
     add_to_group("interactable")
     add_to_group("npc")
+
+    # Allow individual NPC instances, such as a quest giver, to use a larger
+    # collision shape while keeping one reusable scene.
+    var collision := get_node_or_null("Collision") as CollisionShape2D
+    if collision != null and collision.shape is CircleShape2D:
+        collision.shape = collision.shape.duplicate()
+        (collision.shape as CircleShape2D).radius = collision_radius
 
 
 func interact(_player: Node) -> void:
