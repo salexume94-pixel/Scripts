@@ -1,4 +1,7 @@
 extends Control
+
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
+const AFFINITIES = preload("res://combat/affinities.gd")
 ## Presents Battle state and forwards player input to CombatManager.
 ##
 ## CombatManager owns Press Turns and combat rules. This script only presents
@@ -15,16 +18,30 @@ func _ready() -> void:
 	_update_combat_controls()
 
 func _on_player_attack_performed(_attack_value: int) -> void:
+	# Present the resolved damage type and affinity without moving combat rules
+	# into the Battle UI.
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label == null:
 		return
+
+	var affinity_name := AFFINITIES.get_display_name(CombatManager.get_last_player_affinity())
+	var damage_type_name := DAMAGE_TYPES.get_display_name(CombatManager.get_last_player_damage_type())
+	var result_type := CombatManager.get_last_player_result_type()
+	var damage := CombatManager.get_last_damage()
+
 	if CombatManager.is_victory():
-		action_label.text = "Enemy defeated!"
+		action_label.text = "Enemy defeated! %s %s." % [damage_type_name, affinity_name]
+	elif result_type == "drain":
+		action_label.text = "Player %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
+	elif result_type == "repel":
+		action_label.text = "Player %s attack is repelled (%s)." % [damage_type_name, affinity_name]
 	elif CombatManager.is_enemy_turn():
-		action_label.text = "Player attacks for %d damage. Enemy turn." % CombatManager.get_last_damage()
+		action_label.text = "Player %s attack deals %d damage (%s). Enemy turn." % [damage_type_name, damage, affinity_name]
 	else:
-		action_label.text = "Player attacks for %d damage." % CombatManager.get_last_damage()
+		action_label.text = "Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
+
 	_update_enemy_hp_display()
+	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
 
