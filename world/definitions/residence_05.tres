@@ -10,3 +10,5 @@ display_name = "Tutorial Town Residence 05"
 location_type = 2
 description = "A residence in Tutorial Town."
 story_significant = false
+map_position = Vector2(128, 430)
+map_visible = true
