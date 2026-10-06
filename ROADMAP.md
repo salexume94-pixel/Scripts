@@ -29,18 +29,20 @@ Includes:
 
 ---
 
-### 2. Map / World Map Foundation - NEXT
+### 2. Map / World Map Foundation - IN PROGRESS
 
 The project currently has a playable world, but it does not yet have a proper player-facing map system.
 
+The first foundation step is now implemented: reusable `WorldLocationData` and an authoritative `WorldLocationDatabase` have been added, with Tutorial Town registered as the first location definition.
+
 Before adding map labels, establish the map foundation:
 
-- Define what the player-facing map represents.
-- Establish the world/map coordinate relationship.
-- Define map locations and points of interest in reusable data.
-- Create the basic map UI.
+- Define what the player-facing map represents. *(planned)*
+- Establish the world/map coordinate relationship. *(not started)*
+- Define map locations and points of interest in reusable data. *(WorldLocation foundation implemented; POI layer remains planned)*
+- Create the basic map UI. *(not started)*
 - Display the player's current position.
-- Support the current world and future regions without hard-coding presentation into gameplay systems.
+- Support the current world and future regions without hard-coding presentation into gameplay systems. *(foundation established; integration remains planned)*
 - Keep map data, world state, and map presentation separated according to ARCHITECTURE.md.
 
 The initial map should be deliberately simple. The goal is a reusable foundation, not a fully featured MMO map on the first pass.
