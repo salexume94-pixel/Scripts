@@ -227,7 +227,7 @@ func get_last_player_action_text() -> String:
 
 func consume_player_press_turn(amount: float) -> void:
 	# Keep the resource between zero and its configured maximum.
-	if not is_in_combat():	if not is_in_combat():
+	if not is_in_combat():
 		return
 	active_combat.player_press_turns_remaining = clampf(
 		active_combat.player_press_turns_remaining - amount,
