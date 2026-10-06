@@ -23,11 +23,11 @@ const LOCATION_DEFINITIONS: Array[Resource] = [
 ]
 
 
-static func get_location(location_id: String) -> WorldLocationData:
+static func get_location(location_id: String) -> Resource:
     # Resolve a stable location ID to its shared definition.
     for location in LOCATION_DEFINITIONS:
         if location != null and location.get("location_id") == location_id:
-            return location as WorldLocationData
+            return location
     return null
 
 
