@@ -7,6 +7,8 @@ extends Node
 
 const COMBAT_STATE_SCRIPT = preload("res://combat/combat_state.gd")
 const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
+const COMBAT_RULES = preload("res://combat/combat_rules.gd")
+const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const BATTLE_SCENE := "res://scenes/Battle.tscn"
 
 ## The current enemy action is stored separately from the enemy definition so
@@ -61,8 +63,10 @@ func start_encounter(enemy_id: String) -> bool:
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
-func player_attack() -> bool:
-	# A normal Attack consumes one full Press Turn.
+func player_attack(damage_type: int = DAMAGE_TYPES.Type.PHYSICAL) -> bool:
+	# Resolve the Player's current basic attack against the enemy's affinity.
+	# The optional damage type lets future skills reuse this combat path without
+	# duplicating Press Turn and affinity logic.
 	if not is_in_combat() or active_combat.phase != COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN:
 		return false
 	if active_combat.player_press_turns_remaining <= 0.0:
@@ -71,24 +75,67 @@ func player_attack() -> bool:
 	var current_scene := get_tree().current_scene
 	if current_scene == null:
 		return false
+
+	var player_attack_value := 0
 	var player := current_scene.get_node_or_null("Player")
 	if player == null:
 		var saved_stats: Dictionary = GameState.get_player_stats()
 		if saved_stats.is_empty():
 			return false
-		active_combat.last_player_attack = saved_stats.get("attack", 0)
+		player_attack_value = saved_stats.get("attack", 0)
 	else:
 		var stats := player.get_node_or_null("PlayerStats")
 		if stats == null:
 			return false
-		active_combat.last_player_attack = stats.attack
+		player_attack_value = stats.attack
 
-	var damage := maxi(active_combat.last_player_attack, 1)
-	active_combat.last_damage = damage
-	active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage, 0)
-	consume_player_press_turn(1.0)
+	var enemy_data: Resource = enemy_data_for_active_combat()
+	if enemy_data == null:
+		return false
 
-	if active_combat.enemy_hp <= 0:
+	var damage_result: Dictionary = COMBAT_RULES.resolve_damage(
+		maxi(player_attack_value, 1),
+		damage_type,
+		enemy_data
+	)
+
+	active_combat.last_player_attack = player_attack_value
+	active_combat.last_damage = damage_result.damage
+	active_combat.last_player_damage_type = damage_type
+	active_combat.last_player_affinity = damage_result.affinity
+	active_combat.last_player_result_type = damage_result.result_type
+
+	match damage_result.result_type:
+		"damage":
+			active_combat.enemy_hp = maxi(active_combat.enemy_hp - damage_result.damage, 0)
+		"drain":
+			# Drain heals the target instead of damaging it.
+			active_combat.enemy_hp = mini(
+				active_combat.enemy_hp + damage_result.damage,
+				active_combat.enemy_max_hp
+			)
+		"repel":
+			# Repel reflects the resolved damage back to the Player.
+			var stats_to_update: Dictionary = GameState.get_player_stats()
+			var current_hp: int = stats_to_update.get("hp", stats_to_update.get("max_hp", 0))
+			stats_to_update["hp"] = maxi(current_hp - damage_result.damage, 0)
+			GameState.set_player_stats(stats_to_update)
+			active_combat.last_damage = 0
+
+	consume_player_press_turn(damage_result.turn_cost)
+
+	if damage_result.result_type == "repel":
+		var reflected_stats: Dictionary = GameState.get_player_stats()
+		if reflected_stats.get("hp", 0) <= 0:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.DEFEAT
+			player_defeated.emit()
+		elif active_combat.player_press_turns_remaining <= 0.0:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.ENEMY_TURN
+			enemy_turn_started.emit()
+			_resolve_enemy_turn()
+		else:
+			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
+	elif active_combat.enemy_hp <= 0:
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
 	elif active_combat.player_press_turns_remaining <= 0.0:
 		# All Player actions are spent, so the enemy receives its turn.
@@ -245,6 +292,12 @@ func get_player_press_turns_remaining() -> float:
 	return active_combat.player_press_turns_remaining if is_in_combat() else 0.0
 func get_last_enemy_damage() -> int:
 	return active_combat.last_enemy_damage if is_in_combat() else 0
+func get_last_player_affinity() -> int:
+	return active_combat.last_player_affinity if is_in_combat() else 0
+func get_last_player_damage_type() -> int:
+	return active_combat.last_player_damage_type if is_in_combat() else DAMAGE_TYPES.Type.PHYSICAL
+func get_last_player_result_type() -> String:
+	return active_combat.last_player_result_type if is_in_combat() else ""
 func is_player_turn() -> bool:
 	return is_in_combat() and active_combat.phase == COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 func is_enemy_turn() -> bool:
