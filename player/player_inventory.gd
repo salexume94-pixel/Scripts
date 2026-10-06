@@ -13,6 +13,7 @@ extends Node
 ## pulling the project into a fresh local editor session.
 
 const ITEM_DATA_SCRIPT = preload("res://items/item_data.gd")
+const ITEM_DATABASE = preload("res://items/item_database.gd")
 
 # Each key is an item_id and each value is the quantity currently owned.
 # Other systems should use the read-only access functions below instead of
@@ -34,6 +35,9 @@ func add_item(item: Resource, quantity: int = 1) -> bool:
 		return false
 
 	var item_id: String = item.get("item_id")
+	if ITEM_DATABASE.get_item(item_id) == null:
+		return false
+
 	var max_stack_size: int = item.get("max_stack_size")
 
 	# Read the current quantity, defaulting to zero when this is the first
@@ -60,6 +64,9 @@ func remove_item(item: Resource, quantity: int = 1) -> bool:
 		return false
 
 	var item_id: String = item.get("item_id")
+	if ITEM_DATABASE.get_item(item_id) == null:
+		return false
+
 	var current_quantity: int = items.get(item_id, 0)
 
 	# Do not allow the inventory to remove more copies than the Player owns.
