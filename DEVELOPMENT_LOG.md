@@ -2090,3 +2090,13 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Standard Enemy critical multiplier is now 1.5x, matching the Player critical rule; `slime_fire_attack.tres` explicitly uses 1.5x.
 - A Fire attack against the default Player Fire weakness therefore resolves at 2x normally and 3x when it also critically hits, before any future defense/balance changes to base damage.
 - Runtime verification required: compare Slime Attack and Fire Attack outcomes against the default Player Fire weakness and verify a displayed CRITICAL result has the expected increased final damage.
+
+
+## Enemy Elemental Action Assignment
+
+- Restricted the normal Slime definition to its assigned elemental action: Fire.
+- Restricted the Slime AI test definitions to the same assigned Fire elemental action so test enemies do not silently gain unrelated Water, Earth, Air, Light, or Dark attacks.
+- Kept the existing Water, Earth, Air, Light, and Dark elemental action Resources available in the shared enemy elemental action catalog at `enemies/enemy_elemental_action_database.gd`.
+- Future enemy definitions can pull an elemental action from that shared catalog when the enemy is explicitly assigned that element.
+- Enemy AI continues to select only from the active EnemyData `actions` array, so an elemental action is unavailable to an enemy unless it has been assigned to that enemy.
+- Runtime verification required: confirm Slime encounters only select Basic, Heavy, Fire, and Defend actions, and confirm the AI test variants no longer select unrelated elemental attacks.
