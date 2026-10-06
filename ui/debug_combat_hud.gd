@@ -9,13 +9,14 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const AFFINITIES = preload("res://combat/affinities.gd")
 
 @onready var panel: Control = $Panel
-@onready var status_label: Label = $Panel/Margin/Content/Status
-@onready var target_affinities_label: Label = $Panel/Margin/Content/TargetAffinities
-@onready var player_affinities_label: Label = $Panel/Margin/Content/PlayerAffinities
-@onready var last_player_label: Label = $Panel/Margin/Content/LastPlayer
-@onready var last_enemy_label: Label = $Panel/Margin/Content/LastEnemy
-@onready var ai_trace_label: Label = $Panel/Margin/Content/AITrace
-@onready var log_label: Label = $Panel/Margin/Content/LogScroll/Log
+@onready var status_label: Label = $Panel/Margin/Scroll/Content/Status
+@onready var enemy_behavior_label: Label = $Panel/Margin/Scroll/Content/EnemyBehavior
+@onready var target_affinities_label: Label = $Panel/Margin/Scroll/Content/TargetAffinities
+@onready var player_affinities_label: Label = $Panel/Margin/Scroll/Content/PlayerAffinities
+@onready var last_player_label: Label = $Panel/Margin/Scroll/Content/LastPlayer
+@onready var last_enemy_label: Label = $Panel/Margin/Scroll/Content/LastEnemy
+@onready var ai_trace_label: Label = $Panel/Margin/Scroll/Content/AITrace
+@onready var log_label: Label = $Panel/Margin/Scroll/Content/LogScroll/Log
 
 func _ready() -> void:
 	# Start enabled during development so affinity behavior is immediately visible.
@@ -38,6 +39,7 @@ func _process(_delta: float) -> void:
 func _refresh() -> void:
 	if not CombatManager.is_in_combat():
 		status_label.text = "Status: No active combat"
+		enemy_behavior_label.text = "Enemy Behavior: None"
 		target_affinities_label.text = "Target affinities: None"
 		player_affinities_label.text = "Player affinities: None"
 		last_player_label.text = "Last Player action: None"
@@ -47,6 +49,7 @@ func _refresh() -> void:
 		return
 
 	var enemy_data: Resource = CombatManager.enemy_data_for_active_combat()
+	enemy_behavior_label.text = "Enemy Behavior: %s" % CombatManager.get_enemy_behavior_profile_name()
 	status_label.text = "Status: %s | Enemy HP: %d / %d | Press Turns: %.1f" % [
 		"Victory" if CombatManager.is_victory() else ("Defeat" if CombatManager.is_defeat() else ("Enemy Turn" if CombatManager.is_enemy_turn() else "Player Turn")),
 		CombatManager.get_enemy_hp(),
@@ -111,7 +114,7 @@ func _format_last_enemy() -> String:
 	]
 
 func _scroll_log_to_latest() -> void:
-	var scroll := $Panel/Margin/Content/LogScroll as ScrollContainer
+	var scroll := $Panel/Margin/Scroll/Content/LogScroll as ScrollContainer
 	if scroll == null:
 		return
 	await get_tree().process_frame
