@@ -463,8 +463,8 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 				# Defensive enemies favor lower-power actions. This is intentionally
 				# expressed as a profile preference so future defensive skills can
 				# use the same selector without requiring enemy-specific code.
-				var power_ratio := clampf(float(action.power) / float(max_power), 0.0, 1.0)
-				var defensive_factor := (1.0 - power_ratio) * behavior.defensive_power_preference
+				var power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
+				var defensive_factor: float = (1.0 - power_ratio) * behavior.defensive_power_preference
 				weight *= lerpf(1.0, 2.0, defensive_factor)
 			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
 				# First choose whether this turn belongs to the weakness or
