@@ -1296,3 +1296,28 @@ Equipment now supports multiple slots with one item per slot:
   - `enemies/enemy_behavior_profile.gd`
   - `enemies/definitions/behavior_weakness_hunter.tres`
 - Runtime verification required: run **Test Battle (Enemy AI)** for a larger sample of enemy turns, change the Player weakness during testing, and confirm the AI continues targeting the current weakness while averaging close to 13/20 over time.
+
+## 2026-10-06 Enemy AI Behavior Differentiation Adjustment
+
+Runtime testing confirmed that the initial Aggressive and Defensive profiles were technically different but not visually distinct enough during normal play. The previous 1.0-to-2.0 power weighting was too subtle for the current eight-action Slime test set, where most elemental actions share the same power.
+
+Updated:
+- `enemies/enemy_behavior_profile.gd`
+- `enemies/definitions/behavior_aggressive.tres`
+- `enemies/definitions/behavior_defensive.tres`
+- `systems/combat_manager.gd`
+
+Changes:
+- Replaced the Defensive-only power preference with a shared configurable `power_bias_strength` profile property.
+- Aggressive behavior now strongly favors higher-power actions using the configured power-bias exponent.
+- Defensive behavior now strongly favors lower-power actions using the same framework.
+- Defensive behavior currently treats lower-power attacks as safer because dedicated enemy defend/guard actions do not exist yet. This is a temporary behavior interpretation, not the final defensive combat design.
+- Both Aggressive and Defensive test profiles use a power-bias strength of 3.0 so their selection patterns should be visibly distinct from Balanced during runtime testing.
+- Balanced remains the neutral baseline and does not apply a power bias.
+
+Runtime verification required:
+- Balanced: observe a mixed action distribution.
+- Aggressive: confirm Heavy Attack appears substantially more often than Balanced.
+- Defensive: confirm Heavy Attack is rarely or never selected and the basic lower-power Attack is favored.
+- Confirm all three profiles still use the same EnemyData, EnemyActionData, EnemyBehaviorProfile, and CombatManager selector.
+- Confirm no Godot debugger errors occur.
