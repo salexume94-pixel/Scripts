@@ -35,6 +35,10 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Combat Encounter: Unknown"
 horizontal_alignment = 1
+[node name="EnemyAIProfileLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Enemy AI Profile: Unknown"
+horizontal_alignment = 1
 [node name="StateLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "PLAYER TURN"
