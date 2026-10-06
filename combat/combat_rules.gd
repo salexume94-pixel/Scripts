@@ -43,7 +43,9 @@ static func resolve_damage_against_affinities(
 	## rules. Enemy AI can therefore select an elemental action based on the
 	## Player's weakness and the resulting attack can apply that same weakness
 	## when it is actually performed.
-	if randf_range(0.0, 100.0) > clampf(accuracy, 0.0, 100.0):
+	var resolved_accuracy := clampf(accuracy, 0.0, 100.0)
+	var accuracy_roll := randf() * 100.0
+	if accuracy_roll >= resolved_accuracy:
 		return {
 			"damage": 0,
 			"affinity": get_affinity_from_list(affinities, damage_type),
@@ -52,6 +54,10 @@ static func resolve_damage_against_affinities(
 			"result_type": "miss",
 			"multiplier": 0.0,
 			"critical": false,
+			"accuracy": resolved_accuracy,
+			"accuracy_roll": accuracy_roll,
+			"critical_chance": clampf(critical_chance, 0.0, 100.0),
+			"critical_roll": -1.0,
 		}
 
 	var affinity := get_affinity_from_list(affinities, damage_type)
@@ -76,7 +82,9 @@ static func resolve_damage_against_affinities(
 			result_type = "repel"
 
 	var critical := false
-	if result_type == "damage" and randf_range(0.0, 100.0) <= clampf(critical_chance, 0.0, 100.0):
+	var resolved_critical_chance := clampf(critical_chance, 0.0, 100.0)
+	var critical_roll := randf() * 100.0
+	if result_type == "damage" and critical_roll < resolved_critical_chance:
 		critical = true
 		multiplier *= maxf(critical_multiplier, 1.0)
 		turn_cost = 0.5
@@ -96,6 +104,10 @@ static func resolve_damage_against_affinities(
 		"result_type": result_type,
 		"multiplier": multiplier,
 		"critical": critical,
+		"accuracy": resolved_accuracy,
+		"accuracy_roll": accuracy_roll,
+		"critical_chance": resolved_critical_chance,
+		"critical_roll": critical_roll,
 	}
 
 static func get_enemy_affinity(enemy_data: Resource, damage_type: int) -> int:
