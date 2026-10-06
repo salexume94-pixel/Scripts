@@ -2038,3 +2038,10 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Updated `systems/combat_manager.gd` so every Player attack, including the normal Basic Attack, logs the actual Player Speed-derived critical chance/roll and Enemy Speed-derived accuracy chance/roll used by the shared resolver.
 - This keeps the Basic Attack authoritative through the shared combat rules instead of using separate debug-only calculations.
 - Runtime verification required: confirm the combat log shows the expected Speed-derived percentages and rolls, and confirm critical/miss outcomes match those rolls.
+
+
+## Critical and Miss Damage Resolution
+- Basic Attack critical damage is now explicitly 1.5x the resolved attack damage.
+- Player action data and shared combat-rule defaults now use a 1.5x critical multiplier.
+- Miss resolution already returns exactly 0 damage and the Player attack path leaves Enemy HP unchanged on a miss.
+- Runtime verification required: confirm a logged critical applies 1.5x damage and a logged miss applies 0 damage.
