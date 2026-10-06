@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://enemies/enemy_data.gd" id="1_enemy_data"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_attack.tres" id="2_slime_attack"]
 
 [resource]
 script = ExtResource("1_enemy_data")
+actions = Array[ExtResource("2_slime_attack")]([ExtResource("2_slime_attack")])
 enemy_id = "slime"
 display_name = "Slime"
 level = 1
