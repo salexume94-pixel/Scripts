@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://items/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+item_id = "gold"
+display_name = "Gold"
+description = "Currency used by the game economy."
+item_type = 2
+max_stack_size = 999
