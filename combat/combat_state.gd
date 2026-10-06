@@ -29,12 +29,18 @@ enum Phase {
 @export var last_enemy_action_id: String = ""
 @export var last_enemy_action_name: String = ""
 @export var last_enemy_damage: int = 0
+@export var last_enemy_damage_type: int = 0
+@export var last_enemy_affinity: int = 0
 
 ## Results from the most recent Player action against the enemy.
 @export var last_player_damage_type: int = 0
 @export var last_player_affinity: int = 0
 @export var last_player_result_type: String = "damage"
 @export var last_player_critical: bool = false
+
+## Player affinities are captured when the encounter starts so Enemy AI can
+## evaluate known weaknesses after the Battle scene replaces the World scene.
+@export var player_affinities: Array[Resource] = []
 
 ## Whether the Player has chosen Defend for the current enemy turn.
 @export var player_defending: bool = false
