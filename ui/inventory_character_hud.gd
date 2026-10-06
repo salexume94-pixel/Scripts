@@ -42,6 +42,15 @@ func _ready() -> void:
 	var test_ai_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestAIBattleButton") as Button
 	if test_ai_battle_button != null:
 		test_ai_battle_button.pressed.connect(_on_test_ai_battle_button_pressed)
+	var test_balanced_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestBalancedAIButton") as Button
+	if test_balanced_button != null:
+		test_balanced_button.pressed.connect(_on_test_balanced_ai_button_pressed)
+	var test_aggressive_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestAggressiveAIButton") as Button
+	if test_aggressive_button != null:
+		test_aggressive_button.pressed.connect(_on_test_aggressive_ai_button_pressed)
+	var test_defensive_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestDefensiveAIButton") as Button
+	if test_defensive_button != null:
+		test_defensive_button.pressed.connect(_on_test_defensive_ai_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
@@ -288,8 +297,23 @@ func _on_test_damage_button_pressed() -> void:
 
 
 func _on_test_ai_battle_button_pressed() -> void:
-	# Start the controlled Enemy AI encounter from the development HUD.
+	# Start the weakness-hunter test used for elemental-aware AI sampling.
 	DEBUG_SYSTEM.start_test_battle("slime_ai_test")
+
+
+func _on_test_balanced_ai_button_pressed() -> void:
+	# Start the same action set with the shared Balanced behavior profile.
+	DEBUG_SYSTEM.start_test_battle("slime_ai_balanced_test")
+
+
+func _on_test_aggressive_ai_button_pressed() -> void:
+	# Start the same action set with the shared Aggressive behavior profile.
+	DEBUG_SYSTEM.start_test_battle("slime_ai_aggressive_test")
+
+
+func _on_test_defensive_ai_button_pressed() -> void:
+	# Start the same action set with the shared Defensive behavior profile.
+	DEBUG_SYSTEM.start_test_battle("slime_ai_defensive_test")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:
