@@ -98,7 +98,7 @@ func _update_press_turn_display() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PressTurnLabel")
 	if label == null:
 		return
-	var remaining := CombatManager.get_player_press_turns_remaining()
+	var remaining: float = CombatManager.get_player_press_turns_remaining()
 	var full_turns := int(floor(remaining))
 	var half_turn := is_equal_approx(remaining - float(full_turns), 0.5)
 	var symbols := ""
@@ -123,9 +123,9 @@ func _update_combat_controls() -> void:
 		return
 	if critical_test_button == null or miss_test_button == null:
 		return
-	var victory := CombatManager.is_victory()
-	var defeat := CombatManager.is_defeat()
-	var player_turn := CombatManager.is_player_turn()
+	var victory: bool = CombatManager.is_victory()
+	var defeat: bool = CombatManager.is_defeat()
+	var player_turn: bool = CombatManager.is_player_turn()
 	attack_button.disabled = victory or defeat or not player_turn
 	fire_button.disabled = victory or defeat or not player_turn
 	defend_button.disabled = victory or defeat or not player_turn
