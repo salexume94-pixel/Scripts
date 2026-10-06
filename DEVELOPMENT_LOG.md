@@ -2107,3 +2107,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Removed stale `ExtResource("9_slime_dark_attack")` entries left behind after restricting Slime AI test definitions to Fire.
 - This fixes the resource-loader parse errors that prevented the four Slime AI test definitions and `EnemyDatabase` from loading.
 - Runtime verification required.
+
+
+## Follow-up Slime AI Resource Reference Fix
+
+- Removed the remaining stale `ExtResource("9_slime_dark_attack")` action entries from all four Slime AI test Resources.
+- The previous cleanup removed the resource declarations but left the action-array references, causing Godot resource parse failures.
+- Verified the four Slime AI test files no longer contain that stale reference.
+- Runtime verification required.
