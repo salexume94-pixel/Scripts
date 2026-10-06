@@ -54,6 +54,9 @@ func _ready() -> void:
 	var test_repel_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestRepelBattleButton") as Button
 	if test_repel_battle_button != null:
 		test_repel_battle_button.pressed.connect(_on_test_repel_battle_button_pressed)
+	var test_ai_battle_button := get_node_or_null("Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/DebugPanel/DebugMargin/DebugVBox/TestAIBattleButton") as Button
+	if test_ai_battle_button != null:
+		test_ai_battle_button.pressed.connect(_on_test_ai_battle_button_pressed)
 	item_action_button.pressed.connect(_on_item_action_button_pressed)
 	test_damage_button.visible = OS.is_debug_build()
 	_set_player_movement_enabled(true)
@@ -326,6 +329,12 @@ func _on_test_repel_battle_button_pressed() -> void:
 	# Start the controlled Fire Repel encounter so reflected damage can be
 	# verified independently from the other affinity tests.
 	DEBUG_SYSTEM.start_test_battle("slime_repel")
+
+
+func _on_test_ai_battle_button_pressed() -> void:
+	# Start the controlled AI encounter. The Player's default Fire weakness gives
+	# the weakness-hunter profile a deterministic behavioral advantage to verify.
+	DEBUG_SYSTEM.start_test_battle("slime_ai_test")
 
 
 func _on_unequip_slot_pressed(slot: int) -> void:
