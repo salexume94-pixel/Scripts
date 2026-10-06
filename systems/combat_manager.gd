@@ -258,8 +258,7 @@ func player_attack(action: Resource = null) -> bool:
 	var player_speed: int = 0
 	var player_stats_node := player.get_node_or_null("PlayerStats") if player != null else null
 	if player_stats_node != null:
-		if player_stats != null:
-			player_speed = int(player_stats.speed)
+		player_speed = int(player_stats_node.speed)
 	if player_speed <= 0:
 		var saved_speed_stats: Dictionary = GameState.get_player_stats()
 		player_speed = int(saved_speed_stats.get("speed", 0))
