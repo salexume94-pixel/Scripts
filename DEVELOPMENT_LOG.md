@@ -1980,3 +1980,11 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Battle now refreshes the displayed weakness when an encounter starts and after cycling.
 - The encounter's Player affinity snapshot remains the source of truth used by Enemy AI and combat resolution.
 - Runtime verification required: confirm the current weakness is displayed at battle start and the Cycle Player Weakness control changes the displayed weakness as intended.
+
+
+### Combat Log Scrolling
+
+- Replaced the fixed combat-log Label presentation with a ScrollContainer.
+- The log can now be manually scrolled through when history exceeds the visible area.
+- Combat log updates automatically scroll to the newest event after the UI has resized to the latest content.
+- Runtime verification required: confirm manual scrolling works and each new combat event follows the newest entry.
