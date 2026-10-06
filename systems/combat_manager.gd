@@ -23,6 +23,8 @@ const BATTLE_SCENE := "res://scenes/Battle.tscn"
 var active_combat: Resource = null
 ## Debug trace of the most recent enemy action-selection decision.
 var last_enemy_ai_debug: Array[String] = []
+var combat_log: Array[String] = []
+signal combat_log_updated
 
 ## Debug-only actions use the same resolution path as normal Player actions.
 ## They exist only to make accuracy and critical behavior deterministic to test.
@@ -79,6 +81,9 @@ func start_encounter(enemy_id: String) -> bool:
 	var first_action: Resource = enemy_data.actions[0]
 	combat_state.enemy_attack = first_action.power
 	active_combat = combat_state
+	combat_log.clear()
+	_append_combat_log("COMBAT: %s entered battle." % enemy_data.display_name)
+	_append_combat_log("PLAYER TURN: 4 Press Turns available.")
 	SceneManager.change_scene(BATTLE_SCENE, Vector2.ZERO)
 	return true
 
@@ -151,6 +156,7 @@ func player_attack(action: Resource = null) -> bool:
 			active_combat.last_damage = 0
 
 	consume_player_press_turn(damage_result.turn_cost)
+	_append_combat_log("PLAYER: %s deals %d damage (%s)." % [selected_action.display_name, damage_result.damage, AFFINITIES.get_display_name(damage_result.affinity)])
 
 	if damage_result.result_type == "repel":
 		var reflected_stats: Dictionary = GameState.get_player_stats()
@@ -266,6 +272,7 @@ func _resolve_enemy_turn() -> void:
 	saved_stats["hp"] = new_hp
 	GameState.set_player_stats(saved_stats)
 	active_combat.last_enemy_damage = damage
+	_append_combat_log("ENEMY: %s deals %d damage." % [active_combat.last_enemy_action_name, damage])
 	enemy_attack_performed.emit(damage)
 
 	if new_hp <= 0:
@@ -427,6 +434,25 @@ func get_active_enemy_name() -> String:
 	if enemy_data == null:
 		return active_combat.enemy_id
 	return enemy_data.display_name
+
+func _append_combat_log(entry: String) -> void:
+	combat_log.append(entry)
+	if combat_log.size() > 100:
+		combat_log.pop_front()
+	combat_log_updated.emit()
+
+func get_combat_log() -> Array[String]:
+	return combat_log.duplicate()
+
+func get_player_affinity_debug() -> Array[String]:
+	var result: Array[String] = []
+	if not is_in_combat():
+		return result
+	for entry in active_combat.player_affinities:
+		if entry == null:
+			continue
+		result.append("%s: %s" % [DAMAGE_TYPES.get_display_name(entry.damage_type), AFFINITIES.get_display_name(entry.affinity)])
+	return result
 
 func get_last_enemy_ai_debug() -> Array[String]:
 	## Return the most recent enemy action-selection trace for debug presentation.
