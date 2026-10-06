@@ -63,6 +63,8 @@ text = "Attack"
 layout_mode = 2
 text = "Fire"
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/FireButton" to="." method="_on_fire_pressed"]
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/CriticalTestButton" to="." method="_on_critical_test_pressed"]
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/MissTestButton" to="." method="_on_miss_test_pressed"]
 [node name="DefendButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Defend"
