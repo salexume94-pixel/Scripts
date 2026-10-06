@@ -47,6 +47,11 @@ layout_mode = 2
 text = "Choose an action."
 horizontal_alignment = 1
 
+[node name="EnemyHPLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Enemy HP: 50 / 50"
+horizontal_alignment = 1
+
 [node name="AttackButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Attack"
