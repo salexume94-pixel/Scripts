@@ -29,7 +29,6 @@ func _ready() -> void:
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
-	_update_enemy_behavior_display()
 	_update_player_weakness_display()
 	_update_combat_log_display()
 
@@ -130,12 +129,6 @@ func _update_player_weakness_display() -> void:
 	if label == null:
 		return
 	label.text = "Player Weakness: %s" % CombatManager.get_player_weakness_debug()
-
-func _update_enemy_behavior_display() -> void:
-	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyBehaviorLabel")
-	if label == null:
-		return
-	label.text = "Enemy Behavior: %s" % CombatManager.get_enemy_behavior_profile_name()
 
 func _update_combat_log_display() -> void:
 	var scroll := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll") as ScrollContainer
