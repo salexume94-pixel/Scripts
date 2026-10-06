@@ -58,6 +58,19 @@ text = "Attack"
 
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/AttackButton" to="." method="_on_attack_pressed"]
 
+[node name="RunButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Run"
+
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/RunButton" to="." method="_on_run_pressed"]
+
+[node name="VictoryButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Return to World"
+visible = false
+
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/VictoryButton" to="." method="_on_victory_pressed"]
+
 [node name="DescriptionLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Combat state is active. Player actions and enemy systems are added in later steps."
