@@ -37,6 +37,24 @@ signal enemy_turn_started
 signal enemy_attack_performed(damage: int)
 signal player_defeated
 
+
+func _append_combat_log(message: String) -> void:
+	# Keep combat history owned by CombatManager so Battle only presents it.
+	combat_log.append(message)
+	combat_log_updated.emit()
+
+func _get_player_affinity(damage_type: int) -> int:
+	# Resolve the Player's reaction to an enemy damage type from the encounter
+	# snapshot captured before the World scene is replaced.
+	if not is_in_combat():
+		return AFFINITIES.Type.NORMAL
+	for affinity_data in active_combat.player_affinities:
+		if affinity_data == null:
+			continue
+		if affinity_data.damage_type == damage_type:
+			return affinity_data.affinity
+	return AFFINITIES.Type.NORMAL
+
 func is_in_combat() -> bool:
 	return active_combat != null
 
