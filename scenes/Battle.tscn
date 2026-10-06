@@ -53,7 +53,7 @@ text = "Enemy HP: 50 / 50"
 horizontal_alignment = 1
 [node name="PlayerAffinityLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Player Affinities: None configured"
+text = "Player Weakness: Fire"
 horizontal_alignment = 1
 [node name="CombatLogTitle" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
@@ -67,7 +67,7 @@ scroll_following = true
 fit_content = false
 [node name="PressTurnLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Press Turns: ● ● ● ●"
+text = "Press Turns: ● ●"
 horizontal_alignment = 1
 [node name="WeaknessControls" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
@@ -104,6 +104,7 @@ text = "Pass"
 [node name="RunButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/ActionButtons"]
 layout_mode = 2
 text = "Run"
+[connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/WeaknessControls/CycleWeaknessButton" to="." method="_on_cycle_weakness_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/AttackButton" to="." method="_on_attack_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/FireButton" to="." method="_on_fire_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/VBoxContainer/ActionButtons/CriticalTestButton" to="." method="_on_critical_test_pressed"]
