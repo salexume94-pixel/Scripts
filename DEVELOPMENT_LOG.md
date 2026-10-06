@@ -1932,3 +1932,15 @@ Known limitation:
 - EnemyData is now authoritative for base enemy definitions, but level scaling, enemy actions/skills, elemental affinities, AI, rewards, and full defeat/recovery remain future systems.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+## Enemy AI Integration into Stable Main
+
+- Integrated the confirmed enemy AI behavior system into the current stable combat/overworld base without merging the obsolete branch wholesale.
+- Preserved the current four Press Turn combat configuration, current Fire attack tuning, combat-polish UI/scripts, and restored overworld encounter/cooldown systems from main.
+- Added configurable EnemyBehaviorProfile resources: Balanced, Aggressive, Weakness Hunter, and Defensive.
+- Added per-encounter profile selection, weakness-aware action weighting, unfavorable-affinity avoidance, repeat-action suppression, power bias, and Defend weighting.
+- Added enemy elemental actions and Enemy Defend support, including shared target-affinity resolution for enemy actions.
+- Added controlled AI test enemy definitions and registered them in EnemyDatabase.
+- Kept the integration isolated on a temporary branch for verification before merging to main.
+- Remaining verification: run the game and confirm normal overworld encounters, all four behavior profiles, enemy elemental reactions, Enemy Defend, Player Defend/Pass, victory Return to World, and post-combat encounter cooldown together.
