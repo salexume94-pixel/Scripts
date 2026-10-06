@@ -1,3 +1,49 @@
+### Enemy Action Foundation
+
+Implemented the first enemy-action layer on top of the authoritative EnemyData foundation.
+
+Created:
+- `enemies/enemy_action_data.gd`
+- `enemies/definitions/slime_attack.tres`
+
+Updated:
+- `enemies/enemy_data.gd`
+- `enemies/definitions/slime.tres`
+- `systems/combat_manager.gd`
+
+Changes:
+- Added EnemyActionData as a separate Resource for individual enemy actions.
+- EnemyData now contains an action list instead of requiring CombatManager to know which attack an enemy uses.
+- Added the Slime's first action, `slime_attack`, with display name `Attack` and power 10.
+- CombatManager now requires the enemy to have at least one defined action before starting an encounter.
+- The current enemy turn uses the first action in the enemy's action list.
+- The existing Player Defense calculation and minimum 1 damage rule are unchanged.
+- Existing Press Turn, Victory, Run, and defeat-state behavior remain unchanged.
+
+This establishes the separation:
+
+`EnemyData -> EnemyActionData -> CombatManager -> CombatState`
+
+The current system still intentionally uses only the first action. Action selection and enemy AI will be added later after this foundation is runtime verified.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Confirm the project opens without parse errors.
+- Start Debug -> Test Battle (Slime).
+- Confirm the Slime battle still starts at 50 / 50 HP.
+- Spend all four Player Press Turns without defeating the Slime.
+- Confirm the Slime still attacks once for 1 damage under the current Player Defense calculation.
+- Confirm combat returns to PLAYER TURN with four Press Turns.
+- Confirm Victory and Run still work.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- EnemyActionData currently contains only an action ID, display name, and physical power.
+- CombatManager currently executes the first action rather than selecting between multiple actions.
+- Elemental types, costs, accuracy, effects, and enemy AI remain future work.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
 ### Chest Implementation and Runtime Verification
 
 Implemented and runtime verified the reusable World Chest.
