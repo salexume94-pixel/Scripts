@@ -31,6 +31,7 @@ enum Phase {
 @export var last_enemy_damage: int = 0
 @export var last_enemy_damage_type: int = 0
 @export var last_enemy_affinity: int = 0
+@export var last_enemy_result_type: String = "damage"
 
 ## Results from the most recent Player action against the enemy.
 @export var last_player_damage_type: int = 0
