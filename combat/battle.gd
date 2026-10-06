@@ -14,6 +14,7 @@ func _ready() -> void:
 	# actions so the UI can show the result of the Player Attack command.
 	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
 	_update_display()
+	_update_enemy_hp_display()
 
 
 func _on_player_attack_performed(attack_value: int) -> void:
@@ -23,6 +24,17 @@ func _on_player_attack_performed(attack_value: int) -> void:
 	if action_label == null:
 		return
 	action_label.text = "Player attacks with %d Attack." % attack_value
+
+
+func _update_enemy_hp_display() -> void:
+	# Display the current enemy HP supplied by CombatManager.
+	var hp_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EnemyHPLabel")
+	if hp_label == null:
+		return
+	hp_label.text = "Enemy HP: %d / %d" % [
+		CombatManager.get_enemy_hp(),
+		CombatManager.get_enemy_max_hp(),
+	]
 
 
 func _on_attack_pressed() -> void:
