@@ -514,3 +514,23 @@ Updated:
 
 PlayerInventory now accepts only item IDs registered by ItemDatabase. This prevents arbitrary temporary Resource definitions from entering the persistent inventory and keeps the item-definition authority centralized in `items/item_database.gd`.
 
+
+
+### Interaction Target Reliability Fix
+
+Updated:
+- `systems/interaction_system.gd`
+- `world/chest.gd`
+
+Fixed a bug where pressing **E** after previously entering a Door interaction range could use a stale cached interaction target and trigger a scene transition while the Player was interacting with a Chest.
+
+The InteractionSystem now refreshes its target list from the Player's actual overlapping interaction Areas every time **E** is pressed. This makes the current physics overlap authoritative instead of relying on an older cached Area-entered state.
+
+Chest interaction now also uses the Player reference supplied by the shared InteractionSystem instead of searching the current scene for a Player. This keeps Chest interaction isolated from scene-transition behavior.
+
+Runtime verification required:
+- Press **E** near each Chest and confirm only the Chest opens/rewards the item.
+- Move away from the building Door and press **E** near a Chest; the Door must not trigger.
+- Press **E** near the Door and confirm it transitions to the Interior.
+- In the Interior, press **E** near the ExitDoor and confirm it returns to the World.
+- Walking into either Door without pressing **E** must not transition.
