@@ -39,6 +39,10 @@ enum Strategy {
 ## This preserves a known weakness priority without making one action repeat forever.
 @export_range(0.0, 1.0) var repeat_action_multiplier: float = 0.5
 
+## Multiplier applied to the Defend action after the profile strategy is applied.
+## This lets every profile retain Defend while Defensive enemies prefer it more.
+@export_range(0.0, 9999.0) var defend_weight_multiplier: float = 1.0
+
 ## Controls how strongly Aggressive and Defensive behavior bias action power.
 ## Higher values make the profile distinction more pronounced. A value of 0.0
 ## disables the power bias while leaving normal action weights intact.
