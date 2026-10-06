@@ -31,14 +31,14 @@ func _on_player_attack_performed(_attack_value: int) -> void:
 	var damage := CombatManager.get_last_damage()
 	var critical: bool = CombatManager.get_last_player_critical()
 
-	if CombatManager.is_victory():
+	if critical:
+		action_label.text = "CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
+	elif CombatManager.is_victory():
 		action_label.text = "Enemy defeated! %s %s." % [damage_type_name, affinity_name]
 	elif result_type == "miss":
 		action_label.text = "Player %s attack misses (%s)." % [damage_type_name, affinity_name]
 	elif result_type == "drain":
 		action_label.text = "Player %s attack drains %d HP (%s)." % [damage_type_name, damage, affinity_name]
-	elif critical:
-		action_label.text = "CRITICAL! Player %s attack deals %d damage (%s)." % [damage_type_name, damage, affinity_name]
 	elif result_type == "repel":
 		action_label.text = "Player %s attack is repelled (%s)." % [damage_type_name, affinity_name]
 	elif CombatManager.is_enemy_turn():
