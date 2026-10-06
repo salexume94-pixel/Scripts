@@ -7,6 +7,10 @@ extends Node
 ## Equipment systems can change the derived combat values through the public
 ## equipment modifier methods below. Keeping the resulting values here gives
 ## combat and UI systems one authoritative place to read current stats.
+##
+## GameState stores a runtime snapshot of the Player's base stats and current
+## HP/MP so recreating the Player during a scene transition does not reset
+## progress or current health.
 
 @export var level: int = 1
 @export var experience: int = 0
@@ -28,6 +32,34 @@ extends Node
 var equipment_attack_bonus: int = 0
 var equipment_defense_bonus: int = 0
 
+
+func _ready() -> void:
+	# Restore the runtime snapshot when this Player instance is created.
+	# Scene transitions create a new Player node, so loading this snapshot keeps
+	# current HP, MP, level, and base combat stats instead of using scene defaults.
+	var saved_stats: Dictionary = GameState.get_player_stats()
+
+	if saved_stats.is_empty():
+		# The first Player instance has no saved snapshot yet, so its exported
+		# scene values become the initial runtime state.
+		_sync_to_game_state()
+		return
+
+	level = saved_stats.get("level", level)
+	experience = saved_stats.get("experience", experience)
+	max_hp = saved_stats.get("max_hp", max_hp)
+	hp = saved_stats.get("hp", hp)
+	max_mp = saved_stats.get("max_mp", max_mp)
+	mp = saved_stats.get("mp", mp)
+	attack = saved_stats.get("attack", attack)
+	defense = saved_stats.get("defense", defense)
+	magic_attack = saved_stats.get("magic_attack", magic_attack)
+	magic_defense = saved_stats.get("magic_defense", magic_defense)
+	speed = saved_stats.get("speed", speed)
+
+	_sync_to_game_state()
+
+
 ## Apply direct damage for combat systems and temporary development testing.
 ## The returned value is the actual HP lost after clamping at zero.
 func take_damage(amount: int) -> int:
@@ -36,6 +68,7 @@ func take_damage(amount: int) -> int:
 
 	var old_hp := hp
 	hp = maxi(hp - amount, 0)
+	_sync_to_game_state()
 	return old_hp - hp
 
 
@@ -48,6 +81,7 @@ func restore_hp(amount: int) -> int:
 
 	var old_hp := hp
 	hp = mini(hp + amount, max_hp)
+	_sync_to_game_state()
 	return hp - old_hp
 
 
@@ -58,6 +92,7 @@ func restore_mp(amount: int) -> int:
 
 	var old_mp := mp
 	mp = mini(mp + amount, max_mp)
+	_sync_to_game_state()
 	return mp - old_mp
 
 
@@ -76,3 +111,21 @@ func remove_equipment_modifiers(attack_bonus: int, defense_bonus: int) -> void:
 	equipment_defense_bonus -= defense_bonus
 	attack -= attack_bonus
 	defense -= defense_bonus
+
+
+func _sync_to_game_state() -> void:
+	# Store base stats plus current HP/MP so a newly created PlayerStats can
+	# reconstruct the same gameplay state after a scene transition.
+	GameState.set_player_stats({
+		"level": level,
+		"experience": experience,
+		"max_hp": max_hp,
+		"hp": hp,
+		"max_mp": max_mp,
+		"mp": mp,
+		"attack": attack - equipment_attack_bonus,
+		"defense": defense - equipment_defense_bonus,
+		"magic_attack": magic_attack,
+		"magic_defense": magic_defense,
+		"speed": speed,
+	})
