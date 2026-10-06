@@ -14,7 +14,6 @@ const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balan
 const ENCOUNTER_BEHAVIOR_PROFILES: Array[Resource] = [
 	preload("res://enemies/definitions/behavior_balanced.tres"),
 	preload("res://enemies/definitions/behavior_aggressive.tres"),
-	preload("res://enemies/definitions/behavior_weakness_hunter.tres"),
 	preload("res://enemies/definitions/behavior_defensive.tres"),
 ]
 const AFFINITIES = preload("res://combat/affinities.gd")
@@ -570,10 +569,9 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		if action != null:
 			max_power = maxi(max_power, action.power)
 
-	if behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER or behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
-		# Weakness Hunter and Aggressive enemies both decide whether to target
-		# the Player's known weakness before selecting a specific action.
-		# Aggressive behavior then adds its stronger-action preference below.
+	if behavior.strategy == ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
+		# Aggressive enemies decide whether to target the Player's known weakness
+		# before selecting a specific action, then add their stronger-action preference.
 		# The probability remains configurable through the shared behavior profile.
 		target_weakness_actions = randf() < behavior.weakness_selection_chance
 
@@ -607,15 +605,6 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 					var defensive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
 					var defensive_preference: float = 1.0 - defensive_power_ratio
 					weight *= pow(defensive_preference, behavior.power_bias_strength)
-				ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
-					# First choose whether this turn belongs to the weakness or
-					# non-weakness pool. Then preserve configured weights inside that pool.
-					var is_weakness_action := player_affinity == AFFINITIES.Type.WEAK
-					if is_weakness_action != target_weakness_actions:
-						weight = 0.0
-					elif is_weakness_action:
-						weight *= action.weakness_weight_multiplier * behavior.weakness_priority
-
 		if action.is_defend:
 			# Defend is not an elemental attack, so affinity modifiers do not apply.
 			player_affinity = AFFINITIES.Type.NORMAL
