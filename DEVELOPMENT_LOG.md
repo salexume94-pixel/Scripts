@@ -1,3 +1,61 @@
+### Quest Log Foundation: Initial Implementation
+
+Implemented the Quest Log foundation so future quests and gated areas have an authoritative quest-tracking system to build on.
+
+Added:
+- `quests/quest_data.gd`
+- `quests/quest_database.gd`
+- `systems/quest_manager.gd`
+- `ui/quest_log.gd`
+- `ui/QuestLog.tscn`
+
+Updated:
+- `project.godot`
+- `scenes/World.tscn`
+- `scenes/Interior.tscn`
+- `ARCHITECTURE.md`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added a reusable QuestData definition containing stable quest IDs, title, description, objective definitions, reward definitions, and repeatable-quest support.
+- Added QuestDatabase as the authoritative catalog for quest definitions.
+- Added QuestManager as an autoload and authoritative owner of runtime quest state.
+- Added explicit quest states: NOT_STARTED, ACTIVE, COMPLETED, and FAILED.
+- Added objective progress tracking with required-count caps and automatic completion when all objectives are satisfied.
+- Added both incremental and absolute objective-progress APIs so future NPC, item, exploration, and combat systems can update objectives without knowing QuestManager's internal storage.
+- Added quest start, completion, and failure APIs with signals for UI and future world systems.
+- Added active, completed, and failed quest queries for future systems.
+- Added quest reward definition support. Rewards are currently displayed as quest data; reward application remains separated from QuestManager until the reward flow is defined.
+- Added save/load serialization methods to QuestManager using primitive dictionaries so the future disk save/load system can persist quest state without coupling quest logic to file I/O.
+- Added a standalone Quest Log UI with Active Quests and Completed Quests sections.
+- Added objective descriptions and progress display.
+- Added reward display in the Quest Log.
+- Added quest completion notification feedback.
+- Added Q-key Quest Log toggle.
+- Added the Quest Log to both World and Interior scenes so tracked quest state remains available across scene transitions.
+- Added QuestManager to project autoloads so quest runtime state survives scene recreation.
+- Updated architecture documentation to keep quest definitions, runtime tracking, and presentation separated.
+
+Important scope boundary:
+- The repository currently has no disk SaveManager implementation. QuestManager now exposes the serialization boundary required by a future save/load system, but this task does not invent a separate save-file system.
+- No actual gameplay quest was added. The foundation is intentionally content-neutral so Quests / Gated Areas can be built against it next.
+
+Runtime verification required:
+1. Pull the latest `main`.
+2. Open the project in Godot 4.7 and confirm no parse/resource errors occur.
+3. Start the World scene and press Q. Confirm the Quest Log opens and shows empty Active/Completed sections without errors.
+4. Enter the Interior and press Q again. Confirm the Quest Log remains available.
+5. Add a temporary QuestData definition locally or through the editor and register it in QuestDatabase.
+6. Start the quest and confirm it appears under Active Quests.
+7. Advance each objective and confirm progress is displayed and capped at its required count.
+8. Complete all objectives and confirm the quest moves to Completed Quests and a completion notification appears.
+9. Confirm a completed non-repeatable quest cannot be started again.
+10. Confirm `get_save_data()` returns only serializable primitive quest state and `load_save_data()` restores objective progress/state correctly.
+11. Confirm no Godot debugger errors occur.
+
+Next:
+- **Quests / Gated Areas**: build actual quest content and connect quest state to NPC progression, required items, defeated enemies, locked doors, and area unlocking.
+
 ### Combat Encounter Regression: Overworld Encounter System Restored
 
 Runtime testing after switching from the `enemy-ai-behavior` branch to `main` showed that overworld combat encounters were no longer occurring.
@@ -134,7 +192,7 @@ The current development order is fixed as follows. Complete each item in order b
 2. **Map labels**
 3. **Combat polish**
 4. **Balance**
-5. **Quest log**
+5. **Quest log** *(foundation implemented; runtime verification pending)*
 6. **Quests / Gated Areas**
 7. **Ending / Boss**
 
