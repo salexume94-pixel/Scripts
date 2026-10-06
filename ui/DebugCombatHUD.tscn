@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/debug_combat_hud.gd" id="1_debug"]
+
+[node name="DebugCombatHUD" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_debug")
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 820.0
+offset_top = 12.0
+offset_right = 1140.0
+offset_bottom = 636.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Title" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "DEBUG COMBAT HUD"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Status:"
+
+[node name="TargetAffinities" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Target affinities:"
+
+[node name="PlayerAffinities" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Player affinities:"
+
+[node name="LastPlayer" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Last Player action:"
+
+[node name="LastEnemy" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "Last Enemy action:"
+
+[node name="AITitle" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "AI DECISION TRACE"
+
+[node name="AITrace" type="Label" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 2
+text = "AI trace unavailable."
+
+[node name="LogTitle" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "COMBAT LOG"
+
+[node name="LogScroll" type="ScrollContainer" parent="Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Log" type="Label" parent="Panel/Margin/Content/LogScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 2
+text = "Combat log unavailable."
+
+[node name="Help" type="Label" parent="Panel/Margin/Content"]
+layout_mode = 2
+text = "F3: Toggle debug HUD"
+horizontal_alignment = 1
