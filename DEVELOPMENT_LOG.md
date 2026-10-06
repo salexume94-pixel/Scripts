@@ -393,3 +393,115 @@ Runtime verification required after this change:
 - Confirm no Godot debugger errors occur.
 
 Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
+
+### Item System Foundation: Resource Definitions
+
+Replaced the temporary in-code item catalog with actual ItemData Resource definitions.
+
+Created:
+- `items/item_database.gd`
+- `items/definitions/potion.tres`
+- `items/definitions/iron_sword.tres`
+- `items/definitions/wooden_shield.tres`
+- `items/definitions/leather_helm.tres`
+- `items/definitions/leather_armor.tres`
+- `items/definitions/power_ring.tres`
+- `items/definitions/gold.tres`
+
+Updated:
+- `items/item_data.gd`
+- `world/chest.gd`
+- `scenes/World.tscn`
+- `scenes/Interior.tscn`
+
+Removed:
+- `items/test_items.gd`
+
+ItemData now has typed equipment slots:
+- Weapon
+- Shield
+- Head
+- Body
+- Accessory
+
+ItemDatabase is now the authoritative mapping from stable item IDs to shared Resource definitions. Inventory, equipment, HUD, item use, and Chest systems no longer need to construct temporary item definitions in code.
+
+### Inventory and Equipment Expansion
+
+Updated:
+- `player/player_equipment.gd`
+- `ui/inventory_character_hud.gd`
+- `ui/InventoryCharacterHUD.tscn`
+
+Equipment now supports multiple slots with one item per slot:
+- Weapon
+- Shield
+- Head
+- Body
+- Accessory
+
+PlayerEquipment validates item type, item ID, and equipment slot before accepting an item. Existing equipment must successfully return to inventory before it can be replaced. Invalid or stale saved equipment is ignored during restoration.
+
+The Character/Inventory HUD now:
+- Displays every equipment slot.
+- Provides an Unequip control for each occupied slot.
+- Uses ItemDatabase for item definitions.
+- Shows equipment comparison values such as:
+  - `Attack: 10 -> 15 (+5)`
+  - `Defense: 10 -> 10 (+0)`
+- Calculates replacement comparisons against the currently equipped item in that slot instead of comparing only against base stats.
+
+GameState continues to store equipment by stable item ID, and PlayerEquipment validates and reapplies those definitions when a new Player is created during World <-> Interior transitions.
+
+### Shared Interaction System
+
+Created:
+- `systems/interaction_system.gd`
+
+Updated:
+- `player/Player.tscn`
+- `world/chest.gd`
+- `world/door.gd`
+
+The Player now owns a shared InteractionSystem with an interaction detection area.
+
+Interaction architecture:
+- Player InteractionSystem detects nearby interactable Areas.
+- The nearest valid interactable is selected.
+- Pressing **E** calls that object's shared `interact()` method.
+- Chest owns chest/reward behavior.
+- Door owns scene-transition behavior.
+- SceneManager still owns actual scene loading.
+
+Chest-specific E-key input and Door automatic body-entered scene transitions have been removed from those individual scripts.
+
+This establishes one shared interaction path for Chest, Door, and future interactables instead of giving every world object its own input handling.
+
+### Runtime Verification Required
+
+The Resource/item, equipment, and interaction changes require local Godot runtime verification.
+
+Verify:
+- Project opens without parse errors.
+- World loads normally.
+- Potion Chest awards Potion.
+- Sword Chest awards Iron Sword.
+- Shield/Armor chests award their correct equipment.
+- Interior chests award Head/Ring equipment.
+- Inventory displays the new item names and quantities.
+- Sword equips to Weapon and changes Attack correctly.
+- Shield equips to Shield and changes Defense correctly.
+- Head, Body, and Accessory items occupy their own slots.
+- Equipping another item in an occupied slot replaces the previous item correctly.
+- Invalid equipment cannot be equipped.
+- HUD comparison displays current -> projected stat changes.
+- Unequipping each slot returns the item to inventory and removes its modifiers.
+- World -> Interior -> World preserves inventory and equipment.
+- Pressing **E** near a Chest opens it.
+- Pressing **E** outside interaction range does nothing.
+- Pressing **E** near the Door transitions to the configured scene.
+- Door no longer transitions merely by walking into it.
+- No Godot debugger errors occur.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
