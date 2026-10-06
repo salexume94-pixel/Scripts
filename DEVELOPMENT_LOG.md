@@ -2242,3 +2242,11 @@ Runtime verification:
 5. Confirm long Player/Enemy diagnostic entries wrap inside the Debug HUD instead of expanding its width.
 6. Confirm the normal Battle HUD and left Actions bar remain unchanged.
 7. Confirm no Godot debugger or resource errors occur.
+
+
+### Combat Debug HUD: Word Wrapping
+
+- Enabled word wrapping on the Debug Combat HUD's Status, Target Affinities, Player Affinities, Last Player Action, and Last Enemy Action labels.
+- Uses Godot's smart word-wrap mode so diagnostic text wraps within the fixed-width HUD instead of expanding horizontally.
+- AI Trace and Combat Log already had wrapping enabled.
+- Runtime verification required after pulling `main`.
