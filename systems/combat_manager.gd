@@ -10,8 +10,6 @@ const ENEMY_DATABASE = preload("res://enemies/enemy_database.gd")
 const COMBAT_RULES = preload("res://combat/combat_rules.gd")
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
-const PLAYER_CRITICAL_TEST_ACTION = preload("res://combat/definitions/critical_test.tres")
-const PLAYER_MISS_TEST_ACTION = preload("res://combat/definitions/miss_test.tres")
 const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
 const ENCOUNTER_BEHAVIOR_PROFILES: Array[Resource] = [
 	preload("res://enemies/definitions/behavior_balanced.tres"),
@@ -257,12 +255,24 @@ func player_attack(action: Resource = null) -> bool:
 
 	var selected_action: Resource = action if action != null else PLAYER_PHYSICAL_ACTION
 	var action_power := maxi(int(round(float(player_attack_value) * selected_action.power_multiplier)), 1)
+	var player_speed: int = 0
+	var player := current_scene.get_node_or_null("Player")
+	if player != null:
+		var player_stats := player.get_node_or_null("PlayerStats")
+		if player_stats != null:
+			player_speed = int(player_stats.speed)
+	if player_speed <= 0:
+		var saved_speed_stats: Dictionary = GameState.get_player_stats()
+		player_speed = int(saved_speed_stats.get("speed", 0))
+	var enemy_speed: int = int(enemy_data.speed)
+	var critical_chance: float = clampf(float(player_speed), 0.0, 100.0)
+	var accuracy: float = clampf(100.0 - float(enemy_speed), 0.0, 100.0)
 	var damage_result: Dictionary = COMBAT_RULES.resolve_damage(
 		action_power,
 		selected_action.damage_type,
 		enemy_data,
-		selected_action.accuracy,
-		selected_action.critical_chance,
+		accuracy,
+		critical_chance,
 		selected_action.critical_multiplier
 	)
 
@@ -321,12 +331,14 @@ func player_attack(action: Resource = null) -> bool:
 	return true
 
 func player_critical_test() -> bool:
-	# Start a deterministic guaranteed-critical action for runtime testing.
-	return player_attack(PLAYER_CRITICAL_TEST_ACTION)
+	# Debug-test the real Player Attack path using the Player Speed-derived
+	# critical chance. No guaranteed critical modifier is used.
+	return player_attack()
 
 func player_miss_test() -> bool:
-	# Start a deterministic guaranteed-miss action for runtime testing.
-	return player_attack(PLAYER_MISS_TEST_ACTION)
+	# Debug-test the real Player Attack path using the Enemy Speed-derived
+	# accuracy. No guaranteed miss modifier is used.
+	return player_attack()
 
 func player_defend() -> bool:
 	# Defend spends one full Press Turn and reduces the next enemy turn's damage.
