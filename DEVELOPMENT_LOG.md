@@ -1,3 +1,43 @@
+### Enemy Action Selection: Multiple Slime Actions
+
+Expanded the enemy action foundation so the Slime now has two selectable actions.
+
+Created:
+- `enemies/definitions/slime_heavy_attack.tres`
+
+Updated:
+- `enemies/definitions/slime_attack.tres`
+- `enemies/definitions/slime.tres`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Kept the existing Slime `Attack` at power 10 and selection weight 1.
+- Added `Heavy Attack` at power 14 and selection weight 1.
+- Registered both actions in the Slime's EnemyData action list.
+- The existing weighted selection system now has two valid actions to choose from.
+- With the current Player Defense value of 10, Attack deals 1 damage while Heavy Attack deals 4 damage.
+- Slime HP remains 50, so the established combat test values are unchanged.
+- No elemental behavior, status effects, conditional AI, or new turn rules were added.
+
+Runtime verification required:
+- Pull the latest main branch.
+- Confirm the project opens without parse errors.
+- Start Test Battle (Slime).
+- Spend all four Player Press Turns without defeating the Slime.
+- Confirm the enemy turn resolves without errors.
+- Confirm the Battle action text identifies the selected action.
+- Repeat the test across multiple battles and confirm both `Attack` and `Heavy Attack` can be selected.
+- Confirm Attack deals 1 damage and Heavy Attack deals 4 damage under the current Player Defense calculation.
+- Confirm Press Turns, Victory, and Run remain functional.
+- Confirm no Godot debugger errors occur.
+
+Known limitation:
+- The current selection is weighted random, so either action may be selected on a given enemy turn.
+- The Slime only receives one enemy turn before its 50 HP is normally depleted by the current Player Attack value.
+- Conditional behavior and true enemy AI remain future work.
+
+Continue using comments in scripts to explain each script and major section. Each script should clearly describe its primary responsibility and the purpose of its major sections.
+
 ### Enemy Action Selection Foundation
 
 Implemented the first action-selection layer for enemies.
