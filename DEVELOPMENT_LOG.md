@@ -1999,3 +1999,12 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Updated the log follow logic to wait for the container/layout to finish updating before moving the scrollbar to its current maximum, ensuring new events appear at the bottom.
 - Disabled horizontal scrolling for the combat log so wrapped event text stays within the available width.
 - Runtime verification required in the local Godot project.
+
+
+### Battle HUD Viewport Sizing Adjustment
+
+- Checked the project display configuration. No custom base window size is defined, so the project uses Godot's default viewport sizing with canvas-item stretching.
+- Reduced the Battle panel from 600×680 to 580×600 so it fits within the expected default 1152×648 viewport instead of extending beyond the vertical screen bounds.
+- Reduced container spacing, log viewport height, action text height, and button heights to preserve all Battle controls within the panel.
+- Kept the Battle HUD centered and full-screen anchored.
+- Runtime verification required on the user's actual display resolution.
