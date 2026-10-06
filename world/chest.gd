@@ -1,8 +1,8 @@
 extends StaticBody2D
 ## Handles the behavior of a reusable World chest.
 ##
-## This script is responsible for the chest's interaction state and deciding
-## when its reward is granted. It does not define the item or store inventory.
+## This script owns the chest's interaction state and deciding when its reward
+## is granted. It does not define the item or store inventory.
 ##
 ## ItemData defines the reward, while PlayerInventory stores it. Keeping those
 ## responsibilities separate preserves the project's one-primary-job
@@ -15,14 +15,17 @@ const ITEM_DATABASE = preload("res://items/item_database.gd")
 @export var reward_item_id: String = "potion"
 
 # Tracks whether this chest has already been opened.
-# A chest can only be opened once in this initial implementation.
 var is_opened: bool = false
+
+
+func _ready() -> void:
+	# Register this Chest with the shared interaction system. The Player can
+	# then find it by distance without depending on Area2D overlap callbacks.
+	add_to_group("interactable")
 
 
 func interact(player: Node) -> void:
 	# The shared InteractionSystem passes the Player that pressed E.
-	# Using that reference prevents the Chest from accidentally interacting
-	# with a different Player node or performing scene-related behavior.
 	open_chest(player)
 
 
@@ -42,7 +45,6 @@ func open_chest(player: Node) -> void:
 		return
 
 	# Resolve the configured reward ID through the authoritative item catalog.
-	# The Chest owns the reward event, while ItemDatabase owns the definition.
 	var reward: Resource = ITEM_DATABASE.get_item(reward_item_id)
 
 	# Refuse invalid IDs rather than creating or inventing item data at runtime.
@@ -55,7 +57,6 @@ func open_chest(player: Node) -> void:
 	if not inventory.add_item(reward, 1):
 		return
 
-	# Record the new chest state after the reward has been granted.
 	is_opened = true
 
 	# Change the visible Chest to show that it has been opened.
