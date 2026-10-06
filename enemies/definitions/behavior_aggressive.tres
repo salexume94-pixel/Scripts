@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy_behavior_profile.gd" id="1_behavior"]
+
+[resource]
+script = ExtResource("1_behavior")
+profile_id = "aggressive"
+strategy = 1
+weakness_priority = 1.0
+weakness_selection_chance = 0.65
+unfavorable_affinity_multiplier = 0.0
+minimum_selection_weight = 0.0
+repeat_action_multiplier = 0.35
+defend_weight_multiplier = 0.35
+power_bias_strength = 3

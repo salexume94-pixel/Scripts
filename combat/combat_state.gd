@@ -18,7 +18,12 @@ enum Phase {
 @export var enemy_hp: int = 0
 @export var enemy_max_hp: int = 0
 
-# Four full Press Turns are available to the Player at the start of a round.
+## Behavior profile selected for this specific encounter.
+## This is separate from EnemyData so one enemy can behave differently
+## from battle to battle without modifying its shared definition.
+@export var enemy_behavior_profile: Resource = null
+
+# The configured Press Turn count is available to the Player at the start of a round.
 # A fractional value allows weakness and critical actions to consume half turns.
 @export var player_press_turns: int = 4
 @export var player_press_turns_remaining: float = 4.0
@@ -31,6 +36,7 @@ enum Phase {
 @export var last_enemy_damage: int = 0
 @export var last_enemy_damage_type: int = 0
 @export var last_enemy_affinity: int = 0
+@export var last_enemy_result_type: String = "damage"
 
 ## Results from the most recent Player action against the enemy.
 @export var last_player_damage_type: int = 0

@@ -18,15 +18,35 @@ static func resolve_damage(
 	critical_chance: float = 0.0,
 	critical_multiplier: float = 2.0
 ) -> Dictionary:
-	## Resolve accuracy first, then apply affinity and critical-hit rules.
+	## Resolve Player damage against an EnemyData definition.
+	## This remains the existing public entry point for Player attacks.
+	return resolve_damage_against_affinities(
+		base_damage,
+		damage_type,
+		enemy_data.affinities if enemy_data != null else [],
+		accuracy,
+		critical_chance,
+		critical_multiplier
+	)
+
+static func resolve_damage_against_affinities(
+	base_damage: int,
+	damage_type: int,
+	affinities: Array[Resource],
+	accuracy: float = 100.0,
+	critical_chance: float = 0.0,
+	critical_multiplier: float = 2.0
+) -> Dictionary:
+	## Resolve damage against any target affinity list.
 	##
-	## A miss deals no damage and consumes one full Press Turn. A critical hit
-	## increases damage and consumes only half a Press Turn. Affinity behavior
-	## remains authoritative for Weak, Resist, Null, Drain, and Repel.
+	## This shared path lets Player and Enemy actions use the same elemental
+	## rules. Enemy AI can therefore select an elemental action based on the
+	## Player's weakness and the resulting attack can apply that same weakness
+	## when it is actually performed.
 	if randf_range(0.0, 100.0) > clampf(accuracy, 0.0, 100.0):
 		return {
 			"damage": 0,
-			"affinity": get_enemy_affinity(enemy_data, damage_type),
+			"affinity": get_affinity_from_list(affinities, damage_type),
 			"damage_type": damage_type,
 			"turn_cost": 1.0,
 			"result_type": "miss",
@@ -34,7 +54,7 @@ static func resolve_damage(
 			"critical": false,
 		}
 
-	var affinity := get_enemy_affinity(enemy_data, damage_type)
+	var affinity := get_affinity_from_list(affinities, damage_type)
 	var damage := maxi(base_damage, 0)
 	var turn_cost := 1.0
 	var result_type := "damage"
@@ -42,29 +62,21 @@ static func resolve_damage(
 
 	match affinity:
 		AFFINITIES.Type.WEAK:
-			# Weakness increases damage and consumes only half a Press Turn.
 			multiplier = 1.5
 			turn_cost = 0.5
 		AFFINITIES.Type.RESIST:
-			# Resistance reduces damage but still consumes a normal turn.
 			multiplier = 0.5
 		AFFINITIES.Type.NULLIFY:
-			# Nullification prevents damage and consumes two Press Turns.
 			damage = 0
 			turn_cost = 2.0
 		AFFINITIES.Type.DRAIN:
-			# Drain turns the would-be damage into healing for the target and
-			# consumes the entire remaining Press Turn set.
 			result_type = "drain"
 			turn_cost = 4.0
 		AFFINITIES.Type.REPEL:
-			# Repel sends the would-be damage back to the attacker.
 			result_type = "repel"
 
 	var critical := false
 	if result_type == "damage" and randf_range(0.0, 100.0) <= clampf(critical_chance, 0.0, 100.0):
-		# Critical hits are resolved after affinity so the final damage reflects
-		# both the target's affinity and the action's critical multiplier.
 		critical = true
 		multiplier *= maxf(critical_multiplier, 1.0)
 		turn_cost = 0.5
@@ -91,11 +103,14 @@ static func get_enemy_affinity(enemy_data: Resource, damage_type: int) -> int:
 	## Unconfigured damage types intentionally behave as Normal.
 	if enemy_data == null:
 		return AFFINITIES.Type.NORMAL
+	return get_affinity_from_list(enemy_data.affinities, damage_type)
 
-	for entry in enemy_data.affinities:
+static func get_affinity_from_list(affinities: Array[Resource], damage_type: int) -> int:
+	## Return the configured affinity for a damage type from any target list.
+	## Unconfigured damage types intentionally behave as Normal.
+	for entry in affinities:
 		if entry == null:
 			continue
 		if entry.damage_type == damage_type:
 			return entry.affinity
-
 	return AFFINITIES.Type.NORMAL
