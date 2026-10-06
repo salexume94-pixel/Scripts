@@ -9,7 +9,6 @@ class_name EnemyBehaviorProfile
 enum Strategy {
 	BALANCED,
 	AGGRESSIVE,
-	WEAKNESS_HUNTER,
 	DEFENSIVE,
 }
 
@@ -22,7 +21,7 @@ enum Strategy {
 ## Multiplier applied when an action targets a known Player weakness.
 @export_range(0.0, 9999.0) var weakness_priority: float = 1.0
 
-## Probability that a weakness-hunter selects from actions targeting the Player weakness.
+## Probability that weakness-aware Aggressive behavior selects from actions targeting the Player weakness.
 ## A value of 0.65 gives an approximate 13-in-20 weakness selection rate.
 ## The remaining probability is used for non-weakness actions.
 @export_range(0.0, 1.0) var weakness_selection_chance: float = 0.65
