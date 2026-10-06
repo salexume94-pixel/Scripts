@@ -2463,3 +2463,18 @@ Next:
 - Expand the map into a larger playable world layer.
 - Connect Tutorial Town to the larger World Map and back.
 - Then verify that **M** correctly tracks the active world layer and Player position across those transitions.
+
+
+### World / Town Boundary Travel: Runtime Verification Passed
+
+- Runtime verification passed for the reusable world-location boundary travel system.
+- Confirmed Tutorial Town can be exited from all four sides of its outer boundary.
+- Confirmed the previous single-purpose Town Exit is no longer required.
+- Confirmed the World Map can enter Tutorial Town from all four sides of its designated town entry region.
+- Confirmed the town entry region is data-driven through location metadata rather than hard-coded to a single Door.
+- Confirmed the reusable system supports future towns by allowing each location to define its own world position, entry-region size, destination scene, and destination Player position.
+- Confirmed existing World Map, Tutorial Town, Player movement, scene transitions, and map functionality remain working.
+- This world/town boundary travel task is considered runtime verified.
+
+Next:
+- Continue expanding the world map and adding future locations using the reusable location-entry system.
