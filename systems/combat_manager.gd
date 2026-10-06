@@ -483,7 +483,13 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 		var weight: float = action.selection_weight
 		var player_affinity := _get_player_affinity(action.damage_type)
 
-		match behavior.strategy:
+		# Defend is a valid action for every profile. It bypasses attack-power
+		# weighting because it intentionally has zero damage power, then uses the
+		# profile-specific multiplier to make Defensive enemies choose it more often.
+		if action.is_defend:
+			weight *= behavior.defend_weight_multiplier
+		else:
+			match behavior.strategy:
 			ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
 				# Aggressive enemies use the same weakness-targeting pool as
 				# Weakness Hunters, then favor stronger actions inside that pool.
@@ -513,7 +519,10 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 				elif is_weakness_action:
 					weight *= action.weakness_weight_multiplier * behavior.weakness_priority
 
-		if player_affinity != AFFINITIES.Type.NORMAL and player_affinity != AFFINITIES.Type.WEAK:
+		if action.is_defend:
+			# Defend is not an elemental attack, so affinity modifiers do not apply.
+			player_affinity = AFFINITIES.Type.NORMAL
+		elif player_affinity != AFFINITIES.Type.NORMAL and player_affinity != AFFINITIES.Type.WEAK:
 			weight *= behavior.unfavorable_affinity_multiplier
 
 		# Discourage repeating the exact same action while preserving the profile's
