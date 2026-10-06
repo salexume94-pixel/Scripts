@@ -1988,3 +1988,14 @@ Continue using comments in scripts to explain each script and major section. Eac
 - The log can now be manually scrolled through when history exceeds the visible area.
 - Combat log updates automatically scroll to the newest event after the UI has resized to the latest content.
 - Runtime verification required: confirm manual scrolling works and each new combat event follows the newest entry.
+
+
+### Battle Screen Layout and Combat Log Follow Fix
+
+- Reworked the Battle panel sizing so the complete combat UI has enough vertical space for the log and action/test controls.
+- Reduced unnecessary vertical spacing and button heights while preserving all existing controls.
+- Constrained the combat log ScrollContainer to a fixed 90-pixel viewport so growing log history cannot push the TEST ACTIONS buttons out of the Battle panel.
+- Switched the combat log to automatic vertical scrolling only when content exceeds the viewport.
+- Updated the log follow logic to wait for the container/layout to finish updating before moving the scrollbar to its current maximum, ensuring new events appear at the bottom.
+- Disabled horizontal scrolling for the combat log so wrapped event text stays within the available width.
+- Runtime verification required in the local Godot project.
