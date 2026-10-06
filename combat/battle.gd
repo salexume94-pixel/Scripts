@@ -32,6 +32,18 @@ func _on_press_turns_changed(_remaining: float) -> void:
 	_update_press_turn_display()
 	_update_combat_controls()
 
+func _on_defend_pressed() -> void:
+	if CombatManager.player_defend():
+		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
+		if action_label != null:
+			action_label.text = "Player defends." if CombatManager.is_player_turn() else "Player defends. Enemy turn."
+
+func _on_pass_pressed() -> void:
+	if CombatManager.player_pass():
+		var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
+		if action_label != null:
+			action_label.text = "Player passes." if CombatManager.is_player_turn() else "Player passes. Enemy turn."
+
 func _on_enemy_turn_started() -> void:
 	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
 	if action_label != null:
@@ -82,15 +94,19 @@ func _update_press_turn_display() -> void:
 
 func _update_combat_controls() -> void:
 	var attack_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/AttackButton") as Button
+	var defend_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/DefendButton") as Button
+	var pass_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/PassButton") as Button
 	var run_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/RunButton") as Button
 	var victory_button := get_node_or_null("CenterContainer/Panel/VBoxContainer/VictoryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
-	if attack_button == null or run_button == null or victory_button == null:
+	if attack_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
 		return
 	var victory := CombatManager.is_victory()
 	var defeat := CombatManager.is_defeat()
 	var player_turn := CombatManager.is_player_turn()
 	attack_button.disabled = victory or defeat or not player_turn
+	defend_button.disabled = victory or defeat or not player_turn
+	pass_button.disabled = victory or defeat or not player_turn
 	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
 	if state_label != null:
