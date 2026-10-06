@@ -37,6 +37,11 @@ layout_mode = 2
 text = "Combat Encounter: Unknown"
 horizontal_alignment = 1
 
+[node name="EnemyBehaviorLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Enemy Behavior: unknown"
+horizontal_alignment = 1
+
 [node name="StateLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "PLAYER TURN"
@@ -78,6 +83,13 @@ value = 50.0
 layout_mode = 2
 text = "Press Turns: ● ● ● ●"
 horizontal_alignment = 1
+
+[node name="CombatLogLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+text = "Combat log loading..."
+autowrap_mode = 2
+vertical_alignment = 1
 
 [node name="ActionHeader" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
 layout_mode = 2
