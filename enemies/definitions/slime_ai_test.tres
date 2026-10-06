@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy_data.gd" id="1_enemy_data"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_attack.tres" id="2_slime_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_heavy_attack.tres" id="3_slime_heavy_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/slime_fire_attack.tres" id="4_slime_fire_attack"]
+[ext_resource type="Resource" path="res://enemies/definitions/behavior_weakness_hunter.tres" id="5_behavior"]
+
+[resource]
+script = ExtResource("1_enemy_data")
+actions = Array[ExtResource("2_slime_attack")]([ExtResource("2_slime_attack"), ExtResource("3_slime_heavy_attack"), ExtResource("4_slime_fire_attack")])
+behavior_profile = ExtResource("5_behavior")
+enemy_id = "slime_ai_test"
+display_name = "Slime AI Test"
+level = 1
+max_hp = 100
+attack = 10
+defense = 5
+magic_attack = 5
+magic_defense = 5
+speed = 5
+experience_reward = 10
+gold_reward = 5
