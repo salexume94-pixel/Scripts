@@ -2259,3 +2259,18 @@ Runtime verification:
 - The panel is now fixed at 230x624 pixels and remains fully inside the 1152x648 gameplay viewport.
 - Word wrapping remains enabled for the diagnostic text so long entries stay within the HUD width.
 - Runtime verification passed: the Debug Combat HUD is fully visible and confined within the player's viewport.
+
+
+### Combat Debug HUD: Viewport Containment Fix
+
+- Fixed the Debug Combat HUD extending beyond the player's 1152x648 viewport.
+- Replaced the problematic anchor-based vertical sizing with explicit viewport coordinates.
+- Debug HUD is now constrained to:
+  - Left: 910
+  - Right: 1140
+  - Top: 12
+  - Bottom: 636
+  - Width: 230 pixels
+  - Height: 624 pixels
+- Word wrapping remains enabled for diagnostic text.
+- Confirmed runtime behavior: the Debug Combat HUD is fully visible and contained within the player's viewport.
