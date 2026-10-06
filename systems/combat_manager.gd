@@ -490,34 +490,30 @@ func _select_enemy_action(enemy_data: Resource) -> Resource:
 			weight *= behavior.defend_weight_multiplier
 		else:
 			match behavior.strategy:
-			ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
-				# Aggressive enemies use the same weakness-targeting pool as
-				# Weakness Hunters, then favor stronger actions inside that pool.
-				# This makes Aggressive a more forceful version of weakness hunting
-				# instead of a completely separate targeting strategy.
-				var aggressive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
-				weight *= pow(aggressive_power_ratio, behavior.power_bias_strength)
-				var is_aggressive_weakness_action := player_affinity == AFFINITIES.Type.WEAK
-				if is_aggressive_weakness_action != target_weakness_actions:
-					weight = 0.0
-				elif is_aggressive_weakness_action:
-					weight *= action.weakness_weight_multiplier * behavior.weakness_priority
-			ENEMY_BEHAVIOR_PROFILE.Strategy.DEFENSIVE:
-				# Defensive behavior currently has no dedicated defend/guard action,
-				# so it uses action power as the available proxy: lower-power attacks
-				# are treated as safer choices. This keeps the profile framework
-				# functional until true defensive enemy actions are introduced.
-				var defensive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
-				var defensive_preference: float = 1.0 - defensive_power_ratio
-				weight *= pow(defensive_preference, behavior.power_bias_strength)
-			ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
-				# First choose whether this turn belongs to the weakness or
-				# non-weakness pool. Then preserve configured weights inside that pool.
-				var is_weakness_action := player_affinity == AFFINITIES.Type.WEAK
-				if is_weakness_action != target_weakness_actions:
-					weight = 0.0
-				elif is_weakness_action:
-					weight *= action.weakness_weight_multiplier * behavior.weakness_priority
+				ENEMY_BEHAVIOR_PROFILE.Strategy.AGGRESSIVE:
+					# Aggressive enemies use the same weakness-targeting pool as
+					# Weakness Hunters, then favor stronger actions inside that pool.
+					var aggressive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
+					weight *= pow(aggressive_power_ratio, behavior.power_bias_strength)
+					var is_aggressive_weakness_action := player_affinity == AFFINITIES.Type.WEAK
+					if is_aggressive_weakness_action != target_weakness_actions:
+						weight = 0.0
+					elif is_aggressive_weakness_action:
+						weight *= action.weakness_weight_multiplier * behavior.weakness_priority
+				ENEMY_BEHAVIOR_PROFILE.Strategy.DEFENSIVE:
+					# Defensive enemies favor lower-power attacks. Defend itself
+					# is handled separately above so zero power does not zero it out.
+					var defensive_power_ratio: float = clampf(float(action.power) / float(max_power), 0.0, 1.0)
+					var defensive_preference: float = 1.0 - defensive_power_ratio
+					weight *= pow(defensive_preference, behavior.power_bias_strength)
+				ENEMY_BEHAVIOR_PROFILE.Strategy.WEAKNESS_HUNTER:
+					# First choose whether this turn belongs to the weakness or
+					# non-weakness pool. Then preserve configured weights inside that pool.
+					var is_weakness_action := player_affinity == AFFINITIES.Type.WEAK
+					if is_weakness_action != target_weakness_actions:
+						weight = 0.0
+					elif is_weakness_action:
+						weight *= action.weakness_weight_multiplier * behavior.weakness_priority
 
 		if action.is_defend:
 			# Defend is not an elemental attack, so affinity modifiers do not apply.
