@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
 [ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_interior_presentation"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
 [ext_resource type="PackedScene" path="res://world/Chest.tscn" id="6_chest"]
 
 [node name="Interior" type="Node2D"]
@@ -46,3 +47,5 @@ script = ExtResource("4_interior_presentation")
 position = Vector2(0, 120)
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")]
