@@ -9,7 +9,7 @@
 [ext_resource type="Resource" path="res://enemies/definitions/slime_air_attack.tres" id="7_slime_air_attack"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_light_attack.tres" id="8_slime_light_attack"]
 [ext_resource type="Resource" path="res://enemies/definitions/slime_dark_attack.tres" id="9_slime_dark_attack"]
-[ext_resource type="Resource" path="res://enemies/definitions/behavior_weakness_hunter.tres" id="10_behavior"]
+[ext_resource type="Resource" path="res://enemies/definitions/behavior_aggressive.tres" id="10_behavior"]
 
 [resource]
 script = ExtResource("1_enemy_data")
