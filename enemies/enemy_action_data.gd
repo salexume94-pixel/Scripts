@@ -21,6 +21,11 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 ## Damage category used to resolve the target's elemental affinity.
 @export var damage_type: int = DAMAGE_TYPES.Type.PHYSICAL
 
+## Marks this action as a defensive turn rather than a damage-dealing attack.
+## CombatManager handles the actual defensive effect; the action Resource only
+## identifies the action so every enemy can share the same behavior framework.
+@export var is_defend: bool = false
+
 ## Relative chance used when an enemy has multiple available actions.
 ## A value of 0 removes the action from normal weighted selection.
 @export_range(0.0, 9999.0) var selection_weight: float = 1.0
@@ -29,3 +34,12 @@ const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 ## matches a known Player weakness. The base selection weight is never replaced.
 ## This lets AI become more intelligent without changing existing action data.
 @export_range(0.0, 9999.0) var weakness_weight_multiplier: float = 3.0
+
+## Accuracy used by CombatRules when this action is resolved.
+@export_range(0.0, 100.0) var accuracy: float = 100.0
+
+## Critical-hit chance used by CombatRules when this action is resolved.
+@export_range(0.0, 100.0) var critical_chance: float = 0.0
+
+## Damage multiplier applied when this action scores a critical hit.
+@export_range(0.0, 9999.0) var critical_multiplier: float = 2.0
