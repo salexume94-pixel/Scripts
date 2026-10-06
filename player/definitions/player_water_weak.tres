@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_player_affinity")
 damage_type = 2
-affinity = 1
+affinity = 0
