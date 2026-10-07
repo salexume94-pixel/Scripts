@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="9_inventory_hud"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="10_quest_log"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="7_world_boundaries"]
 [ext_resource type="Script" path="res://systems/world_encounter_system.gd" id="8_world_encounters"]
@@ -90,5 +91,7 @@ distance_between_checks = 64.0
 encounter_chance = 0.5
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("9_inventory_hud")]
+
+[node name="QuestLog" parent="." instance=ExtResource("10_quest_log")]
 
 [node name="WorldMap" parent="." instance=ExtResource("5_map")]
