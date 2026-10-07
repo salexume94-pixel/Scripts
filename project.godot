@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 SceneManager="*res://systems/scene_manager.gd"
 GameState="*res://systems/game_state.gd"
+SaveManager="*res://systems/save_manager.gd"
 CombatManager="*res://systems/combat_manager.gd"
 RewardManager="*res://systems/reward_manager.gd"
 QuestManager="*res://systems/quest_manager.gd"
