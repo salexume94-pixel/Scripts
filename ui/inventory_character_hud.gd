@@ -10,6 +10,8 @@ extends CanvasLayer
 
 @onready var screen: Control = $Screen
 @onready var level_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/LevelLabel
+@onready var experience_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/ExperienceLabel
+@onready var gold_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/GoldLabel
 @onready var hp_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/HPLabel
 @onready var mp_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MPLabel
 @onready var attack_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/AttackLabel
@@ -71,6 +73,8 @@ func _refresh_character_stats(player: Node) -> void:
 		return
 
 	level_label.text = "Level: %d" % stats.get("level")
+	experience_label.text = "XP: %d / %d" % [stats.get("experience"), _get_xp_requirement(stats.get("level"))]
+	gold_label.text = "Gold: %d" % GameState.get_gold()
 	hp_label.text = "HP: %d / %d" % [stats.get("hp"), stats.get("max_hp")]
 	mp_label.text = "MP: %d / %d" % [stats.get("mp"), stats.get("max_mp")]
 	attack_label.text = "Attack: %d" % stats.get("attack")
@@ -79,6 +83,12 @@ func _refresh_character_stats(player: Node) -> void:
 	magic_defense_label.text = "Magic Defense: %d" % stats.get("magic_defense")
 	speed_label.text = "Speed: %d" % stats.get("speed")
 
+
+func _get_xp_requirement(level: int) -> int:
+	# Mirror the PlayerProgression curve for presentation without owning it.
+	if level >= 50:
+		return 0
+	return 100 * maxi(level, 1)
 
 func _refresh_equipment(player: Node) -> void:
 	# PlayerEquipment owns slot contents. The HUD only creates readable rows.
@@ -370,6 +380,8 @@ func _show_missing_player() -> void:
 	magic_attack_label.text = ""
 	magic_defense_label.text = ""
 	speed_label.text = ""
+	experience_label.text = ""
+	gold_label.text = ""
 	equipment_label.text = "Equipment: --"
 	_clear_equipment_ui()
 	_clear_inventory_ui()
