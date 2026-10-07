@@ -90,11 +90,10 @@ func _draw() -> void:
 		if not bool(location_resource.get("map_visible")):
 			continue
 
-		var location_map_position_variant = location_resource.get("map_position")
-		if not location_map_position_variant is Vector2:
+		var location_map_position = _get_location_map_position(location_resource, map_data)
+		if location_map_position == null:
 			continue
 
-		var location_map_position := location_map_position_variant as Vector2
 		_draw_location_marker(location_resource, location_map_position)
 
 	# Draw the Player after locations so the current position is always visible.
@@ -132,6 +131,26 @@ func _draw_grid(panel: Rect2) -> void:
 			Color(0.35, 0.40, 0.35, 0.35),
 			1.0
 		)
+
+func _get_location_map_position(location: Resource, map_data: Resource):
+	# World-map entry definitions have a physical world_position that is used
+	# by WorldMapWorld to create the actual travel trigger. Use that same
+	# position for the map marker so the visual marker cannot drift away from
+	# the entrance because two separate coordinates were configured.
+	if str(location.get("world_id")) == "world_map" and bool(location.get("entry_enabled")):
+		var world_position_variant = location.get("world_position")
+		if world_position_variant is Vector2:
+			return map_data.call("world_to_map", world_position_variant)
+
+	# Other location definitions can continue to use their own logical map
+	# position. This keeps the map reusable for locations that are not direct
+	# entrances in the current playable world.
+	var map_position_variant = location.get("map_position")
+	if map_position_variant is Vector2:
+		return map_position_variant
+
+	return null
+
 
 func _draw_location_marker(location: Resource, map_position: Vector2) -> void:
 	var map_data := MapManager.get_current_map()
