@@ -109,7 +109,7 @@ A broader balance pass should happen after enough world, enemy, equipment, quest
 
 ---
 
-### 6. Quest Log - FOUNDATION IMPLEMENTED, RUNTIME VERIFICATION PENDING
+### 6. Quest Log - FOUNDATION IMPLEMENTED, RUNTIME VERIFIED
 
 The Quest Log foundation has been implemented.
 
@@ -123,13 +123,21 @@ Current foundation includes:
 - Quest Log UI
 - Save/load serialization boundary
 
-The remaining work for this roadmap item is the documented runtime verification pass. The next quest-related development task after verification is actual quest content and its connections to world systems.
+The runtime verification pass is complete. The foundation is now verified and is being used by actual quest content.
 
 ---
 
-### 7. Quests / Gated Areas
+### 7. Quests / Gated Areas - IN PROGRESS
 
 Build actual gameplay content using the Quest Log foundation.
+
+Current implementation focus:
+- Northbridge Village first NPC and quest giver
+- Northbridge quest definition and objective tracking
+- Northbridge building/interior framework
+- Reusable NPC-to-quest objective progression
+
+The Northbridge framework is runtime verified. Continue expanding actual quest content and gated progression from this foundation.
 
 Planned work includes:
 - Tutorial and early-game quests
