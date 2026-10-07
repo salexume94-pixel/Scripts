@@ -137,9 +137,9 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 		world_position_variant
 	)
 	var canonical_entry_position: Vector2 = target_player_position_variant
-	var entry_distance := maxf(
-		absf(canonical_entry_position.x),
-		absf(canonical_entry_position.y)
+	var entry_distance := minf(
+		maxf(absf(canonical_entry_position.x), absf(canonical_entry_position.y)),
+		900.0
 	)
 
 	var destination_position := Vector2.ZERO
