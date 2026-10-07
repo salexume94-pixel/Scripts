@@ -209,3 +209,22 @@ Map labels are driven by WorldLocationData rather than hard-coded UI strings.
 - ui/world_map.gd owns only the visual rendering rules and reads the location metadata.
 - Adding a new town, region, landmark, or dungeon should therefore require a location definition and database registration, not a new map-UI branch.
 
+
+
+## Save / Load System
+
+Disk persistence is owned by `systems/save_manager.gd`.
+
+Responsibilities:
+- Build a versioned save document from authoritative runtime systems.
+- Write and read the default JSON save slot at `user://save_01.json`.
+- Restore the saved gameplay scene and Player position.
+- Preserve World/Location transition context needed by reusable interior exits.
+- Coordinate serialization for GameState and QuestManager.
+- Coordinate persistence for scene-owned persistent objects such as Chests.
+
+SaveManager does not become the owner of gameplay data. Player stats, inventory, equipment, currency, quests, and world objects remain responsible for their own state and expose serialization boundaries where needed.
+
+The initial save format is intentionally human-readable JSON and includes a save version so future format changes can be migrated or rejected explicitly rather than silently loading incompatible data.
+
+The default runtime shortcuts are F5 for Save and F9 for Load. Save/Load should remain a reusable system so a future save menu or multiple save slots can use the same underlying API without moving persistence logic into UI scripts.
