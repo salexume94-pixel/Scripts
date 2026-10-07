@@ -10,6 +10,10 @@ const WORLD_LOCATION_DATABASE = preload("res://world/world_location_database.gd"
 
 var transition_started: bool = false
 
+# Stores the current location marker while an entry transition is being built.
+# It must be available to the transition handler, not just the region-creation loop.
+var active_world_position: Vector2 = Vector2.ZERO
+
 
 func _ready() -> void:
 	# Build automatic entry regions for every world location that declares an
