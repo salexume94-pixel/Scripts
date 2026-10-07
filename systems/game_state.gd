@@ -19,6 +19,17 @@ var gold: int = 0
 var encounter_cooldown_until_msec: int = 0
 
 
+func reset_runtime_state() -> void:
+	# New Game must clear the runtime snapshots that normally survive scene
+	# changes. This does not delete the disk save, so an existing save can still
+	# be loaded later from the Main Menu.
+	inventory_items.clear()
+	equipment_items.clear()
+	player_stats.clear()
+	gold = 0
+	encounter_cooldown_until_msec = 0
+
+
 func get_inventory() -> Dictionary:
 	# Return a copy so other systems can inspect global inventory state without
 	# directly modifying the data owned by GameState.
