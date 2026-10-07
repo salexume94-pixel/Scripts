@@ -18,6 +18,10 @@ enum Phase {
 @export var enemy_hp: int = 0
 @export var enemy_max_hp: int = 0
 
+## Prevent victory rewards from being granted more than once if the Battle UI
+## receives repeated input before the encounter is returned to the World.
+@export var rewards_granted: bool = false
+
 ## Behavior profile selected for this specific encounter.
 ## This is separate from EnemyData so one enemy can behave differently
 ## from battle to battle without modifying its shared definition.
