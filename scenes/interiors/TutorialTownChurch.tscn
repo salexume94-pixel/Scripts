@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
 [ext_resource type="PackedScene" path="res://world/Chest.tscn" id="6_chest"]
+[ext_resource type="PackedScene" path="res://world/NPC.tscn" id="8_npc"]
 
 [node name="Interior" type="Node2D"]
 script = ExtResource("2_interior")
@@ -34,6 +35,12 @@ color = Color(0.55, 0.55, 0.60, 1)
 [node name="Pews" type="Polygon2D" parent="InteriorContent"]
 polygon = PackedVector2Array(-170, 0, 170, 0, 170, 25, -170, 25)
 color = Color(0.38, 0.30, 0.22, 1)
+
+[node name="SaveKeeper" parent="InteriorContent" instance=ExtResource("8_npc")]
+npc_name = "Sister Elara"
+dialogue_text = "May your path be safe. I can preserve your progress here whenever you need to rest."
+save_game_on_interact = true
+position = Vector2(0, -20)
 
 
 [node name="InteriorPresentation" type="Node2D" parent="."]
