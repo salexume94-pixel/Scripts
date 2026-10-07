@@ -122,8 +122,24 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 
 	# Enter the destination scene without requiring the Player to interact with
 	# a Door. The destination data determines the Player's starting position.
-	var destination_position := target_player_position_variant
-	var approach_direction := _get_entry_direction(body.global_position, world_position_variant)
+	var destination_position: Vector2 = target_player_position_variant
+	var world_position_variant = location.get("world_position")
+
+	# The entry marker is part of the same WorldLocationData resource that
+	# triggered this transition. Validate it here before using it to determine
+	# which side of the town the Player approached from.
+	if not world_position_variant is Vector2:
+		push_error(
+			"World location has invalid world_position: %s"
+			% location.get("location_id")
+		)
+		transition_started = false
+		return
+
+	var approach_direction: Vector2 = _get_entry_direction(
+		body.global_position,
+		world_position_variant
+	)
 
 	# Enter the town on the same side from which the Player approached its
 	# World Map marker rather than always using one fixed spawn point.
