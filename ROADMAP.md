@@ -55,7 +55,7 @@ Current world-layer extension:
 
 ---
 
-### 3. Map Labels
+### 3. Map Labels - IN PROGRESS
 
 After the map foundation exists, add readable labels for:
 
@@ -65,6 +65,14 @@ After the map foundation exists, add readable labels for:
 - Other points of interest as the world expands
 
 Labels should be driven by map/world data rather than scattered UI-specific strings.
+
+Current implementation in progress:
+- Data-driven map label visibility and positioning added to WorldLocationData.
+- Region definitions added for the current World Map.
+- Region names are rendered as area labels instead of point markers.
+- Town and point-of-interest label sizing is determined by location type.
+
+Runtime verification is still required before marking this task complete.
 
 ---
 
