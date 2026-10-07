@@ -10,9 +10,9 @@ extends Node
 ## the save format human-readable during development and makes malformed or
 ## missing data easier to diagnose before a more advanced save format is needed.
 ##
-## Runtime shortcuts:
-## - F5 saves the current gameplay state to the default save slot.
-## - F9 loads the default save slot.
+## Loading remains available through F9 during development/testing. Saving is
+## deliberately controlled by in-world save points so the game does not expose
+## an unrestricted save shortcut.
 ##
 ## Saving is only allowed from a scene containing the Player. This prevents
 ## accidentally saving Battle.tscn or another transitional scene as the point
@@ -32,20 +32,15 @@ var is_loading: bool = false
 
 
 func _input(event: InputEvent) -> void:
-	# Save/Load are global gameplay shortcuts, so they are handled by this
-	# autoload instead of being duplicated in every World or Interior scene.
+	# Loading remains available through F9 for development and testing.
+	# Saving is intentionally not bound to a global key. Designated in-world
+	# save-point NPCs call save_game() when the Player interacts with them.
 	if not event is InputEventKey:
 		return
 
 	var key_event := event as InputEventKey
 
-	# Ignore key repeats so holding F5/F9 cannot start repeated file operations.
 	if not key_event.pressed or key_event.echo:
-		return
-
-	if key_event.physical_keycode == KEY_F5 or key_event.keycode == KEY_F5:
-		save_game()
-		get_viewport().set_input_as_handled()
 		return
 
 	if key_event.physical_keycode == KEY_F9 or key_event.keycode == KEY_F9:
