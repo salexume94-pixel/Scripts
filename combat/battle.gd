@@ -193,8 +193,9 @@ func _update_combat_controls() -> void:
 	var pass_button := get_node_or_null("BottomActionBar/ActionVBox/PassButton") as Button
 	var run_button := get_node_or_null("BottomActionBar/ActionVBox/RunButton") as Button
 	var victory_button := get_node_or_null("BottomActionBar/ActionVBox/VictoryButton") as Button
+	var recovery_button := get_node_or_null("BottomActionBar/ActionVBox/RecoveryButton") as Button
 	var state_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/StateLabel")
-	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null:
+	if attack_button == null or fire_button == null or defend_button == null or pass_button == null or run_button == null or victory_button == null or recovery_button == null:
 		return
 
 	var victory := CombatManager.is_victory()
@@ -209,6 +210,7 @@ func _update_combat_controls() -> void:
 	run_button.disabled = victory or defeat or locked
 	run_button.visible = not victory and not defeat and player_turn
 	victory_button.visible = victory
+	recovery_button.visible = defeat
 	if state_label != null:
 		if victory:
 			state_label.text = "VICTORY"
@@ -242,6 +244,11 @@ func _on_run_pressed() -> void:
 
 func _on_victory_pressed() -> void:
 	CombatManager.end_combat()
+
+func _on_recovery_pressed() -> void:
+	# Defeat recovery restores the Player and returns to the encounter's original
+	# location while applying the configured recovery penalty in CombatManager.
+	CombatManager.recover_from_defeat()
 
 func _update_display() -> void:
 	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/EncounterLabel")
