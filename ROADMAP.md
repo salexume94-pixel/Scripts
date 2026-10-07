@@ -55,7 +55,24 @@ Current world-layer extension:
 
 ---
 
-### 3. Map Labels - IN PROGRESS
+### 3. Save / Load System - IN PROGRESS
+
+Establish a working disk-persistence layer before adding more World Map content or presentation polish.
+
+Current implementation in progress:
+- Versioned JSON save format stored in `user://save_01.json`.
+- SaveManager registered as an autoload.
+- Player scene/position and world/location context are persisted.
+- Player stats, inventory, equipment, and gold are persisted through their existing runtime owners.
+- QuestManager state is serialized and restored.
+- Chest opened/unopened state is persisted.
+- F5 saves the current gameplay state and F9 loads the default save slot.
+
+Runtime verification is required before this task is considered complete.
+
+---
+
+### 4. Map Labels - IN PROGRESS
 
 After the map foundation exists, add readable labels for:
 
@@ -76,7 +93,7 @@ Runtime verification is still required before marking this task complete.
 
 ---
 
-### 4. Combat Polish - COMPLETE
+### 5. Combat Polish - COMPLETE
 
 The planned Combat Polish work has been implemented and runtime verified.
 
@@ -96,7 +113,7 @@ Combat remains subject to ongoing balance and presentation refinement as new con
 
 ---
 
-### 5. Balance - ONGOING WORLD-BUILDING CONSTRAINT
+### 6. Balance - ONGOING WORLD-BUILDING CONSTRAINT
 
 Balance is an ongoing constraint during world building, not something that must wait until the end.
 
@@ -117,7 +134,7 @@ A broader balance pass should happen after enough world, enemy, equipment, quest
 
 ---
 
-### 6. Quest Log - FOUNDATION IMPLEMENTED, RUNTIME VERIFIED
+### 7. Quest Log - FOUNDATION IMPLEMENTED, RUNTIME VERIFIED
 
 The Quest Log foundation has been implemented.
 
@@ -135,7 +152,7 @@ The runtime verification pass is complete. The foundation is now verified and is
 
 ---
 
-### 7. Core Progression - COMPLETE, RUNTIME VERIFIED
+### 8. Core Progression - COMPLETE, RUNTIME VERIFIED
 
 Establish the systems that determine how the Player actually advances.
 
@@ -154,7 +171,7 @@ Planned progression rules must remain centralized so combat, quests, shops, loot
 
 ---
 
-### 8. Quests / Gated Areas - FOUNDATION READY, CONTENT PAUSED
+### 9. Quests / Gated Areas - FOUNDATION READY, CONTENT PAUSED
 
 The Quest Log and reusable quest/NPC integration are established, but actual story quest production is intentionally paused while the remaining core systems are identified and implemented.
 
@@ -174,7 +191,7 @@ Quest state must remain authoritative in QuestManager. Gated-area systems should
 
 ---
 
-### 9. Ending / Boss
+### 10. Ending / Boss
 
 After the core world, progression, quest, and gated-area structure is established:
 
