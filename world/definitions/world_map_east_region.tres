@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "world_map_east_region"
+world_id = "world_map"
+display_name = "Eastern Region"
+location_type = 5
+description = "The eastern region of the wider world."
+map_position = Vector2(700, 265)
+map_visible = true
+map_label_visible = true
+map_label_offset = Vector2(0, 0)
