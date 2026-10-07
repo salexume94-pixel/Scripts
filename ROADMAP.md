@@ -55,7 +55,7 @@ Current world-layer extension:
 
 ---
 
-### 3. Save / Load System - IN PROGRESS
+### 3. Save / Load System - COMPLETE, RUNTIME VERIFIED
 
 Establish a working disk-persistence layer before adding more World Map content or presentation polish.
 
@@ -66,7 +66,9 @@ Current implementation in progress:
 - Player stats, inventory, equipment, and gold are persisted through their existing runtime owners.
 - QuestManager state is serialized and restored.
 - Chest opened/unopened state is persisted.
-- F5 saves the current gameplay state and F9 loads the default save slot.
+- Saving is performed through the designated in-world save point NPC in the Tutorial Town Church.
+- F9 loads the default save slot during development/testing.
+- Main Menu Load will use the same SaveManager API.
 
 Runtime verification is required before this task is considered complete.
 
