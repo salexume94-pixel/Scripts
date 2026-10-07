@@ -163,8 +163,8 @@ func _grant_victory_rewards() -> void:
 
 	var experience: int = int(enemy_data.experience_reward)
 	var gold: int = int(enemy_data.gold_reward)
-	var levels_gained := REWARD_MANAGER.grant_experience(experience)
-	REWARD_MANAGER.grant_gold(gold)
+	var levels_gained := RewardManager.grant_experience(experience)
+	RewardManager.grant_gold(gold)
 	active_combat.rewards_granted = true
 
 	_append_combat_log(
