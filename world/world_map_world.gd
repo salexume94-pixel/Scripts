@@ -118,35 +118,35 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 		)
 		return
 
-	transition_started = true
-
-	# Enter the destination scene without requiring the Player to interact with
-	# a Door. The destination data determines the Player's starting position.
-	var destination_position: Vector2 = target_player_position_variant
 	var world_position_variant = location.get("world_position")
-
-	# The entry marker is part of the same WorldLocationData resource that
-	# triggered this transition. Validate it here before using it to determine
-	# which side of the town the Player approached from.
 	if not world_position_variant is Vector2:
 		push_error(
 			"World location has invalid world_position: %s"
 			% location.get("location_id")
 		)
-		transition_started = false
 		return
 
+	transition_started = true
+
+	# entry_player_position is the canonical spawn point for this town. Its
+	# distance from the town origin tells us how far the Player should be from
+	# the town center. We rotate that distance onto the cardinal side from
+	# which the Player actually approached the World Map marker.
 	var approach_direction: Vector2 = _get_entry_direction(
 		body.global_position,
 		world_position_variant
 	)
+	var canonical_entry_position: Vector2 = target_player_position_variant
+	var entry_distance := maxf(
+		absf(canonical_entry_position.x),
+		absf(canonical_entry_position.y)
+	)
 
-	# Enter the town on the same side from which the Player approached its
-	# World Map marker rather than always using one fixed spawn point.
+	var destination_position := Vector2.ZERO
 	if approach_direction.x != 0.0:
-		destination_position.x -= approach_direction.x * 100.0
+		destination_position.x = approach_direction.x * entry_distance
 	else:
-		destination_position.y -= approach_direction.y * 100.0
+		destination_position.y = approach_direction.y * entry_distance
 
 	SceneManager.change_scene(
 		target_scene,
@@ -154,7 +154,6 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 		target_world_id,
 		target_location_id
 	)
-
 
 func _create_location_markers() -> void:
 	# Create physical town markers from WorldLocationData so new towns
