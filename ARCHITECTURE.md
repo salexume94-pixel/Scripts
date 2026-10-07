@@ -197,3 +197,15 @@ The world map system is separated into three responsibilities:
 The Tutorial Town map currently represents the existing world bounds of -1000..1000 horizontally and -1500..1500 vertically with a reusable 400x600 logical map space. This relationship is defined by `tutorial_town_map.tres`, not by the UI.
 
 The map system is designed so future worlds can register their own `WorldMapData` and location definitions without changing the map presentation code. The current World scene includes the reusable map overlay, opened with M.
+
+### Map Labels
+
+Map labels are driven by WorldLocationData rather than hard-coded UI strings.
+
+- map_visible controls whether a location participates in map presentation.
+- map_label_visible controls whether its name is rendered.
+- map_label_offset allows a location definition to adjust label placement without adding UI-specific exceptions.
+- Region definitions use LocationType.REGION and are presented as centered area labels rather than point markers.
+- ui/world_map.gd owns only the visual rendering rules and reads the location metadata.
+- Adding a new town, region, landmark, or dungeon should therefore require a location definition and database registration, not a new map-UI branch.
+
