@@ -19,7 +19,7 @@ const WORLD_LOCATION_DATABASE = preload("res://world/world_location_database.gd"
 
 var transition_started: bool = false
 
-const WORLD_MAP_ENTRY_OFFSET: float = 220.0
+const WORLD_MAP_ENTRY_OFFSET: float = 100.0
 
 
 func _ready() -> void:
