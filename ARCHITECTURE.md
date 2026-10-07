@@ -106,6 +106,28 @@ Saving and loading should be handled by the save system rather than individual g
 
 Global systems should coordinate other systems rather than replacing them.
 
+### Core Progression Runtime
+
+Player progression is split by responsibility:
+
+- `player/player_stats.gd` owns the resulting Player numerical values.
+- `player/player_progression.gd` owns XP thresholds, level-up rules, and stat growth.
+- `systems/player_currency.gd` owns the Player-facing gold API.
+- `systems/reward_manager.gd` coordinates XP, gold, and item rewards from combat, quests, and future gameplay systems.
+- `systems/game_state.gd` stores the runtime snapshots required to preserve progression and currency across scene transitions.
+
+Combat and quest systems should provide reward definitions or reward amounts, then route application through RewardManager rather than implementing competing progression logic.
+
+### Equipment Progression
+
+Equipment progression is data-driven through `ItemData` definitions and `PlayerEquipment`.
+
+- Item definitions own equipment slot and stat bonuses.
+- PlayerEquipment owns equipment ownership and slot rules.
+- PlayerStats owns the resulting Attack/Defense values.
+- RewardManager can award equipment by stable item ID.
+- Future shops and loot systems should use the same ItemDatabase and inventory/equipment ownership rules.
+
 ---
 
 ## Player Architecture
