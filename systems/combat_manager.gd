@@ -11,7 +11,6 @@ const COMBAT_RULES = preload("res://combat/combat_rules.gd")
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
 const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
-const REWARD_MANAGER = preload("res://systems/reward_manager.gd")
 const ENCOUNTER_BEHAVIOR_PROFILES: Array[Resource] = [
 	preload("res://enemies/definitions/behavior_balanced.tres"),
 	preload("res://enemies/definitions/behavior_aggressive.tres"),
