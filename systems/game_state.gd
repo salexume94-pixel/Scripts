@@ -11,6 +11,7 @@ extends Node
 var inventory_items: Dictionary = {}
 var equipment_items: Dictionary = {}
 var player_stats: Dictionary = {}
+var gold: int = 0
 
 ## Prevents a freshly completed encounter from immediately starting another one
 ## after the World scene is restored. This is runtime state only.
@@ -37,6 +38,16 @@ func set_equipment(equipment: Dictionary) -> void:
 	# Store the equipment ownership snapshot. PlayerEquipment remains responsible
 	# for validating equip and unequip operations.
 	equipment_items = equipment.duplicate()
+
+
+func get_gold() -> int:
+	# Gold is runtime Player state and survives scene transitions like inventory.
+	return gold
+
+
+func set_gold(amount: int) -> void:
+	# Clamp currency at zero so recovery and spending can never create debt.
+	gold = maxi(amount, 0)
 
 
 func get_player_stats() -> Dictionary:
