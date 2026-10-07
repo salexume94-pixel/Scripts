@@ -17,6 +17,10 @@ extends StaticBody2D
 @export var objective_quest_id: String = ""
 @export var objective_id: String = ""
 
+## When enabled, speaking to this NPC writes the current gameplay state to disk.
+## This is used for deliberate save points such as the Tutorial Town church.
+@export var save_game_on_interact: bool = false
+
 
 func _ready() -> void:
 	# The NPC scene is the authoritative source for these groups. This also
@@ -63,3 +67,9 @@ func interact(_player: Node) -> void:
 		)
 
 	DialogueManager.show_dialogue(npc_name, dialogue_text)
+
+	# Saving is deliberately tied to an NPC interaction rather than a global key.
+	# This keeps save points under world/story control and allows future towns to
+	# designate their own save-point NPCs without creating special scripts.
+	if save_game_on_interact:
+		SaveManager.save_game()
