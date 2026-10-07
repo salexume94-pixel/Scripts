@@ -27,6 +27,10 @@ const LOCATION_DEFINITIONS: Array[Resource] = [
 	preload("res://world/definitions/residence_04.tres"),
 	preload("res://world/definitions/residence_05.tres"),
 	preload("res://world/definitions/residence_06.tres"),
+	preload("res://world/definitions/world_map_north_region.tres"),
+	preload("res://world/definitions/world_map_west_region.tres"),
+	preload("res://world/definitions/world_map_east_region.tres"),
+	preload("res://world/definitions/world_map_south_region.tres"),
 ]
 
 
