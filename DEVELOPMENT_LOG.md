@@ -2586,3 +2586,22 @@ Runtime verification required:
 Known limitation:
 - The World Map HUD/layout bugs remain intentionally unresolved while persistent Save/Load is established.
 - Multiple save slots, save UI, autosave, and save-file management beyond the initial default slot are future work.
+
+
+### Save / Load System: Runtime Verification Passed
+
+Runtime verification completed successfully for the initial Save / Load implementation.
+
+Verified:
+- Save data is written to the default disk save slot without debugger errors.
+- Player position and current world/location context are persisted.
+- Player stats, inventory, equipment, gold, XP/level, and current HP/MP restore correctly.
+- Saving from an interior preserves the correct scene and Player position/context.
+- Persistent chest state survives saving and loading without awarding the chest item again.
+- Quest state and objective progress survive saving and loading.
+- No Godot debugger, parse, scene-transition, or Save / Load errors were observed during the verification pass.
+
+The save interaction was subsequently changed from the development-only F5 shortcut to an in-world save point. The Tutorial Town Church now contains a designated save NPC, and saving is performed by interacting with that NPC. F9 remains available for development/testing loads.
+
+Next:
+- Main Menu: provide New Game, Load, and Quit at game startup.
