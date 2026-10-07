@@ -5,7 +5,10 @@ extends Node
 ## New quest Resource files can be registered here without changing the
 ## tracking, save-state, or UI systems.
 
-const QUEST_DEFINITIONS: Array[Resource] = []
+const QUEST_DEFINITIONS: Array[Resource] = [
+	preload("res://quests/definitions/northbridge_introduction.tres"),
+]
+
 
 static func get_quest(quest_id: String) -> Resource:
 	# Resolve a stable quest ID to its shared QuestData definition.
@@ -13,6 +16,7 @@ static func get_quest(quest_id: String) -> Resource:
 		if quest != null and quest.get("quest_id") == quest_id:
 			return quest
 	return null
+
 
 static func get_all_quests() -> Array[Resource]:
 	# Return the complete definition catalog for future content tools and
