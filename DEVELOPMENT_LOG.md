@@ -2505,3 +2505,29 @@ Next:
 
 Next:
 - Continue building Northbridge as the first developed village beyond Tutorial Town, adding content through the existing reusable world, NPC, quest, and location systems.
+
+
+### Core Progression: Runtime Verification Passed
+
+- Runtime verification passed for the current core progression implementation.
+- Confirmed combat rewards grant XP and Gold through the centralized reward flow.
+- Confirmed the Player returns to the World Map after combat at the correct overworld position.
+- Confirmed XP accumulation and level-up behavior work correctly.
+- Confirmed level-up stat increases apply correctly while preserving equipment-derived bonuses.
+- Confirmed reward messaging displays the received progression rewards.
+- Confirmed no Godot debugger or runtime errors were reported during verification.
+- Core progression is now considered runtime verified at the current implementation level.
+
+Next:
+- Continue with the current roadmap and begin Map Labels.
+
+### Inventory / Character Screen: Runtime Verification Passed
+
+- Runtime verification passed for the Inventory / Character screen toggle after restoring the Player-level **I key** input handling.
+- Confirmed the Character screen opens correctly in the World Map.
+- Confirmed the Character screen opens correctly in Tutorial Town and other gameplay scenes using the shared HUD.
+- Confirmed the same Player-level input path can access the reusable HUD without scene-specific key handling.
+- Confirmed no runtime errors were reported during verification.
+
+Next:
+- Begin the Map Labels implementation.
