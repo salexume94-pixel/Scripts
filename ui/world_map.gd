@@ -178,7 +178,7 @@ func _draw_location_marker(location: Resource, map_position: Vector2) -> void:
 	# Label placement is stored with the location definition. This prevents
 	# per-location presentation offsets from being hard-coded into the UI.
 	var label_offset_variant = location.get("map_label_offset")
-	var label_offset := label_offset_variant if label_offset_variant is Vector2 else Vector2.ZERO
+	var label_offset: Vector2 = label_offset_variant if label_offset_variant is Vector2 else Vector2.ZERO
 	var label_position := _map_to_screen_position(logical_bounds, map_position + label_offset)
 	var label := str(location.get("display_name"))
 	var font_size := _get_label_font_size(location_type)
