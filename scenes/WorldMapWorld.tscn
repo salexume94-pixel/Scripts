@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="7_world_boundaries"]
+[ext_resource type="Script" path="res://systems/world_encounter_system.gd" id="8_world_encounters"]
 
 [node name="WorldMapWorld" type="Node2D"]
 script = ExtResource("1_world_map")
@@ -31,7 +32,7 @@ color = Color(0.12, 0.18, 0.12, 1)
 
 [node name="EastRegion" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(800, -500, 1500, -500, 1500, 700, 850, 500, 700, 0)
-color = Color(0.12, 0.18, 0.12, 1)
+color = Color(0.12, 0.18, 0.11, 1)
 
 [node name="SouthRegion" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(-1000, 500, -800, 350, 0, 450, 800, 350, 1000, 500, 1500, 700, 1500, 1000, -1500, 1000, -1500, 500)
@@ -50,7 +51,7 @@ polygon = PackedVector2Array(-1200, -45, -300, -45, -300, 45, -1200, 45)
 color = Color(0.32, 0.27, 0.20, 1)
 
 [node name="EastRoad" type="Polygon2D" parent="WorldMapContent"]
-polygon = PackedVector2Array(300, -45, 1200, -45, 1200, 45, 300, 45)
+polygon = PackedVector2Array(300, -45, 45, -45, 45, 45, 300, 45)
 color = Color(0.32, 0.27, 0.20, 1)
 
 [node name="TutorialTownMarker" type="Polygon2D" parent="WorldMapContent"]
@@ -80,5 +81,11 @@ script = ExtResource("6_world_presentation")
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(0, 560)
+
+[node name="WorldEncounterSystem" type="Node" parent="."]
+script = ExtResource("8_world_encounters")
+enemy_id = "slime"
+distance_between_checks = 64.0
+encounter_chance = 0.5
 
 [node name="WorldMap" parent="." instance=ExtResource("5_map")]
