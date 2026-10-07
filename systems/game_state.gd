@@ -5,8 +5,9 @@ extends Node
 ## gameplay behavior. GameState owns runtime snapshots so those values survive
 ## when a Player node is recreated by a scene transition.
 ##
-## This is runtime persistence only. Save-to-disk persistence will belong to the
-## future save/load system rather than this script.
+## This is runtime persistence only. Save-to-disk persistence belongs to
+## SaveManager, which serializes these snapshots without taking ownership of
+## the underlying gameplay rules.
 
 var inventory_items: Dictionary = {}
 var equipment_items: Dictionary = {}
