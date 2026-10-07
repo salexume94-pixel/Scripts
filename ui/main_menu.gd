@@ -18,6 +18,7 @@ func _on_new_game_button_pressed() -> void:
 	# New Game deliberately starts the normal Tutorial Town world rather than
 	# loading any previous runtime state.
 	GameState.reset_runtime_state()
+	QuestManager.reset_all_quests()
 	SceneManager.change_scene(
 		NEW_GAME_SCENE,
 		Vector2.ZERO,
