@@ -7,9 +7,13 @@
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory_hud"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="6_quest_log"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="7_world_map"]
-
-[sub_resource type="RectangleShape2D" id="BuildingShape"]
-size = Vector2(220, 150)
+[ext_resource type="PackedScene" path="res://world/Building.tscn" id="8_building"]
+[ext_resource type="PackedScene" path="res://world/NPC.tscn" id="9_npc"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="10_dialogue_box"]
+[ext_resource type="Resource" path="res://world/definitions/northbridge_north_house.tres" id="11_north_house"]
+[ext_resource type="Resource" path="res://world/definitions/northbridge_east_house.tres" id="12_east_house"]
+[ext_resource type="Resource" path="res://world/definitions/northbridge_west_house.tres" id="13_west_house"]
+[ext_resource type="Resource" path="res://world/definitions/northbridge_southeast_house.tres" id="14_southeast_house"]
 
 [node name="NorthbridgeVillage" type="Node2D"]
 
@@ -48,45 +52,29 @@ color = Color(0.34, 0.29, 0.21, 1)
 polygon = PackedVector2Array(420, -55, 1000, -55, 1000, 55, 420, 55)
 color = Color(0.34, 0.29, 0.21, 1)
 
-[node name="NorthHouse" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-360, -360, -100, -360, -100, -190, -360, -190)
-color = Color(0.34, 0.24, 0.17, 1)
-
-[node name="NorthHouseCollision" type="StaticBody2D" parent="WorldContent"]
+[node name="NorthHouse" parent="WorldContent" instance=ExtResource("8_building")]
+location_data = ExtResource("11_north_house")
+interior_scene = "res://scenes/interiors/NorthbridgeNorthHouse.tscn"
+scale = Vector2(1.33, 1.33)
 position = Vector2(-230, -275)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/NorthHouseCollision"]
-shape = SubResource("BuildingShape")
-
-[node name="EastHouse" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(100, -360, 360, -360, 360, -190, 100, -190)
-color = Color(0.34, 0.24, 0.17, 1)
-
-[node name="EastHouseCollision" type="StaticBody2D" parent="WorldContent"]
+[node name="EastHouse" parent="WorldContent" instance=ExtResource("8_building")]
+location_data = ExtResource("12_east_house")
+interior_scene = "res://scenes/interiors/NorthbridgeEastHouse.tscn"
+scale = Vector2(1.33, 1.33)
 position = Vector2(230, -275)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/EastHouseCollision"]
-shape = SubResource("BuildingShape")
-
-[node name="WestHouse" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-360, 190, -100, 190, -100, 360, -360, 360)
-color = Color(0.30, 0.22, 0.16, 1)
-
-[node name="WestHouseCollision" type="StaticBody2D" parent="WorldContent"]
+[node name="WestHouse" parent="WorldContent" instance=ExtResource("8_building")]
+location_data = ExtResource("13_west_house")
+interior_scene = "res://scenes/interiors/NorthbridgeWestHouse.tscn"
+scale = Vector2(1.33, 1.33)
 position = Vector2(-230, 275)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/WestHouseCollision"]
-shape = SubResource("BuildingShape")
-
-[node name="SouthEastHouse" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(100, 190, 360, 190, 360, 360, 100, 360)
-color = Color(0.30, 0.22, 0.16, 1)
-
-[node name="SouthEastHouseCollision" type="StaticBody2D" parent="WorldContent"]
+[node name="SouthEastHouse" parent="WorldContent" instance=ExtResource("8_building")]
+location_data = ExtResource("14_southeast_house")
+interior_scene = "res://scenes/interiors/NorthbridgeSoutheastHouse.tscn"
+scale = Vector2(1.33, 1.33)
 position = Vector2(230, 275)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/SouthEastHouseCollision"]
-shape = SubResource("BuildingShape")
 
 [node name="Northbridge" type="Polygon2D" parent="WorldContent"]
 polygon = PackedVector2Array(-90, -1000, 90, -1000, 90, -700, -90, -700)
@@ -95,6 +83,24 @@ color = Color(0.38, 0.38, 0.40, 1)
 [node name="VillageSign" type="Label" parent="WorldContent"]
 position = Vector2(-150, -90)
 text = "NORTHBRIDGE VILLAGE"
+
+[node name="Mira" parent="WorldContent" instance=ExtResource("9_npc")]
+npc_name = "Mira"
+dialogue_text = "Welcome to Northbridge. The old bridge is the heart of the village, and most travelers pass through here eventually."
+objective_quest_id = "northbridge_introduction"
+objective_id = "speak_with_mira"
+position = Vector2(-90, 20)
+
+[node name="ElderRowan" parent="WorldContent" instance=ExtResource("9_npc")]
+npc_name = "Elder Rowan"
+dialogue_text = "You look like someone who might be able to help. There is someone in the village I would like you to meet."
+quest_id = "northbridge_introduction"
+collision_radius = 20.0
+position = Vector2(90, 20)
+
+[node name="QuestGiverLabel" type="Label" parent="WorldContent"]
+position = Vector2(20, 48)
+text = "QUEST GIVER"
 
 [node name="WorldExitBoundary" type="Node2D" parent="."]
 script = ExtResource("3_world_exit_boundary")
@@ -115,5 +121,7 @@ position = Vector2(0, -560)
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory_hud")]
 
 [node name="QuestLog" parent="." instance=ExtResource("6_quest_log")]
+
+[node name="DialogueBox" parent="." instance=ExtResource("10_dialogue_box")]
 
 [node name="WorldMap" parent="." instance=ExtResource("7_world_map")]
