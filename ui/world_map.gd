@@ -25,8 +25,11 @@ func _ready() -> void:
 	set_process(true)
 	queue_redraw()
 
-func _unhandled_input(event: InputEvent) -> void:
-	# Toggle the map with M without adding another project-wide input action.
+func _input(event: InputEvent) -> void:
+	# Handle the map shortcut during the normal input phase. This is more reliable
+	# than waiting for unhandled input because gameplay HUDs and other UI nodes
+	# can legitimately consume keyboard events before the unhandled phase.
+	# The map itself still decides whether M opens or closes the overlay.
 	if not event is InputEventKey:
 		return
 
