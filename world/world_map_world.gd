@@ -144,9 +144,9 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 	# Enter the town on the same side from which the Player approached its
 	# World Map marker rather than always using one fixed spawn point.
 	if approach_direction.x != 0.0:
-		destination_position.x += approach_direction.x * 100.0
+		destination_position.x -= approach_direction.x * 100.0
 	else:
-		destination_position.y += approach_direction.y * 100.0
+		destination_position.y -= approach_direction.y * 100.0
 
 	SceneManager.change_scene(
 		target_scene,
