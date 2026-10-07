@@ -11,9 +11,6 @@
 [sub_resource type="RectangleShape2D" id="BuildingShape"]
 size = Vector2(220, 150)
 
-[sub_resource type="RectangleShape2D" id="BridgeShape"]
-size = Vector2(180, 90)
-
 [node name="NorthbridgeVillage" type="Node2D"]
 
 [node name="WorldContext" type="Node" parent="."]
@@ -81,14 +78,14 @@ position = Vector2(-230, 275)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/WestHouseCollision"]
 shape = SubResource("BuildingShape")
 
-[node name="EastHouse" type="Polygon2D" parent="WorldContent"]
+[node name="SouthEastHouse" type="Polygon2D" parent="WorldContent"]
 polygon = PackedVector2Array(100, 190, 360, 190, 360, 360, 100, 360)
 color = Color(0.30, 0.22, 0.16, 1)
 
-[node name="EastHouseCollision" type="StaticBody2D" parent="WorldContent"]
+[node name="SouthEastHouseCollision" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(230, 275)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/EastHouseCollision"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/SouthEastHouseCollision"]
 shape = SubResource("BuildingShape")
 
 [node name="Northbridge" type="Polygon2D" parent="WorldContent"]
