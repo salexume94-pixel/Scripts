@@ -49,6 +49,16 @@ enum LocationType {
 ## The location remains registered even when its marker is hidden.
 @export var map_visible: bool = true
 
+## Controls whether this location's name is shown as a map label.
+## This is separate from map_visible so a future location can be represented
+## by a label without requiring a visible marker, or vice versa.
+@export var map_label_visible: bool = true
+
+## Fine-tunes the label position relative to the location's map position.
+## This keeps presentation adjustments in location data instead of scattering
+## per-location offsets through the map UI script.
+@export var map_label_offset: Vector2 = Vector2(0, 0)
+
 ## Physical position of this location's entry region in its owning world.
 ## This is used by the overworld to create reusable location-entry triggers.
 @export var world_position: Vector2 = Vector2.ZERO
