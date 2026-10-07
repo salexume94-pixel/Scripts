@@ -2544,3 +2544,45 @@ Next:
 Next:
 - Implement the reusable Save/Load foundation.
 - Return to the World Map HUD/layout bugs after persistent game-state handling is in place.
+
+
+### Save / Load System: Initial Implementation
+
+Started the disk Save/Load foundation before adding more World Map content, so persistent game state is established before the world expands further. Because apparently eventually the player should be allowed to close the game without vaporizing their progress.
+
+Added:
+- `systems/save_manager.gd`
+
+Updated:
+- `project.godot`
+- `world/chest.gd`
+- `ROADMAP.md`
+- `ARCHITECTURE.md`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added a versioned JSON save format using `user://save_01.json`.
+- Added SaveManager as an autoload.
+- Save data includes the active scene, Player position, world/location context, interior return-position context, Player stats, inventory, equipment, gold, quest state, and persistent Chest state.
+- Added F5 as the default Save shortcut and F9 as the default Load shortcut.
+- SaveManager writes through a temporary file before replacing the active save file to reduce the chance of leaving a partially written save.
+- Added save-version validation so future save-format changes can be handled deliberately.
+- Added persistent Chest registration and serialization so opened Chests remain opened after loading a save.
+- Kept gameplay systems authoritative over their own data. SaveManager coordinates persistence rather than becoming the owner of Player, quest, or world-object state.
+- Changed the roadmap priority so Save / Load must be runtime-verified before additional map-content work continues.
+
+Runtime verification required:
+1. Pull the latest `main`.
+2. Confirm the project opens without parse or resource errors.
+3. Start the game and confirm F5 creates `user://save_01.json` without debugger errors.
+4. Change Player position, inventory, equipment, gold, XP/level, and current HP/MP from their starting state.
+5. Enter an interior and save there. Confirm the save records the interior scene and the Player's current position/context.
+6. Return to another scene, then press F9 and confirm the saved scene loads and the Player returns to the saved position.
+7. Confirm Player stats, inventory, equipment, gold, XP/level, and current HP/MP are restored.
+8. Open a persistent Chest, save, leave the scene, load the save, and confirm the Chest remains opened and does not award its item again.
+9. Confirm quest state/objective progress survives Save/Load.
+10. Confirm no Godot debugger, parse, scene-transition, or save/load errors occur.
+
+Known limitation:
+- The World Map HUD/layout bugs remain intentionally unresolved while persistent Save/Load is established.
+- Multiple save slots, save UI, autosave, and save-file management beyond the initial default slot are future work.
