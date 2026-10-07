@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://quests/quest_data.gd" id="1_quest_data"]
+
+[resource]
+script = ExtResource("1_quest_data")
+quest_id = "northbridge_introduction"
+title = "A Neighborly Introduction"
+description = "Elder Rowan would like you to meet someone who knows Northbridge Village well."
+objectives = [{
+"objective_id": "speak_with_mira",
+"description": "Speak with Mira in Northbridge Village.",
+"required_count": 1
+}]
+rewards = []
+repeatable = false
