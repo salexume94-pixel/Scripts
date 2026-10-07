@@ -17,6 +17,8 @@ func _ready() -> void:
 	# Player can approach a town from north, south, east, or west.
 	_create_location_entry_regions()
 
+	_create_location_markers()
+
 
 func _create_location_entry_regions() -> void:
 	for location in WORLD_LOCATION_DATABASE.get_all_locations():
@@ -122,3 +124,39 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 		target_world_id,
 		target_location_id
 	)
+
+
+func _create_location_markers() -> void:
+	# Create physical town markers from WorldLocationData so new towns
+	# automatically appear on the playable World Map.
+	for location in WORLD_LOCATION_DATABASE.get_all_locations():
+		if location == null:
+			continue
+
+		if str(location.get("world_id")) != "world_map":
+			continue
+
+		if not bool(location.get("map_visible")):
+			continue
+
+		var world_position_variant = location.get("world_position")
+		if not world_position_variant is Vector2:
+			continue
+
+		var marker := Polygon2D.new()
+		marker.name = "LocationMarker_%s" % String(location.get("location_id"))
+		marker.polygon = PackedVector2Array([
+			Vector2(-80.0, -60.0),
+			Vector2(80.0, -60.0),
+			Vector2(80.0, 60.0),
+			Vector2(-80.0, 60.0),
+		])
+		marker.color = Color(0.28, 0.28, 0.32, 1.0)
+		marker.position = world_position_variant
+		$WorldMapContent.add_child(marker)
+
+		var label := Label.new()
+		label.name = "LocationLabel_%s" % String(location.get("location_id"))
+		label.text = str(location.get("display_name")).to_upper()
+		label.position = world_position_variant + Vector2(-90.0, -80.0)
+		$WorldMapContent.add_child(label)
