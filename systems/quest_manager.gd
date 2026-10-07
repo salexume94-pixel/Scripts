@@ -24,7 +24,6 @@ enum QuestState {
 }
 
 const QUEST_DATABASE = preload("res://quests/quest_database.gd")
-const REWARD_MANAGER = preload("res://systems/reward_manager.gd")
 
 var quest_states: Dictionary = {}
 
