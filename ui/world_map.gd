@@ -160,22 +160,45 @@ func _draw_location_marker(location: Resource, map_position: Vector2) -> void:
 
 	var logical_bounds: Rect2 = map_data.get("map_bounds")
 	var screen_position := _map_to_screen_position(logical_bounds, map_position)
-
 	var location_type := int(location.get("location_type"))
-	var marker_radius := 7.0 if location_type == 1 else 5.0
 
-	draw_circle(screen_position, marker_radius, Color(0.85, 0.85, 0.78, 1.0))
-	draw_circle(screen_position, marker_radius + 2.0, Color(0.15, 0.18, 0.15, 1.0), false, 1.5)
+	# Regions are represented by names instead of point markers so they read as
+	# areas on the map rather than as another town or point of interest.
+	if location_type != WorldLocationData.LocationType.REGION:
+		var marker_radius := 7.0 if location_type == WorldLocationData.LocationType.TOWN else 5.0
+		draw_circle(screen_position, marker_radius, Color(0.85, 0.85, 0.78, 1.0))
+		draw_circle(screen_position, marker_radius + 2.0, Color(0.15, 0.18, 0.15, 1.0), false, 1.5)
 
+	if not bool(location.get("map_label_visible")):
+		return
+
+	# Label placement is stored with the location definition. This prevents
+	# per-location presentation offsets from being hard-coded into the UI.
+	var label_offset_variant = location.get("map_label_offset")
+	var label_offset := label_offset_variant if label_offset_variant is Vector2 else Vector2.ZERO
+	var label_position := _map_to_screen_position(logical_bounds, map_position + label_offset)
 	var label := str(location.get("display_name"))
-	draw_string(
-		_font,
-		screen_position + Vector2(10.0, 5.0),
-		label,
-		HORIZONTAL_ALIGNMENT_LEFT,
-		-1,
-		15
-	)
+	var font_size := _get_label_font_size(location_type)
+
+	if location_type == WorldLocationData.LocationType.REGION:
+		# Center region names around their configured map position.
+		draw_string(_font, label_position + Vector2(-90.0, 5.0), label, HORIZONTAL_ALIGNMENT_CENTER, 180.0, font_size)
+		return
+
+	draw_string(_font, label_position + Vector2(10.0, 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+
+func _get_label_font_size(location_type: int) -> int:
+	# Larger labels emphasize regions and towns while keeping smaller points of
+	# interest from dominating the map.
+	match location_type:
+		WorldLocationData.LocationType.REGION:
+			return 18
+		WorldLocationData.LocationType.TOWN:
+			return 16
+		WorldLocationData.LocationType.LANDMARK, WorldLocationData.LocationType.DUNGEON:
+			return 15
+		_:
+			return 13
 
 func _draw_player_marker(map_position: Vector2) -> void:
 	var map_data := MapManager.get_current_map()
