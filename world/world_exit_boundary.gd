@@ -1,4 +1,6 @@
 extends Node2D
+
+const WORLD_LOCATION_DATABASE = preload("res://world/world_location_database.gd")
 ## Creates a reusable transition boundary around a town or other contained
 ## world location.
 ##
@@ -16,6 +18,8 @@ extends Node2D
 @export var target_location_id: String = ""
 
 var transition_started: bool = false
+
+const WORLD_MAP_ENTRY_OFFSET: float = 220.0
 
 
 func _ready() -> void:
@@ -102,9 +106,41 @@ func _on_exit_boundary_body_entered(body: Node2D) -> void:
 	# The boundary transition behaves like a reusable world exit rather than
 	# an interactable Door. The Player simply walks across the edge and the
 	# owning world determines where the next scene begins.
+	var destination_position := target_player_position
+	if target_world_id == "world_map":
+		destination_position = _get_world_map_exit_position(body.global_position)
+
 	SceneManager.change_scene(
 		target_scene,
-		target_player_position,
+		destination_position,
 		target_world_id,
 		target_location_id
 	)
+
+
+func _get_exit_direction(player_position: Vector2) -> Vector2:
+	# Determine which cardinal side of the town boundary the Player crossed.
+	var relative := player_position - location_bounds.get_center()
+	if absf(relative.x) > absf(relative.y):
+		return Vector2(sign(relative.x), 0.0)
+	return Vector2(0.0, sign(relative.y))
+
+
+func _get_world_map_exit_position(player_position: Vector2) -> Vector2:
+	# Find the town's World Map definition and offset from its marker on the
+	# same side the Player used to leave the town.
+	var world_context := get_parent().get_node_or_null("WorldContext")
+	if world_context == null:
+		return target_player_position
+
+	var location_id := String(world_context.get("location_id"))
+	var world_map_location := WORLD_LOCATION_DATABASE.get_location("%s_world_map" % location_id)
+	if world_map_location == null:
+		push_warning("No World Map definition found for: %s" % location_id)
+		return target_player_position
+
+	var world_position_variant = world_map_location.get("world_position")
+	if not world_position_variant is Vector2:
+		return target_player_position
+
+	return world_position_variant + _get_exit_direction(player_position) * WORLD_MAP_ENTRY_OFFSET
