@@ -11,6 +11,7 @@ const COMBAT_RULES = preload("res://combat/combat_rules.gd")
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const PLAYER_PHYSICAL_ACTION = preload("res://combat/definitions/physical_attack.tres")
 const DEFAULT_ENEMY_BEHAVIOR = preload("res://enemies/definitions/behavior_balanced.tres")
+const REWARD_MANAGER = preload("res://systems/reward_manager.gd")
 const ENCOUNTER_BEHAVIOR_PROFILES: Array[Resource] = [
 	preload("res://enemies/definitions/behavior_balanced.tres"),
 	preload("res://enemies/definitions/behavior_aggressive.tres"),
@@ -151,6 +152,58 @@ func cycle_player_weakness() -> bool:
 			continue
 		affinity_data.affinity = AFFINITIES.Type.WEAK if i == next_index else AFFINITIES.Type.NORMAL
 	return true
+
+func _grant_victory_rewards() -> void:
+	# Apply enemy-defined XP and gold exactly once when the encounter is won.
+	if not is_in_combat() or active_combat.rewards_granted:
+		return
+
+	var enemy_data := enemy_data_for_active_combat()
+	if enemy_data == null:
+		return
+
+	var experience: int = int(enemy_data.experience_reward)
+	var gold: int = int(enemy_data.gold_reward)
+	var levels_gained := REWARD_MANAGER.grant_experience(experience)
+	REWARD_MANAGER.grant_gold(gold)
+	active_combat.rewards_granted = true
+
+	_append_combat_log(
+		"REWARDS: +%d XP, +%d Gold%s" % [
+			experience,
+			gold,
+			(" | Level Up!" if levels_gained > 0 else "")
+		]
+	)
+
+
+func recover_from_defeat() -> bool:
+	# Defeat is a recoverable game state rather than a permanent save reset.
+	# The Player keeps XP and items, loses a small gold penalty, is fully healed,
+	# and returns to the location from which the encounter began.
+	if not is_defeat():
+		return false
+
+	var lost_gold := int(floor(float(GameState.get_gold()) * 0.10))
+	GameState.set_gold(GameState.get_gold() - lost_gold)
+
+	var stats := GameState.get_player_stats()
+	if not stats.is_empty():
+		stats["hp"] = int(stats.get("max_hp", 0))
+		stats["mp"] = int(stats.get("max_mp", 0))
+		GameState.set_player_stats(stats)
+
+	var destination := return_scene_path
+	var destination_position := return_player_position
+	GameState.set_encounter_cooldown(3.0)
+	active_combat = null
+	combat_log.clear()
+	last_enemy_ai_debug.clear()
+
+	if not destination.is_empty():
+		SceneManager.change_scene(destination, destination_position)
+	return true
+
 
 func end_combat() -> void:
 	if not is_in_combat():
@@ -328,6 +381,7 @@ func player_attack(action: Resource = null) -> bool:
 		else:
 			active_combat.phase = COMBAT_STATE_SCRIPT.Phase.PLAYER_TURN
 	elif active_combat.enemy_hp <= 0:
+		_grant_victory_rewards()
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
 	elif active_combat.player_press_turns_remaining <= 0.0:
 		# All Player actions are spent, so the enemy receives its turn.
@@ -504,9 +558,16 @@ func _resolve_enemy_turn() -> void:
 			_append_combat_log("ENEMY: %s dealt %d damage." % [active_combat.last_enemy_action_name, damage])
 	enemy_attack_performed.emit(damage)
 
+	if active_combat.enemy_hp <= 0:
+		# Repel can defeat the enemy during its turn, so victory rewards must also
+		# be resolved from this path.
+		_grant_victory_rewards()
+		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.VICTORY
+		return
+
 	if new_hp <= 0:
-		# Defeat is recorded now, but the actual defeat/recovery flow remains a
-		# later system so this step only establishes the combat state correctly.
+		# Record Player defeat. Battle presents the recovery action separately so
+		# the Player can see that defeat occurred before returning to the World.
 		active_combat.phase = COMBAT_STATE_SCRIPT.Phase.DEFEAT
 		player_defeated.emit()
 		return
