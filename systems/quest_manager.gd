@@ -14,6 +14,7 @@ signal quest_started(quest_id: String)
 signal quest_updated(quest_id: String)
 signal quest_completed(quest_id: String)
 signal quest_failed(quest_id: String)
+signal quest_rewards_granted(quest_id: String, reward_result: Dictionary)
 
 enum QuestState {
 	NOT_STARTED,
@@ -23,6 +24,7 @@ enum QuestState {
 }
 
 const QUEST_DATABASE = preload("res://quests/quest_database.gd")
+const REWARD_MANAGER = preload("res://systems/reward_manager.gd")
 
 var quest_states: Dictionary = {}
 
@@ -174,6 +176,12 @@ func complete_quest(quest_id: String) -> bool:
 	var state: Dictionary = quest_states[quest_id]
 	state["state"] = QuestState.COMPLETED
 	quest_states[quest_id] = state
+
+	# Quest definitions already contain reward data, so completion now routes
+	# those rewards through the shared RewardManager rather than teaching
+	# QuestManager how XP, gold, or inventory ownership works.
+	var reward_result: Dictionary = REWARD_MANAGER.grant_quest_rewards(quest.get("rewards"))
+	quest_rewards_granted.emit(quest_id, reward_result)
 
 	quest_completed.emit(quest_id)
 	quest_updated.emit(quest_id)
