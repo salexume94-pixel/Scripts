@@ -10,5 +10,5 @@ display_name = "Northbridge East House"
 location_type = 2
 description = "A house in the eastern part of Northbridge Village."
 story_significant = false
-map_position = Vector2.ZERO
+map_position = Vector2(0, 0)
 map_visible = false
