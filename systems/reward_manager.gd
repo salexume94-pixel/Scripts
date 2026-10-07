@@ -13,9 +13,21 @@ const PLAYER_PROGRESSION = preload("res://player/player_progression.gd")
 const ITEM_DATABASE = preload("res://items/item_database.gd")
 
 func grant_experience(amount: int) -> int:
-	# Apply XP using the exact same progression rules used by PlayerProgression.
+	# Use the live PlayerProgression component when the Player exists so a
+	# currently open Character HUD immediately reflects the level change.
+	if amount <= 0:
+		return 0
+
+	var players := get_tree().get_nodes_in_group("player")
+	if not players.is_empty():
+		var progression := players[0].get_node_or_null("PlayerProgression")
+		if progression != null:
+			return progression.add_experience(amount)
+
+	# Battle has no Player node, so apply the same centralized progression
+	# rules directly to the persistent runtime snapshot.
 	var stats := GameState.get_player_stats()
-	if stats.is_empty() or amount <= 0:
+	if stats.is_empty():
 		return 0
 
 	var result: Dictionary = PLAYER_PROGRESSION.apply_experience_to_snapshot(stats, amount)
@@ -23,9 +35,17 @@ func grant_experience(amount: int) -> int:
 	return int(result["levels_gained"])
 
 func grant_gold(amount: int) -> bool:
-	# Gold is a separate currency rather than an inventory stack.
+	# Use the live PlayerCurrency component when available so current gameplay
+	# scenes and their HUDs see the updated balance immediately.
 	if amount <= 0:
 		return false
+
+	var players := get_tree().get_nodes_in_group("player")
+	if not players.is_empty():
+		var currency := players[0].get_node_or_null("PlayerCurrency")
+		if currency != null:
+			return currency.add_gold(amount)
+
 	GameState.set_gold(GameState.get_gold() + amount)
 	return true
 
