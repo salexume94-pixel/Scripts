@@ -7,7 +7,7 @@ extends Node
 
 # Movement speed measured in pixels per second.
 # This can be changed in the Godot Inspector.
-@export var move_speed: float = 200.0
+@export var move_speed: float = 225.0
 
 # Reference to the CharacterBody2D that owns this movement component.
 # The actual movement is performed on this player node.
