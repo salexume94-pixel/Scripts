@@ -39,6 +39,15 @@ func _input(event: InputEvent) -> void:
     if not key_event.pressed or key_event.echo:
         return
 
+    # The Inventory/Character screen is a Player-level gameplay shortcut,
+    # so it must be handled before interaction input. The HUD exists in each
+    # gameplay scene and exposes the same public toggle method everywhere.
+    if key_event.physical_keycode == KEY_I or key_event.keycode == KEY_I:
+        var inventory_hud := get_tree().current_scene.get_node_or_null("InventoryCharacterHUD")
+        if inventory_hud != null and inventory_hud.has_method("toggle_screen"):
+            inventory_hud.toggle_screen()
+        return
+
     # Accept both physical and logical E key codes for keyboard-layout
     # compatibility.
     if key_event.physical_keycode != KEY_E and key_event.keycode != KEY_E:
