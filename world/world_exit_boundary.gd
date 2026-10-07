@@ -134,7 +134,9 @@ func _get_world_map_exit_position(player_position: Vector2) -> Vector2:
 		return target_player_position
 
 	var location_id := String(world_context.get("location_id"))
-	var world_map_location := WORLD_LOCATION_DATABASE.get_location("%s_world_map" % location_id)
+	# World Map definitions use the "<location>_entry" ID because they represent
+	# the entry point from the overworld into that location.
+	var world_map_location := WORLD_LOCATION_DATABASE.get_location("%s_entry" % location_id)
 	if world_map_location == null:
 		push_warning("No World Map definition found for: %s" % location_id)
 		return target_player_position
