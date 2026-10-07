@@ -23,8 +23,10 @@ class_name QuestData
 @export var objectives: Array[Dictionary] = []
 
 ## Reward definitions. Each dictionary may contain:
-## - item_id: item granted by a future reward application system
-## - quantity: amount granted
+## - experience: XP granted on completion
+## - gold: currency granted on completion
+## - item_id: stable item ID granted on completion
+## - quantity: amount of the item granted
 @export var rewards: Array[Dictionary] = []
 
 ## Whether the quest may be started more than once after completion.
