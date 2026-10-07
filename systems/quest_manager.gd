@@ -179,7 +179,7 @@ func complete_quest(quest_id: String) -> bool:
 	# Quest definitions already contain reward data, so completion now routes
 	# those rewards through the shared RewardManager rather than teaching
 	# QuestManager how XP, gold, or inventory ownership works.
-	var reward_result: Dictionary = REWARD_MANAGER.grant_quest_rewards(quest.get("rewards"))
+	var reward_result: Dictionary = RewardManager.grant_quest_rewards(quest.get("rewards"))
 	quest_rewards_granted.emit(quest_id, reward_result)
 
 	quest_completed.emit(quest_id)
