@@ -118,9 +118,19 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 
 	# Enter the destination scene without requiring the Player to interact with
 	# a Door. The destination data determines the Player's starting position.
+	var destination_position := target_player_position_variant
+	var approach_direction := _get_entry_direction(body.global_position, world_position_variant)
+
+	# Enter the town on the same side from which the Player approached its
+	# World Map marker rather than always using one fixed spawn point.
+	if approach_direction.x != 0.0:
+		destination_position.x += approach_direction.x * 100.0
+	else:
+		destination_position.y += approach_direction.y * 100.0
+
 	SceneManager.change_scene(
 		target_scene,
-		target_player_position_variant,
+		destination_position,
 		target_world_id,
 		target_location_id
 	)
@@ -160,3 +170,11 @@ func _create_location_markers() -> void:
 		label.text = str(location.get("display_name")).to_upper()
 		label.position = world_position_variant + Vector2(-90.0, -80.0)
 		$WorldMapContent.add_child(label)
+
+
+func _get_entry_direction(player_position: Vector2, location_position: Vector2) -> Vector2:
+	# Determine which cardinal side of the town marker the Player approached.
+	var relative := player_position - location_position
+	if absf(relative.x) > absf(relative.y):
+		return Vector2(sign(relative.x), 0.0)
+	return Vector2(0.0, sign(relative.y))
