@@ -127,22 +127,34 @@ The runtime verification pass is complete. The foundation is now verified and is
 
 ---
 
-### 7. Quests / Gated Areas - IN PROGRESS
+### 7. Core Progression - IN PROGRESS
 
-Build actual gameplay content using the Quest Log foundation.
+Establish the systems that determine how the Player actually advances.
 
-Current implementation focus:
-- Northbridge Village first NPC and quest giver
-- Northbridge quest definition and objective tracking
-- Northbridge building/interior framework
-- Reusable NPC-to-quest objective progression
+Current implementation:
+- XP and level progression
+- Level-up stat growth
+- Gold/currency
+- Character progression rules
+- Equipment progression through authoritative equipment/item data
+- Item acquisition and shared reward application
+- Player defeat and recovery
 
-The Northbridge framework is runtime verified. Continue expanding actual quest content and gated progression from this foundation.
+Implementation is not runtime-verified yet. Do not mark this task complete until the local Godot verification pass succeeds.
 
-Planned work includes:
+Planned progression rules must remain centralized so combat, quests, shops, loot, and future content do not implement competing XP, level, currency, or reward logic.
+
+---
+
+### 8. Quests / Gated Areas - FOUNDATION READY, CONTENT PAUSED
+
+The Quest Log and reusable quest/NPC integration are established, but actual story quest production is intentionally paused while the remaining core systems are identified and implemented.
+
+The Northbridge NPC, quest giver, building, and quest tracking work was an integration test, not final story content.
+
+Planned later work includes:
 - Tutorial and early-game quests
-- NPC quest progression
-- Required items
+- Required-item objectives
 - Defeated-enemy objectives
 - Exploration objectives
 - Locked doors and areas
@@ -154,7 +166,7 @@ Quest state must remain authoritative in QuestManager. Gated-area systems should
 
 ---
 
-### 8. Ending / Boss
+### 9. Ending / Boss
 
 After the core world, progression, quest, and gated-area structure is established:
 
