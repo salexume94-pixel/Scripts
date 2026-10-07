@@ -127,7 +127,7 @@ The runtime verification pass is complete. The foundation is now verified and is
 
 ---
 
-### 7. Core Progression - IN PROGRESS
+### 7. Core Progression - COMPLETE, RUNTIME VERIFIED
 
 Establish the systems that determine how the Player actually advances.
 
@@ -140,7 +140,7 @@ Current implementation:
 - Item acquisition and shared reward application
 - Player defeat and recovery
 
-Implementation is not runtime-verified yet. Do not mark this task complete until the local Godot verification pass succeeds.
+Runtime verification is complete for the current implementation. XP, level progression, stat growth, gold, rewards, equipment-derived stat preservation, and defeat/recovery behavior have been verified.
 
 Planned progression rules must remain centralized so combat, quests, shops, loot, and future content do not implement competing XP, level, currency, or reward logic.
 
