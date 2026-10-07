@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "northbridge_southeast_house"
+world_id = "northbridge_village"
+display_name = "Northbridge Southeast House"
+location_type = 2
+description = "A house in the southeastern part of Northbridge Village."
+story_significant = false
+map_position = Vector2.ZERO
+map_visible = false
