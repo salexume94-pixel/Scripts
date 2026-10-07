@@ -15,6 +15,7 @@ extends CharacterBody2D
 @onready var inventory: Node = $PlayerInventory
 @onready var equipment: Node = $PlayerEquipment
 @onready var progression: Node = $PlayerProgression
+@onready var currency: Node = $PlayerCurrency
 @onready var interaction_system: Node = $InteractionSystem
 
 func _ready() -> void:
