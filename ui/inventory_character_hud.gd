@@ -43,15 +43,14 @@ func _ready() -> void:
 	_refresh_screen()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	# I toggles the Character/Inventory screen.
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_I:
-			screen.visible = not screen.visible
-			_set_player_movement_enabled(not screen.visible)
+func toggle_screen() -> void:
+	# Public toggle used by the Player input layer. Keeping the visual state
+	# change here means every gameplay scene uses the same menu behavior.
+	screen.visible = not screen.visible
+	_set_player_movement_enabled(not screen.visible)
 
-			if screen.visible:
-				_refresh_screen()
+	if screen.visible:
+		_refresh_screen()
 
 
 func _refresh_screen() -> void:
