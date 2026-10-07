@@ -2531,3 +2531,16 @@ Next:
 
 Next:
 - Begin the Map Labels implementation.
+
+
+### World Map HUD: Visual/Layout Bug Noted
+
+- Runtime verification confirmed the **M key now opens and closes the World Map overlay again** after the input-handling fix.
+- The World Map HUD still has visual/layout issues that need a later polish pass.
+- These HUD issues are presentation bugs only; the map toggle itself is currently functioning.
+- Do not treat Map Labels as complete yet. The map label implementation still needs its own runtime verification and the HUD layout needs correction before the map work is considered finished.
+- Development priority has been changed: establish a working disk Save/Load system before adding more map content or map presentation features.
+
+Next:
+- Implement the reusable Save/Load foundation.
+- Return to the World Map HUD/layout bugs after persistent game-state handling is in place.
