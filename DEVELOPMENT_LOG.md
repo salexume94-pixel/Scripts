@@ -2637,3 +2637,20 @@ The Save / Load foundation is now verified for inventory, equipment, stats, leve
 
 Next:
 - Main Menu runtime verification: New Game, Load, and Quit at game startup.
+
+
+### Main Menu: Runtime Verification Passed
+
+Runtime verification completed successfully for the new game startup menu.
+
+Verified:
+- The project starts at the Main Menu instead of entering gameplay directly.
+- **New Game** starts a new game correctly.
+- **Load** loads the existing saved game correctly.
+- **Quit** exits the game correctly.
+- No Main Menu, New Game, Load, or Quit runtime errors were reported during verification.
+
+The Main Menu startup flow is now considered runtime verified.
+
+Next:
+- Continue with the remaining Save / Load and world-map checklist items before adding new gameplay content.
