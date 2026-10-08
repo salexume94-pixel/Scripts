@@ -25,10 +25,12 @@ func _ready() -> void:
 	if stats == null:
 		return
 
-	# Validate every saved entry before applying its modifiers. This prevents
-	# stale or invalid runtime data from creating impossible equipment states.
-	for slot in saved_equipment:
-		var item_id: String = saved_equipment[slot]
+	# Save files are JSON, so Dictionary keys are decoded as strings even
+	# though equipment slots are stored as integer enum values at runtime.
+	# Convert each key back to an integer before validating and restoring it.
+	for saved_slot in saved_equipment:
+		var slot: int = int(saved_slot)
+		var item_id: String = str(saved_equipment[saved_slot])
 		var item: Resource = ITEM_DATABASE.get_item(item_id)
 
 		if not _is_valid_equipment(item, slot):
