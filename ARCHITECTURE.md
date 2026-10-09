@@ -324,3 +324,16 @@ No new quest/story subsystem should be created merely to accommodate narrative c
 - `player/player_movement.gd` checks `SceneManager.transition_in_progress` before reading movement input.
 - SceneManager sets this flag as soon as a transition request is accepted, so movement stops before the fade begins and remains disabled for the outgoing and incoming Player until the transition fully finishes.
 - This shared transition state does not overwrite dialogue or menu movement locks.
+
+
+## Mutually Exclusive Menu Ownership
+
+`systems/menu_manager.gd` is the single authority for whether a player-facing menu may open. Menus request ownership before becoming visible and release only their own menu ID when closed.
+
+Current menu IDs:
+- `quest_log`: `ui/quest_log.gd`
+- `inventory_character`: `ui/inventory_character_hud.gd`
+- `world_map`: `ui/world_map.gd`
+- `options`: `systems/options_manager.gd`
+
+A menu shortcut must close its own menu when it is already open. It must refuse to open when another menu owns the UI. New menus must use MenuManager rather than implementing separate menu-lock logic.
