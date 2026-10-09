@@ -2718,3 +2718,21 @@ Runtime verification checklist (run after `git pull origin main`):
 - [ ] PASS / [ ] FAIL / [x] NOT TESTED — With MP3 files uploaded, overworld and Tutorial Town tracks play as expected and do not overlap during scene transitions.
 - [ ] PASS / [ ] FAIL / [x] NOT TESTED — Starting combat switches to battle music; leaving combat restores the appropriate location track.
 - [ ] PASS / [ ] FAIL / [x] NOT TESTED — No console, debugger, or resource errors appear during the checks above.
+
+
+### Options Access and Music Diagnostics Follow-up (2026-10-09)
+
+Follow-up patch after the first local runtime check reported that no music was audible and the Options entry point was not easy to discover. The previous implementation existed in code but had not passed runtime verification.
+
+Updated:
+- `systems/audio_manager.gd`
+- `systems/options_manager.gd`
+- `DEVELOPMENT_LOG.md` (this appended entry only)
+
+Changes:
+- Added periodic scene/track-state checks to AudioManager as a safety net around scene-change notifications.
+- Added explicit runtime messages when scenes are detected and music playback starts, plus a warning if a requested music file cannot be found.
+- Added a visible `Options (Esc)` button in gameplay scenes, while retaining the dedicated Options button on the Main Menu.
+- The Options overlay remains closable through its Back button or Escape.
+
+Runtime verification status: NOT TESTED in Godot after this patch. The user must pull the changes and confirm that music is audible, that the visible Options button opens the overlay, that Escape/Back closes it, and that brightness/audio settings respond. Do not mark these checks passed until the user confirms them.
