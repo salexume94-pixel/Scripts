@@ -8,7 +8,7 @@ script = ExtResource("1_dialogue")
 
 [node name="Panel" type="Panel" parent="."]
 offset_left = 96.0
-offset_top = 500.0
+offset_top = 440.0
 offset_right = 1056.0
 offset_bottom = 620.0
 
