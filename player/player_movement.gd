@@ -39,24 +39,26 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	# Guard the Player reference first, then stop movement whenever either a
-	# menu has disabled it or one or more gameplay systems hold a movement lock.
+	# Guard the Player reference first, then stop movement whenever a transition,
+	# menu, or gameplay movement lock says input must be ignored.
 	if player == null:
 		return
-	if not movement_enabled or not movement_locks.is_empty():
+
+	# SceneManager sets transition_in_progress as soon as a scene change is
+	# requested, before the fade begins. Checking this shared flag stops the
+	# outgoing Player immediately and also keeps a newly created Player still
+	# until the transition overlay has completely faded away.
+	if (
+		SceneManager.transition_in_progress
+		or not movement_enabled
+		or not movement_locks.is_empty()
+	):
 		player.velocity = Vector2.ZERO
 		return
 
-	# Read the four directional movement actions and convert them
-	# into a normalized Vector2 direction.
-	#
-	# ui_left  = move left
-	# ui_right = move right
-	# ui_up   = move up
-	# ui_down = move down
-	#
-	# Input.get_vector() also prevents diagonal movement from being
-	# faster than horizontal or vertical movement.
+	# Read the four directional movement actions and convert them into a
+	# normalized Vector2 direction. Input.get_vector() prevents diagonal
+	# movement from being faster than horizontal or vertical movement.
 	var direction := Input.get_vector(
 		"ui_left",
 		"ui_right",
@@ -64,14 +66,9 @@ func _physics_process(_delta: float) -> void:
 		"ui_down"
 	)
 
-	# Convert the movement direction into a velocity.
-	# Direction determines which way the player moves.
-	# move_speed determines how fast the player moves.
+	# Convert the movement direction into a velocity, then let the
+	# CharacterBody2D handle movement and collision sliding.
 	player.velocity = direction * move_speed
-
-	# Move the CharacterBody2D using its calculated velocity.
-	# move_and_slide() also handles collision-based sliding against
-	# other physics bodies.
 	player.move_and_slide()
 
 
@@ -86,7 +83,6 @@ func set_movement_enabled(enabled: bool) -> void:
 		player.velocity = Vector2.ZERO
 
 
-
 func set_movement_lock(lock_name: String, locked: bool) -> void:
 	# Locks are keyed by system name, so unlocking dialogue cannot accidentally
 	# re-enable movement while another system still needs it disabled.
@@ -95,7 +91,9 @@ func set_movement_lock(lock_name: String, locked: bool) -> void:
 	else:
 		movement_locks.erase(lock_name)
 
-	if player != null and (not movement_enabled or not movement_locks.is_empty()):
+	if player != null and (
+		not movement_enabled or not movement_locks.is_empty()
+	):
 		player.velocity = Vector2.ZERO
 
 
