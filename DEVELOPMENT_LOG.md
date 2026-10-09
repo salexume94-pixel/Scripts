@@ -2917,3 +2917,74 @@ Runtime checklist after pulling:
 9. Confirm Tutorial Town and Northbridge Village are not shown as active overworld destinations and their example files remain in the repository.
 10. Confirm no parser, resource, scene-transition, or debugger errors occur.
 
+
+
+### MAIN_001 The Stranger: Initial Repository Implementation Added (2026-10-09)
+
+Implemented the first story route using the existing architecture. No files were deleted. Tutorial Town and Northbridge Village remain as example/reference content, with their active overworld entrances and visible markers disabled.
+
+Added:
+- quests/definitions/the_stranger.tres
+- world/definitions/havenreach.tres
+- world/definitions/havenreach_world_map.tres
+- world/definitions/havenreach_church.tres
+- world/definitions/waking_area.tres and waking_area_entry.tres
+- world/definitions/mira_encounter_area.tres and mira_encounter_area_entry.tres
+- world/waking_area.gd
+- world/mira_encounter.gd
+- world/havenreach.gd
+- systems/party_manager.gd
+- scenes/WakingArea.tscn
+- scenes/MiraEncounterArea.tscn
+- scenes/Havenreach.tscn
+- scenes/interiors/HavenreachChurch.tscn
+
+Updated:
+- docs/story/STORY_BIBLE.md
+- docs/world/WORLD_BIBLE.md
+- ARCHITECTURE.md
+- ROADMAP.md
+- project.godot
+- ui/main_menu.gd
+- systems/dialogue_manager.gd
+- ui/dialogue_box.gd
+- ui/DialogueBox.tscn
+- player/interaction_system.gd
+- systems/save_manager.gd
+- quests/quest_database.gd
+- world/world_location_data.gd
+- world/world_location_database.gd
+- world/world_map_world.gd
+- scenes/WorldMapWorld.tscn
+- world/definitions/tutorial_town_world_map.tres
+- world/definitions/northbridge_village_world_map.tres
+
+Implementation details:
+- MAIN_001 stable quest ID: the_stranger.
+- Objective IDs: complete_waking, meet_mira, reach_havenreach.
+- The waking line advances complete_waking only when dismissed.
+- Mira's reusable dialogue choices advance the same meet_mira objective. The journey-with-Mira option records roster membership and transitions directly to Havenreach; the solo option returns to the overworld outside the encounter trigger.
+- Havenreach arrival advances reach_havenreach. QuestManager's existing automatic completion handles the quest once all objectives are complete.
+- PartyManager stores stable companion IDs. This implementation records Mira as a party member but does not implement companion combat AI or formation.
+- SaveManager now includes the party roster in its existing save document. Havenreach has a church save point to allow route-specific saves.
+- The overworld entry logic supports an optional objective-based entry block. Mira's encounter trigger is omitted after meet_mira progress is recorded, avoiding a new duplicate story flag.
+- The hard-coded Tutorial Town marker was removed from the active overworld scene; existing Tutorial Town and Northbridge resource/scene files were retained and their overworld markers/entry triggers disabled.
+
+Static repository check:
+- Confirmed all newly created scene, script, and resource paths exist in the repository tree.
+- The new scenes reference the existing Player, HUD, dialogue, map, NPC, building, and transition components.
+- No local Godot parser or runtime test has been run as part of this repository edit.
+
+Runtime verification required after pulling:
+1. Start New Game; confirm the opening field loads and MAIN_001 appears active.
+2. Confirm “Where am I?” displays once, player movement is locked while the line is active, and dismissing it advances the first objective.
+3. Exit WakingArea in each direction and confirm return to the overworld with correct world/location context.
+4. Enter the hidden Mira encounter from the overworld; confirm the Player spawns inside the scene and can approach Mira.
+5. Test “Journey with Mira”: confirm the dialogue buttons respond, Mira appears in PartyManager's roster, Havenreach loads directly, and MAIN_001 completes.
+6. Start a fresh game and test “Travel to Havenreach alone”: confirm Mira is absent from the roster, the Player returns to the overworld, and the Mira entry trigger no longer reappears.
+7. Walk to Havenreach and confirm arrival completes MAIN_001 once, regardless of route.
+8. Enter the Havenreach church, interact with Churchkeeper to save, restart/load, and confirm scene, position, completed quest state, and party roster restore correctly for both routes.
+9. Confirm Tutorial Town and Northbridge Village do not appear as active overworld destinations and their example files remain intact.
+10. Confirm no missing resource, parse, scene-transition, dialogue, or debugger errors occur.
+
+Runtime status: NOT TESTED LOCALLY. Do not mark the checklist passed until the developer confirms the Godot run.
