@@ -35,13 +35,24 @@ func _on_scene_changed() -> void:
 		return
 
 	var scene_path := current_scene.scene_file_path
+	if scene_path == "res://ui/MainMenu.tscn":
+		stop_music()
+		return
+
 	if scene_path.ends_with("/Battle.tscn") or scene_path == "res://scenes/Battle.tscn":
 		play_track(BATTLE_MUSIC_PATH)
 		return
 
 	# Prefer the stable world/location IDs maintained by SceneManager. A future
 	# world can receive its own track without hard-coding a scene-node name.
-	if SceneManager.current_location_id == "tutorial_town" or SceneManager.current_world_id == "tutorial_town":
+	var location_id := SceneManager.current_location_id
+	if not location_id.is_empty():
+		var location_track_path := "res://assets/audio/music/%s.mp3" % location_id
+		if ResourceLoader.exists(location_track_path):
+			play_track(location_track_path)
+			return
+
+	if SceneManager.current_world_id == "tutorial_town":
 		play_track(TUTORIAL_TOWN_MUSIC_PATH)
 	else:
 		play_track(OVERWORLD_MUSIC_PATH)
