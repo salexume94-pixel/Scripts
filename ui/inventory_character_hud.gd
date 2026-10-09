@@ -46,11 +46,26 @@ func _ready() -> void:
 func toggle_screen() -> void:
 	# Public toggle used by the Player input layer. Keeping the visual state
 	# change here means every gameplay scene uses the same menu behavior.
-	screen.visible = not screen.visible
-	_set_player_movement_enabled(not screen.visible)
-
 	if screen.visible:
-		_refresh_screen()
+		# Closing this HUD releases only its own menu lock.
+		screen.visible = false
+		_set_player_movement_enabled(true)
+		MenuManager.close_menu("inventory_character")
+		return
+
+	# Do not open this HUD if another menu currently owns the screen.
+	if not MenuManager.try_open_menu("inventory_character"):
+		return
+
+	screen.visible = true
+	_set_player_movement_enabled(false)
+	_refresh_screen()
+
+
+func _exit_tree() -> void:
+	# Restore movement and release the lock if the HUD is removed mid-session.
+	_set_player_movement_enabled(true)
+	MenuManager.close_menu("inventory_character")
 
 
 func _refresh_screen() -> void:
