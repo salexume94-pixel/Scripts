@@ -67,7 +67,6 @@ func play_track(track_path: String) -> void:
 
 	music_player.stop()
 	music_player.stream = loaded_resource as AudioStream
-	music_player.stream.loop = true
 	current_track_path = track_path
 	music_player.play()
 
