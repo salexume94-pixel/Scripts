@@ -20,3 +20,5 @@ entry_player_position = Vector2(0, 300)
 entry_world_id = "world_map"
 entry_location_id = "mira_encounter_area"
 entry_enabled = true
+entry_blocked_after_quest_id = "the_stranger"
+entry_blocked_after_objective_id = "meet_mira"
