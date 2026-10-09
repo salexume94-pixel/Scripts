@@ -344,3 +344,17 @@ A menu shortcut must close its own menu when it is already open. It must refuse 
 - `systems/menu_manager.gd` now applies a named `menu` movement lock whenever a menu successfully claims menu ownership and releases it only when that same active menu closes.
 - The manager finds the active Player through the `player` group and calls `PlayerMovement.set_movement_lock()`. This keeps menu movement restrictions separate from dialogue, scene-transition, and other movement locks.
 - Menus should continue using `MenuManager.try_open_menu()` and `MenuManager.close_menu()`; they must not independently toggle global movement permission for this shared menu lock.
+
+
+---
+
+## Documentation Organization and Audit Corrections (2026-10-09)
+
+This section supplements earlier architecture notes and corrects stale path descriptions without removing historical content.
+
+- The current repository does not contain a `data/` directory. Static definitions are kept with their owning systems, including `items/definitions/`, `enemies/definitions/`, `quests/definitions/`, and `world/definitions/`. Do not create a generic data folder unless a concrete ownership need is identified.
+- The Player-facing currency implementation is `player/player_currency.gd`, not `systems/player_currency.gd`.
+- `docs/README.md` defines the documentation index and ownership rules.
+- `docs/world/WORLD_BIBLE.md` owns stable setting facts. `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation pacing. Existing root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain in place as reference material until their conflicts are deliberately reconciled.
+- Quest state remains owned by QuestManager. World features own their physical/access state. Story flags require one explicit authoritative owner before implementation; do not scatter duplicate flags across NPCs or scenes.
+- The first quest should be specified before expanding QuestData or DialogueManager. Add prerequisites, categories, turn-in states, failure rules, or conditional dialogue only when the actual quest design requires them.
