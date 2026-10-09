@@ -2829,3 +2829,24 @@ The shared scene transition overlay and NPC dialogue movement lock are runtime v
 - [ ] Confirm no Godot parser/runtime errors occur.
 
 Runtime verification is pending until the local Godot project has been tested.
+
+
+### Menu Movement Lock Correction: Implementation Added (2026-10-09)
+
+Runtime testing found that the Quest Log, Options menu, and World Map could remain open while the Player continued moving. Menu exclusivity was working, but those menus were not consistently connected to PlayerMovement.
+
+**Changes committed to GitHub main:**
+- Updated `systems/menu_manager.gd` to acquire the named `menu` movement lock whenever a menu successfully claims menu ownership.
+- The manager releases that lock only when the currently active menu closes, and only affects the PlayerMovement component found on the active Player.
+- The named lock remains independent from dialogue and scene-transition locks. Options opened from the Main Menu remains safe when no Player exists.
+- Appended the shared-lock responsibility to `ARCHITECTURE.md`; prior documentation and development history were retained.
+
+**Runtime verification required after pulling:**
+- [ ] Open Quest Log; confirm the Player stops immediately and cannot move while it remains open.
+- [ ] Open World Map (M); confirm the Player stops immediately and cannot move while it remains open.
+- [ ] Open Options (Esc or the Options button); confirm the Player stops immediately and cannot move while it remains open.
+- [ ] Close each menu and confirm movement resumes.
+- [ ] Confirm closing a menu does not override an active dialogue or scene-transition movement lock.
+- [ ] Confirm the Inventory/Character menu still works and no Godot parser/runtime errors occur.
+
+Runtime verification remains pending until the updated files are pulled and tested locally in Godot.
