@@ -8,7 +8,7 @@ The World Bible (`docs/world/WORLD_BIBLE.md`) owns stable setting facts. Quest d
 
 ## Current working opening: The Stranger
 
-**Status: design direction; not yet implemented as a quest.**
+**Status: initial implementation committed; local Godot runtime verification pending.**
 
 The current working outline begins with the protagonist waking in a field, meeting Mira, and reaching Havenreach. The first playable main quest is titled **The Stranger**.
 
