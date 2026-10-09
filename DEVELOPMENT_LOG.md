@@ -2876,3 +2876,44 @@ The developer confirmed that the current quest-specific save/load behavior has b
 - No additional test steps or outcomes are inferred beyond that confirmation.
 - Future story-quest behavior, including any new turn-in states, conditional dialogue, story facts, or world-state changes, must be runtime-tested when those features are implemented.
 
+
+
+---
+
+### MAIN_001 The Stranger: Opening Decisions and Implementation Pass (2026-10-09)
+
+This entry is appended to the development history. Earlier entries are retained unchanged.
+
+Locked story decisions:
+- New Game starts with a brief scripted waking beat in waking_area.
+- The Wanderer says “Where am I?” and regains control after dismissing the line.
+- Exiting the waking area returns to the overworld.
+- The Player explores before encountering Mira in mira_encounter_area.
+- Mira offers two dialogue choices: travel with her, which adds Mira to the party and immediately transitions to Havenreach; or travel alone, which returns the Player to the overworld so they can walk to Havenreach.
+- The route choice does not change MAIN_001 completion requirements.
+- Havenreach is a new settlement separate from Tutorial Town and Northbridge Village. Those existing locations remain examples and must not be active route destinations.
+
+Implementation ownership:
+- MAIN_001 is registered through the existing QuestData and QuestDatabase architecture; QuestManager remains authoritative for objective progress and completion.
+- DialogueManager/DialogueBox provide reusable dialogue choices.
+- SceneManager handles all scene transitions and player placement.
+- PartyManager records roster membership and participates in save/load; it does not imply companion combat AI.
+- WorldLocationData and WorldMapWorld provide data-driven overworld entry triggers.
+
+Verification status:
+- Repository inspection confirmed the existing location database, data-driven map-entry regions, QuestData/QuestManager, DialogueManager/DialogueBox, SceneManager, and SaveManager.
+- No party/companion manager was found during the repository inspection.
+- Local Godot runtime verification is pending until the changes are pulled and the checklist below is run. Repository edits and static inspection are not runtime verification.
+
+Runtime checklist after pulling:
+1. Start New Game and confirm the waking area opens instead of Tutorial Town.
+2. Confirm “Where am I?” appears once; dismiss it and verify Player movement resumes.
+3. Exit the waking area and confirm the Player returns to the overworld at the intended spawn point.
+4. Walk to the hidden Mira encounter entry and confirm the Mira encounter scene loads.
+5. Choose to travel with Mira; confirm Mira is recorded in the party roster and Havenreach loads directly.
+6. Start a fresh game, choose to travel alone, and confirm Mira is not added and the Player returns to the overworld.
+7. Walk to Havenreach and confirm both routes complete MAIN_001 exactly once.
+8. Save and load on both routes using the available in-world save point. Confirm scene, position, quest progress, and party roster restore without replaying completed opening beats.
+9. Confirm Tutorial Town and Northbridge Village are not shown as active overworld destinations and their example files remain in the repository.
+10. Confirm no parser, resource, scene-transition, or debugger errors occur.
+
