@@ -37,8 +37,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		if _options_menu != null and is_instance_valid(_options_menu):
 			close_options()
-		else:
+		elif not MenuManager.is_menu_open():
 			open_options()
+		# Do not open Options over a different active menu.
 		get_viewport().set_input_as_handled()
 
 
@@ -77,8 +78,13 @@ func open_options() -> void:
 	if _options_menu != null and is_instance_valid(_options_menu):
 		return
 
+	# Options may claim the UI only when no other menu is open.
+	if not MenuManager.try_open_menu("options"):
+		return
+
 	var packed_scene := load(OPTIONS_SCENE_PATH) as PackedScene
 	if packed_scene == null:
+		MenuManager.close_menu("options")
 		push_error("OptionsManager could not load " + OPTIONS_SCENE_PATH)
 		return
 
@@ -170,3 +176,4 @@ func _save_settings() -> void:
 
 func _on_options_menu_exited() -> void:
 	_options_menu = null
+	MenuManager.close_menu("options")
