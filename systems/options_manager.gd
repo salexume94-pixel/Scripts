@@ -16,6 +16,7 @@ var _options_menu: Control
 func _ready() -> void:
 	_load_settings()
 	_create_brightness_overlay()
+	_apply_loaded_settings()
 
 	# ESC opens/closes Options in gameplay and on the Main Menu. The Options
 	# menu itself handles ESC as a close action while it is visible.
@@ -77,7 +78,7 @@ func _create_brightness_overlay() -> void:
 	# scene's lighting. It sits below the Options overlay itself.
 	var canvas_layer := CanvasLayer.new()
 	canvas_layer.name = "BrightnessOverlayLayer"
-	canvas_layer.layer = 15
+	canvas_layer.layer = -1
 	add_child(canvas_layer)
 
 	_brightness_overlay = ColorRect.new()
