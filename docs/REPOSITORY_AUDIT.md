@@ -13,11 +13,11 @@ The main concrete findings are:
 
 1. `ARCHITECTURE.md` documents a `data/` folder that does not exist, and refers to `systems/player_currency.gd` even though the implementation is `player/player_currency.gd`.
 2. `player/player_skills.gd` is a one-line `extends Node` placeholder. It is attached to the Player scene but currently owns no skill behavior.
-3. Four test-named enemy definitions (`slime_ai_test.tres`, `slime_ai_balanced_test.tres`, `slime_ai_aggressive_test.tres`, `slime_ai_defensive_test.tres`) are registered by the production `enemies/enemy_database.gd`. Their intended debug/test-only status is not isolated.
+3. Four test-named enemy definitions (`slime_ai_test.tres`, `slime_ai_balanced_test.tres`, `slime_ai_aggressive_test.tres`, `slime_ai_defensive_test.tres`) were registered by the normal `enemies/enemy_database.gd`. A follow-up correction removes them from normal lookup and `get_all_enemies()` while preserving the `.tres` files for future dedicated debug testing.
 4. The active quest implementation is a basic one-objective quest. NPC interaction can start it and advance an objective, and QuestManager auto-completes as soon as all objectives are complete. It does not yet support general prerequisites, conditional/branching dialogue, distinct turn-in, or quest-triggered story/world state changes.
 5. `STORY_DIRECTION.md` describes an MMO login/tutorial-town opening. The newer working outline, *The Stranger*, starts with the protagonist waking in a field, meeting Mira, and reaching Havenreach. These openings conflict and need an explicit source-of-truth decision before implementation.
 6. The architecture distinguishes quest state, story flags, and world state, but there is not yet an implemented, authoritative story-flag owner. Do not use QuestManager as a substitute for that missing responsibility or create a StoryManager without a defined interface.
-7. Quest save serialization exists, but quest-specific persistence for acceptance, partial progress, completion, and rewards still needs a dedicated end-to-end runtime test after the first quest is implemented.
+7. Quest save/load persistence has been confirmed working by the developer. This supersedes the earlier audit's claim that the existing quest-specific save/load behavior remained unverified. Future story-quest-specific behaviors still need testing when implemented.
 
 ## Scope and method
 
@@ -262,3 +262,12 @@ No existing file is moved, deleted, or overwritten by this organization plan. Th
 3. Specify *The Stranger* against the existing QuestManager, NPC, DialogueManager, RewardManager, Quest Log, and SaveManager interfaces.
 4. Implement only the missing capabilities the specification proves necessary.
 5. Pull and run the project locally in Godot; append the actual runtime results to `DEVELOPMENT_LOG.md` after testing.
+
+
+## Follow-up Corrections (2026-10-09)
+
+- `ARCHITECTURE.md` now documents data definitions in their owning folders instead of describing a nonexistent top-level `data/` folder, and the Player currency path is corrected to `player/player_currency.gd`.
+- `player/player_skills.gd` is a placeholder created ahead of actual skill behavior. Its folder is appropriate for a future Player-owned skill system, but the empty component has been detached from `player/Player.tscn`; the script and UID files are retained.
+- The four test-named Slime AI Resource files are retained but excluded from the normal EnemyDatabase. They had no direct gameplay references outside the catalog; a dedicated debug catalog can be introduced if later test workflows need those profiles.
+- The developer confirmed that current quest-specific save/load behavior works. The previous pending-verification finding was stale and has been corrected. This confirmation does not claim that future, not-yet-implemented story quest behavior has been tested.
+- Remaining quest-system gaps are distinct turn-ins and conditional dialogue; these are now explicit roadmap items to be designed against the first approved quest rather than implemented speculatively.
