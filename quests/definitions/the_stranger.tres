@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://quests/quest_data.gd" id="1_quest_data"]
+
+[resource]
+script = ExtResource("1_quest_data")
+quest_id = "the_stranger"
+title = "The Stranger"
+description = "Wake in an unfamiliar field, meet Mira, and find your way to Havenreach."
+objectives = [{
+"objective_id": "complete_waking",
+"description": "Regain your bearings.",
+"required_count": 1
+}, {
+"objective_id": "meet_mira",
+"description": "Speak with Mira.",
+"required_count": 1
+}, {
+"objective_id": "reach_havenreach",
+"description": "Make your way to Havenreach.",
+"required_count": 1
+}]
+rewards = []
+repeatable = false
