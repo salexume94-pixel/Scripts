@@ -82,3 +82,8 @@ enum LocationType {
 ## Enables automatic entry-region creation for this location.
 ## Locations can remain registered without becoming physical entrances yet.
 @export var entry_enabled: bool = false
+
+## Optional quest objective that permanently closes this entry after completion.
+## This uses existing QuestManager progress instead of creating a separate story flag.
+@export var entry_blocked_after_quest_id: String = ""
+@export var entry_blocked_after_objective_id: String = ""
