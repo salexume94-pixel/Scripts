@@ -10,12 +10,14 @@ var brightness: float = 1.0
 var master_volume: float = 0.8
 
 var _brightness_overlay: ColorRect
+var _options_canvas_layer: CanvasLayer
 var _options_menu: Control
 
 
 func _ready() -> void:
 	_load_settings()
 	_create_brightness_overlay()
+	_create_options_canvas_layer()
 	_apply_loaded_settings()
 
 	# ESC opens/closes Options in gameplay and on the Main Menu. The Options
@@ -43,7 +45,7 @@ func open_options() -> void:
 
 	_options_menu = packed_scene.instantiate() as Control
 	_options_menu.tree_exited.connect(_on_options_menu_exited)
-	get_tree().root.add_child(_options_menu)
+	_options_canvas_layer.add_child(_options_menu)
 	_options_menu.set_brightness_value(brightness)
 	_options_menu.set_volume_value(master_volume)
 
@@ -78,7 +80,7 @@ func _create_brightness_overlay() -> void:
 	# scene's lighting. It sits below the Options overlay itself.
 	var canvas_layer := CanvasLayer.new()
 	canvas_layer.name = "BrightnessOverlayLayer"
-	canvas_layer.layer = -1
+	canvas_layer.layer = 15
 	add_child(canvas_layer)
 
 	_brightness_overlay = ColorRect.new()
@@ -87,6 +89,15 @@ func _create_brightness_overlay() -> void:
 	_brightness_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_brightness_overlay.color = Color(0, 0, 0, 0)
 	canvas_layer.add_child(_brightness_overlay)
+
+
+func _create_options_canvas_layer() -> void:
+	# Keep the menu above the brightness overlay so its labels and controls stay
+	# readable while the user adjusts the brightness setting.
+	_options_canvas_layer = CanvasLayer.new()
+	_options_canvas_layer.name = "OptionsOverlayLayer"
+	_options_canvas_layer.layer = 20
+	add_child(_options_canvas_layer)
 
 
 func _load_settings() -> void:
