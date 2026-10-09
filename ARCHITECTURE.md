@@ -369,3 +369,16 @@ This section supplements earlier architecture notes and corrects stale path desc
 ### Player Skills Placeholder Status
 
 `player/player_skills.gd` currently contains only `extends Node` and does not implement skill behavior. Its location under `player/` is appropriate if a Player-owned skill/ability system is designed. Until that system has a defined responsibility and implementation, do not attach the empty placeholder as an active Player component. Define actual skill data, resource costs, unlock rules, and execution ownership before building it; combat actions should remain in the combat system unless the design establishes a distinct player-skill responsibility.
+
+
+---
+
+## Story Opening Implementation Boundaries (2026-10-09)
+
+- The first playable story route uses scenes/WakingArea.tscn, scenes/MiraEncounterArea.tscn, the overworld, and a separate Havenreach scene. Tutorial Town and Northbridge Village remain example assets and are not active route destinations.
+- world/world_location_database.gd remains the catalog for stable location definitions. world/world_map_world.gd builds entry triggers from registered WorldLocationData; do not hard-code separate town-entry behavior into the map script for each location.
+- systems/dialogue_manager.gd owns active dialogue and choice selection. ui/dialogue_box.gd renders the available choices; NPCs or scene-owned encounter scripts respond to stable choice IDs.
+- systems/party_manager.gd owns stable party-member IDs and serializable roster state. It currently represents membership only; companion combat AI, formation, and companion-specific stats require separate design before implementation.
+- systems/save_manager.gd serializes PartyManager data alongside existing quest and player snapshots. Scene and position remain restored through the existing SceneManager path.
+- MAIN_001 uses the existing QuestData/QuestManager lifecycle. A dialogue route choice is not a quest branch and must not add a duplicate quest flag.
+- Runtime verification must distinguish static repository checks from a local Godot run. Do not mark a new story scene, dialogue choice, transition, party roster, or save/load route as runtime-verified until it has been tested after pulling.
