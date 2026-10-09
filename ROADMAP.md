@@ -258,3 +258,50 @@ For each roadmap item:
 6. Run the Godot runtime verification checklist.
 7. Only mark the work locally verified after the runtime test actually passes.
 8. Append the verified result to DEVELOPMENT_LOG.md without replacing previous entries.
+
+
+---
+
+## Documentation Addendum: Current Quest + Story Design Focus (2026-10-09)
+
+The next major content-design focus is the main story and quest structure. This is a planning decision, not a claim that the story quests have been implemented.
+
+### Planning sequence
+
+1. Establish the World Bible and Story Bible, keeping world reference material distinct from plot and quest planning.
+2. Define Havenreach and its surrounding region, including the local authority, Adventurer's Guild, church, shops, important NPCs, nearby routes, and ruins.
+3. Refine the main-story quest list from the current story skeleton. Preserve the restrained dialogue of the Wanderer and Mira's role as a companion with her own life, not an exposition source.
+4. Define quest prerequisites, objective/completion rules, missability, failure behavior, rewards, story consequences, and world-state changes.
+5. Define an authoritative owner and persistence plan for story flags before implementing any flags in code.
+6. Derive side quests and gameplay requirements from the established world and main story.
+7. Audit each planned content feature against ARCHITECTURE.md before repository implementation.
+8. Implement in small increments, then have the developer pull `origin main` and perform runtime verification in Godot. Append results to DEVELOPMENT_LOG.md; never replace prior log entries.
+
+### Current story skeleton (design only)
+
+- **The Stranger:** the protagonist wakes in a field, meets Mira, and reaches Havenreach.
+- **The Missing Caravan:** a normal guild job leads to the first unexplained discovery: a corpse without visible wounds. The player glimpses the Wanderer, who disappears.
+- **Life in Havenreach:** ordinary RPG activities, local jobs, ruins, reputation, and Mira's personal story allow the world and relationships to develop before the mystery escalates.
+- **The Wanderer's appearances:** rare, brief encounters; he offers little or no explanation.
+- **The Ruined Watchtower:** murals resemble the Wanderer. The player and Mira lose to the boss; the Wanderer intervenes, and the official record later conflicts with Mira's memory.
+- **Investigation:** the player finds contradictory historical and religious accounts without receiving a definitive explanation.
+- **Mira's injury:** a personal relationship beat, not a lore lecture.
+- **The Black Coin:** an unexplained object is recognized by the Wanderer much later.
+- **Beyond the Road:** the Wanderer leads the player and Mira to an ancient structure of doors. The Wanderer refuses to enter the player's door. This is the current arc endpoint, not a finalized game ending.
+
+Names, locations, IDs, timings, and mechanics in this outline remain subject to story/world design. The existing repository's Northbridge quest is an integration test and should not be mistaken for the final Havenreach story questline.
+
+### Quest-content readiness checklist
+
+Before adding each quest to the repository, define:
+- Stable unique quest ID and display name.
+- Quest type (main, side, or repeatable activity).
+- Giver/start trigger and location.
+- Prerequisites and unlock conditions.
+- Ordered or parallel objectives with stable objective IDs.
+- Completion and failure conditions, including whether failure is possible.
+- Reward definitions using existing reward/item/progression systems.
+- Story facts and world changes produced by the quest, with explicit authoritative owners.
+- Whether the quest can be missed, repeated, or revisited.
+- Save/load behavior for quest progress and related persistent world objects.
+- Runtime verification steps and results.
