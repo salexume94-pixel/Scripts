@@ -12,13 +12,21 @@ var master_volume: float = 0.8
 var _brightness_overlay: ColorRect
 var _options_canvas_layer: CanvasLayer
 var _options_menu: Control
+var _options_access_button: Button
+var _options_access_layer: CanvasLayer
 
 
 func _ready() -> void:
 	_load_settings()
 	_create_brightness_overlay()
 	_create_options_canvas_layer()
+	_create_options_access_button()
 	_apply_loaded_settings()
+
+	# Keep the gameplay entry point visible in every scene, but use the Main
+	# Menu's dedicated Options button while the startup menu is active.
+	get_tree().scene_changed.connect(_on_scene_changed)
+	call_deferred("_on_scene_changed")
 
 	# ESC opens/closes Options in gameplay and on the Main Menu. The Options
 	# menu itself handles ESC as a close action while it is visible.
@@ -32,6 +40,37 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		else:
 			open_options()
 		get_viewport().set_input_as_handled()
+
+
+func _on_scene_changed() -> void:
+	var current_scene := get_tree().current_scene
+	if current_scene == null or _options_access_button == null:
+		return
+	_options_access_button.visible = current_scene.scene_file_path != "res://ui/MainMenu.tscn"
+
+
+func _create_options_access_button() -> void:
+	# A visible in-game button makes settings discoverable without requiring the
+	# player to already know the Escape shortcut.
+	_options_access_layer = CanvasLayer.new()
+	_options_access_layer.name = "OptionsAccessLayer"
+	_options_access_layer.layer = 19
+	add_child(_options_access_layer)
+
+	_options_access_button = Button.new()
+	_options_access_button.name = "OptionsAccessButton"
+	_options_access_button.text = "Options (Esc)"
+	_options_access_button.tooltip_text = "Open display and audio settings"
+	_options_access_button.anchor_left = 1.0
+	_options_access_button.anchor_right = 1.0
+	_options_access_button.anchor_top = 0.0
+	_options_access_button.anchor_bottom = 0.0
+	_options_access_button.offset_left = -150.0
+	_options_access_button.offset_top = 12.0
+	_options_access_button.offset_right = -16.0
+	_options_access_button.offset_bottom = 48.0
+	_options_access_button.pressed.connect(open_options)
+	_options_access_layer.add_child(_options_access_button)
 
 
 func open_options() -> void:
