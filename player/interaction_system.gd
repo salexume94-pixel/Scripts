@@ -35,6 +35,13 @@ func handle_interaction_input() -> void:
     # Dialogue always gets priority. Pressing E while dialogue is visible
     # dismisses it instead of immediately interacting with another target.
     if DialogueManager.is_active:
+        # Choice dialogue must be answered through its buttons. E must not
+        # silently dismiss the options and leave the encounter without a choice.
+        if DialogueManager.has_choices():
+            _show_debug("E detected -> dialogue choices are waiting for a selection.")
+            get_viewport().set_input_as_handled()
+            return
+
         DialogueManager.clear_dialogue()
         _show_debug("E detected -> dialogue was active -> dialogue cleared.")
         get_viewport().set_input_as_handled()
