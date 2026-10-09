@@ -228,3 +228,43 @@ SaveManager does not become the owner of gameplay data. Player stats, inventory,
 The initial save format is intentionally human-readable JSON and includes a save version so future format changes can be migrated or rejected explicitly rather than silently loading incompatible data.
 
 The default runtime shortcuts are F5 for Save and F9 for Load. Save/Load should remain a reusable system so a future save menu or multiple save slots can use the same underlying API without moving persistence logic into UI scripts.
+
+
+---
+
+## Documentation Addendum: Quest / Story Planning (2026-10-09)
+
+This addendum supplements the architecture above; it does not replace earlier rules.
+
+### Documentation responsibilities
+
+- `ARCHITECTURE.md` defines system ownership, folder responsibilities, and boundaries between systems.
+- `ROADMAP.md` records the current development order and planned work. Update status statements when new verified information supersedes older planning notes, but retain prior history in the development log.
+- `DEVELOPMENT_LOG.md` is append-only for development history. Add new dated entries; do not rewrite or remove earlier entries to make the log shorter.
+- Story/world design documents should describe narrative intent and content planning. They must not become alternate sources of runtime quest state or duplicate the authoritative gameplay systems.
+
+### Quest and story content boundaries
+
+- `quests/quest_data.gd` defines reusable static quest data.
+- `quests/definitions/` stores individual serialized quest definitions.
+- `quests/quest_database.gd` is the catalog used to look up registered definitions.
+- `systems/quest_manager.gd` owns runtime quest state, objective progress, and quest transitions. Other systems should call its public API rather than maintaining parallel quest-state dictionaries.
+- `ui/quest_log.gd` displays quest information and must not own quest progression.
+- `systems/save_manager.gd` coordinates serialization; each authoritative runtime owner remains responsible for providing and restoring its own data.
+- NPC dialogue, interactables, combat outcomes, and gated areas may trigger quest progress through the existing quest API. They should not implement separate quest managers.
+
+### Quest state versus story flags versus world state
+
+Keep these concepts distinct in design and implementation:
+
+- **Quest state** records the lifecycle of a particular quest (for example, not started, active, completed, or failed) and its objective progress. QuestManager is authoritative for this layer.
+- **Story flags** record durable narrative facts or discoveries (for example, whether the player witnessed a specific event). The project must assign these flags to one explicit authoritative runtime owner before implementation; do not scatter duplicate copies across NPCs, scenes, and UI.
+- **World state** records changes to the playable world (for example, whether a road or building entrance is accessible). Store and restore it through the system responsible for that world feature, with save/load integration where persistence is required.
+
+A quest may affect story flags or world state, but the three layers are not interchangeable. A completed quest must not be used as a substitute for every narrative fact or physical world change.
+
+### Content authoring and implementation gate
+
+The revised story outline is design material, not implemented game content. Quest IDs, prerequisites, objectives, rewards, failure rules, story flags, NPC schedules/dialogue, gated areas, and save/load behavior must be reviewed against the existing architecture before implementation. Do not claim a planned story event is implemented or runtime-verified until it has been added to the repository and tested locally in Godot.
+
+No new quest/story subsystem should be created merely to accommodate narrative content. Extend the current architecture only when a clearly owned missing responsibility has been identified and documented.
