@@ -6,17 +6,15 @@ extends Node
 ## Resources. CombatManager asks this catalog for definitions instead of
 ## hardcoding enemy statistics.
 ##
-## New enemy Resource files can be registered here as the game expands.
+## Only normal gameplay enemy definitions belong in this catalog. Test-only enemy
+## Resource files are retained in the repository but intentionally excluded from
+## normal ID lookup and get_all_enemies() until a dedicated debug catalog is needed.
 
 const SLIME: Resource = preload("res://enemies/definitions/slime.tres")
 const SLIME_RESIST: Resource = preload("res://enemies/definitions/slime_resist.tres")
 const SLIME_NULL: Resource = preload("res://enemies/definitions/slime_null.tres")
 const SLIME_DRAIN: Resource = preload("res://enemies/definitions/slime_drain.tres")
 const SLIME_REPEL: Resource = preload("res://enemies/definitions/slime_repel.tres")
-const SLIME_AI_TEST: Resource = preload("res://enemies/definitions/slime_ai_test.tres")
-const SLIME_AI_BALANCED_TEST: Resource = preload("res://enemies/definitions/slime_ai_balanced_test.tres")
-const SLIME_AI_AGGRESSIVE_TEST: Resource = preload("res://enemies/definitions/slime_ai_aggressive_test.tres")
-const SLIME_AI_DEFENSIVE_TEST: Resource = preload("res://enemies/definitions/slime_ai_defensive_test.tres")
 
 static func get_enemy(enemy_id: String) -> Resource:
 	# Resolve a stable enemy ID to its shared EnemyData Resource.
@@ -31,14 +29,6 @@ static func get_enemy(enemy_id: String) -> Resource:
 			return SLIME_DRAIN
 		"slime_repel":
 			return SLIME_REPEL
-		"slime_ai_test":
-			return SLIME_AI_TEST
-		"slime_ai_balanced_test":
-			return SLIME_AI_BALANCED_TEST
-		"slime_ai_aggressive_test":
-			return SLIME_AI_AGGRESSIVE_TEST
-		"slime_ai_defensive_test":
-			return SLIME_AI_DEFENSIVE_TEST
 		_:
 			return null
 
@@ -51,8 +41,4 @@ static func get_all_enemies() -> Array[Resource]:
 		SLIME_NULL,
 		SLIME_DRAIN,
 		SLIME_REPEL,
-		SLIME_AI_TEST,
-		SLIME_AI_BALANCED_TEST,
-		SLIME_AI_AGGRESSIVE_TEST,
-		SLIME_AI_DEFENSIVE_TEST,
 	]
