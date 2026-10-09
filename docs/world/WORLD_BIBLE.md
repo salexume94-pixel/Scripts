@@ -65,3 +65,8 @@ This addendum records current world-layout decisions. It supersedes the unresolv
 - tutorial_town and northbridge_village and their existing scenes/resources remain in the repository for examples and reference.
 - They must not be selected as the New Game start or shown as playable overworld destinations in the active route.
 - Preserve their files and internal example content unless a separate, explicit cleanup task is approved.
+
+
+### Confirmed Havenreach save point correction (2026-10-09)
+
+The first playable Havenreach implementation includes a church interior with a Churchkeeper NPC as the in-world save point, following the established save interaction pattern. This supersedes the earlier statement that Havenreach's church/temple presence was entirely unspecified. Other institutional roles and broader lore remain open for deliberate design.
