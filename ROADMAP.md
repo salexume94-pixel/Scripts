@@ -59,7 +59,7 @@ Current world-layer extension:
 
 Establish a working disk-persistence layer before adding more World Map content or presentation polish.
 
-Current implementation in progress:
+Current implementation:
 - Versioned JSON save format stored in `user://save_01.json`.
 - SaveManager registered as an autoload.
 - Player scene/position and world/location context are persisted.
@@ -70,7 +70,7 @@ Current implementation in progress:
 - F9 loads the default save slot during development/testing.
 - Main Menu Load will use the same SaveManager API.
 
-Runtime verification is required before this task is considered complete.
+Runtime verification has passed for the current SaveManager foundation, including quest-state persistence, as confirmed by the developer. This task is complete for the behavior currently implemented; newly added quest-specific behavior still requires its own runtime tests.
 
 ---
 
@@ -319,6 +319,12 @@ This addendum records the next development gate without removing or rewriting ea
 - Static checks of scene/resource external references and explicit GDScript `preload()`/`load()` paths found no missing targets in the reviewed tree.
 - Structural findings are recorded in `docs/REPOSITORY_AUDIT.md`.
 - Documentation ownership is established in `docs/README.md`, with separate World Bible and Story Bible documents. Existing root story documents remain in place.
+
+### Quest/NPC capabilities to add when the approved quest design requires them
+
+- **Distinct quest turn-in:** support quests whose objectives can be complete while the quest remains awaiting delivery/reporting to a designated NPC or location. Do not auto-complete these quests as soon as objective counts reach their targets.
+- **Conditional dialogue:** let NPC dialogue select the appropriate response from explicit conditions such as quest state/objective progress and approved story/world facts. Keep dialogue presentation in DialogueManager/UI, quest state in QuestManager, and world-state ownership in the affected world system.
+- **Prerequisites and unlock conditions:** add only the condition types required by the approved quest design; do not build a generic branching narrative engine in advance.
 
 ### Remaining design gate before quest implementation
 
