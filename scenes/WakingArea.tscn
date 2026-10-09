@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/world_context.gd" id="2_context"]
+[ext_resource type="Script" path="res://world/waking_area.gd" id="3_waking"]
+[ext_resource type="Script" path="res://world/world_presentation.gd" id="4_presentation"]
+[ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="5_exit"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="6_inventory"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="8_dialogue"]
+[ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="9_map"]
+
+[node name="WakingArea" type="Node2D"]
+script = ExtResource("3_waking")
+
+[node name="WorldContext" type="Node" parent="."]
+script = ExtResource("2_context")
+world_id = "world_map"
+location_id = "waking_area"
+
+[node name="WorldContent" type="Node2D" parent="."]
+
+[node name="FieldFloor" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
+color = Color(0.18, 0.30, 0.16, 1)
+
+[node name="GrassPatch" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-420, -230, -160, -300, 60, -180, 20, 20, -280, 60)
+color = Color(0.15, 0.25, 0.13, 1)
+
+[node name="WakingAreaLabel" type="Label" parent="WorldContent"]
+position = Vector2(-90, -330)
+text = "OPEN FIELD"
+
+[node name="WorldExitBoundary" type="Node2D" parent="."]
+script = ExtResource("5_exit")
+location_bounds = Rect2(-600, -400, 1200, 800)
+target_scene = "res://scenes/WorldMapWorld.tscn"
+target_player_position = Vector2(0, 560)
+target_world_id = "world_map"
+target_location_id = "world_map"
+
+[node name="WorldPresentation" type="Node2D" parent="."]
+script = ExtResource("4_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 0)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("6_inventory")]
+
+[node name="QuestLog" parent="." instance=ExtResource("7_quest_log")]
+
+[node name="DialogueBox" parent="." instance=ExtResource("8_dialogue")]
+
+[node name="WorldMap" parent="." instance=ExtResource("9_map")]
