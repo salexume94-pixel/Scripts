@@ -56,15 +56,6 @@ color = Color(0.32, 0.27, 0.20, 1)
 polygon = PackedVector2Array(300, -45, 45, -45, 45, 45, 300, 45)
 color = Color(0.32, 0.27, 0.20, 1)
 
-[node name="TutorialTownMarker" type="Polygon2D" parent="WorldMapContent"]
-polygon = PackedVector2Array(-80, -60, 80, -60, 80, 60, -80, 60)
-color = Color(0.28, 0.28, 0.32, 1)
-position = Vector2(0, 700)
-
-[node name="TutorialTownLabel" type="Label" parent="WorldMapContent"]
-position = Vector2(-90, 620)
-text = "TUTORIAL TOWN"
-
 [node name="WorldLabel" type="Label" parent="WorldMapContent"]
 position = Vector2(-80, -900)
 text = "WORLD MAP"
