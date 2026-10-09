@@ -2850,3 +2850,19 @@ Runtime testing found that the Quest Log, Options menu, and World Map could rema
 - [ ] Confirm the Inventory/Character menu still works and no Godot parser/runtime errors occur.
 
 Runtime verification remains pending until the updated files are pulled and tested locally in Godot.
+
+
+### Menu Movement Lock and Options Persistence: Runtime Verification Passed (2026-10-09)
+
+Runtime verification passed after pulling the shared menu movement-lock correction.
+
+Verified:
+- Opening the Quest Log prevents Player movement; closing it restores movement.
+- Opening the World Map/Minimap prevents Player movement; closing it restores movement.
+- Opening Options prevents Player movement; closing it restores movement.
+- Dialogue and scene-transition movement locks continue to behave independently.
+- Inventory/Character menu continues to work.
+- No Godot Debugger or Output errors were observed during these checks.
+- Brightness and audio Options persist independently of game save/load state. Changing brightness to its maximum, resetting the game without saving, and starting again retained the selected Options value.
+
+The mutually exclusive menu behavior, shared menu movement lock, and Options persistence are runtime verified for the scenarios above.
