@@ -2,8 +2,8 @@ extends CanvasLayer
 ## Presents the Player's tracked quests.
 ##
 ## QuestManager owns quest state and progression. This script only reads that
-## state and formats it for the Player. Q toggles the Quest Log so it can be
-## used independently from the Character/Inventory screen.
+## state and formats it for the Player. Q toggles the Quest Log only when no
+## other menu is open, preventing stacked menu overlays.
 
 @onready var screen: Control = $Screen
 @onready var active_list: VBoxContainer = $Screen/Panel/Margin/Content/ActiveSection/ActiveList
@@ -31,9 +31,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Q toggles the Quest Log.
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_Q:
-			screen.visible = not screen.visible
 			if screen.visible:
+				screen.visible = false
+				MenuManager.close_menu("quest_log")
+			elif MenuManager.try_open_menu("quest_log"):
+				screen.visible = true
 				_refresh_log()
+			get_viewport().set_input_as_handled()
+
+
+func _exit_tree() -> void:
+	# Release the claim if this scene is removed while the log is open.
+	MenuManager.close_menu("quest_log")
 
 
 func _on_quest_changed(_quest_id: String) -> void:
