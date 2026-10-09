@@ -8,7 +8,7 @@ Plot chronology, character arcs, the central mystery, and quest sequencing belon
 
 ## Canon status
 
-The repository contains implementation content for Tutorial Town and Northbridge Village. The current story-planning direction names Havenreach and opens with *The Stranger*. Do not assume these names are interchangeable. Their relationship and the final naming of the first settlement must be explicitly resolved before implementation changes rename or relocate existing scenes/resources.
+The repository contains implementation content for Tutorial Town and Northbridge Village. The current story opens with The Stranger and uses Havenreach as a separate first settlement. Tutorial Town and Northbridge Village remain examples/reference content; their scene and resource files are retained, while their active overworld entrances are disabled.
 
 ## Settlement: Havenreach
 
