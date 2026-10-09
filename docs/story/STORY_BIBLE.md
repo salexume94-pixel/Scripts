@@ -28,7 +28,7 @@ This supersedes the older opening proposal in `STORY_DIRECTION.md` for planning 
 
 **Stable quest ID:** proposed `the_stranger`  
 **Category:** main story quest  
-**Implementation status:** not implemented; exact objective IDs and trigger details remain to be specified.
+**Implementation status:** initial implementation added to GitHub; local Godot runtime verification is pending. The locked objective IDs and triggers are specified in the addendum below.
 
 ### Current narrative sequence
 
