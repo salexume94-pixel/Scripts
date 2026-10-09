@@ -2808,3 +2808,24 @@ Verified:
 - No Godot debugger or parser errors were observed.
 
 The shared scene transition overlay and NPC dialogue movement lock are runtime verified for the tested scenarios.
+
+
+### Mutually Exclusive Menus: Implementation Added (2026-10-09)
+
+**Changes committed to GitHub main:**
+- Added `systems/menu_manager.gd` as the central owner of active player-facing menu state and registered it as an autoload.
+- Updated Quest Log, Inventory/Character HUD, World Map, and Options so a menu must acquire the shared lock before opening.
+- Closing a menu releases only that menu's own claim. Menu scripts release claims when removed from the scene tree.
+- Escape no longer opens Options over another active menu.
+- Added the exclusive-menu ownership rule to `ARCHITECTURE.md`.
+
+**Runtime verification required after pulling:**
+- [ ] Open Quest Log; confirm Inventory/Character, World Map, and Options cannot open over it.
+- [ ] Open Inventory/Character; confirm Quest Log, World Map, and Options cannot open over it.
+- [ ] Open World Map; confirm Quest Log, Inventory/Character, and Options cannot open over it.
+- [ ] Open Options; confirm Quest Log, Inventory/Character, and World Map cannot open over it.
+- [ ] Confirm each active menu still closes through its own shortcut or close control.
+- [ ] Confirm Inventory/Character still disables player movement while open and restores movement when closed.
+- [ ] Confirm no Godot parser/runtime errors occur.
+
+Runtime verification is pending until the local Godot project has been tested.
