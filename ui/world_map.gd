@@ -39,10 +39,21 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if key_event.physical_keycode == KEY_M or key_event.keycode == KEY_M:
-		_map_open = not _map_open
-		visible = _map_open
-		queue_redraw()
+		if _map_open:
+			_map_open = false
+			visible = false
+			MenuManager.close_menu("world_map")
+		elif MenuManager.try_open_menu("world_map"):
+			_map_open = true
+			visible = true
+			queue_redraw()
+
 		get_viewport().set_input_as_handled()
+
+func _exit_tree() -> void:
+	# Release the map's claim if the containing scene is unloaded.
+	MenuManager.close_menu("world_map")
+
 
 func _process(_delta: float) -> void:
 	# Keep the runtime map position synchronized with the active World Player.
