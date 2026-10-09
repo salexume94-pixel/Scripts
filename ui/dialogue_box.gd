@@ -60,10 +60,14 @@ func _on_dialogue_choices_started(
 		var button := Button.new()
 		button.text = choice_text
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.pressed.connect(func() -> void:
-			DialogueManager.select_choice(choice_id)
-		)
+		button.pressed.connect(_on_choice_button_pressed.bind(choice_id))
 		choices_container.add_child(button)
+
+
+func _on_choice_button_pressed(choice_id: String) -> void:
+	# Bind each button to its own stable ID rather than relying on loop-variable
+	# capture inside a closure.
+	DialogueManager.select_choice(choice_id)
 
 
 func _on_dialogue_cleared() -> void:
