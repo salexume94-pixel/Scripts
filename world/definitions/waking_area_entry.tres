@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WorldLocationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/world_location_data.gd" id="1_location_data"]
+
+[resource]
+script = ExtResource("1_location_data")
+location_id = "waking_area_entry"
+world_id = "world_map"
+display_name = "Waking Field Entry"
+location_type = 3
+description = "Exit reference for the one-time waking area."
+story_significant = true
+map_position = Vector2(0, 0)
+map_visible = false
+map_label_visible = false
+world_position = Vector2(0, 560)
+entry_enabled = false
