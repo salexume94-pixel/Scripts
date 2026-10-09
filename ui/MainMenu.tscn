@@ -35,6 +35,10 @@ text = "New Game"
 layout_mode = 2
 text = "Load"
 
+[node name="OptionsButton" type="Button" parent="Menu/VBoxContainer"]
+layout_mode = 2
+text = "Options"
+
 [node name="QuitButton" type="Button" parent="Menu/VBoxContainer"]
 layout_mode = 2
 text = "Quit"
@@ -47,4 +51,5 @@ autowrap_mode = 2
 
 [connection signal="pressed" from="Menu/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
 [connection signal="pressed" from="Menu/VBoxContainer/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="Menu/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="Menu/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
