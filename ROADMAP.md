@@ -305,3 +305,29 @@ Before adding each quest to the repository, define:
 - Whether the quest can be missed, repeated, or revisited.
 - Save/load behavior for quest progress and related persistent world objects.
 - Runtime verification steps and results.
+
+
+---
+
+## Quest and Narrative Preparation Gate (2026-10-09)
+
+This addendum records the next development gate without removing or rewriting earlier roadmap entries.
+
+### Completed preparation
+
+- Repository tree inventory completed for all 63 GDScript files, 30 scenes, and 61 Resource definitions.
+- Static checks of scene/resource external references and explicit GDScript `preload()`/`load()` paths found no missing targets in the reviewed tree.
+- Structural findings are recorded in `docs/REPOSITORY_AUDIT.md`.
+- Documentation ownership is established in `docs/README.md`, with separate World Bible and Story Bible documents. Existing root story documents remain in place.
+
+### Remaining design gate before quest implementation
+
+1. Reconcile the older MMO-login/tutorial-town opening in `STORY_DIRECTION.md` with the current *The Stranger* opening: waking in a field, meeting Mira, and reaching Havenreach. Do not merge the two openings by assumption.
+2. Establish Havenreach's stable facts in `docs/world/WORLD_BIBLE.md`: local authority, guild, church/temple, NPC roles, nearby ruins, and surrounding region. Keep plot chronology and revelation timing in `docs/story/STORY_BIBLE.md`.
+3. Specify *The Stranger* against the existing QuestManager, NPC interaction, DialogueManager, RewardManager, Quest Log, and SaveManager interfaces. Lock stable quest/objective IDs, prerequisites, trigger rules, dialogue transitions, completion/turn-in behavior, rewards, story facts, world changes, and persistence requirements.
+4. Extend QuestData or dialogue/NPC behavior only for capabilities the approved first-quest specification proves necessary. Do not create a StoryManager until its responsibilities, authoritative data, and interface are explicitly defined.
+5. Implement the quest end to end, then locally verify acceptance, objective progress, dialogue, completion, rewards-once behavior, Quest Log updates, and save/restart/load for active and completed states.
+
+### Verification boundary
+
+The repository audit is static. It does not establish that Godot parsed/imported the project or that any new quest behavior has passed runtime verification. After local testing, append the actual results to `DEVELOPMENT_LOG.md`; never replace or shorten existing log history.
