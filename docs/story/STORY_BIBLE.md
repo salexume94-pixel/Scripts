@@ -70,3 +70,47 @@ Quest completion may trigger a story fact or world change, but it is not a repla
 - Side quests primarily serve local characters, places, factions, or practical needs; some may echo larger themes without being required for the main plot.
 - Quest IDs and objective IDs must be stable, descriptive, unique, and suitable for saves.
 - Story design documents define intent; implementation-ready QuestData resources define the concrete objective/reward data consumed by the game.
+
+
+---
+
+## The Stranger: Opening Specification Locked (2026-10-09)
+
+This addendum records decisions made after the initial outline above. It supersedes open questions in the earlier draft where they conflict; the earlier text is retained as design history.
+
+### Opening flow
+
+1. New Game initializes MAIN_001 (the_stranger) and enters the one-time waking_area scene.
+2. The Wanderer wakes, says **“Where am I?”**, and receives control after the line is dismissed.
+3. Exiting waking_area returns the Player to the overworld.
+4. The Player explores the overworld and enters mira_encounter_area, where Mira's first encounter occurs.
+5. Mira offers two choices:
+   - **Journey with Mira:** Mira is added to the party and the Player is immediately transported to Havenreach.
+   - **Travel alone:** Mira does not join; the Player returns to the overworld and travels to Havenreach normally.
+6. Entering Havenreach completes the final travel objective. Both choices have the same MAIN_001 completion conditions.
+
+### MAIN_001 objectives and triggers
+
+- Stable quest ID: the_stranger
+- Category: main story quest.
+- complete_waking: completed when the opening line is dismissed and control is handed to the Player.
+- meet_mira: completed when the Player makes either dialogue choice after Mira's first conversation. The chosen route is not a quest branch.
+- reach_havenreach: completed when Havenreach is entered. QuestManager's existing automatic completion handles MAIN_001 after all objectives are complete.
+- The quest has no reward for this opening unless a later design pass specifies one.
+
+### Narrative and one-time behavior
+
+- The waking line is brief. Do not add a long narrated cutscene or reveal the central mystery here.
+- Mira's initial dialogue should explain the immediate practical reason to go to Havenreach, while leaving the larger mystery unresolved.
+- Loading a save must restore the saved scene, position, quest progress, and party roster without restarting completed beats.
+- Tutorial Town and Northbridge Village remain in the repository as examples/reference scenes but are not part of the active game route. Do not delete their files or register their entrances as playable overworld destinations.
+
+### Runtime ownership
+
+- QuestManager owns MAIN_001 lifecycle and objective progress.
+- DialogueManager owns the reusable dialogue-choice lifecycle; DialogueBox only presents options and sends the selected stable choice ID back to the manager.
+- SceneManager owns scene transitions and player placement.
+- PartyManager owns the party roster and its save-data boundary. Adding Mira records roster membership; it does not by itself promise companion combat AI or formation behavior.
+- SaveManager coordinates PartyManager serialization alongside existing GameState and QuestManager data.
+- WorldLocationData and WorldMapWorld continue to own data-driven overworld entry points. The two one-time scenes are registered as hidden locations with entry regions only where appropriate; Havenreach is the visible settlement entry.
+- Do not introduce a StoryManager or duplicate the route choice in quest state. The route affects party membership and the immediate destination, not the quest's completion criteria.
