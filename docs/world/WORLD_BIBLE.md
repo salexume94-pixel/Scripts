@@ -37,3 +37,31 @@ Use one entry per recurring NPC. Keep stable identity, public role, motivations,
 ## Relationship to implemented content
 
 Current repository names such as Tutorial Town, Northbridge Village, Elder Rowan, the Church save-point NPC, and existing building/location resources describe implemented content. Their relationship to the planned Havenreach setting remains unresolved until the story and world references are reconciled. Keep existing resource IDs and scene names stable until a deliberate migration is planned and all references have been checked.
+
+
+---
+
+## Opening Areas and Havenreach: Decisions Locked (2026-10-09)
+
+This addendum records current world-layout decisions. It supersedes the unresolved relationship statement in the earlier draft; the previous text remains as history.
+
+### Havenreach
+
+- Havenreach is the actual first settlement in the playable story and is separate from Tutorial Town and Northbridge Village.
+- Its overworld entrance is represented by a registered WorldLocationData definition and a data-driven entry region in WorldMapWorld.
+- Its detailed authority, guild, church/temple, buildings, surrounding hazards, and public history remain unspecified until deliberately designed. Do not silently copy Tutorial Town's story identity into Havenreach.
+
+### One-time story areas
+
+- waking_area is a dedicated scene where the Player wakes and says “Where am I?” When the Player exits the area, SceneManager returns them to the overworld.
+- mira_encounter_area is a separate dedicated scene entered from the overworld. It hosts Mira's first encounter and the two-option dialogue.
+- Both areas use the same world/location context and scene-transition conventions as local-world scenes, but they are story encounter areas, not settlements and not repeatable quest hubs.
+- Their entrances must not create visible overworld map markers. The encounter area may have a hidden entry trigger; waking_area is entered directly by New Game rather than through a normal overworld entrance.
+- Mira's “journey with me” choice adds her to the party roster and transitions directly to Havenreach. “Travel alone” leaves her off the roster and returns the Player to the overworld so the Player can reach Havenreach on foot.
+- Neither choice changes MAIN_001's objective requirements or completion outcome.
+
+### Example content retained but not in the active route
+
+- tutorial_town and northbridge_village and their existing scenes/resources remain in the repository for examples and reference.
+- They must not be selected as the New Game start or shown as playable overworld destinations in the active route.
+- Preserve their files and internal example content unless a separate, explicit cleanup task is approved.
