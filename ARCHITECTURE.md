@@ -308,3 +308,12 @@ No new quest/story subsystem should be created merely to accommodate narrative c
 - All town/local-world scenes use `tutorial_town.mp3` by default, not only Tutorial Town.
 - A location can override the shared default by providing `assets/audio/music/<location_id>.mp3` for its stable location ID.
 - Battle scenes continue to use `battle.mp3`, and the Main Menu continues to stop background music.
+
+
+## Scene Transitions and NPC Movement Lock (2026-10-09)
+
+- `systems/scene_manager.gd` owns the shared transition overlay. It briefly fades to black, displays a short destination message, waits for the destination scene and Player placement, then fades back to gameplay.
+- Transition messages are selected from the destination/source scene context so battle and town transitions do not require per-town UI copies.
+- `player/player_movement.gd` owns movement permission. Named movement locks allow dialogue to stop the Player without overriding an independent menu lock.
+- `systems/dialogue_manager.gd` remains the authoritative dialogue state. Each PlayerMovement component listens for dialogue start/clear signals and applies or releases its own dialogue lock.
+- These changes require local Godot runtime verification after pulling from GitHub; they are not considered tested merely because the files commit successfully.
