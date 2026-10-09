@@ -317,3 +317,10 @@ No new quest/story subsystem should be created merely to accommodate narrative c
 - `player/player_movement.gd` owns movement permission. Named movement locks allow dialogue to stop the Player without overriding an independent menu lock.
 - `systems/dialogue_manager.gd` remains the authoritative dialogue state. Each PlayerMovement component listens for dialogue start/clear signals and applies or releases its own dialogue lock.
 - These changes require local Godot runtime verification after pulling from GitHub; they are not considered tested merely because the files commit successfully.
+
+
+### Transition Movement Lock Follow-up (2026-10-09)
+
+- `player/player_movement.gd` checks `SceneManager.transition_in_progress` before reading movement input.
+- SceneManager sets this flag as soon as a transition request is accepted, so movement stops before the fade begins and remains disabled for the outgoing and incoming Player until the transition fully finishes.
+- This shared transition state does not overwrite dialogue or menu movement locks.
