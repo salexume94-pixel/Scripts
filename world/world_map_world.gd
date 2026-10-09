@@ -37,6 +37,15 @@ func _create_location_entry_regions() -> void:
 		if not bool(location.get("entry_enabled")):
 			continue
 
+		# One-time story entrances can be closed by an existing quest objective.
+		# The objective remains authoritative; the map does not create its own
+		# duplicate encounter flag or runtime access dictionary.
+		var blocked_quest_id := str(location.get("entry_blocked_after_quest_id"))
+		var blocked_objective_id := str(location.get("entry_blocked_after_objective_id"))
+		if not blocked_quest_id.is_empty() and not blocked_objective_id.is_empty():
+			if QuestManager.get_objective_progress(blocked_quest_id, blocked_objective_id) > 0:
+				continue
+
 		var world_position_variant = location.get("world_position")
 		var entry_size_variant = location.get("world_entry_size")
 
