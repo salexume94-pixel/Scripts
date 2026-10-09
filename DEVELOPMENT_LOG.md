@@ -2736,3 +2736,19 @@ Changes:
 - The Options overlay remains closable through its Back button or Escape.
 
 Runtime verification status: NOT TESTED in Godot after this patch. The user must pull the changes and confirm that music is audible, that the visible Options button opens the overlay, that Escape/Back closes it, and that brightness/audio settings respond. Do not mark these checks passed until the user confirms them.
+
+
+### Shared Town Music Default (2026-10-09)
+
+Updated:
+- `systems/audio_manager.gd`
+- `ARCHITECTURE.md`
+- `DEVELOPMENT_LOG.md` (this entry is appended; existing history is preserved)
+
+Changes:
+- Changed the default music selection so the world map uses `overworld.mp3`, while all town/local-world scenes use `tutorial_town.mp3`.
+- Future towns inherit the shared town theme automatically without requiring a new scene-name or town-ID condition.
+- Existing location-specific music remains supported: if `assets/audio/music/<location_id>.mp3` exists for the active stable location ID, it takes priority over the shared default.
+- Battle music and Main Menu music behavior are unchanged.
+
+Runtime verification status: NOT TESTED after this code change. The previous audio tests passed before this fallback adjustment; pull the latest `main` and verify the World Map still uses overworld music, Tutorial Town uses town music, and Northbridge Village uses town music. Also confirm battle music and looping still work.
