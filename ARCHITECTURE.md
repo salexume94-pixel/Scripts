@@ -26,9 +26,15 @@ If a script becomes responsible for multiple unrelated systems, the functionalit
 
 Combat-related systems.
 
-### data/
+### Data Definitions
 
-Reusable game data definitions.
+Reusable static data is stored alongside its owning system rather than in a generic top-level folder:
+- `items/definitions/` for item data.
+- `enemies/definitions/` for enemy, action, affinity, and behavior-profile data.
+- `quests/definitions/` for quest data.
+- `world/definitions/` for reusable world/location data.
+
+Add a generic top-level data folder only if a concrete shared-ownership requirement emerges.
 
 ### enemies/
 
@@ -112,7 +118,7 @@ Player progression is split by responsibility:
 
 - `player/player_stats.gd` owns the resulting Player numerical values.
 - `player/player_progression.gd` owns XP thresholds, level-up rules, and stat growth.
-- `systems/player_currency.gd` owns the Player-facing gold API.
+- `player/player_currency.gd` owns the Player-facing gold API.
 - `systems/reward_manager.gd` coordinates XP, gold, and item rewards from combat, quests, and future gameplay systems.
 - `systems/game_state.gd` stores the runtime snapshots required to preserve progression and currency across scene transitions.
 
@@ -358,3 +364,8 @@ This section supplements earlier architecture notes and corrects stale path desc
 - `docs/world/WORLD_BIBLE.md` owns stable setting facts. `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation pacing. Existing root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain in place as reference material until their conflicts are deliberately reconciled.
 - Quest state remains owned by QuestManager. World features own their physical/access state. Story flags require one explicit authoritative owner before implementation; do not scatter duplicate flags across NPCs or scenes.
 - The first quest should be specified before expanding QuestData or DialogueManager. Add prerequisites, categories, turn-in states, failure rules, or conditional dialogue only when the actual quest design requires them.
+
+
+### Player Skills Placeholder Status
+
+`player/player_skills.gd` currently contains only `extends Node` and does not implement skill behavior. Its location under `player/` is appropriate if a Player-owned skill/ability system is designed. Until that system has a defined responsibility and implementation, do not attach the empty placeholder as an active Player component. Define actual skill data, resource costs, unlock rules, and execution ownership before building it; combat actions should remain in the combat system unless the design establishes a distinct player-skill responsibility.
