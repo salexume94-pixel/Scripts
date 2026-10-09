@@ -382,3 +382,8 @@ This section supplements earlier architecture notes and corrects stale path desc
 - systems/save_manager.gd serializes PartyManager data alongside existing quest and player snapshots. Scene and position remain restored through the existing SceneManager path.
 - MAIN_001 uses the existing QuestData/QuestManager lifecycle. A dialogue route choice is not a quest branch and must not add a duplicate quest flag.
 - Runtime verification must distinguish static repository checks from a local Godot run. Do not mark a new story scene, dialogue choice, transition, party roster, or save/load route as runtime-verified until it has been tested after pulling.
+
+
+### One-time World Location Entrances
+
+WorldLocationData supports optional entry blocking after a named quest objective is complete. WorldMapWorld reads this metadata while building entry triggers and consults QuestManager's existing progress. This is intended for a concrete one-time entrance such as Mira's first encounter; it does not create a new story flag or duplicate quest state. Leave the fields empty for ordinary locations.
