@@ -87,6 +87,7 @@ func save_game() -> bool:
 			"gold": GameState.get_gold(),
 		},
 		"quests": QuestManager.get_save_data(),
+		"party": PartyManager.get_save_data(),
 		"chests": _get_chest_save_data(),
 		"metadata": {
 			"saved_at": Time.get_datetime_string_from_system(),
@@ -196,6 +197,12 @@ func load_game() -> bool:
 	var quest_data: Dictionary = save_data.get("quests", {})
 	if typeof(quest_data) == TYPE_DICTIONARY:
 		QuestManager.load_save_data(quest_data)
+
+	# Restore party membership before the destination scene is instantiated.
+	# Companion IDs remain owned by PartyManager, not by the save file itself.
+	var party_data = save_data.get("party", {})
+	if typeof(party_data) == TYPE_DICTIONARY:
+		PartyManager.load_save_data(party_data)
 
 	is_loading = true
 
