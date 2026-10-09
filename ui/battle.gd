@@ -31,6 +31,34 @@ func _ready() -> void:
 	_update_combat_controls()
 	_update_player_weakness_display()
 	_update_combat_log_display()
+	_focus_initial_combat_action()
+
+## Gives keyboard navigation a starting point without making the mouse click
+## required to activate the battle UI. Mouse clicks still work on every enabled
+## button immediately, and focus is not forcibly reset after each combat action.
+func _focus_initial_combat_action() -> void:
+	# Prefer the normal first action during combat, but focus the appropriate
+	# return/recovery button if the encounter is already in a terminal state.
+	var button_paths := [
+		"BottomActionBar/ActionVBox/AttackButton",
+		"BottomActionBar/ActionVBox/FireButton",
+		"BottomActionBar/ActionVBox/DefendButton",
+		"BottomActionBar/ActionVBox/PassButton",
+		"BottomActionBar/ActionVBox/RunButton",
+		"BottomActionBar/ActionVBox/VictoryButton",
+		"BottomActionBar/ActionVBox/RecoveryButton",
+	]
+
+	for button_path in button_paths:
+		var button := get_node_or_null(button_path) as Button
+		if button == null or not button.visible or button.disabled:
+			continue
+
+		# Buttons need focus enabled for keyboard navigation, while mouse input
+		# remains available regardless of which button currently has focus.
+		button.focus_mode = Control.FOCUS_ALL
+		button.grab_focus()
+		return
 
 func _on_player_attack_performed(_attack_value: int) -> void:
 	# Present the resolved damage type, affinity, and outcome without moving
