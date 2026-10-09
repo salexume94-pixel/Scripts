@@ -2771,3 +2771,23 @@ The shared town-music behavior and Options settings persistence are considered r
 
 Next:
 - Continue with the next planned development task. Preserve the existing development log by appending future results rather than replacing earlier entries.
+
+
+### Short Scene Transitions and NPC Dialogue Movement Lock (2026-10-09)
+
+Implemented on GitHub main; runtime verification pending.
+
+Added:
+- A shared, lightweight transition overlay managed by `systems/scene_manager.gd`.
+- Brief fade-to-black and fade-from-black with a short label for battle, town, building, and general scene transitions.
+- Named movement locks in `player/player_movement.gd`, keeping dialogue locks independent from the existing menu movement toggle.
+- Dialogue start/clear signal handling so the Player stops immediately when NPC dialogue opens and remains stopped until the dialogue is dismissed.
+- A current-dialogue check when PlayerMovement initializes, covering Player instances created while dialogue is already active.
+
+Expected runtime checks:
+- Enter and leave a town; confirm the transition message appears briefly and gameplay resumes.
+- Start a battle and return to the correct town/world; confirm the battle transition is brief and scene/music behavior remains correct.
+- Walk while opening NPC dialogue; confirm movement stops immediately.
+- Hold a movement key while dismissing dialogue; confirm the Player only moves after dialogue is cleared.
+- Open and close the inventory/character menu and verify its movement lock still works independently.
+- Confirm no Godot parser, runtime, or debugger errors.
