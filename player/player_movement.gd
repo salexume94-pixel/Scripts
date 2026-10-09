@@ -18,23 +18,33 @@ var player: CharacterBody2D
 # of whether movement input is currently allowed.
 var movement_enabled: bool = true
 
+# Named locks allow multiple systems to stop movement independently. For
+# example, closing dialogue removes only the dialogue lock, not a menu lock.
+var movement_locks: Dictionary = {}
+
 
 func _ready() -> void:
 	# The movement script is expected to be a child of the player's
 	# CharacterBody2D, so get_parent() gives us the player node.
 	player = get_parent() as CharacterBody2D
 
+	# DialogueManager owns the conversation state. Connecting here lets every
+	# Player instance stop while any shared NPC dialogue is open.
+	DialogueManager.dialogue_started.connect(_on_dialogue_started)
+	DialogueManager.dialogue_cleared.connect(_on_dialogue_cleared)
+
+	# A Player created while dialogue is already active must also remain locked.
+	if DialogueManager.is_active:
+		set_movement_lock("dialogue", true)
+
 
 func _physics_process(_delta: float) -> void:
-	# Stop here if movement has been disabled by another gameplay system, such
-	# as a full-screen Character/Inventory menu.
-	if not movement_enabled:
-		player.velocity = Vector2.ZERO
-		return
-
-	# Stop here if the player reference could not be found.
-	# This prevents errors when trying to move a nonexistent player.
+	# Guard the Player reference first, then stop movement whenever either a
+	# menu has disabled it or one or more gameplay systems hold a movement lock.
 	if player == null:
+		return
+	if not movement_enabled or not movement_locks.is_empty():
+		player.velocity = Vector2.ZERO
 		return
 
 	# Read the four directional movement actions and convert them
@@ -74,3 +84,26 @@ func set_movement_enabled(enabled: bool) -> void:
 		# Clear existing velocity immediately so opening the menu also stops any
 		# movement that was already in progress.
 		player.velocity = Vector2.ZERO
+
+
+
+func set_movement_lock(lock_name: String, locked: bool) -> void:
+	# Locks are keyed by system name, so unlocking dialogue cannot accidentally
+	# re-enable movement while another system still needs it disabled.
+	if locked:
+		movement_locks[lock_name] = true
+	else:
+		movement_locks.erase(lock_name)
+
+	if player != null and (not movement_enabled or not movement_locks.is_empty()):
+		player.velocity = Vector2.ZERO
+
+
+func _on_dialogue_started(_speaker_name: String, _dialogue_text: String) -> void:
+	# Stop immediately when the shared dialogue system opens an NPC conversation.
+	set_movement_lock("dialogue", true)
+
+
+func _on_dialogue_cleared() -> void:
+	# Release only the dialogue lock when the conversation is dismissed.
+	set_movement_lock("dialogue", false)
