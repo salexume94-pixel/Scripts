@@ -36,6 +36,12 @@ func _on_load_button_pressed() -> void:
 		$Menu/StatusLabel.text = "No save data found."
 
 
+func _on_options_button_pressed() -> void:
+	# OptionsManager owns the shared overlay so these same preferences are
+	# available during gameplay through Escape as well as from this menu.
+	OptionsManager.open_options()
+
+
 func _on_quit_button_pressed() -> void:
 	# Quit is kept here rather than inside SaveManager or SceneManager because
 	# exiting the application is a menu concern, not a persistence concern.
