@@ -2654,3 +2654,30 @@ The Main Menu startup flow is now considered runtime verified.
 
 Next:
 - Continue with the remaining Save / Load and world-map checklist items before adding new gameplay content.
+
+
+### Documentation Reconciliation and Quest / Story Planning Focus — 2026-10-09
+
+Documentation-only update. No gameplay code, scenes, resources, or existing documentation entries were removed or rewritten.
+
+Appended to ARCHITECTURE.md:
+- Clarified documentation ownership and the append-only development-log rule.
+- Documented boundaries between quest state, story flags, and world state.
+- Reaffirmed existing ownership: QuestData and quest definitions in quests/, runtime quest state in QuestManager, quest presentation in QuestLog, and disk persistence coordination in SaveManager.
+- Added a gate requiring story planning and authoritative flag ownership to be settled before implementing the new story content.
+
+Appended to ROADMAP.md:
+- Recorded the current Quest + Story Design focus as planning work, not implemented content.
+- Added a design sequence from World Bible and Havenreach through main quests, story flags, side quests, architecture review, and local runtime verification.
+- Captured the current story skeleton as design-only material.
+- Added a checklist for defining quest prerequisites, objectives, outcomes, rewards, world consequences, missability, persistence, and verification.
+
+Existing roadmap reconciliation note:
+- Earlier roadmap entries contain stale or internally conflicting status prose, including the Save / Load section's older “in progress” wording despite the later completed/runtime-verified heading and development-log entry, and Map Labels status language that must not be assumed complete without a recorded runtime verification.
+- To honor the instruction not to overwrite existing content, those historical sections were not edited in place. This appended note records the conflict without removing or rewriting the earlier wording. Current completion status must be based on the latest local runtime verification, not on an unverified assumption.
+
+No Godot runtime verification was performed as part of this documentation-only change. The story questline is not implemented by this update.
+
+Next:
+- Continue the World Bible / Story Bible design discussion, beginning with Havenreach and the surrounding region.
+- Do not modify quest code until the story structure and flag ownership are agreed.
