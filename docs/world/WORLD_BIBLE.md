@@ -18,7 +18,7 @@ The repository contains implementation content for Tutorial Town and Northbridge
 - Geography and route into town: to be defined in the first-quest specification.
 - Local authority: to be defined.
 - Guild presence and responsibilities: to be defined.
-- Church/temple presence and responsibilities: to be defined.
+- Church presence: a church interior with a Churchkeeper save point is implemented. Broader religious roles and responsibilities remain to be defined.
 - Nearby ruins and their known public history: to be defined.
 - Surrounding region, settlements, roads, and hazards: to be defined.
 
