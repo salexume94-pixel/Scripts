@@ -15,8 +15,8 @@ func _ready() -> void:
 
 
 func _on_new_game_button_pressed() -> void:
-	# New Game deliberately starts the normal Tutorial Town world rather than
-	# loading any previous runtime state.
+	# New Game begins the new story opening rather than resuming an old runtime
+	# state or entering either of the retained example settlements.
 	DialogueManager.clear_dialogue()
 	GameState.reset_runtime_state()
 	QuestManager.reset_all_quests()
