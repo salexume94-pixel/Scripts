@@ -2681,3 +2681,40 @@ No Godot runtime verification was performed as part of this documentation-only c
 Next:
 - Continue the World Bible / Story Bible design discussion, beginning with Havenreach and the surrounding region.
 - Do not modify quest code until the story structure and flag ownership are agreed.
+
+
+### Options Menu and Background Music Foundation (2026-10-09)
+
+Implemented the initial Options and background music systems. This entry is appended to preserve the existing development history.
+
+Added:
+- `assets/audio/music/README.md` — music asset folder and expected filenames.
+- `systems/options_manager.gd` — persistent brightness/master-volume settings and shared Options overlay.
+- `systems/audio_manager.gd` — one persistent background music player with scene/location track selection.
+- `ui/OptionsMenu.tscn` and `ui/options_menu.gd` — brightness slider, audio volume slider, and Back button.
+
+Updated:
+- `project.godot` — registered OptionsManager and AudioManager autoloads.
+- `ui/MainMenu.tscn` and `ui/main_menu.gd` — added and connected an Options button.
+- `ARCHITECTURE.md` — appended audio asset, playback, and settings ownership rules.
+
+Behavior implemented:
+- Options can be opened from the Main Menu or with Escape and closed with Back or Escape.
+- Brightness and master volume are saved separately to `user://settings.cfg` and restored on startup.
+- The audio manager stops music on the Main Menu, selects the battle track for the Battle scene, prefers a location-ID-named music file when present, and falls back to Tutorial Town or overworld music.
+- Missing MP3 files are tolerated until the user uploads them. Expected files are `battle.mp3`, `overworld.mp3`, and `tutorial_town.mp3` under `assets/audio/music/`.
+- Future town tracks can be named after their stable location IDs, such as `another_town.mp3`, without adding another hard-coded scene branch.
+
+Important limitation:
+- GitHub-side changes have not been run in Godot in this environment. The implementation is NOT runtime-verified. The brightness control darkens the rendered game using a translucent overlay; it does not increase brightness above the normal baseline.
+- Music playback cannot be fully verified until the MP3 files are uploaded and the project is run locally.
+
+Runtime verification checklist (run after `git pull origin main`):
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Godot 4.7 opens the project without parse errors, missing-script errors, or invalid autoload errors.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Main Menu shows New Game, Load, Options, and Quit; Options opens and Back closes it.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Escape opens Options from gameplay and Escape closes it without triggering another gameplay action.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Brightness slider visibly darkens/returns the game to normal and persists after restarting.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Audio slider changes master volume, mute works at zero, and volume persists after restarting.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — With MP3 files uploaded, overworld and Tutorial Town tracks play as expected and do not overlap during scene transitions.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — Starting combat switches to battle music; leaving combat restores the appropriate location track.
+- [ ] PASS / [ ] FAIL / [x] NOT TESTED — No console, debugger, or resource errors appear during the checks above.
