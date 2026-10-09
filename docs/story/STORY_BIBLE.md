@@ -114,3 +114,12 @@ This addendum records decisions made after the initial outline above. It superse
 - SaveManager coordinates PartyManager serialization alongside existing GameState and QuestManager data.
 - WorldLocationData and WorldMapWorld continue to own data-driven overworld entry points. The two one-time scenes are registered as hidden locations with entry regions only where appropriate; Havenreach is the visible settlement entry.
 - Do not introduce a StoryManager or duplicate the route choice in quest state. The route affects party membership and the immediate destination, not the quest's completion criteria.
+
+
+### Exact opening dialogue and choice text (2026-10-09)
+
+- Waking line, speaker Wanderer: **“Where am I?”**
+- Mira's first encounter line: **“You're a long way from the main road. Havenreach is the nearest settlement. I can travel with you, or you can go on your own.”**
+- Choice 1: **“Journey with Mira”**. Stable choice ID: journey_with_mira. Add Mira to the party roster, mark meet_mira complete, and transition directly to Havenreach.
+- Choice 2: **“Travel to Havenreach alone”**. Stable choice ID: travel_alone. Do not add Mira to the roster, mark meet_mira complete, and return the Player to the overworld outside the encounter entry trigger.
+- The choice appears only until one option is selected. The overworld entry for mira_encounter_area is then closed using the existing meet_mira objective progress, so the first encounter cannot be repeated by re-entering the area.
