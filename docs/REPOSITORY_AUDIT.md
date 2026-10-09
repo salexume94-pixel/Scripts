@@ -11,8 +11,8 @@ The repository's broad folder structure is sound and the current quest foundatio
 
 The main concrete findings are:
 
-1. `ARCHITECTURE.md` documents a `data/` folder that does not exist, and refers to `systems/player_currency.gd` even though the implementation is `player/player_currency.gd`.
-2. `player/player_skills.gd` is a one-line `extends Node` placeholder. It is attached to the Player scene but currently owns no skill behavior.
+1. The initial audit found that `ARCHITECTURE.md` described a nonexistent `data/` folder and used the wrong currency path. A follow-up corrected the documentation to describe system-owned definition folders and `player/player_currency.gd`.
+2. `player/player_skills.gd` is a one-line `extends Node` placeholder and owns no skill behavior. A follow-up detached it from `player/Player.tscn`; the file remains in `player/` as a future option because that is the correct ownership area for a Player-owned skill system.
 3. Four test-named enemy definitions (`slime_ai_test.tres`, `slime_ai_balanced_test.tres`, `slime_ai_aggressive_test.tres`, `slime_ai_defensive_test.tres`) were registered by the normal `enemies/enemy_database.gd`. A follow-up correction removes them from normal lookup and `get_all_enemies()` while preserving the `.tres` files for future dedicated debug testing.
 4. The active quest implementation is a basic one-objective quest. NPC interaction can start it and advance an objective, and QuestManager auto-completes as soon as all objectives are complete. It does not yet support general prerequisites, conditional/branching dialogue, distinct turn-in, or quest-triggered story/world state changes.
 5. `STORY_DIRECTION.md` describes an MMO login/tutorial-town opening. The newer working outline, *The Stranger*, starts with the protagonist waking in a field, meeting Mira, and reaching Havenreach. These openings conflict and need an explicit source-of-truth decision before implementation.
@@ -268,6 +268,6 @@ No existing file is moved, deleted, or overwritten by this organization plan. Th
 
 - `ARCHITECTURE.md` now documents data definitions in their owning folders instead of describing a nonexistent top-level `data/` folder, and the Player currency path is corrected to `player/player_currency.gd`.
 - `player/player_skills.gd` is a placeholder created ahead of actual skill behavior. Its folder is appropriate for a future Player-owned skill system, but the empty component has been detached from `player/Player.tscn`; the script and UID files are retained.
-- The four test-named Slime AI Resource files are retained but excluded from the normal EnemyDatabase. They had no direct gameplay references outside the catalog; a dedicated debug catalog can be introduced if later test workflows need those profiles.
+- The four test-named Slime AI Resource files are retained but excluded from normal EnemyDatabase lookup and enumeration. A dedicated debug catalog can be introduced if later test workflows need those profiles.
 - The developer confirmed that current quest-specific save/load behavior works. The previous pending-verification finding was stale and has been corrected. This confirmation does not claim that future, not-yet-implemented story quest behavior has been tested.
 - Remaining quest-system gaps are distinct turn-ins and conditional dialogue; these are now explicit roadmap items to be designed against the first approved quest rather than implemented speculatively.
