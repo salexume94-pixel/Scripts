@@ -337,3 +337,21 @@ This addendum records the next development gate without removing or rewriting ea
 ### Verification boundary
 
 The repository audit is static. It does not establish that Godot parsed/imported the project or that any new quest behavior has passed runtime verification. After local testing, append the actual results to `DEVELOPMENT_LOG.md`; never replace or shorten existing log history.
+
+
+---
+
+## MAIN_001 Implementation Started (2026-10-09)
+
+The opening decisions are now implemented in the repository as an initial playable content pass rather than planning-only content.
+
+- New Game now initializes MAIN_001 and enters WakingArea.
+- WakingArea, MiraEncounterArea, and Havenreach have separate scenes and stable location context.
+- The Stranger is registered through the existing QuestData/QuestDatabase system.
+- DialogueManager and DialogueBox support reusable choice buttons; Mira's two choices use stable choice IDs.
+- WorldLocationData and WorldMapWorld define the hidden Mira entry and visible Havenreach entry. The Mira entry closes after the existing meet_mira objective completes.
+- PartyManager records companion roster membership and SaveManager serializes/restores it.
+- Havenreach includes a church interior and Churchkeeper save point so both choice routes can be saved after reaching the settlement.
+- Tutorial Town and Northbridge Village remain in the repository, but their overworld entry regions and visible markers are disabled.
+
+Status: repository implementation committed; local Godot runtime verification is still required. This implementation does not establish companion combat AI or full Havenreach town content.
