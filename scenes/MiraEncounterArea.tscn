@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/world_context.gd" id="2_context"]
+[ext_resource type="Script" path="res://world/world_presentation.gd" id="3_presentation"]
+[ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="4_exit"]
+[ext_resource type="PackedScene" path="res://world/NPC.tscn" id="5_npc"]
+[ext_resource type="Script" path="res://world/mira_encounter.gd" id="6_mira"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="7_inventory"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="8_quest_log"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="9_dialogue"]
+[ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="10_map"]
+
+[node name="MiraEncounterArea" type="Node2D"]
+
+[node name="WorldContext" type="Node" parent="."]
+script = ExtResource("2_context")
+world_id = "world_map"
+location_id = "mira_encounter_area"
+
+[node name="WorldContent" type="Node2D" parent="."]
+
+[node name="FieldFloor" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
+color = Color(0.20, 0.32, 0.17, 1)
+
+[node name="Path" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-600, 170, -600, 110, -60, 110, 180, -100, 220, -60, -20, 170)
+color = Color(0.36, 0.30, 0.20, 1)
+
+[node name="Mira" parent="WorldContent" instance=ExtResource("5_npc")]
+script = ExtResource("6_mira")
+npc_name = "Mira"
+dialogue_text = "Havenreach is the nearest settlement."
+position = Vector2(0, 0)
+
+[node name="MiraLabel" type="Label" parent="WorldContent"]
+position = Vector2(-24, -50)
+text = "MIRA"
+
+[node name="WorldExitBoundary" type="Node2D" parent="."]
+script = ExtResource("4_exit")
+location_bounds = Rect2(-600, -400, 1200, 800)
+target_scene = "res://scenes/WorldMapWorld.tscn"
+target_player_position = Vector2(-840, 0)
+target_world_id = "world_map"
+target_location_id = "world_map"
+
+[node name="WorldPresentation" type="Node2D" parent="."]
+script = ExtResource("3_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 500)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("7_inventory")]
+
+[node name="QuestLog" parent="." instance=ExtResource("8_quest_log")]
+
+[node name="DialogueBox" parent="." instance=ExtResource("9_dialogue")]
+
+[node name="WorldMap" parent="." instance=ExtResource("10_map")]
