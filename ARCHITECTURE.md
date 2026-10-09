@@ -293,3 +293,10 @@ No new quest/story subsystem should be created merely to accommodate narrative c
 - Brightness and master volume are saved to `user://settings.cfg`; these are local user settings and must not be stored in the game's save slot.
 - The Options menu is accessible from the Main Menu and with Escape during gameplay. Back or Escape closes it.
 - `OptionsManager` and `AudioManager` are registered as autoloads in `project.godot` so preferences and music survive scene replacement.
+
+
+### Options Access and Audio Diagnostics Follow-up
+
+- During gameplay, OptionsManager provides a visible `Options (Esc)` button in addition to the Escape shortcut. The Main Menu retains its own Options button.
+- AudioManager checks scene and playback state periodically as a fallback, and logs the detected scene, selected track, and missing-file warnings to aid runtime diagnosis.
+- These additions do not establish runtime verification; verify locally in Godot before treating audio or Options as complete.
