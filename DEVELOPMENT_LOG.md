@@ -2791,3 +2791,20 @@ Expected runtime checks:
 - Hold a movement key while dismissing dialogue; confirm the Player only moves after dialogue is cleared.
 - Open and close the inventory/character menu and verify its movement lock still works independently.
 - Confirm no Godot parser, runtime, or debugger errors.
+
+
+### Short Scene Transitions and NPC Dialogue Movement Lock: Runtime Verification Passed (2026-10-09)
+
+Runtime verification passed after pulling the implementation into Godot.
+
+Verified:
+- Transition into town displays briefly and fades away.
+- Leaving town returns to the World Map correctly.
+- Starting and ending battle works, and the correct music resumes.
+- No stuck black screen or transition overlay.
+- Player stops immediately when NPC dialogue opens.
+- Player cannot move until dialogue is dismissed.
+- Inventory/character menu continues to block movement correctly.
+- No Godot debugger or parser errors were observed.
+
+The shared scene transition overlay and NPC dialogue movement lock are runtime verified for the tested scenarios.
