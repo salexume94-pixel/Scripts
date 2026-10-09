@@ -33,6 +33,7 @@ func _on_dialogue_started(speaker_name: String, dialogue_text: String) -> void:
 	speaker_label.text = speaker_name
 	dialogue_label.text = ">>" + dialogue_text
 	prompt_label.text = "Press E to continue"
+	prompt_label.visible = true
 	choices_container.visible = false
 	_clear_choice_buttons()
 	panel.visible = true
@@ -47,6 +48,7 @@ func _on_dialogue_choices_started(
 	speaker_label.text = speaker_name
 	dialogue_label.text = ">>" + dialogue_text
 	prompt_label.text = "Choose an option"
+	prompt_label.visible = false
 	_clear_choice_buttons()
 	choices_container.visible = true
 	panel.visible = true
