@@ -11,6 +11,10 @@ extends Node
 
 const LOCATION_DEFINITIONS: Array[Resource] = [
 	preload("res://world/definitions/tutorial_town.tres"),
+	preload("res://world/definitions/havenreach.tres"),
+	preload("res://world/definitions/waking_area.tres"),
+	preload("res://world/definitions/mira_encounter_area.tres"),
+	preload("res://world/definitions/havenreach_world_map.tres"),
 	preload("res://world/definitions/tutorial_town_world_map.tres"),
 	preload("res://world/definitions/northbridge_village.tres"),
 	preload("res://world/definitions/northbridge_village_world_map.tres"),
