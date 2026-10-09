@@ -52,7 +52,7 @@ script = ExtResource("3_presentation")
 [node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(0, 500)
+position = Vector2(0, 300)
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("7_inventory")]
 
