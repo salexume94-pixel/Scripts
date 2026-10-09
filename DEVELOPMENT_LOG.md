@@ -2866,3 +2866,13 @@ Verified:
 - Brightness and audio Options persist independently of game save/load state. Changing brightness to its maximum, resetting the game without saving, and starting again retained the selected Options value.
 
 The mutually exclusive menu behavior, shared menu movement lock, and Options persistence are runtime verified for the scenarios above.
+
+
+### Quest Save/Load Persistence: Developer Runtime Confirmation (2026-10-09)
+
+The developer confirmed that the current quest-specific save/load behavior has been tested locally and works as intended. This corrects the earlier static repository audit, which incorrectly described existing quest persistence as still awaiting end-to-end verification.
+
+- Quest save/load behavior currently implemented in the project is considered runtime verified based on the developer's report.
+- No additional test steps or outcomes are inferred beyond that confirmation.
+- Future story-quest behavior, including any new turn-in states, conditional dialogue, story facts, or world-state changes, must be runtime-tested when those features are implemented.
+
