@@ -25,6 +25,8 @@ RewardManager="*res://systems/reward_manager.gd"
 QuestManager="*res://systems/quest_manager.gd"
 DialogueManager="*res://systems/dialogue_manager.gd"
 MapManager="*res://systems/map_manager.gd"
+OptionsManager="*res://systems/options_manager.gd"
+AudioManager="*res://systems/audio_manager.gd"
 
 [display]
 
