@@ -75,10 +75,13 @@ func _on_scene_changed() -> void:
 			play_track(location_track_path)
 			return
 
-	if SceneManager.current_world_id == "tutorial_town":
-		play_track(TUTORIAL_TOWN_MUSIC_PATH)
-	else:
+	# The world map uses the overworld theme. Every town or other local
+	# world uses the shared Tutorial Town theme by default, including towns
+	# added later. A location-specific <location_id>.mp3 above overrides this.
+	if SceneManager.current_world_id == "world_map":
 		play_track(OVERWORLD_MUSIC_PATH)
+	else:
+		play_track(TUTORIAL_TOWN_MUSIC_PATH)
 
 
 func play_track(track_path: String) -> void:
