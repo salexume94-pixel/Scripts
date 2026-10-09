@@ -5,7 +5,7 @@ extends Control
 ## starts a new game, loads the existing save, or quits. Gameplay systems
 ## remain responsible for actually running the game once a choice is made.
 
-const NEW_GAME_SCENE := "res://scenes/World.tscn"
+const NEW_GAME_SCENE := "res://scenes/WakingArea.tscn"
 
 
 func _ready() -> void:
@@ -19,11 +19,16 @@ func _on_new_game_button_pressed() -> void:
 	# loading any previous runtime state.
 	GameState.reset_runtime_state()
 	QuestManager.reset_all_quests()
+	PartyManager.reset_party()
+
+	# Start the opening quest before loading its first scene so the waking
+	# sequence can safely advance its objective through the shared QuestManager.
+	QuestManager.start_quest("the_stranger")
 	SceneManager.change_scene(
 		NEW_GAME_SCENE,
 		Vector2.ZERO,
-		"tutorial_town",
-		"tutorial_town"
+		"world_map",
+		"waking_area"
 	)
 
 
