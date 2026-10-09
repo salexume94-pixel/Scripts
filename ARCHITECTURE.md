@@ -300,3 +300,11 @@ No new quest/story subsystem should be created merely to accommodate narrative c
 - During gameplay, OptionsManager provides a visible `Options (Esc)` button in addition to the Escape shortcut. The Main Menu retains its own Options button.
 - AudioManager checks scene and playback state periodically as a fallback, and logs the detected scene, selected track, and missing-file warnings to aid runtime diagnosis.
 - These additions do not establish runtime verification; verify locally in Godot before treating audio or Options as complete.
+
+
+### Shared Town Music Default (2026-10-09)
+
+- `systems/audio_manager.gd` uses `overworld.mp3` for the world-map world.
+- All town/local-world scenes use `tutorial_town.mp3` by default, not only Tutorial Town.
+- A location can override the shared default by providing `assets/audio/music/<location_id>.mp3` for its stable location ID.
+- Battle scenes continue to use `battle.mp3`, and the Main Menu continues to stop background music.
