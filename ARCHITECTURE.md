@@ -268,3 +268,28 @@ A quest may affect story flags or world state, but the three layers are not inte
 The revised story outline is design material, not implemented game content. Quest IDs, prerequisites, objectives, rewards, failure rules, story flags, NPC schedules/dialogue, gated areas, and save/load behavior must be reviewed against the existing architecture before implementation. Do not claim a planned story event is implemented or runtime-verified until it has been added to the repository and tested locally in Godot.
 
 No new quest/story subsystem should be created merely to accommodate narrative content. Extend the current architecture only when a clearly owned missing responsibility has been identified and documented.
+
+
+## Audio Assets and Options (2026-10-09)
+
+### Asset folder ownership
+
+- `assets/audio/music/` stores background music tracks. The folder's README documents the expected track names and upload workflow.
+- Keep music separate from future sound effects and voice recordings, which should receive their own subfolders under `assets/audio/` if/when those assets are introduced.
+- Binary audio assets are project resources, not scripts or reusable data definitions. Scenes and systems reference them through stable `res://assets/audio/music/` paths.
+
+### Audio playback
+
+- `systems/audio_manager.gd` is the single owner of background music playback and scene-based track selection.
+- It selects battle music while `scenes/Battle.tscn` is active, selects a location-specific track when a matching location-ID MP3 exists, and otherwise falls back to Tutorial Town or overworld music.
+- It stops music on the Main Menu. A single persistent AudioStreamPlayer prevents overlapping background tracks across scene changes.
+- Missing music assets are tolerated during development. The expected MP3s can be uploaded after the code and folder structure are committed.
+- Future scenes should use stable location IDs and a corresponding `assets/audio/music/<location_id>.mp3` filename to opt into unique location music.
+
+### Options and preferences
+
+- `systems/options_manager.gd` owns persistent user preferences, the brightness overlay, master-bus volume, and the globally accessible Options overlay.
+- `ui/options_menu.gd` and `ui/OptionsMenu.tscn` own only the options interface and user input.
+- Brightness and master volume are saved to `user://settings.cfg`; these are local user settings and must not be stored in the game's save slot.
+- The Options menu is accessible from the Main Menu and with Escape during gameplay. Back or Escape closes it.
+- `OptionsManager` and `AudioManager` are registered as autoloads in `project.godot` so preferences and music survive scene replacement.
