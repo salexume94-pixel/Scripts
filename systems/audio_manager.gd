@@ -12,6 +12,8 @@ const BATTLE_MUSIC_PATH := "res://assets/audio/music/battle.mp3"
 
 var music_player: AudioStreamPlayer
 var current_track_path: String = ""
+var _last_scene_path: String = ""
+var _check_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -26,7 +28,26 @@ func _ready() -> void:
 	# Re-evaluate the track after every scene transition. SceneManager's
 	# scene_changed signal fires after the new current scene is established.
 	get_tree().scene_changed.connect(_on_scene_changed)
+	set_process(true)
 	call_deferred("_on_scene_changed")
+
+
+func _process(delta: float) -> void:
+	# Poll occasionally as a safety net in case a scene transition bypasses the
+	# expected signal timing, or a track stops unexpectedly without an error.
+	_check_timer += delta
+	if _check_timer < 0.5:
+		return
+	_check_timer = 0.0
+
+	var current_scene := get_tree().current_scene
+	if current_scene == null:
+		return
+
+	if current_scene.scene_file_path != _last_scene_path:
+		_on_scene_changed()
+	elif not current_track_path.is_empty() and not music_player.playing:
+		_on_scene_changed()
 
 
 func _on_scene_changed() -> void:
@@ -35,6 +56,8 @@ func _on_scene_changed() -> void:
 		return
 
 	var scene_path := current_scene.scene_file_path
+	_last_scene_path = scene_path
+	print("AudioManager: scene detected: ", scene_path)
 	if scene_path == "res://ui/MainMenu.tscn":
 		stop_music()
 		return
@@ -63,10 +86,10 @@ func play_track(track_path: String) -> void:
 		return
 
 	if not ResourceLoader.exists(track_path):
-		# MP3s are uploaded separately. Stop any previous track and wait until
-		# the requested asset exists instead of generating a missing-resource error.
+		# Keep a missing track visible in the debugger instead of failing silently.
 		music_player.stop()
 		current_track_path = ""
+		push_warning("AudioManager: music file not found: " + track_path)
 		return
 
 	var loaded_resource := load(track_path)
@@ -80,6 +103,7 @@ func play_track(track_path: String) -> void:
 	music_player.stream = loaded_resource as AudioStream
 	current_track_path = track_path
 	music_player.play()
+	print("AudioManager: playing music: ", track_path)
 
 
 func stop_music() -> void:
