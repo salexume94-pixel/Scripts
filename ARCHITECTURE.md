@@ -337,3 +337,10 @@ Current menu IDs:
 - `options`: `systems/options_manager.gd`
 
 A menu shortcut must close its own menu when it is already open. It must refuse to open when another menu owns the UI. New menus must use MenuManager rather than implementing separate menu-lock logic.
+
+
+### Shared Menu Movement Lock Follow-up (2026-10-09)
+
+- `systems/menu_manager.gd` now applies a named `menu` movement lock whenever a menu successfully claims menu ownership and releases it only when that same active menu closes.
+- The manager finds the active Player through the `player` group and calls `PlayerMovement.set_movement_lock()`. This keeps menu movement restrictions separate from dialogue, scene-transition, and other movement locks.
+- Menus should continue using `MenuManager.try_open_menu()` and `MenuManager.close_menu()`; they must not independently toggle global movement permission for this shared menu lock.
