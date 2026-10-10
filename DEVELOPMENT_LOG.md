@@ -3112,3 +3112,7 @@ Runtime verification required:
 11. Save and load with Mira in the party, then confirm party membership and quest state are restored.
 12. Confirm Tutorial Town and Northbridge Village remain inactive destinations.
 13. Confirm no new debugger errors occur.
+
+### Debug Menu Consolidation Note (2026-10-09)
+
+Follow-up correction to the runtime-fix entry above: the temporary standalone `ui/DebugMenu.tscn` and `ui/debug_menu.gd` prototype was removed after review. The encounter checkbox now lives in the existing `ui/DebugCombatHUD.tscn` / `ui/debug_combat_hud.gd` overlay instead, so the existing Player Affinities diagnostic remains in the same debug panel. F3 opens this panel in the overworld, Mira encounter, Havenreach, retained World scene, and Battle. The runtime checklist above should be interpreted using this consolidated implementation.
