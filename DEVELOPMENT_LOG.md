@@ -3667,3 +3667,23 @@ Runtime verification required after pulling `main`:
 5. Check that nearby world features remain visible and that movement, collision, interaction, transitions, and HUD layout remain functional.
 
 Status: source updates committed to GitHub `main`; local runtime verification is pending.
+
+
+### Increased Gameplay Camera Zoom to 2x (2026-10-10)
+
+Follow-up after the developer reported that the Player still looked too small at 1.5x zoom.
+
+Updated all seven gameplay camera scenes: WakingArea, MiraEncounterArea, Havenreach, World, Interior, WorldMapWorld, and MovingNPCTest.
+
+- Increased each Camera2D zoom from `Vector2(1.5, 1.5)` to `Vector2(2.0, 2.0)`. The view is now twice the original scale and about 33% closer than the previous setting.
+- Kept the zoom consistent across the opening field, Mira encounter, Havenreach, overworld, interiors, and NPC test scene.
+- No sprite textures, animation frames, movement speeds, or collision shapes were changed.
+
+Runtime checklist after pulling `main`:
+1. Start a new game and confirm the Player is noticeably larger in WakingArea and remains centered.
+2. Meet Mira and enter Havenreach; confirm the same zoom persists.
+3. Load a saved game and confirm the zoom is unchanged.
+4. Check that the closer camera still leaves enough surrounding space to navigate and interact.
+5. Confirm idle, walking, and running animations still work and no new debugger errors appear.
+
+Status: committed to GitHub `main`; local Godot runtime verification is pending.
