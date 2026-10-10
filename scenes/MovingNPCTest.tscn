@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/moving_npc.gd" id="2_moving_npc"]
@@ -8,6 +8,12 @@ size = Vector2(24, 24)
 
 [sub_resource type="RectangleShape2D" id="ObstacleCollision"]
 size = Vector2(110, 90)
+
+[sub_resource type="RectangleShape2D" id="HorizontalBoundary"]
+size = Vector2(1200, 32)
+
+[sub_resource type="RectangleShape2D" id="VerticalBoundary"]
+size = Vector2(32, 800)
 
 [node name="MovingNPCTest" type="Node2D"]
 
@@ -90,16 +96,16 @@ collision_mask = 0
 
 [node name="Top" type="CollisionShape2D" parent="MapBounds"]
 position = Vector2(0, -400)
-shape = SubResource("ObstacleCollision")
+shape = SubResource("HorizontalBoundary")
 
 [node name="Bottom" type="CollisionShape2D" parent="MapBounds"]
 position = Vector2(0, 400)
-shape = SubResource("ObstacleCollision")
+shape = SubResource("HorizontalBoundary")
 
 [node name="Left" type="CollisionShape2D" parent="MapBounds"]
 position = Vector2(-600, 0)
-shape = SubResource("ObstacleCollision")
+shape = SubResource("VerticalBoundary")
 
 [node name="Right" type="CollisionShape2D" parent="MapBounds"]
 position = Vector2(600, 0)
-shape = SubResource("ObstacleCollision")
+shape = SubResource("VerticalBoundary")
