@@ -316,3 +316,10 @@ The earlier inventory covered 63 scripts, 30 scenes, and 61 resources. The curre
 - **Not established by this refresh:** full static reference validation across all 67 current scripts, 35 scenes, and 70 resources; Godot import/parser validation; UID resolution; or local runtime testing of the new story opening.
 
 Do not mark this audit fully reference-clean for the current tree until the remaining static reference pass has actually been run. Append new results here or in a dated follow-up section rather than erasing the earlier findings.
+
+
+## Reproducible Current-Tree Reference Check (2026-10-10)
+
+Added `tools/audit_res_refs.py` to scan literal `res://` references across tracked-style project/documentation files and report targets that do not exist in the checkout. Run it from the repository root with `python tools/audit_res_refs.py` after pulling `main`.
+
+**Execution status: pending local run.** The script has been committed, but it has not been executed against a full local checkout in this environment. Therefore this audit does not yet claim the current tree is reference-clean. The script checks literal path existence only; it does not prove Godot parser/import success, UID resolution, dynamic path correctness, or runtime behavior.
