@@ -15,16 +15,30 @@ var last_player_position: Vector2 = Vector2.ZERO
 var distance_since_check: float = 0.0
 var encounter_started: bool = false
 
+# SceneManager places the Player after the destination scene has loaded. Ignore
+# the first movement sample so the spawn-position correction is never mistaken
+# for travel distance that should trigger a random encounter.
+var tracking_initialized: bool = false
+
 
 func _ready() -> void:
 	# World owns the Player, so resolve it once when the encounter system starts.
+	# Do not begin distance tracking yet: SceneManager may still need to place
+	# the Player at the requested town-exit or overworld-entry position.
 	player = get_parent().get_node_or_null("Player") as Node2D
-	if player != null:
-		last_player_position = player.global_position
+	tracking_initialized = false
 
 
 func _process(_delta: float) -> void:
 	if encounter_started or player == null:
+		return
+
+	# Seed the tracker from the Player's actual position after the scene has
+	# loaded. The first frame is deliberately not eligible for an encounter roll.
+	if not tracking_initialized:
+		last_player_position = player.global_position
+		distance_since_check = 0.0
+		tracking_initialized = true
 		return
 
 	# A debug-menu toggle can suspend random encounters without changing the
