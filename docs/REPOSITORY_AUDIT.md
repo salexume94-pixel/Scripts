@@ -342,3 +342,17 @@ Verification status:
 - **Headless Mono editor/parser pass:** not established because the required .NET SDK was unavailable; intentionally not pursued.
 - **Static literal reference check:** updated checker committed; fresh run pending.
 - **UID resolution, all-scene import validation, and untested runtime paths:** not established by the checks above.
+
+## Static Reference Check Result (2026-10-10)
+
+After pulling the corrected checker from `main`, the developer ran `python tools/audit_res_refs.py` from the repository root. The command reported:
+
+- Files scanned: 187
+- Literal `res://` references checked: 490
+- Dynamic path templates skipped: 2
+- Missing targets: 0
+- Unreadable files: 0
+
+**Result: passed for literal path existence in the current local checkout.** The previously reported six candidates were resolved as checker false positives or a dynamic path template; no missing literal targets remain in this scan.
+
+Scope remains limited: this checker does not resolve Godot UIDs, validate dynamic path construction, or prove that all assets import or all scripts parse. The developer separately reports that the in-editor runtime checklist passed. The headless Mono parser/import check remains unverified because the .NET SDK warning was intentionally ignored.
