@@ -3611,3 +3611,30 @@ Runtime verification required:
 7. Open dialogue or a menu and confirm the Player stops and idles.
 8. Confirm WASD does not move the Player and no new debugger errors appear.
 
+
+
+### Player Camera Zoom Adjustment (2026-10-10)
+
+Increased the gameplay camera zoom to make the Player sprite easier to see without changing sprite assets, animation frames, collision sizes, or movement speeds.
+
+Updated:
+- `scenes/World.tscn`
+- `scenes/Interior.tscn`
+- `scenes/WorldMapWorld.tscn`
+- `scenes/MovingNPCTest.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Set each scene's gameplay Camera2D zoom to `Vector2(1.5, 1.5)`, making the Player and surrounding world appear 50% larger.
+- Applied the same zoom across town/world gameplay, interiors, and the shared NPC debugging scene for consistent presentation.
+- No movement, collision, UI, or sprite-resource settings were changed.
+
+Runtime verification required after pulling `main`:
+1. Start a new game and confirm the Player appears larger and remains centered.
+2. Load a saved game and confirm the same camera zoom applies.
+3. Check the World, WorldMapWorld, and an Interior; confirm the zoom is comfortable and important nearby objects remain visible.
+4. Confirm arrow-key movement, Shift-to-run, collisions, interactions, transitions, and HUD layout still work.
+5. Run `scenes/MovingNPCTest.tscn` and confirm the camera follows the Player without errors.
+6. Confirm no new Godot debugger errors occur.
+
+Status: committed to GitHub `main`; local Godot runtime verification is pending.
