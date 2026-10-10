@@ -387,3 +387,11 @@ This section supplements earlier architecture notes and corrects stale path desc
 ### One-time World Location Entrances
 
 WorldLocationData supports optional entry blocking after a named quest objective is complete. WorldMapWorld reads this metadata while building entry triggers and consults QuestManager's existing progress. This is intended for a concrete one-time entrance such as Mira's first encounter; it does not create a new story flag or duplicate quest state. Leave the fields empty for ordinary locations.
+
+## Runtime Debug Menu and Companion Preview
+
+- `ui/debug_menu.gd` and `ui/DebugMenu.tscn` provide the gameplay development menu. F3 toggles it in gameplay scenes.
+- `systems/game_state.gd` owns the runtime-only `overworld_encounters_enabled` setting. `systems/world_encounter_system.gd` reads the setting before processing random encounters. The toggle does not change enemy definitions, encounter probability, or combat affinities.
+- `ui/debug_combat_hud.gd` remains the combat diagnostic overlay and continues to display Player Affinities. It is separate from the general Debug Menu and normal Battle HUD.
+- The Character/Inventory menu presents party membership and provisional companion preview stats. Those values are informational only until a dedicated companion-stat and combat-participation system is implemented.
+- Each playable world with its own map identity must register a matching `WorldMapData` resource in `world/world_map_database.gd`. In particular, the `havenreach` scene context requires a map definition whose `world_id` is exactly `havenreach`.
