@@ -59,15 +59,13 @@ func _physics_process(_delta: float) -> void:
 		player.velocity = Vector2.ZERO
 		return
 
-	# Read the four directional movement actions and convert them into a
-	# normalized Vector2 direction. Input.get_vector() prevents diagonal
-	# movement from being faster than horizontal or vertical movement.
-	var direction := Input.get_vector(
-		"ui_left",
-		"ui_right",
-		"ui_up",
-		"ui_down"
-	)
+	# Use the four arrow keys directly so WASD is never treated as movement
+	# input, even if someone later changes the project's UI input bindings.
+	# Normalizing the vector prevents diagonal movement from being faster.
+	var direction := Vector2(
+		float(Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_LEFT)),
+		float(Input.is_key_pressed(KEY_DOWN)) - float(Input.is_key_pressed(KEY_UP))
+	).normalized()
 
 	# Shift is the only run control. Releasing it immediately restores walking speed.
 	var current_speed := move_speed
