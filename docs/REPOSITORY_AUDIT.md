@@ -323,3 +323,22 @@ Do not mark this audit fully reference-clean for the current tree until the rema
 Added `tools/audit_res_refs.py` to scan literal `res://` references across tracked-style project/documentation files and report targets that do not exist in the checkout. Run it from the repository root with `python tools/audit_res_refs.py` after pulling `main`.
 
 **Execution status: pending local run.** The script has been committed, but it has not been executed against a full local checkout in this environment. Therefore this audit does not yet claim the current tree is reference-clean. The script checks literal path existence only; it does not prove Godot parser/import success, UID resolution, dynamic path correctness, or runtime behavior.
+
+## Follow-up Verification and Checker Correction (2026-10-10)
+
+The developer reports that the project was opened in the Godot editor and the planned runtime verification checklist passed.
+
+The headless Mono editor command was also attempted, but emitted `.NET Sdk not found. The required version is '8.0.14'.` The developer explicitly chose not to troubleshoot or install the SDK. Treat the headless command as **not a clean parser/import pass**; do not confuse this environment-specific message with a confirmed GDScript runtime failure.
+
+The first local execution of `tools/audit_res_refs.py` reported six candidates:
+- Markdown backticks were captured as part of two documented paths.
+- Three bare `res://` placeholders in Markdown were not complete resource paths.
+- `systems/audio_manager.gd` contains a formatted music path template (`res://assets/audio/music/%s.mp3`), not a literal filename.
+
+The checker was updated in commit `e79a2a86e03e66c5209e304217bc3febd404623e` to treat Markdown backticks as delimiters and skip formatted path templates while counting them separately. This change avoids classifying the known music template as a missing literal file. The updated checker still requires a fresh local run after pulling `main`; no clean static-reference result is claimed until that run is reviewed.
+
+Verification status:
+- **In-editor runtime checklist:** reported passed by the developer.
+- **Headless Mono editor/parser pass:** not established because the required .NET SDK was unavailable; intentionally not pursued.
+- **Static literal reference check:** updated checker committed; fresh run pending.
+- **UID resolution, all-scene import validation, and untested runtime paths:** not established by the checks above.
