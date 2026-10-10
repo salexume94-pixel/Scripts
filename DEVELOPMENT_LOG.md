@@ -3295,3 +3295,26 @@ User runtime report after pulling the debug defeat test hook:
 - No new test result was reported for parser errors, missing resources, or debugger errors in this latest check.
 
 The interaction-lock test remains an environmental coverage gap, not a reason to add artificial gameplay objects to Havenreach. Verify it when an appropriate NPC dialogue and Door/Chest coexist within interaction range, or create a dedicated test scene if needed.
+
+### Temporary Dialogue Interaction-Lock Test Scene (2026-10-10)
+
+Added `scenes/InteractionLockTest.tscn` as a temporary, isolated manual test scene for the pending dialogue/world-interaction lock check.
+
+Scene setup:
+- Reuses the production Player, NPC, Chest, DialogueBox, WorldContext, and WorldPresentation resources.
+- Places the Player initially within the configured 80-pixel interaction range of both the NPC and Chest.
+- Uses a Potion Chest so a failed interaction is easy to identify by its changed visual state and, if opened, the inventory reward.
+- Is not registered as the main scene, not linked from the main menu, and not part of the story route.
+- Adds no test-only gameplay scripts and does not modify Havenreach.
+
+Runtime test after `git pull origin main`:
+1. Open `scenes/InteractionLockTest.tscn` in Godot and run the current scene (F6).
+2. Press E near the Test NPC. Confirm the dialogue opens.
+3. While the dialogue remains open, walk toward the Test Chest until the NPC is more than 80 pixels away and the Chest remains within 80 pixels.
+4. Press E once. Confirm the dialogue closes and the Chest remains visibly unopened.
+5. Press E again. With dialogue no longer active and the NPC out of range, confirm the Chest opens and grants the Potion. This control step verifies that the Chest itself remains interactable.
+6. Confirm no new parser errors, missing resources, or debugger errors occur.
+
+Cleanup policy: this scene is temporary. Once the dialogue-lock behavior passes local runtime verification, delete `scenes/InteractionLockTest.tscn` and append the verified result and cleanup commit here. Do not delete it before the user reports the test passed.
+
+Runtime status: scene added to GitHub `main`; static scene review only. Local Godot runtime verification is pending.
