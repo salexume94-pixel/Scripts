@@ -28,6 +28,11 @@ text = "MOVING NPC TEST | RED = ENEMY | GREEN = NPC | BLUE = ALLY PREVIEW"
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(0, 0)
 
+; Keep the test camera attached to the Player so it stays centered while moving.
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2.ZERO
+enabled = true
+
 [node name="Enemy" type="CharacterBody2D" parent="."]
 position = Vector2(-250, -100)
 collision_layer = 2
