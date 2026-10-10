@@ -62,8 +62,19 @@ func _on_dialogue_choices_started(
 		var button := Button.new()
 		button.text = choice_text
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		# Dialogue choices must work without a mouse. Focusable buttons use
+		# Godot's normal keyboard navigation (arrow keys, Tab, Enter/Space).
+		button.focus_mode = Control.FOCUS_ALL
 		button.pressed.connect(_on_choice_button_pressed.bind(choice_id))
 		choices_container.add_child(button)
+
+	# Start keyboard navigation on the first available option. Deferring focus
+	# lets Godot finish adding the controls to the active scene tree first.
+	if choices_container.get_child_count() > 0:
+		var first_choice := choices_container.get_child(0) as Button
+		if first_choice != null:
+			first_choice.call_deferred("grab_focus")
 
 
 func _on_choice_button_pressed(choice_id: String) -> void:
