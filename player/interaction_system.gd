@@ -32,16 +32,23 @@ func handle_interaction_input() -> void:
     # This proves that the E key reached the Player and then this system.
     _show_debug("E detected. Dialogue active: %s" % str(DialogueManager.is_active))
 
-    # Dialogue always gets priority. Pressing E while dialogue is visible
-    # dismisses it instead of immediately interacting with another target.
+    # DialogueManager.is_active is the internal interaction lock. While it
+    # is true, E belongs exclusively to dialogue and can never reach a nearby
+    # Door, Chest, or NPC, even when several interactables overlap in range.
     if DialogueManager.is_active:
-        # Choice dialogue must be answered through its buttons. E must not
-        # silently dismiss the options and leave the encounter without a choice.
         if DialogueManager.has_choices():
-            _show_debug("E detected -> dialogue choices are waiting for a selection.")
+            # E confirms the currently focused dialogue choice. The DialogueBox
+            # owns focus and button presentation; this system only delegates.
+            var dialogue_box := get_tree().current_scene.find_child("DialogueBox", true, false)
+            if dialogue_box != null and dialogue_box.has_method("activate_focused_choice"):
+                dialogue_box.activate_focused_choice()
+            else:
+                _show_debug("E detected -> dialogue choices active, but DialogueBox is unavailable.")
             get_viewport().set_input_as_handled()
             return
 
+        # For a single line, E dismisses dialogue and is consumed. It is never
+        # allowed to fall through and activate a Door on the same key press.
         DialogueManager.clear_dialogue()
         _show_debug("E detected -> dialogue was active -> dialogue cleared.")
         get_viewport().set_input_as_handled()
