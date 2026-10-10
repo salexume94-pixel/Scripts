@@ -3558,3 +3558,23 @@ Runtime verification required:
 6. Confirm no parse or debugger errors occur.
 
 Status: source changes committed; local Godot runtime verification is pending.
+
+
+### Arrow-Key-Only Movement Clarification (2026-10-10)
+
+Corrected the movement input so the Player uses the arrow keys exclusively for direction.
+
+- Replaced the configurable `ui_left`, `ui_right`, `ui_up`, and `ui_down` actions with direct arrow-key checks in `player/player_movement.gd`.
+- WASD no longer moves the Player, even if project UI input bindings are changed later.
+- Shift-to-run remains unchanged; holding Shift while pressing an arrow key increases movement speed.
+- Direction normalization preserves consistent diagonal speed.
+
+Runtime verification required:
+1. Pull `main` and open the project in Godot.
+2. Confirm all four arrow keys move the Player.
+3. Confirm diagonal arrow-key movement works at the same overall speed as straight movement.
+4. Press and hold W, A, S, and D individually and together; confirm they do not move the Player.
+5. Hold Shift with arrow-key movement and confirm running works; release Shift and confirm walking speed returns.
+6. Confirm collision, interaction, menus, dialogue, transitions, and the debugger remain correct.
+
+Status: source change committed; local runtime verification is pending.
