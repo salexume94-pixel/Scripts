@@ -7,6 +7,12 @@ extends CharacterBody2D
 
 enum Identity { ENEMY, NPC, ALLY }
 
+## Emitted when the Player enters or leaves this Ally's non-blocking detection area.
+## Story/interaction systems can listen for these events without making the Ally
+## physically collide with the Player or automatically starting dialogue.
+signal ally_player_entered(ally: Node2D, player: Node2D)
+signal ally_player_exited(ally: Node2D, player: Node2D)
+
 @export var identity: Identity = Identity.NPC
 ## Stable per-instance key used to restore or remove this actor after Battle reloads the scene.
 @export var actor_id: String = ""
@@ -17,6 +23,10 @@ enum Identity { ENEMY, NPC, ALLY }
 @export var enemy_id: String = "slime"
 @export var think_interval: float = 0.35
 @export var obstacle_probe_distance: float = 34.0
+## Radius used by the Ally sensor; it detects proximity without blocking movement.
+@export var ally_detection_radius: float = 56.0
+## Enables temporary console messages for validating the Ally sensor in the shared test scene.
+@export var debug_ally_detection: bool = false
 
 var player: Node2D
 var movement_target: Vector2
@@ -26,6 +36,7 @@ var home_position: Vector2
 
 @onready var obstacle_probe: RayCast2D = get_node_or_null("ObstacleProbe") as RayCast2D
 @onready var visual: Polygon2D = get_node_or_null("Visual") as Polygon2D
+var ally_detection_area: Area2D
 
 
 func _ready() -> void:
@@ -47,6 +58,7 @@ func _ready() -> void:
 		var ally_collision := get_node_or_null("Collision") as CollisionShape2D
 		if ally_collision != null:
 			ally_collision.set_deferred("disabled", true)
+		_ensure_ally_detection_area()
 
 	# If the Player ran from this actor, restore its battle-start position and
 	# begin its one-second recovery pause after the world has loaded again.
@@ -105,6 +117,58 @@ func _physics_process(delta: float) -> void:
 	if identity == Identity.ENEMY and player != null and not GameState.is_escape_invulnerable():
 		if global_position.distance_to(player.global_position) <= 25.0:
 			_start_contact_encounter()
+
+
+func _ensure_ally_detection_area() -> void:
+	# Use a separate Area2D sensor instead of the CharacterBody2D collision.
+	# The Ally stays pass-through, while other systems can react to proximity.
+	ally_detection_area = get_node_or_null("DetectionArea") as Area2D
+	if ally_detection_area == null:
+		ally_detection_area = Area2D.new()
+		ally_detection_area.name = "DetectionArea"
+		var sensor_shape := CollisionShape2D.new()
+		var circle := CircleShape2D.new()
+		circle.radius = ally_detection_radius
+		sensor_shape.shape = circle
+		ally_detection_area.add_child(sensor_shape)
+		add_child(ally_detection_area)
+	else:
+		# Reuse a scene-authored sensor if one is added later, and keep its
+		# detection distance consistent with the Ally's exported setting.
+		var sensor_shape := ally_detection_area.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if sensor_shape != null:
+			var circle := sensor_shape.shape as CircleShape2D
+			if circle != null:
+				circle.radius = ally_detection_radius
+
+	# Detect Player bodies only. Layer 0 means the sensor itself does not
+	# participate as a physical collision object for other actors.
+	ally_detection_area.collision_layer = 0
+	ally_detection_area.collision_mask = 1
+	ally_detection_area.monitoring = true
+	ally_detection_area.monitorable = false
+	if not ally_detection_area.body_entered.is_connected(_on_ally_detection_body_entered):
+		ally_detection_area.body_entered.connect(_on_ally_detection_body_entered)
+	if not ally_detection_area.body_exited.is_connected(_on_ally_detection_body_exited):
+		ally_detection_area.body_exited.connect(_on_ally_detection_body_exited)
+
+
+func _on_ally_detection_body_entered(body: Node2D) -> void:
+	# Filter out anything except the Player so an Ally's sensor cannot trigger
+	# from enemies, civilians, props, or other physics bodies.
+	if identity != Identity.ALLY or not body.is_in_group("player"):
+		return
+	ally_player_entered.emit(self, body)
+	if debug_ally_detection:
+		print("Ally detection entered: %s" % actor_id if not actor_id.is_empty() else "Ally detection entered: %s" % name)
+
+
+func _on_ally_detection_body_exited(body: Node2D) -> void:
+	if identity != Identity.ALLY or not body.is_in_group("player"):
+		return
+	ally_player_exited.emit(self, body)
+	if debug_ally_detection:
+		print("Ally detection exited: %s" % actor_id if not actor_id.is_empty() else "Ally detection exited: %s" % name)
 
 
 func _find_player() -> void:
