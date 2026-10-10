@@ -135,7 +135,7 @@ func _physics_process(delta: float) -> void:
 	# escape direction. This helps recover when the Player pushes an Ally into a
 	# tight corner between multiple props, where ordinary steering can deadlock.
 	var moved_distance := global_position.distance_to(last_physics_position)
-	if not story_movement_active and not velocity.is_zero_approx() and moved_distance < 0.5:
+	if not story_movement_active and not desired_direction.is_zero_approx() and moved_distance < 0.5:
 		stuck_time += delta
 		if stuck_time >= 0.45:
 			stuck_time = 0.0
