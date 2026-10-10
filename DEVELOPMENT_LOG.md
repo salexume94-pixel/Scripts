@@ -3705,3 +3705,21 @@ Runtime checklist after pulling `main`:
 4. Confirm movement, animations, doors/interactions, and the debugger remain correct.
 
 Status: scene updates committed to GitHub `main`; local runtime verification is pending.
+
+
+### Repository-Wide Structural Audit and Documentation Ownership (2026-10-10)
+
+Reviewed GitHub `main` at commit `e2f8c3a42c228245795a82b9c51d48cfb1f4a48d` and refreshed `docs/REPOSITORY_AUDIT.md` with a current tracked-file inventory and concrete structural findings.
+
+Inventory at review time: 410 tracked files, including 69 GDScript files, 36 scenes, 70 serialized `.tres` resources, 200 PNGs, 3 MP3 tracks, and 10 Markdown documents. The audit lists all script, scene, and serialized-resource paths by folder.
+
+Findings recorded:
+- `player/player_skills.gd` is an empty `extends Node` placeholder but remains attached in `player/Player.tscn` and referenced by `player/player.gd`; an earlier audit statement claiming it was detached is stale.
+- `systems/game_manager.gd` currently provides only a small lifecycle flag/API, is not configured as an autoload, and appears to overlap existing SceneManager/GameState responsibilities. It is a cleanup candidate pending full reference review, not deleted in this pass.
+- Root story documents still contain tutorial-town opening assumptions that conflict with the current waking-area/Mira/Havenreach direction. `docs/README.md` remains the index and authority guide; World Bible owns stable setting facts and Story Bible owns plot chronology/revelations.
+- Four test-named Slime AI resources remain alongside enemy definitions, though EnemyDatabase excludes those test variants from normal lookup.
+- The 14 interior scenes repeat shared interior/presentation attachments and 2× zoom configuration. Current settings are consistent; future shared changes must preserve that consistency.
+
+Documentation organization was reaffirmed: `ARCHITECTURE.md` owns technical responsibilities, `ROADMAP.md` owns current work order, `docs/README.md` indexes authoritative documents, and this development log remains append-only. The roadmap now names Havenreach world design as the immediate content-design focus before returning to the numbered implementation sequence.
+
+Scope/verification boundary: this was a Git-tree/source/scene structural review, not a local Godot import/parser/runtime run. The audit report records that limitation and directs the local literal-reference checker to be run after pulling. No gameplay code or existing log history was removed.
