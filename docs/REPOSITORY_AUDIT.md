@@ -356,3 +356,284 @@ After pulling the corrected checker from `main`, the developer ran `python tools
 **Result: passed for literal path existence in the current local checkout.** The previously reported six candidates were resolved as checker false positives or a dynamic path template; no missing literal targets remain in this scan.
 
 Scope remains limited: this checker does not resolve Godot UIDs, validate dynamic path construction, or prove that all assets import or all scripts parse. The developer separately reports that the in-editor runtime checklist passed. The headless Mono parser/import check remains unverified because the .NET SDK warning was intentionally ignored.
+
+
+## Current Repository Inventory (2026-10-10)
+
+**Reviewed `main` commit:** `e2f8c3a42c228245795a82b9c51d48cfb1f4a48d`
+
+The following inventory supersedes the older count table above for this snapshot. The earlier audit remains intact as historical context.
+
+| Tracked file category | Count |
+|---|---:|
+| All tracked files | 410 |
+| GDScript (`.gd`) | 69 |
+| Scenes (`.tscn`) | 36 |
+| Serialized resources (`.tres`) | 70 |
+| PNG images | 200 |
+| MP3 music tracks | 3 |
+| Markdown documents | 10 |
+| UID sidecars | 10 |
+| Godot import sidecars | 4 |
+| Python tools | 1 |
+| SVG files | 1 |
+| JSON files | 1 |
+
+### GDScript (69)
+
+**combat**
+
+- `combat/affinities.gd`
+- `combat/combat_rules.gd`
+- `combat/combat_state.gd`
+- `combat/damage_types.gd`
+- `combat/player_action_data.gd`
+
+**enemies**
+
+- `enemies/enemy_action_data.gd`
+- `enemies/enemy_affinity_data.gd`
+- `enemies/enemy_behavior_profile.gd`
+- `enemies/enemy_data.gd`
+- `enemies/enemy_database.gd`
+- `enemies/enemy_elemental_action_database.gd`
+
+**items**
+
+- `items/item_data.gd`
+- `items/item_database.gd`
+
+**player**
+
+- `player/interaction_system.gd`
+- `player/player.gd`
+- `player/player_affinity_data.gd`
+- `player/player_animation_controller.gd`
+- `player/player_currency.gd`
+- `player/player_equipment.gd`
+- `player/player_inventory.gd`
+- `player/player_movement.gd`
+- `player/player_progression.gd`
+- `player/player_skills.gd`
+- `player/player_stats.gd`
+
+**quests**
+
+- `quests/quest_data.gd`
+- `quests/quest_database.gd`
+
+**systems**
+
+- `systems/audio_manager.gd`
+- `systems/combat_manager.gd`
+- `systems/debug_system.gd`
+- `systems/dialogue_manager.gd`
+- `systems/game_manager.gd`
+- `systems/game_state.gd`
+- `systems/item_use_system.gd`
+- `systems/map_manager.gd`
+- `systems/menu_manager.gd`
+- `systems/options_manager.gd`
+- `systems/party_manager.gd`
+- `systems/quest_manager.gd`
+- `systems/reward_manager.gd`
+- `systems/save_manager.gd`
+- `systems/scene_manager.gd`
+- `systems/world_encounter_system.gd`
+
+**ui**
+
+- `ui/battle.gd`
+- `ui/debug_combat_hud.gd`
+- `ui/dialogue_box.gd`
+- `ui/inventory_character_hud.gd`
+- `ui/main_menu.gd`
+- `ui/options_menu.gd`
+- `ui/quest_log.gd`
+- `ui/world_map.gd`
+
+**world**
+
+- `world/building.gd`
+- `world/chest.gd`
+- `world/door.gd`
+- `world/havenreach.gd`
+- `world/interior.gd`
+- `world/interior_presentation.gd`
+- `world/mira_encounter.gd`
+- `world/moving_npc.gd`
+- `world/npc.gd`
+- `world/waking_area.gd`
+- `world/world_boundaries.gd`
+- `world/world_context.gd`
+- `world/world_exit_boundary.gd`
+- `world/world_location_data.gd`
+- `world/world_location_database.gd`
+- `world/world_map_data.gd`
+- `world/world_map_database.gd`
+- `world/world_map_world.gd`
+- `world/world_presentation.gd`
+
+### Scenes (36)
+
+**player**
+
+- `player/Player.tscn`
+
+**scenes**
+
+- `scenes/Battle.tscn`
+- `scenes/Havenreach.tscn`
+- `scenes/Interior.tscn`
+- `scenes/MiraEncounterArea.tscn`
+- `scenes/MovingNPCTest.tscn`
+- `scenes/NorthbridgeVillage.tscn`
+- `scenes/WakingArea.tscn`
+- `scenes/World.tscn`
+- `scenes/WorldMapWorld.tscn`
+
+**scenes/interiors**
+
+- `scenes/interiors/HavenreachChurch.tscn`
+- `scenes/interiors/NorthbridgeEastHouse.tscn`
+- `scenes/interiors/NorthbridgeNorthHouse.tscn`
+- `scenes/interiors/NorthbridgeSoutheastHouse.tscn`
+- `scenes/interiors/NorthbridgeWestHouse.tscn`
+- `scenes/interiors/TutorialTownChurch.tscn`
+- `scenes/interiors/TutorialTownInn.tscn`
+- `scenes/interiors/TutorialTownResidence01.tscn`
+- `scenes/interiors/TutorialTownResidence02.tscn`
+- `scenes/interiors/TutorialTownResidence03.tscn`
+- `scenes/interiors/TutorialTownResidence04.tscn`
+- `scenes/interiors/TutorialTownResidence05.tscn`
+- `scenes/interiors/TutorialTownResidence06.tscn`
+- `scenes/interiors/TutorialTownShop.tscn`
+
+**ui**
+
+- `ui/DebugCombatHUD.tscn`
+- `ui/DialogueBox.tscn`
+- `ui/InventoryCharacterHUD.tscn`
+- `ui/MainMenu.tscn`
+- `ui/OptionsMenu.tscn`
+- `ui/QuestLog.tscn`
+- `ui/WorldMap.tscn`
+
+**world**
+
+- `world/Building.tscn`
+- `world/Chest.tscn`
+- `world/Door.tscn`
+- `world/ForestTree.tscn`
+- `world/NPC.tscn`
+
+### Serialized Godot resources (70)
+
+**combat/definitions**
+
+- `combat/definitions/fire_attack.tres`
+- `combat/definitions/physical_attack.tres`
+
+**enemies/definitions**
+
+- `enemies/definitions/behavior_aggressive.tres`
+- `enemies/definitions/behavior_balanced.tres`
+- `enemies/definitions/behavior_defensive.tres`
+- `enemies/definitions/slime.tres`
+- `enemies/definitions/slime_ai_aggressive_test.tres`
+- `enemies/definitions/slime_ai_balanced_test.tres`
+- `enemies/definitions/slime_ai_defensive_test.tres`
+- `enemies/definitions/slime_ai_test.tres`
+- `enemies/definitions/slime_air_attack.tres`
+- `enemies/definitions/slime_attack.tres`
+- `enemies/definitions/slime_dark_attack.tres`
+- `enemies/definitions/slime_defend.tres`
+- `enemies/definitions/slime_drain.tres`
+- `enemies/definitions/slime_earth_attack.tres`
+- `enemies/definitions/slime_fire_attack.tres`
+- `enemies/definitions/slime_fire_drain.tres`
+- `enemies/definitions/slime_fire_null.tres`
+- `enemies/definitions/slime_fire_repel.tres`
+- `enemies/definitions/slime_fire_resist.tres`
+- `enemies/definitions/slime_fire_weak.tres`
+- `enemies/definitions/slime_heavy_attack.tres`
+- `enemies/definitions/slime_light_attack.tres`
+- `enemies/definitions/slime_null.tres`
+- `enemies/definitions/slime_repel.tres`
+- `enemies/definitions/slime_resist.tres`
+- `enemies/definitions/slime_water_attack.tres`
+
+**items/definitions**
+
+- `items/definitions/gold.tres`
+- `items/definitions/iron_sword.tres`
+- `items/definitions/leather_armor.tres`
+- `items/definitions/leather_helm.tres`
+- `items/definitions/potion.tres`
+- `items/definitions/power_ring.tres`
+- `items/definitions/wooden_shield.tres`
+
+**player/definitions**
+
+- `player/definitions/player_fire_weak.tres`
+
+**quests/definitions**
+
+- `quests/definitions/northbridge_introduction.tres`
+- `quests/definitions/the_stranger.tres`
+
+**world/definitions**
+
+- `world/definitions/church.tres`
+- `world/definitions/havenreach.tres`
+- `world/definitions/havenreach_church.tres`
+- `world/definitions/havenreach_map.tres`
+- `world/definitions/havenreach_world_map.tres`
+- `world/definitions/inn.tres`
+- `world/definitions/mira_encounter_area.tres`
+- `world/definitions/mira_encounter_area_entry.tres`
+- `world/definitions/northbridge_east_house.tres`
+- `world/definitions/northbridge_north_house.tres`
+- `world/definitions/northbridge_southeast_house.tres`
+- `world/definitions/northbridge_village.tres`
+- `world/definitions/northbridge_village_map.tres`
+- `world/definitions/northbridge_village_world_map.tres`
+- `world/definitions/northbridge_west_house.tres`
+- `world/definitions/residence_01.tres`
+- `world/definitions/residence_02.tres`
+- `world/definitions/residence_03.tres`
+- `world/definitions/residence_04.tres`
+- `world/definitions/residence_05.tres`
+- `world/definitions/residence_06.tres`
+- `world/definitions/shop.tres`
+- `world/definitions/tutorial_town.tres`
+- `world/definitions/tutorial_town_map.tres`
+- `world/definitions/tutorial_town_world_map.tres`
+- `world/definitions/waking_area.tres`
+- `world/definitions/waking_area_entry.tres`
+- `world/definitions/world_map.tres`
+- `world/definitions/world_map_east_region.tres`
+- `world/definitions/world_map_north_region.tres`
+- `world/definitions/world_map_south_region.tres`
+- `world/definitions/world_map_west_region.tres`
+
+### Non-code asset layout
+
+- `assets/player_animations/Player/Player_Sprites/animations/` contains 192 animation-frame PNGs: three states (idle, walking, running), eight directions, and eight frames per direction.
+- `assets/player_animations/Player/Player_Sprites/rotations/` contains eight directional reference PNGs.
+- `assets/audio/music/` contains `battle.mp3`, `overworld.mp3`, and `tutorial_town.mp3`, with import sidecars for the audio assets.
+- The tree contains no dedicated `world/maps/` folder and no town/world map PNGs at this snapshot. Current map definitions live in `world/definitions/`; do not move them merely to satisfy a folder name.
+
+## Concrete Findings From the Current Snapshot
+
+1. **PlayerSkills is a live placeholder attachment, not a completed subsystem.** `player/player_skills.gd` contains only `extends Node`. `player/Player.tscn` attaches it to the Player scene, and `player/player.gd` resolves `$PlayerSkills`. The previous audit's statement that this script had been detached is stale for this reviewed commit. There is no skill behavior in this script; either keep it explicitly documented as a placeholder or remove the node and references together in a separate, tested change.
+2. **GameManager appears unintegrated and overlaps existing coordinators.** `systems/game_manager.gd` currently exposes only a `game_started` boolean with `start_new_game()` and `end_game()`. It is not listed in `project.godot` autoloads and is not attached by the scenes inspected. SceneManager, GameState, and the main-menu flow already handle concrete lifecycle/transition state. Treat GameManager as a cleanup candidate, not as proof of a working global manager; check all code references before removing it.
+3. **Story-document overlap is real and already partly managed.** Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` describe an MMO login/tutorial-town opening. The newer World/Story Bible materials establish waking in a field, meeting Mira, and reaching Havenreach, while Tutorial Town and Northbridge remain example content. `docs/README.md` correctly keeps the root documents as reference material pending reconciliation. Keep `docs/world/WORLD_BIBLE.md` authoritative for stable world facts and `docs/story/STORY_BIBLE.md` authoritative for plot chronology and revelations; do not silently copy old opening assumptions into new content.
+4. **Interior scene scaffolding is repeated across 14 scene files.** These scenes reuse `world/interior.gd` and `world/interior_presentation.gd`, and each declares a 2× camera zoom. This is consistent today and is not automatically a defect, but future shared-camera/interior changes must be applied consistently. Consider a shared inherited base scene only if it reduces maintenance without disturbing distinct layouts or door/spawn configuration.
+5. **Test definitions share production definition folders.** Four `slime_ai_*_test.tres` enemy resources are stored under `enemies/definitions/`; `enemies/enemy_database.gd` explicitly excludes these from normal enemy lookup. Keeping them is reasonable for regression testing, but the folder naming does not distinguish test fixtures from production definitions. Any future move requires updating every reference and should not be mixed into a documentation-only audit.
+6. **Current ownership boundaries are mostly aligned.** Item, enemy, quest, and world definitions are grouped under their owning domains; reusable UI scenes/scripts live under `ui/`; world interaction scripts live under `world/`; global coordinators live under `systems/`. No generic `data/` folder is present or needed based on the current tree.
+7. **Audit limits:** this inventory is based on the Git tree and source/scene review. It is not a Godot import, parse, or runtime test. The existing `tools/audit_res_refs.py` checks literal `res://` paths but does not validate script attachment semantics, UID resolution, dynamic paths, or Godot parsing. Run it from the local project root after pulling this commit; review its findings in context rather than treating every documentation/example path as a broken game resource.
+
+## Scene Script Attachment Review
+
+All 36 tracked `.tscn` files were inventoried, and declared external script resources were reviewed against scene-level `script = ExtResource(...)` assignments. The Player scene's `PlayerSkills` attachment is the concrete placeholder finding above. Reusable interior scenes consistently attach the shared interior and presentation scripts; the 14 interior scenes declare `zoom = Vector2(2.0, 2.0)`. This is static scene-file inspection, not proof that every scene deserializes in Godot.
