@@ -117,7 +117,7 @@ bottom_bound = 1000.0
 script = ExtResource("6_world_presentation")
 
 [node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector2(0, 560)
