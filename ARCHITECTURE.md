@@ -431,3 +431,13 @@ Correction to the earlier Runtime Debug Menu section: the active F3 overlay is `
 The current *The Stranger* route uses `scenes/WakingArea.tscn`, `scenes/MiraEncounterArea.tscn`, and `scenes/Havenreach.tscn`. Tutorial Town and Northbridge Village files remain example/reference content and should not be deleted or reactivated as part of routine architecture cleanup.
 
 Static repository inspection and local Godot runtime verification are separate gates. Do not describe current story scenes, dialogue choices, transitions, party persistence, or save/load behavior as runtime-verified unless the developer has tested those exact behaviors after pulling the corresponding changes.
+
+
+## Moving World Characters
+
+- `world/moving_npc.gd` owns shared autonomous-character movement, identity (`ENEMY`, `NPC`, `ALLY`), basic obstacle steering, and hostile contact-encounter requests.
+- Moving actors use `CharacterBody2D` collision. Their collision masks must include world obstacles and other actors as appropriate; existing static NPCs and interactables remain separate systems.
+- Enemy and civilian movement intent is identity-specific. Only Enemy identity may call `CombatManager.start_encounter()`; the existing CombatManager remains authoritative for enemy lookup and battle lifecycle.
+- Ally is an identity placeholder only. Do not add party-following or combat participation until the companion combat design is approved.
+- `scenes/MovingNPCTest.tscn` is isolated development content. Keep test actors and obstacles out of Havenreach and production world scenes.
+- Steering probes are a lightweight initial obstacle-avoidance foundation, not full pathfinding. Protected-town exclusion and robust multi-obstacle navigation remain acceptance gates before this system is production-ready.
