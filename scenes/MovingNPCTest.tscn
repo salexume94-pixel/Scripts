@@ -79,7 +79,10 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource("2_moving_npc")
 identity = 2
+actor_id = "debug_ally_01"
 move_speed = 0.0
+ally_detection_radius = 56.0
+debug_ally_detection = true
 
 [node name="Visual" type="Polygon2D" parent="AllyPreview"]
 polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
