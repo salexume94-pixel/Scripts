@@ -2988,3 +2988,38 @@ Runtime verification required after pulling:
 10. Confirm no missing resource, parse, scene-transition, dialogue, or debugger errors occur.
 
 Runtime status: NOT TESTED LOCALLY. Do not mark the checklist passed until the developer confirms the Godot run.
+
+
+### PlayerSkills Missing Node: Scene Component Restored (2026-10-09)
+
+Runtime verification found this error when loading the church interior:
+
+`Node not found: "PlayerSkills" (relative to "/root/Interior/Player")`
+
+Root cause:
+- `player/player.gd` declares an on-ready reference to `$PlayerSkills`.
+- The shared `player/Player.tscn` scene did not define a `PlayerSkills` child or attach its script.
+- Interior scenes instance this shared Player scene, so the missing component could affect the church and other interiors.
+
+Updated:
+- `player/Player.tscn`
+- `DEVELOPMENT_LOG.md` (this entry appended; prior history preserved)
+
+Changes:
+- Added the existing `res://player/player_skills.gd` script as an external resource in Player.tscn.
+- Added a `PlayerSkills` child node with that script attached, matching the path expected by `player/player.gd`.
+- Preserved all existing Player components and scene content.
+
+Static verification:
+- Confirmed the script reference and child-node path now match the Player controller's `$PlayerSkills` lookup.
+- The current `player_skills.gd` script is only a Node placeholder (`extends Node)); this correction restores the missing component reference but does not implement skill behavior.
+
+Runtime verification required after pulling `main`:
+1. Open the project in Godot and confirm no parse or resource errors occur.
+2. Load the church interior and confirm the missing `PlayerSkills` node error is gone.
+3. Enter the inn, shop, and residences; confirm the shared Player scene loads without this error.
+4. Test combat and any skill-dependent actions to identify any separate missing behavior.
+5. Confirm save/load and scene transitions still work.
+6. Confirm no new debugger errors appear.
+
+Runtime status: NOT TESTED after this GitHub change. Do not mark the checklist passed until locally verified.
