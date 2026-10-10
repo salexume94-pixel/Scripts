@@ -46,6 +46,11 @@ layout_mode = 2
 text = "DEBUG COMBAT HUD"
 horizontal_alignment = 1
 
+[node name="EncountersToggle" type="CheckBox" parent="Panel/Margin/Scroll/Content"]
+layout_mode = 2
+text = "Overworld encounters"
+tooltip_text = "Enable or disable random encounters while exploring."
+
 [node name="Status" type="Label" parent="Panel/Margin/Scroll/Content"]
 layout_mode = 2
 autowrap_mode = 3
