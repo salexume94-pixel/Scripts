@@ -3537,3 +3537,24 @@ Completed local Git cleanup after synchronizing with `origin/main`.
 **Result:** Repository cleanup completed. No runtime behavior was changed or re-tested as part of this maintenance task.
 
 This entry documents repository maintenance only. Existing development-log history is preserved; this is an append-only update.
+
+
+### Shift-to-Run Movement (2026-10-10)
+
+Implemented on GitHub `main`:
+
+- Added Shift as the only run control in `player/player_movement.gd`.
+- Normal walking remains at the existing base speed of 225 pixels per second.
+- Holding Shift multiplies movement speed by 1.6 (360 pixels per second with the default settings); releasing Shift immediately returns to walking speed.
+- Added an Inspector-exported `run_speed_multiplier` so the run pace can be tuned without changing the movement logic.
+- Existing directional input, diagonal normalization, collision handling, movement locks, dialogue locks, and scene-transition stops remain in place.
+
+Runtime verification required:
+1. Pull the latest `main` and open the project in Godot.
+2. Move without Shift and confirm normal walking speed is unchanged.
+3. Hold either Shift key while moving and confirm the Player runs noticeably faster.
+4. Release Shift while moving and confirm the Player immediately returns to walking speed.
+5. Test all directions, including diagonals, and confirm collision, NPC interaction, menus, dialogue, and scene transitions still behave normally.
+6. Confirm no parse or debugger errors occur.
+
+Status: source changes committed; local Godot runtime verification is pending.
