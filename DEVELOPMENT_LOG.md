@@ -3445,3 +3445,29 @@ Verification boundary:
 - Fixed the test-only Camera2D scene declaration by marking the instanced Player path editable before adding the camera as a child.
 - Replaced the shorthand camera position value with the explicit `Vector2(0, 0)` scene value.
 - This addresses the reported parser failure around the added camera node. The scene has not been runtime-verified after this change; pull `main` and reopen/run the test scene in Godot.
+
+
+### Moving NPC Runtime Checklist and Escape/Defeat Follow-up (2026-10-10)
+
+Developer-reported verification of the moving-NPC test scene:
+- The scene runs without errors.
+- Enemy, NPC, and Ally markers are distinguishable.
+- Enemy pursuit/contact, civilian movement/avoidance, existing Player movement/collision, encounter/combat flow, and test-only scene isolation passed the submitted checklist.
+- Protected-town behavior remains unverified because the current test environment is the shared debugging scene rather than the overworld town layout.
+
+Follow-up issues reported:
+- Ally marker could physically stick to the Player.
+- Running from an Enemy encounter needed temporary contact invulnerability.
+- The escaped Enemy needed to remain still for one second after the world scene returned.
+- A defeated moving Enemy needed to remain absent after returning from Battle.
+
+Source changes on `main`:
+- Ally identity now remains stationary and has collision disabled, preventing it from pinning the Player before companion behavior is designed.
+- Moving enemies receive a stable actor ID, allowing GameState to remember their position after Run and their defeated status after Victory.
+- Running from a moving Enemy records the enemy's battle-start position, grants 2.5 seconds of contact-encounter protection, and starts a one-second pause when that enemy is restored to the world.
+- Victory records the moving Enemy as defeated; the reloaded world actor removes itself instead of respawning.
+- The existing three-second general encounter cooldown remains unchanged.
+
+Verification boundary:
+- These follow-up changes are static source edits only. Pull `main` and repeat the run/escape/victory checks in `scenes/MovingNPCTest.tscn`.
+- The user-reported checklist above is preserved as reported; the follow-up behavior is not marked runtime-verified until the new test pass is reported.
