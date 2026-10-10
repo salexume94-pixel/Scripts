@@ -116,6 +116,7 @@ target_location_id = "world_map"
 script = ExtResource("3_presentation")
 
 [node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
+zoom = Vector2(1.5, 1.5)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(0, 300)
