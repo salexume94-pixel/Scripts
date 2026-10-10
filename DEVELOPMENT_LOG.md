@@ -3521,3 +3521,19 @@ Runtime verification completed locally after pulling the latest `main`.
 **Result:** All six runtime checks passed. The Player/NPC collision setup, Ally detection sensor, town entry/exit triggers, and existing combat flow are working as expected in the user's local Godot runtime.
 
 This entry records user-confirmed runtime results. Existing development-log history is preserved; this is an append-only update.
+
+
+## 2026-10-10 — Repository cleanup and stash audit
+
+Completed local Git cleanup after synchronizing with `origin/main`.
+
+- [x] Restored and verified the project viewport dimensions: 1152 × 648.
+- [x] Added the generated Godot import metadata for `battle.mp3`, `overworld.mp3`, and `tutorial_town.mp3` to version control.
+- [x] Committed and pushed the import metadata in commit `654da52` (`Track music import metadata`).
+- [x] Inspected the saved stashes and confirmed they contained obsolete indentation changes in `player/player.gd` and removed viewport settings in `project.godot`.
+- [x] Removed the three obsolete stashes after inspection.
+- [x] Confirmed the local working tree is clean and `main` is up to date with `origin/main`.
+
+**Result:** Repository cleanup completed. No runtime behavior was changed or re-tested as part of this maintenance task.
+
+This entry documents repository maintenance only. Existing development-log history is preserved; this is an append-only update.
