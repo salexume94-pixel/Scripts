@@ -3394,3 +3394,18 @@ Verification boundary:
 - The in-editor runtime checklist passed, which verifies the tested gameplay path but does not prove every resource reference or every scene is error-free.
 - The first static reference-check run reported six candidates. Five were documentation-formatting/placeholders and one was a dynamic music path template; the checker was updated to handle Markdown backticks and skip formatting templates. Re-run the updated checker after pulling this commit before recording the static-reference result as clean.
 - Preserve this entry as an appended verification record; earlier development-log history remains unchanged.
+
+### Repository Audit: Static Reference Check Passed (2026-10-10)
+
+The developer pulled the corrected checker from `main` and ran `python tools/audit_res_refs.py` from the repository root.
+
+Recorded output:
+- Files scanned: 187
+- Literal `res://` references checked: 490
+- Dynamic path templates skipped: 2
+- Missing targets: 0
+- Unreadable files: 0
+
+Result: **the checker's literal path-existence scan passed** for the current local checkout. This result does not validate UID resolution, dynamically constructed paths, Godot import/parser success, or untested runtime behavior. The in-editor runtime checklist was separately reported passed. The headless Mono parser/import check remains unverified because the .NET SDK warning was intentionally ignored.
+
+This result is appended to preserve the earlier audit and verification history.
