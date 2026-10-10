@@ -3285,3 +3285,13 @@ Runtime verification after pulling:
 Dialogue interaction-lock test remains pending until a suitable NPC dialogue and Door/Chest can be active within interaction range in the same scene. No placeholder NPC or Chest has been added to Havenreach.
 
 Runtime status: Battle E-key checks reported passed by user; debug defeat hook and recovery path require local runtime verification.
+
+### Defeat Recovery Runtime Verification (2026-10-10)
+
+User runtime report after pulling the debug defeat test hook:
+- Passed: **DEBUG: Force Defeat** can be used to test the defeat recovery flow, and **Recover and Return** successfully completes recovery.
+- The user confirmed the recovery test passed. The exact return location, restored HP/MP, and gold penalty details were not separately reported, so those individual outcomes are not marked independently verified here.
+- Still pending: dialogue/world-interaction interference involving a Door or Chest. Havenreach has no suitable NPC or Chest within interaction range to run the requested test.
+- No new test result was reported for parser errors, missing resources, or debugger errors in this latest check.
+
+The interaction-lock test remains an environmental coverage gap, not a reason to add artificial gameplay objects to Havenreach. Verify it when an appropriate NPC dialogue and Door/Chest coexist within interaction range, or create a dedicated test scene if needed.
