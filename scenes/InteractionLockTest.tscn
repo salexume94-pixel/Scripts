@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" path="res://world/NPC.tscn" id="2_npc"]
+[ext_resource type="PackedScene" path="res://world/Chest.tscn" id="3_chest"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="4_dialogue"]
+[ext_resource type="Script" path="res://world/world_context.gd" id="5_context"]
+[ext_resource type="Script" path="res://world/world_presentation.gd" id="6_presentation"]
+
+[node name="InteractionLockTest" type="Node2D"]
+
+[node name="WorldContext" type="Node" parent="."]
+script = ExtResource("5_context")
+world_id = "interaction_test"
+location_id = "interaction_lock_test"
+
+[node name="TestFloor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-400, -260, 400, -260, 400, 260, -400, 260)
+color = Color(0.16, 0.22, 0.18, 1)
+
+[node name="Instructions" type="Label" parent="."]
+position = Vector2(-350, -220)
+size = Vector2(700, 80)
+text = "INTERACTION LOCK TEST\nTalk to Test NPC with E. Walk toward the chest until NPC is out of range, then press E. Chest must stay closed while dialogue is active."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TestNPC" parent="." instance=ExtResource("2_npc")]
+position = Vector2(-30, 0)
+npc_name = "Test NPC"
+dialogue_text = "This is a temporary dialogue test. Press E while I am speaking to dismiss this line."
+
+[node name="NPCLabel" type="Label" parent="."]
+position = Vector2(-80, -55)
+text = "TEST NPC"
+
+[node name="TestChest" parent="." instance=ExtResource("3_chest")]
+position = Vector2(60, 0)
+reward_item_id = "potion"
+
+[node name="ChestLabel" type="Label" parent="."]
+position = Vector2(25, -45)
+text = "TEST CHEST"
+
+[node name="WorldPresentation" type="Node2D" parent="."]
+script = ExtResource("6_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="WorldPresentation"]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(-30, 60)
+
+[node name="DialogueBox" parent="." instance=ExtResource("4_dialogue")]
