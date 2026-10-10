@@ -6,6 +6,7 @@ extends Node
 ## additional worlds can be registered without changing map presentation code.
 
 const MAP_DEFINITIONS: Array[Resource] = [
+	preload("res://world/definitions/havenreach_map.tres"),
 	preload("res://world/definitions/tutorial_town_map.tres"),
 	preload("res://world/definitions/northbridge_village_map.tres"),
 	preload("res://world/definitions/world_map.tres"),
