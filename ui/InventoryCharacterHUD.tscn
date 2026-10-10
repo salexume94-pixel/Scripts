@@ -112,6 +112,12 @@ text = "Magic Defense: 10"
 layout_mode = 2
 text = "Speed: 10"
 
+[node name="PartySummaryLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 96)
+autowrap_mode = 3
+text = "PARTY\nNo companions"
+
 [node name="EquipmentLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 text = "Equipment"
