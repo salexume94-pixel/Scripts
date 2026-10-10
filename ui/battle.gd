@@ -55,6 +55,7 @@ func _ready() -> void:
 	CombatManager.player_press_turns_changed.connect(_on_press_turns_changed)
 	CombatManager.enemy_turn_started.connect(_on_enemy_turn_started)
 	CombatManager.enemy_attack_performed.connect(_on_enemy_attack_performed)
+	CombatManager.player_defeated.connect(_on_player_defeated)
 	CombatManager.combat_log_updated.connect(_on_combat_log_updated)
 	_update_display()
 	_update_enemy_hp_display()
@@ -168,6 +169,18 @@ func _on_enemy_turn_started() -> void:
 	if action_label != null:
 		action_label.text = "ENEMY TURN: resolving enemy action..."
 	_update_combat_controls()
+
+func _on_player_defeated() -> void:
+	# Refresh the visible defeat state whether defeat came from normal combat
+	# or from the F3 debug hook used to verify the recovery flow.
+	action_resolving = false
+	var action_label := get_node_or_null("CenterContainer/Panel/VBoxContainer/ActionLabel")
+	if action_label != null:
+		action_label.text = "PLAYER DEFEATED. Use Recover and Return."
+	_update_player_hp_display()
+	_update_combat_controls()
+	_update_combat_log_display()
+
 
 func _on_enemy_attack_performed(damage: int) -> void:
 	# Show the enemy action and resolved damage after the enemy turn completes.
