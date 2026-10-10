@@ -3379,3 +3379,18 @@ Runtime/status boundary:
 - No static-check pass or runtime pass is claimed until actual command output and local test results are available.
 
 This entry is appended; prior log history remains intact.
+
+### Repository Audit: Godot Editor Runtime Verification (2026-10-10)
+
+Local verification was completed in the Godot editor after pulling the current repository state.
+
+Verified by the developer:
+- The project opened in Godot.
+- The game/runtime verification checklist passed.
+- The .NET SDK message from the Godot Mono headless editor command is explicitly ignored for this GDScript-focused verification; no SDK installation or .NET troubleshooting was performed.
+
+Verification boundary:
+- The Mono headless command emitted a .NET SDK error, so its output is not recorded as a clean headless parser/import pass.
+- The in-editor runtime checklist passed, which verifies the tested gameplay path but does not prove every resource reference or every scene is error-free.
+- The first static reference-check run reported six candidates. Five were documentation-formatting/placeholders and one was a dynamic music path template; the checker was updated to handle Markdown backticks and skip formatting templates. Re-run the updated checker after pulling this commit before recording the static-reference result as clean.
+- Preserve this entry as an appended verification record; earlier development-log history remains unchanged.
