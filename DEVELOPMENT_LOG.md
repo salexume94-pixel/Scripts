@@ -3173,3 +3173,36 @@ Runtime verification required after pulling:
 7. Confirm Player Affinities remain visible in the debug HUD during Battle and no new debugger errors occur.
 
 Runtime status: NOT TESTED LOCALLY.
+
+
+### Dialogue E Selection and Interaction Lock (2026-10-10)
+
+Implemented keyboard confirmation for dialogue choices and documented the shared dialogue interaction state. This entry is appended; prior development history is preserved.
+
+Updated:
+- `ui/dialogue_box.gd`
+- `player/interaction_system.gd`
+- `ARCHITECTURE.md`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Pressing E during a choice dialogue now activates the currently focused choice. If focus was lost, the DialogueBox safely falls back to the first visible choice.
+- Pressing E during a single-line dialogue dismisses it and consumes that input.
+- `DialogueManager.is_active` is the authoritative internal interaction lock. While active, InteractionSystem does not search for or invoke nearby NPCs, Doors, Chests, or other world interactables. The state is internal and does not add any new visual indicator to the game.
+- Documented ownership boundaries: DialogueManager owns active state, InteractionSystem gates world interactions, and DialogueBox owns choice focus/presentation.
+- No separate duplicate dialogue flag was added, and no Player Affinities or encounter logic was changed.
+
+Static verification:
+- Confirmed the active-dialogue branch consumes E before world-target selection.
+- Confirmed choice selection is delegated to the DialogueBox and uses the focused button's stable choice ID.
+- Confirmed the dialogue state is cleared through DialogueManager when a single line is dismissed or a choice is selected.
+- Local Godot runtime verification is pending.
+
+Runtime verification after pulling:
+1. Start a dialogue with an NPC and press E to dismiss it.
+2. Start Mira's choice dialogue, move focus between the two choices, and press E. Confirm the focused choice is selected.
+3. Repeat after moving focus away and back; if focus is lost, confirm E selects the first visible option rather than triggering a nearby object.
+4. Stand near a Door or Chest, open an NPC dialogue, and press E repeatedly. Confirm the nearby Door/Chest does not activate while dialogue is active.
+5. Confirm selecting a dialogue choice that changes scenes still transitions correctly and no debugger errors occur.
+
+Runtime status: NOT TESTED LOCALLY.
