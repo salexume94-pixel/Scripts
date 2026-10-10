@@ -392,3 +392,19 @@ Current status: initial code and test scene are on `feature/moving-npc-foundatio
 ## Test Scene and Debugging Rule
 
 Use `scenes/MovingNPCTest.tscn` as the shared test scene / debugging area for future test work. Keep the Player present and keep its Camera2D attached to the Player so the view stays centered during movement. Add new test actors, obstacles, chests, doors, and other fixtures to this scene instead of creating a separate test scene for each feature, unless isolation is technically necessary.
+
+
+---
+
+### Ally Presence / Town Encounters - PLANNED
+
+Build on the Ally's non-blocking proximity signals to support optional town appearances inspired by *Star Ocean*-style party interactions.
+
+Planned responsibilities:
+- Define stable Ally IDs and town/location appearance points.
+- Decide which story, quest, or visit conditions make an Ally appear at a specific place.
+- Let the Player approach an Ally and trigger the appropriate interaction through the existing dialogue/story systems.
+- Keep appearance conditions and visit/relationship state outside `world/moving_npc.gd`.
+- Ensure these encounters never become combat merely because the Player overlaps the Ally's detection area.
+
+The current step is only the reusable proximity-sensor foundation. Town schedules, appearance conditions, dialogue, recruitment, and relationship consequences are not implemented yet.
