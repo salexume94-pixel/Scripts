@@ -3505,3 +3505,19 @@ Runtime verification after pulling `main`:
 6. Confirm the Enemy and civilian NPC still move and behave as before, and no new Godot debugger/scene-loading errors appear.
 
 Static source edits only. Local Godot parser and runtime verification are pending; town-specific appearance conditions remain planned work.
+
+
+## 2026-10-10 — Moving NPC collision and world transition runtime verification
+
+Runtime verification completed locally after pulling the latest `main).
+
+- [x] Ally proximity detection logs entry and exit.
+- [x] Leaving a town returns to the world map.
+- [x] Entering a town from the world map loads the correct town.
+- [x] Player movement and NPC collision still work.
+- [x] Enemy contact starts battle; running from battle and defeating enemies still work.
+- [x] No new errors appear in the Godot debugger.
+
+**Result:** All six runtime checks passed. The Player/NPC collision setup, Ally detection sensor, town entry/exit triggers, and existing combat flow are working as expected in the user's local Godot runtime.
+
+This entry records user-confirmed runtime results. Existing development-log history is preserved; this is an append-only update.
