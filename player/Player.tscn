@@ -11,6 +11,8 @@
 [ext_resource type="Script" path="res://player/player_skills.gd" id="10_skills"]
 [ext_resource type="Script" path="res://player/player_animation_controller.gd" id="11_animation_controller"]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_player"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_5hmnj"]
 radius = 16.0
 
@@ -30,6 +32,7 @@ script = ExtResource("2_v6fml")
 [node name="PlayerSprite" type="AnimatedSprite2D" parent="." unique_id=1969911015]
 centered = true
 texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_player")
 
 [node name="PlayerAnimationController" type="Node" parent="."]
 script = ExtResource("11_animation_controller")
