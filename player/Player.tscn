@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://8kpwsewt1f26" path="res://player/player_progression.gd" id="7_cw2d6"]
 [ext_resource type="Script" path="res://player/player_currency.gd" id="9_currency"]
 [ext_resource type="Script" path="res://player/interaction_system.gd" id="8_interaction"]
+[ext_resource type="Script" path="res://player/player_skills.gd" id="10_skills"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5hmnj"]
 radius = 16.0
@@ -38,6 +39,9 @@ script = ExtResource("6_70d11")
 
 [node name="PlayerProgression" type="Node" parent="." unique_id=678276308]
 script = ExtResource("7_cw2d6")
+
+[node name="PlayerSkills" type="Node" parent="."]
+script = ExtResource("10_skills")
 
 [node name="PlayerCurrency" type="Node" parent="."]
 script = ExtResource("9_currency")
