@@ -19,14 +19,25 @@ const AFFINITIES = preload("res://combat/affinities.gd")
 @onready var ai_trace_label: Label = $Panel/Margin/Scroll/Content/AITrace
 @onready var log_label: Label = $Panel/Margin/Scroll/Content/LogScroll/Log
 @onready var encounters_toggle: CheckBox = $Panel/Margin/Scroll/Content/EncountersToggle
+@onready var force_defeat_button: Button = $Panel/Margin/Scroll/Content/ForceDefeatButton
 
 func _ready() -> void:
 	# Keep the diagnostic menu closed until F3 is pressed in any attached scene.
 	panel.visible = false
 	encounters_toggle.button_pressed = GameState.overworld_encounters_enabled
 	encounters_toggle.toggled.connect(_on_encounters_toggled)
+	force_defeat_button.pressed.connect(_on_force_defeat_pressed)
 	CombatManager.combat_log_updated.connect(_refresh)
 	_refresh()
+
+func _on_force_defeat_pressed() -> void:
+	# Keep the test shortcut inside the hidden-by-default debug HUD. It bypasses
+	# damage math only to verify the actual Battle defeat and recovery lifecycle.
+	if not CombatManager.force_defeat_for_testing():
+		status_label.text = "Status: Force Defeat requires active combat"
+		return
+	_refresh()
+
 
 func _on_encounters_toggled(enabled: bool) -> void:
 	# WorldEncounterSystem reads this shared setting before processing random
