@@ -1,5 +1,5 @@
-[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="13_debug_hud"]
 [gd_scene format=3]
+[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="13_debug_hud"]
 
 [ext_resource type="Script" path="res://world/world_map_world.gd" id="1_world_map"]
 [ext_resource type="Script" path="res://world/world_context.gd" id="2_world_context"]
