@@ -468,3 +468,19 @@ Normal autonomous movement must respect world collision. Buildings, their walls 
 - This asymmetric mask setup keeps the Player blocked by moving NPCs while NPC movement does not collide with or get displaced by the Player. NPCs still collide with static buildings, doors, chests, and map boundaries and retain their own AI movement and stuck-recovery logic.
 - Player detection sensors use collision mask `3` (world layer 1 plus Player layer 2) and explicitly enable monitoring. The callback filters to the Player group, so including layer 1 provides a compatibility fallback for scene instances with an old layer assignment without allowing world props to trigger transitions. The Player script also enforces layer `2` and mask `5` at runtime so the dedicated layer cannot silently drift from its scene configuration. Door and Chest interaction remains distance/group based through `InteractionSystem`; Door and Chest scenes are solid StaticBody2D objects, not Player-detection areas.
 - The isolated `scenes/MovingNPCTest.tscn` sets its Enemy, civilian, and Ally fixtures to the same moving-actor layer/mask. Verify contact blocking, enemy battle activation, Ally sensing, world-edge/region triggers, obstacle avoidance, and stuck recovery in Godot after pulling these changes.
+
+
+## Repository Audit Follow-up (2026-10-10)
+
+The current structural inventory and concrete findings live in `docs/REPOSITORY_AUDIT.md`. That audit is a snapshot, not a substitute for Godot editor/import checks or runtime verification.
+
+Documentation ownership is intentionally split:
+
+- `docs/README.md` is the documentation index and states which documents are authoritative.
+- `ARCHITECTURE.md` defines code/system ownership and folder boundaries.
+- `ROADMAP.md` defines the active work order and upcoming implementation tasks.
+- `DEVELOPMENT_LOG.md` is append-only history. Add dated entries; never replace, condense, or delete older entries.
+- `docs/world/WORLD_BIBLE.md` owns stable world facts; `docs/story/STORY_BIBLE.md` owns plot chronology and revelations.
+- Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain legacy/reference material until their tutorial-town assumptions are reconciled with the current waking-area → Mira → Havenreach opening. They must not silently override the World/Story Bibles.
+
+Current structural cautions: `player/player_skills.gd` is still an empty placeholder attached to `Player.tscn`; `systems/game_manager.gd` appears unintegrated and should not be expanded until its responsibility relative to SceneManager and GameState is resolved. See the audit report for details. No gameplay code was changed as part of this documentation pass.
