@@ -8,6 +8,8 @@ extends CharacterBody2D
 enum Identity { ENEMY, NPC, ALLY }
 
 @export var identity: Identity = Identity.NPC
+## Stable per-instance key used to restore or remove this actor after Battle reloads the scene.
+@export var actor_id: String = ""
 @export var move_speed: float = 95.0
 @export var detection_range: float = 260.0
 @export var personal_space: float = 90.0
@@ -27,6 +29,32 @@ var home_position: Vector2
 
 
 func _ready() -> void:
+	# Enemy IDs must be stable across a Battle scene transition, where the original
+	# world node is freed and a fresh copy of the test/world scene is loaded.
+	if identity == Identity.ENEMY and actor_id.is_empty():
+		actor_id = "%s_%d_%d" % [enemy_id, int(round(global_position.x)), int(round(global_position.y))]
+
+	# Do not recreate an enemy the Player already defeated in this runtime session.
+	if identity == Identity.ENEMY and GameState.is_moving_enemy_defeated(actor_id):
+		queue_free()
+		return
+
+	# Allies are only visual identity markers for now. They should neither wander
+	# nor physically block/pin the Player while companion behavior is unimplemented.
+	if identity == Identity.ALLY:
+		collision_layer = 0
+		collision_mask = 0
+		var ally_collision := get_node_or_null("Collision") as CollisionShape2D
+		if ally_collision != null:
+			ally_collision.set_deferred("disabled", true)
+
+	# If the Player ran from this actor, restore its battle-start position and
+	# begin its one-second recovery pause after the world has loaded again.
+	if identity == Identity.ENEMY:
+		var escaped_state: Dictionary = GameState.consume_escaped_enemy_return(actor_id)
+		if not escaped_state.is_empty():
+			global_position = escaped_state.get("position", global_position)
+
 	home_position = global_position
 	add_to_group("moving_npc")
 	match identity:
@@ -42,6 +70,16 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Ally is deliberately stationary until companion behavior is designed.
+	if identity == Identity.ALLY:
+		velocity = Vector2.ZERO
+		return
+
+	# Keep the escaped enemy still for its recovery window after returning to the world.
+	if identity == Identity.ENEMY and GameState.is_enemy_recovery_paused(actor_id):
+		velocity = Vector2.ZERO
+		return
+
 	# Never start another encounter while combat is active or after this actor
 	# has already requested one. This prevents repeated contact signals/frames.
 	if encounter_locked or CombatManager.is_in_combat() or SceneManager.transition_in_progress:
@@ -64,7 +102,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	# Only hostile identity turns physical proximity into a combat encounter.
-	if identity == Identity.ENEMY and player != null:
+	if identity == Identity.ENEMY and player != null and not GameState.is_escape_invulnerable():
 		if global_position.distance_to(player.global_position) <= 25.0:
 			_start_contact_encounter()
 
@@ -76,6 +114,11 @@ func _find_player() -> void:
 
 
 func _choose_movement_intent() -> void:
+	# Ally has no autonomous movement behavior yet; avoid falling through to wandering.
+	if identity == Identity.ALLY:
+		movement_target = global_position
+		return
+
 	if player != null:
 		var distance := global_position.distance_to(player.global_position)
 		if identity == Identity.ENEMY and distance <= detection_range:
@@ -129,7 +172,7 @@ func _start_contact_encounter() -> void:
 		return
 	encounter_locked = true
 	velocity = Vector2.ZERO
-	if not CombatManager.start_encounter(enemy_id):
+	if not CombatManager.start_encounter(enemy_id, actor_id, global_position):
 		# Invalid enemy data or missing encounter context should not permanently
 		# freeze the actor; allow a later contact attempt instead.
 		encounter_locked = false
