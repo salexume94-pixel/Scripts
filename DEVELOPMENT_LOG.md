@@ -3471,3 +3471,16 @@ Source changes on `main`:
 Verification boundary:
 - These follow-up changes are static source edits only. Pull `main` and repeat the run/escape/victory checks in `scenes/MovingNPCTest.tscn`.
 - The user-reported checklist above is preserved as reported; the follow-up behavior is not marked runtime-verified until the new test pass is reported.
+
+
+### Moving NPC Escape, Victory, and Ally Runtime Verification (2026-10-10)
+
+User completed the follow-up runtime checklist in Godot and reported all checks passing:
+- Ally remains stationary, does not initiate combat, and no longer blocks or sticks to the Player.
+- Note: the Ally currently has no collision detection because its collision layer/mask and body collision shape are disabled. This prevents physical blocking; add a separate non-blocking detection Area2D only when a gameplay interaction needs Ally overlap detection.
+- Enemy contact starts battle.
+- Running returns the Player to the test scene, restores the Enemy at its battle-start position, pauses it for one second, and prevents immediate contact re-engagement during the protection window.
+- Defeating the Enemy removes it, and it does not respawn after the world/test scene reloads.
+- Player movement/collisions, NPC avoidance, Enemy pursuit, and scene/debugger stability remain intact.
+
+Status: these follow-up behaviors are now runtime-verified by the user in `scenes/MovingNPCTest.tscn`. Protected-town behavior remains unverified in an overworld/town environment.
