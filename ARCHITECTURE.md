@@ -395,3 +395,7 @@ WorldLocationData supports optional entry blocking after a named quest objective
 - `ui/debug_combat_hud.gd` remains the combat diagnostic overlay and continues to display Player Affinities. It is separate from the general Debug Menu and normal Battle HUD.
 - The Character/Inventory menu presents party membership and provisional companion preview stats. Those values are informational only until a dedicated companion-stat and combat-participation system is implemented.
 - Each playable world with its own map identity must register a matching `WorldMapData` resource in `world/world_map_database.gd`. In particular, the `havenreach` scene context requires a map definition whose `world_id` is exactly `havenreach`.
+
+## Debug Menu Consolidation Correction
+
+The active development overlay is the existing `ui/debug_combat_hud.gd` / `ui/DebugCombatHUD.tscn`, attached to gameplay scenes and toggled with F3. It retains the Player Affinities display and also exposes the runtime-only overworld encounter toggle. No separate general DebugMenu scene is used.
