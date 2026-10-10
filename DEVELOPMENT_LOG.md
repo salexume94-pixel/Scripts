@@ -3438,3 +3438,10 @@ Verification boundary:
 - Confirmed the test scene retains its Player instance; future test fixtures should be added around that Player rather than replacing it or creating a separate test scene for each feature.
 - Documented `scenes/MovingNPCTest.tscn` as the shared test scene / debugging area in architecture and roadmap documentation.
 - Static repository edit only. Godot runtime verification is still required after pulling `main`.
+
+
+### Moving NPC Test Scene Parse Error Fix (2026-10-10)
+
+- Fixed the test-only Camera2D scene declaration by marking the instanced Player path editable before adding the camera as a child.
+- Replaced the shorthand camera position value with the explicit `Vector2(0, 0)` scene value.
+- This addresses the reported parser failure around the added camera node. The scene has not been runtime-verified after this change; pull `main` and reopen/run the test scene in Godot.
