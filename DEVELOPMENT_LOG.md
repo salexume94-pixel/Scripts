@@ -3484,3 +3484,24 @@ User completed the follow-up runtime checklist in Godot and reported all checks 
 - Player movement/collisions, NPC avoidance, Enemy pursuit, and scene/debugger stability remain intact.
 
 Status: these follow-up behaviors are now runtime-verified by the user in `scenes/MovingNPCTest.tscn`. Protected-town behavior remains unverified in an overworld/town environment.
+
+
+### Ally Proximity Sensor Foundation (2026-10-10)
+
+Implemented on GitHub `main`:
+
+- Ally physical collision remains disabled, so the Player can pass through without sticking.
+- Added a separate non-blocking `Area2D` detection sensor, created for Ally identity actors at runtime. Its radius is configurable with `ally_detection_radius` and it detects Player bodies only.
+- Added `ally_player_entered` and `ally_player_exited` signals. Future dialogue, story, and town-presence systems can subscribe to these signals without putting story logic into the movement actor.
+- Added an opt-in `debug_ally_detection` console trace and enabled it on the Ally preview in `scenes/MovingNPCTest.tscn` for runtime verification.
+- Documented the intended town-specific appearance design: Allies may appear at chosen locations based on story/visit conditions, with a future Ally Presence / Private Actions layer owning those conditions. The proximity sensor alone does not trigger dialogue, recruitment, relationship changes, or combat.
+
+Runtime verification after pulling `main`:
+1. Run `scenes/MovingNPCTest.tscn`.
+2. Walk into the blue Ally preview's detection radius. Confirm the console reports `Ally detection entered: debug_ally_01`.
+3. Walk out of the radius. Confirm the console reports `Ally detection exited: debug_ally_01`.
+4. Walk through and around the Ally. Confirm the Player is never physically blocked or pinned.
+5. Confirm the Ally remains stationary and no battle starts.
+6. Confirm the Enemy and civilian NPC still move and behave as before, and no new Godot debugger/scene-loading errors appear.
+
+Static source edits only. Local Godot parser and runtime verification are pending; town-specific appearance conditions remain planned work.
