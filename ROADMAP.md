@@ -14,6 +14,16 @@ The roadmap should be updated when the development order changes. Completed work
 
 ---
 
+## Immediate Focus: Havenreach World Design
+
+**Current active task: design Havenreach before adding more gameplay code.** Establish the settlement's important places, local authority, guild, church, key NPCs, nearby routes/ruins, and how those pieces connect to the opening and future quest threads. Record stable setting facts in `docs/world/WORLD_BIBLE.md` and plot chronology/revelations in `docs/story/STORY_BIBLE.md`.
+
+This is a content-design gate before resuming the numbered implementation sequence below. Tutorial Town and Northbridge Village are retained as examples, not the active opening settlement. Do not create a new StoryManager or parallel quest-state system as part of world design. Keep `ARCHITECTURE.md` as the technical ownership authority and append verified implementation/testing history to `DEVELOPMENT_LOG.md` only.
+
+The repository-wide structural snapshot and its concrete cleanup candidates are documented in `docs/REPOSITORY_AUDIT.md` (reviewed commit `e2f8c3a42c228245795a82b9c51d48cfb1f4a48d`).
+
+---
+
 ## Current Development Order
 
 ### 1. Equipment Comparison / Details - COMPLETE
