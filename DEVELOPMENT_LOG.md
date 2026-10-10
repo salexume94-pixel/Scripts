@@ -3061,3 +3061,54 @@ Runtime debug checklist after pulling:
 10. Confirm no new debugger or runtime errors occur.
 
 Runtime status: NOT TESTED LOCALLY.
+
+### Runtime Fixes: Havenreach Map, Mira Dialogue, Party Preview, and Debug Controls (2026-10-09)
+
+Addressed the runtime issues reported while testing the new story opening and woodland encounter. This entry is appended to preserve the existing development history.
+
+Updated:
+- `world/definitions/havenreach_map.tres`
+- `world/world_map_database.gd`
+- `systems/game_state.gd`
+- `systems/world_encounter_system.gd`
+- `ui/DebugMenu.tscn`
+- `ui/debug_menu.gd`
+- `scenes/WorldMapWorld.tscn`
+- `scenes/MiraEncounterArea.tscn`
+- `scenes/Havenreach.tscn`
+- `scenes/World.tscn`
+- `ui/DialogueBox.tscn`
+- `ui/battle.gd`
+- `scenes/Battle.tscn`
+- `ui/InventoryCharacterHUD.tscn`
+- `ui/inventory_character_hud.gd`
+
+Changes:
+- Registered a dedicated Havenreach WorldMapData definition. MapManager can now resolve the `havenreach` world ID instead of reporting missing map data when the World Map overlay updates.
+- Reworked the shared dialogue panel to use viewport-relative anchors, word wrapping, additional dialogue space, and a higher CanvasLayer. This is intended to prevent long Mira dialogue and choice buttons from overflowing or drawing underneath the map overlay.
+- Added a Party section to the Character/Inventory menu. When Mira is in PartyManager, it displays her current membership and preview values for Level, HP, MP, Attack, Defense, Magic Attack, Magic Defense, and Speed. These are display-only starter values; companion combat participation and combat stat integration are not implemented.
+- Removed the Cycle Player Weakness button and Player Weakness label from the normal Battle HUD. Combat affinity configuration and the existing combat debug HUD's Player Affinities display were not changed.
+- Added a separate gameplay Debug Menu opened with F3. It is attached to the active overworld, Mira encounter, Havenreach, and retained World scenes. Its Overworld Encounters Enabled checkbox toggles a GameState setting.
+- Updated WorldEncounterSystem to respect that setting and clear accumulated movement while disabled, so re-enabling encounters does not cause an immediate encounter roll.
+- The debug setting is runtime-only and is not added to the save format.
+
+Static verification:
+- Checked that the Havenreach map resource is registered and its `world_id` matches the scene's `havenreach` context.
+- Checked that the normal Battle scene no longer contains the weakness label/button or their pressed-signal connection.
+- Checked that the existing combat debug HUD script still contains its Player Affinities display.
+- Checked that the new DebugMenu scene is referenced by the relevant gameplay scenes and that the encounter system reads the new GameState setting.
+
+Runtime verification required:
+1. Pull the latest `main` and open the project in Godot. Confirm there are no parse errors or missing-resource warnings.
+2. Open the world map in Havenreach with M. Confirm the MapManager error is gone and the map title is Havenreach.
+3. In the Mira encounter, open dialogue and confirm the panel stays inside the viewport, the text wraps, and both choice buttons are readable/clickable.
+4. Choose Journey with Mira, open the Character/Inventory menu with I, and confirm Mira appears under PARTY with her preview stats.
+5. Repeat with Travel to Havenreach alone and confirm Mira is not listed in the party.
+6. Enter the overworld and press F3. Confirm the Debug Menu opens and the Overworld Encounters Enabled checkbox reflects the current setting.
+7. Disable overworld encounters and travel well beyond several encounter-check distances. Confirm no random encounter begins.
+8. Re-enable encounters and continue moving. Confirm normal encounter checks resume without an immediate stale roll.
+9. Start combat and confirm the normal Battle HUD has no Cycle Player Weakness control or Player Weakness label.
+10. Open the combat debug HUD with F3 during Battle and confirm Player Affinities remain displayed and unchanged.
+11. Save and load with Mira in the party, then confirm party membership and quest state are restored.
+12. Confirm Tutorial Town and Northbridge Village remain inactive destinations.
+13. Confirm no new debugger errors occur.
