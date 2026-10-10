@@ -112,12 +112,6 @@ text = "Magic Defense: 10"
 layout_mode = 2
 text = "Speed: 10"
 
-[node name="PartySummaryLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 96)
-autowrap_mode = 3
-text = "PARTY\nNo companions"
-
 [node name="EquipmentLabel" type="Label" parent="Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox"]
 layout_mode = 2
 text = "Equipment"
@@ -154,6 +148,11 @@ theme_override_constants/separation = 8
 layout_mode = 2
 text = "INVENTORY"
 horizontal_alignment = 1
+
+[node name="PartySummaryLabel" type="Label" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "PARTY\nNo companions"
 
 [node name="InventoryGrid" type="GridContainer" parent="Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox"]
 custom_minimum_size = Vector2(0, 140)
