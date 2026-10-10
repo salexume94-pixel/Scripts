@@ -3509,7 +3509,7 @@ Static source edits only. Local Godot parser and runtime verification are pendin
 
 ## 2026-10-10 — Moving NPC collision and world transition runtime verification
 
-Runtime verification completed locally after pulling the latest `main).
+Runtime verification completed locally after pulling the latest `main`.
 
 - [x] Ally proximity detection logs entry and exit.
 - [x] Leaving a town returns to the world map.
