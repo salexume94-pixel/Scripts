@@ -3141,3 +3141,35 @@ Runtime verification required:
 4. Confirm F3 opens the debug HUD and the overworld encounters toggle works.
 5. Re-enter the Mira encounter and Havenreach to confirm both scenes load normally.
 6. Confirm no new debugger errors occur.
+
+
+### Keyboard Dialogue Choices and Overworld Encounter Tracking (2026-10-10)
+
+Addressed three issues reported during runtime testing. This entry is appended; previous development history remains intact.
+
+Updated:
+- `ui/dialogue_box.gd`
+- `ui/debug_combat_hud.gd`
+- `systems/world_encounter_system.gd`
+
+Changes:
+- Made each dialogue choice explicitly keyboard-focusable and gave the first available choice focus when the choices appear. Players can navigate choices with keyboard focus controls and activate them with Enter/Space, while mouse selection remains available.
+- Hardened the overworld encounter toggle synchronization. The checkbox writes directly to the shared `GameState.overworld_encounters_enabled` setting and each scene's newly created debug HUD keeps its displayed checkbox state synchronized with that setting. This does not change or remove Player Affinities.
+- Changed encounter-distance tracking to initialize on the first process frame using the Player's actual position after a scene transition. The first sample is not eligible for an encounter roll, preventing the Player's spawn-position correction when leaving a town from counting as travel.
+
+Static verification:
+- Confirmed the dialogue choices are created as focusable Buttons and the first choice receives deferred focus.
+- Confirmed the encounter tracker skips its initial position sample and continues to clear accumulated distance while encounters are disabled or the post-combat cooldown is active.
+- Confirmed the debug checkbox reads and writes the shared GameState setting. Player Affinities display logic was not changed.
+- No local Godot runtime test has been run for these changes.
+
+Runtime verification required after pulling:
+1. Open the project and confirm there are no parser errors or missing-resource warnings.
+2. Start a new game, reach Mira, and use only the keyboard to move focus between both choices and select each route with Enter/Space.
+3. Choose Journey with Mira, press F3 in Havenreach, toggle Overworld encounters off, leave town, and confirm the checkbox remains off in the overworld.
+4. With encounters disabled, travel well beyond several encounter-check distances and confirm no random battle starts.
+5. Re-enable encounters and confirm the checkbox remains checked; continue moving and confirm encounters resume only after normal distance checks, not immediately on leaving town.
+6. Repeat the town exit test with Mira in the party and confirm no immediate encounter occurs.
+7. Confirm Player Affinities remain visible in the debug HUD during Battle and no new debugger errors occur.
+
+Runtime status: NOT TESTED LOCALLY.
