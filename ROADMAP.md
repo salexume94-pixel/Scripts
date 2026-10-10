@@ -408,3 +408,12 @@ Planned responsibilities:
 - Ensure these encounters never become combat merely because the Player overlaps the Ally's detection area.
 
 The current step is only the reusable proximity-sensor foundation. Town schedules, appearance conditions, dialogue, recruitment, and relationship consequences are not implemented yet.
+
+
+### Moving Ally AI and Story-Controlled Movement - IN PROGRESS
+
+- Give Allies the same body collision behavior as civilian moving NPCs while retaining a separate proximity sensor.
+- Use civilian-style personal-space behavior and bounded wandering around each Ally's starting position.
+- Keep buildings, doors, chests, and map boundaries solid obstacles during autonomous movement.
+- Provide an explicit story/cutscene movement override. Ignoring static-world collision must be opt-in and restored when the cutscene ends.
+- Runtime-test collision, obstacle avoidance, home-area limits, the proximity signals, and Enemy/NPC regression behavior in `scenes/MovingNPCTest.tscn` before marking complete.
