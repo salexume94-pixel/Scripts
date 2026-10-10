@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="8_quest_log"]
 [ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="9_dialogue"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="10_map"]
+[ext_resource type="PackedScene" path="res://world/ForestTree.tscn" id="11_tree"]
 
 [node name="MiraEncounterArea" type="Node2D"]
 
@@ -24,9 +25,73 @@ location_id = "mira_encounter_area"
 polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
 color = Color(0.20, 0.32, 0.17, 1)
 
+[node name="ForestFloor" type="Polygon2D" parent="WorldContent"]
+polygon = PackedVector2Array(-470, -280, -300, -360, 40, -330, 360, -280, 470, -80, 420, 220, 220, 340, -180, 350, -430, 190, -490, -40)
+color = Color(0.13, 0.25, 0.12, 1)
+
 [node name="Path" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-600, 170, -600, 110, -60, 110, 180, -100, 220, -60, -20, 170)
-color = Color(0.36, 0.30, 0.20, 1)
+polygon = PackedVector2Array(-600, 170, -600, 110, -260, 110, -140, 50, -70, 10, 10, -25, 180, -100, 220, -60, 65, 25, -25, 85, -180, 170, -20, 280, -20, 340, -85, 340, -260, 210, -430, 190)
+color = Color(0.38, 0.30, 0.19, 1)
+
+[node name="ForestCanopyNorthWest" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-430, -240)
+scale = Vector2(1.35, 1.35)
+
+[node name="ForestCanopyNorth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-260, -315)
+scale = Vector2(1.5, 1.5)
+
+[node name="ForestCanopyNorthEast" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-70, -305)
+scale = Vector2(1.4, 1.4)
+
+[node name="ForestCanopyEastNorth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(190, -270)
+scale = Vector2(1.55, 1.55)
+
+[node name="ForestCanopyEast" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(390, -130)
+scale = Vector2(1.4, 1.4)
+
+[node name="ForestCanopyEastSouth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(340, 110)
+scale = Vector2(1.5, 1.5)
+
+[node name="ForestCanopySouthEast" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(180, 280)
+scale = Vector2(1.45, 1.45)
+
+[node name="ForestCanopySouth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-60, 320)
+scale = Vector2(1.35, 1.35)
+
+[node name="ForestCanopySouthWest" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-310, 255)
+scale = Vector2(1.5, 1.5)
+
+[node name="ForestCanopyWest" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-440, 60)
+scale = Vector2(1.45, 1.45)
+
+[node name="ForestCanopyWestNorth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-390, -110)
+scale = Vector2(1.25, 1.25)
+
+[node name="ForestCanopyInnerWest" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(-280, -70)
+scale = Vector2(1.05, 1.05)
+
+[node name="ForestCanopyInnerEast" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(280, 35)
+scale = Vector2(1.1, 1.1)
+
+[node name="ForestCanopyInnerSouth" parent="WorldContent" instance=ExtResource("11_tree")]
+position = Vector2(100, 205)
+scale = Vector2(1.0, 1.0)
+
+[node name="ClearingLabel" type="Label" parent="WorldContent"]
+position = Vector2(-105, -125)
+text = "WOODLAND CLEARING"
 
 [node name="Mira" parent="WorldContent" instance=ExtResource("5_npc")]
 script = ExtResource("6_mira")
