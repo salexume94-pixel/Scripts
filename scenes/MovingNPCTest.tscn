@@ -28,9 +28,12 @@ text = "MOVING NPC TEST | RED = ENEMY | GREEN = NPC | BLUE = ALLY PREVIEW"
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(0, 0)
 
-; Keep the test camera attached to the Player so it stays centered while moving.
+; Mark the Player instance editable so this test-only camera can be attached to it.
+[editable path="Player"]
+
+; Keep the test camera attached to the Player so it follows movement.
 [node name="Camera2D" type="Camera2D" parent="Player"]
-position = Vector2.ZERO
+position = Vector2(0, 0)
 enabled = true
 
 [node name="Enemy" type="CharacterBody2D" parent="."]
