@@ -43,7 +43,7 @@ reward_item_id = "power_ring"
 script = ExtResource("4_interior_presentation")
 
 [node name="Camera2D" type="Camera2D" parent="InteriorPresentation"]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(0, 120)
