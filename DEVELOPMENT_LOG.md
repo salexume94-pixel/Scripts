@@ -3206,3 +3206,37 @@ Runtime verification after pulling:
 5. Confirm selecting a dialogue choice that changes scenes still transitions correctly and no debugger errors occur.
 
 Runtime status: NOT TESTED LOCALLY.
+
+
+### Battle HUD E-Key Selection Fix (2026-10-10)
+
+Runtime testing reported that pressing E did not activate an option in the Battle HUD, even though E selection worked for Mira's dialogue choices.
+
+Root cause:
+- Godot Buttons respond to their normal keyboard activation action (typically Enter/Space), not automatically to the game's E interaction key.
+- Battle.gd already assigned initial keyboard focus, but it had no handler connecting E to the focused Battle action.
+
+Updated:
+- `ui/battle.gd`
+
+Changes:
+- Added an explicit E-key handler for Battle action buttons.
+- E activates the currently focused visible, enabled Battle action. If focus is missing or outside the action bar, it falls back to the first visible, enabled action.
+- The handler emits the selected Button's existing `pressed` signal, preserving the existing combat action callbacks and keeping combat rules in CombatManager.
+- The key is consumed only when a usable Battle action is activated.
+- No combat rules, affinity settings, Player Affinities debug display, dialogue handling, or world-interaction logic were changed.
+
+Static verification:
+- Confirmed the E-key handler is in `ui/battle.gd`, validates key press/repeat state, checks action-bar membership, skips disabled/invisible buttons, and guards against a missing action bar.
+- No local Godot parser or runtime test has been run for this change.
+
+Runtime verification after pulling:
+1. Start or enter a battle and confirm an enabled action initially has focus.
+2. Press E and confirm the focused action activates (for example, Attack).
+3. Use keyboard navigation to focus Fire, Defend, Pass, and Run in turn; press E and confirm the focused action is the one activated.
+4. Confirm E does not activate disabled actions during the enemy turn or while an action is resolving.
+5. Confirm the Victory and Recovery buttons can be selected with E when visible and enabled.
+6. Confirm mouse clicks still work and combat resolves without duplicate actions.
+7. Confirm Player Affinities remain available in the F3 debug HUD and no new parser/debugger errors occur.
+
+Runtime status: NOT TESTED LOCALLY.
