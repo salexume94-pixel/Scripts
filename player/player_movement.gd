@@ -5,9 +5,12 @@ extends Node
 ## It reads the player's movement inputs, calculates the movement direction,
 ## applies the movement speed, and then moves the CharacterBody2D.
 
-# Movement speed measured in pixels per second.
+# Normal walking speed measured in pixels per second.
 # This can be changed in the Godot Inspector.
 @export var move_speed: float = 225.0
+
+# Holding Shift multiplies walking speed. Shift is the only run control.
+@export var run_speed_multiplier: float = 1.6
 
 # Reference to the CharacterBody2D that owns this movement component.
 # The actual movement is performed on this player node.
@@ -66,9 +69,14 @@ func _physics_process(_delta: float) -> void:
 		"ui_down"
 	)
 
-	# Convert the movement direction into a velocity, then let the
-	# CharacterBody2D handle movement and collision sliding.
-	player.velocity = direction * move_speed
+	# Shift is the only run control. Releasing it immediately restores walking speed.
+	var current_speed := move_speed
+	if Input.is_key_pressed(KEY_SHIFT):
+		current_speed *= run_speed_multiplier
+
+	# Convert direction into velocity, then let CharacterBody2D handle movement
+	# and collision sliding as before.
+	player.velocity = direction * current_speed
 	player.move_and_slide()
 
 
