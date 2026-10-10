@@ -192,7 +192,7 @@ func _ensure_ally_detection_area() -> void:
 	# Detect Player bodies only. Layer 0 means the sensor itself does not
 	# participate as a physical collision object for other actors.
 	ally_detection_area.collision_layer = 0
-	ally_detection_area.collision_mask = 2
+	ally_detection_area.collision_mask = 3
 	ally_detection_area.monitoring = true
 	ally_detection_area.monitorable = false
 	if not ally_detection_area.body_entered.is_connected(_on_ally_detection_body_entered):
