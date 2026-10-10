@@ -3,7 +3,8 @@ extends CanvasLayer
 ##
 ## This HUD is intentionally separate from the normal Battle UI. It reads
 ## CombatManager state and never changes combat rules, enemy data, or AI.
-## F3 toggles the panel so normal gameplay remains uncluttered.
+## F3 toggles the panel so normal gameplay remains uncluttered. The same menu
+## is available during exploration and exposes a development-only encounter toggle.
 
 const DAMAGE_TYPES = preload("res://combat/damage_types.gd")
 const AFFINITIES = preload("res://combat/affinities.gd")
@@ -17,18 +18,27 @@ const AFFINITIES = preload("res://combat/affinities.gd")
 @onready var last_enemy_label: Label = $Panel/Margin/Scroll/Content/LastEnemy
 @onready var ai_trace_label: Label = $Panel/Margin/Scroll/Content/AITrace
 @onready var log_label: Label = $Panel/Margin/Scroll/Content/LogScroll/Log
+@onready var encounters_toggle: CheckBox = $Panel/Margin/Scroll/Content/EncountersToggle
 
 func _ready() -> void:
-	# Start enabled during development so affinity behavior is immediately visible.
-	panel.visible = true
+	# Keep the diagnostic menu closed until F3 is pressed in any attached scene.
+	panel.visible = false
+	encounters_toggle.button_pressed = GameState.overworld_encounters_enabled
+	encounters_toggle.toggled.connect(_on_encounters_toggled)
 	CombatManager.combat_log_updated.connect(_refresh)
 	_refresh()
+
+func _on_encounters_toggled(enabled: bool) -> void:
+	# WorldEncounterSystem reads this shared setting before processing random
+	# encounters. Player affinity configuration remains unchanged by this control.
+	GameState.overworld_encounters_enabled = enabled
 
 func _unhandled_input(event: InputEvent) -> void:
 	# F3 provides a simple development-only toggle without adding a gameplay control.
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F3:
 		panel.visible = not panel.visible
 		if panel.visible:
+			encounters_toggle.button_pressed = GameState.overworld_encounters_enabled
 			_refresh()
 
 func _process(_delta: float) -> void:
