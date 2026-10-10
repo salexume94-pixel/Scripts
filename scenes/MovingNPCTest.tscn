@@ -44,8 +44,8 @@ enabled = true
 
 [node name="Enemy" type="CharacterBody2D" parent="."]
 position = Vector2(-250, -100)
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 5
 script = ExtResource("2_moving_npc")
 identity = 0
 actor_id = "debug_slime_01"
@@ -63,8 +63,8 @@ enabled = true
 
 [node name="NPC" type="CharacterBody2D" parent="."]
 position = Vector2(230, 100)
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 5
 script = ExtResource("2_moving_npc")
 identity = 1
 
@@ -81,8 +81,8 @@ enabled = true
 
 [node name="AllyPreview" type="CharacterBody2D" parent="."]
 position = Vector2(250, -180)
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 5
 script = ExtResource("2_moving_npc")
 identity = 2
 actor_id = "debug_ally_01"
