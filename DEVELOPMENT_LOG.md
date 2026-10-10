@@ -3638,3 +3638,32 @@ Runtime verification required after pulling `main`:
 6. Confirm no new Godot debugger errors occur.
 
 Status: committed to GitHub `main`; local Godot runtime verification is pending.
+
+
+### Gameplay Camera Zoom Coverage and SpriteFrames Warning Fix (2026-10-10)
+
+Follow-up correction after local testing showed the opening route did not appear zoomed and Godot warned that PlayerSprite had no SpriteFrames resource assigned.
+
+Updated:
+- `scenes/WakingArea.tscn`
+- `scenes/MiraEncounterArea.tscn`
+- `scenes/Havenreach.tscn`
+- `scenes/World.tscn`
+- `scenes/Interior.tscn`
+- `scenes/WorldMapWorld.tscn`
+- `scenes/MovingNPCTest.tscn`
+- `player/Player.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Set the active Camera2D zoom to `Vector2(1.5, 1.5)` in all current gameplay/opening scenes, including WakingArea, MiraEncounterArea, and Havenreach. These scenes were missing from the previous zoom change, explaining why the new-game route did not visibly zoom.
+- Added an empty SpriteFrames resource to the PlayerSprite scene property. PlayerAnimationController still builds and assigns the 24 directional animations at runtime; the scene now has a valid resource assigned before the controller runs, avoiding Godot's missing SpriteFrames warning.
+
+Runtime verification required after pulling `main`:
+1. Start a new game and verify the camera visibly zooms in on the Player in WakingArea, MiraEncounterArea, Havenreach, and WorldMapWorld.
+2. Load a saved game and confirm the zoom remains consistent.
+3. Confirm the Player's idle, walking, and running animations still play in all eight directions.
+4. Confirm the SpriteFrames warning is gone and no new debugger errors appear.
+5. Check that nearby world features remain visible and that movement, collision, interaction, transitions, and HUD layout remain functional.
+
+Status: source updates committed to GitHub `main`; local runtime verification is pending.
