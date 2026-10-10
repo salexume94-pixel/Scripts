@@ -18,6 +18,9 @@ var gold: int = 0
 ## after the World scene is restored. This is runtime state only.
 var encounter_cooldown_until_msec: int = 0
 
+## Development toggle for random overworld encounters. Not saved to disk.
+var overworld_encounters_enabled: bool = true
+
 
 func reset_runtime_state() -> void:
 	# New Game must clear the runtime snapshots that normally survive scene
@@ -28,6 +31,7 @@ func reset_runtime_state() -> void:
 	player_stats.clear()
 	gold = 0
 	encounter_cooldown_until_msec = 0
+	overworld_encounters_enabled = true
 
 
 func get_inventory() -> Dictionary:
