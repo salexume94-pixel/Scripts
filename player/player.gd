@@ -19,6 +19,12 @@ extends CharacterBody2D
 @onready var interaction_system: Node = $InteractionSystem
 
 func _ready() -> void:
+    # Enforce the dedicated Player layer at runtime as well as in Player.tscn.
+    # This protects scene instances from accidental Inspector overrides and
+    # keeps Area2D sensors and one-way NPC collision using the same layer setup.
+    collision_layer = 2
+    collision_mask = 5
+
     # Register the Player with a shared group so world-level systems can find
     # the active Player without depending on a hard-coded scene path.
     add_to_group("player")
