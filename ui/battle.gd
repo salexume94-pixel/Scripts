@@ -27,8 +27,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	var focused_control := get_viewport().gui_get_focus_owner()
 	var focused_button := focused_control as Button
 	var action_bar := get_node_or_null("BottomActionBar/ActionVBox")
+	if action_bar == null:
+		return
 
-	if focused_button == null or action_bar == null or not action_bar.is_ancestor_of(focused_button):
+	if focused_button == null or not action_bar.is_ancestor_of(focused_button):
 		focused_button = null
 		for child in action_bar.get_children():
 			var candidate := child as Button
