@@ -38,6 +38,11 @@ var movement_target: Vector2
 var think_timer: float = 0.0
 var encounter_locked: bool = false
 var home_position: Vector2
+## Detects when an actor keeps trying to move but makes no physical progress.
+var stuck_time: float = 0.0
+var last_physics_position: Vector2 = Vector2.ZERO
+var escape_override_time: float = 0.0
+var escape_override_direction: Vector2 = Vector2.ZERO
 
 @onready var obstacle_probe: RayCast2D = get_node_or_null("ObstacleProbe") as RayCast2D
 @onready var visual: Polygon2D = get_node_or_null("Visual") as Polygon2D
@@ -74,6 +79,7 @@ func _ready() -> void:
 			global_position = escaped_state.get("position", global_position)
 
 	home_position = global_position
+	last_physics_position = global_position
 	add_to_group("moving_npc")
 	match identity:
 		Identity.ENEMY:
@@ -106,6 +112,9 @@ func _physics_process(delta: float) -> void:
 	# movement remains home-bound and uses obstacle avoidance as usual.
 	if story_movement_active:
 		movement_target = story_movement_target
+	elif escape_override_time > 0.0:
+		escape_override_time = maxf(0.0, escape_override_time - delta)
+		movement_target = global_position + escape_override_direction * 70.0
 	else:
 		think_timer -= delta
 		if think_timer <= 0.0:
@@ -122,9 +131,36 @@ func _physics_process(delta: float) -> void:
 		velocity = safe_direction * move_speed
 	move_and_slide()
 
-	# Only hostile identity turns physical proximity into a combat encounter.
+	# If collision keeps an actor from making progress, temporarily choose a new
+	# escape direction. This helps recover when the Player pushes an Ally into a
+	# tight corner between multiple props, where ordinary steering can deadlock.
+	var moved_distance := global_position.distance_to(last_physics_position)
+	if not story_movement_active and not velocity.is_zero_approx() and moved_distance < 0.5:
+		stuck_time += delta
+		if stuck_time >= 0.45:
+			stuck_time = 0.0
+			escape_override_time = 0.65
+			if player != null and global_position.distance_to(player.global_position) <= personal_space:
+				escape_override_direction = (global_position - player.global_position).normalized()
+			else:
+				escape_override_direction = Vector2.RIGHT.rotated(randf_range(-PI, PI))
+			if escape_override_direction.is_zero_approx():
+				escape_override_direction = Vector2.RIGHT.rotated(randf_range(-PI, PI))
+			think_timer = think_interval
+	else:
+		stuck_time = 0.0
+	last_physics_position = global_position
+
+	# Detect contact using actual slide collisions as well as a forgiving distance
+	# check. The Player and Enemy have different-sized collision shapes, so a tight
+	# center-distance threshold can make visible contact feel delayed.
 	if identity == Identity.ENEMY and player != null and not GameState.is_escape_invulnerable():
-		if global_position.distance_to(player.global_position) <= 25.0:
+		for collision_index in get_slide_collision_count():
+			var collision := get_slide_collision(collision_index)
+			if collision.get_collider() == player or (collision.get_collider() is Node and collision.get_collider().is_in_group("player")):
+				_start_contact_encounter()
+				return
+		if global_position.distance_to(player.global_position) <= 32.0:
 			_start_contact_encounter()
 
 
