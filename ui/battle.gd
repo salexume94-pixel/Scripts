@@ -10,6 +10,40 @@ const FIRE_ACTION = preload("res://combat/definitions/fire_attack.tres")
 
 var action_resolving := false
 
+
+## Maps the shared E key to the focused Battle action. Godot's standard Button
+## keyboard activation uses ui_accept (usually Enter/Space), so E needs an
+## explicit bridge here rather than relying on normal button focus behavior.
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not event is InputEventKey:
+		return
+
+	var key_event := event as InputEventKey
+	if not key_event.pressed or key_event.echo or key_event.keycode != KEY_E:
+		return
+
+	# Only consume E when a usable Battle action can be activated. This prevents
+	# the combat shortcut from swallowing unrelated keyboard input in edge cases.
+	var focused_control := get_viewport().gui_get_focus_owner()
+	var focused_button := focused_control as Button
+	var action_bar := get_node_or_null("BottomActionBar/ActionVBox")
+
+	if focused_button == null or action_bar == null or not action_bar.is_ancestor_of(focused_button):
+		focused_button = null
+		for child in action_bar.get_children():
+			var candidate := child as Button
+			if candidate != null and candidate.visible and not candidate.disabled:
+				focused_button = candidate
+				break
+
+	if focused_button == null or not focused_button.visible or focused_button.disabled:
+		return
+
+	# Emit the same signal as a mouse click so existing button handlers remain
+	# the single route into CombatManager and combat rules stay out of the UI.
+	focused_button.pressed.emit()
+	get_viewport().set_input_as_handled()
+
 func _on_combat_log_updated() -> void:
 	_update_combat_log_display()
 
