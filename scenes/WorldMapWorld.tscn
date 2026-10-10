@@ -1,4 +1,4 @@
-[ext_resource type="PackedScene" path="res://ui/DebugMenu.tscn" id="12_debug_menu"]
+[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="13_debug_hud"]
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://world/world_map_world.gd" id="1_world_map"]
@@ -133,4 +133,4 @@ encounter_chance = 0.5
 
 [node name="WorldMap" parent="." instance=ExtResource("5_map")]
 
-[node name="DebugMenu" parent="." instance=ExtResource("12_debug_menu")]
+[node name="DebugCombatHUD" parent="." instance=ExtResource("13_debug_hud")]
