@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://world/world_context.gd" id="2_world_context"]
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="5_map"]
+[ext_resource type="PackedScene" path="res://world/ForestTree.tscn" id="11_forest_tree"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="9_inventory_hud"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="10_quest_log"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
@@ -51,6 +52,50 @@ color = Color(0.32, 0.27, 0.20, 1)
 [node name="WestRoad" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(-1200, -45, -300, -45, -300, 45, -1200, 45)
 color = Color(0.32, 0.27, 0.20, 1)
+
+[node name="MiraForestFloor" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-990, -190, -880, -300, -680, -330, -500, -230, -450, -40, -500, 170, -660, 260, -850, 220, -970, 80)
+color = Color(0.06, 0.13, 0.07, 1)
+
+[node name="ForestEdgeNorthWest" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-920, -175)
+scale = Vector2(1.5, 1.5)
+
+[node name="ForestEdgeNorth" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-810, -255)
+scale = Vector2(1.7, 1.7)
+
+[node name="ForestEdgeNorthEast" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-655, -270)
+scale = Vector2(1.65, 1.65)
+
+[node name="ForestEdgeEastNorth" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-520, -180)
+scale = Vector2(1.6, 1.6)
+
+[node name="ForestEdgeEastSouth" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-485, 25)
+scale = Vector2(1.55, 1.55)
+
+[node name="ForestEdgeSouthEast" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-565, 155)
+scale = Vector2(1.6, 1.6)
+
+[node name="ForestEdgeSouth" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-700, 205)
+scale = Vector2(1.7, 1.7)
+
+[node name="ForestEdgeSouthWest" parent="WorldMapContent" instance=ExtResource("11_forest_tree")]
+position = Vector2(-845, 175)
+scale = Vector2(1.6, 1.6)
+
+[node name="ForestClearingPath" type="Polygon2D" parent="WorldMapContent"]
+polygon = PackedVector2Array(-1200, -24, -970, -24, -915, -5, -875, 18, -820, 25, -760, 20, -700, 0, -640, -15, -590, -10, -540, 0, -300, 0, -300, 45, -545, 45, -620, 35, -700, 45, -775, 65, -835, 65, -900, 42, -950, 15, -1200, 15)
+color = Color(0.36, 0.28, 0.18, 1)
+
+[node name="ForestPathLabel" type="Label" parent="WorldMapContent"]
+position = Vector2(-825, -340)
+text = "FOREST PATH"
 
 [node name="EastRoad" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(300, -45, 45, -45, 45, 45, 300, 45)
