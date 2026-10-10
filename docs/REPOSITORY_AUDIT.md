@@ -637,3 +637,8 @@ The following inventory supersedes the older count table above for this snapshot
 ## Scene Script Attachment Review
 
 All 36 tracked `.tscn` files were inventoried, and declared external script resources were reviewed against scene-level `script = ExtResource(...)` assignments. The Player scene's `PlayerSkills` attachment is the concrete placeholder finding above. Reusable interior scenes consistently attach the shared interior and presentation scripts; the 14 interior scenes declare `zoom = Vector2(2.0, 2.0)`. This is static scene-file inspection, not proof that every scene deserializes in Godot.
+
+
+### Reference-check execution note (2026-10-10)
+
+The literal-reference checker was not executable against this exact GitHub snapshot from the current environment because a local checkout could not be obtained. Therefore the clean static-reference result recorded in the earlier audit applies only to its stated reviewed commit, not automatically to this newer snapshot. The current scene/resource inventory and scene script-attachment review were performed from the GitHub tree and file contents, but a fresh full-project run of `python tools/audit_res_refs.py` remains required after pulling `main`. This distinction is intentional: a historical checker result must not be presented as a new verification.
