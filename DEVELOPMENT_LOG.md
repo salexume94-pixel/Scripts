@@ -3116,3 +3116,28 @@ Runtime verification required:
 ### Debug Menu Consolidation Note (2026-10-09)
 
 Follow-up correction to the runtime-fix entry above: the temporary standalone `ui/DebugMenu.tscn` and `ui/debug_menu.gd` prototype was removed after review. The encounter checkbox now lives in the existing `ui/DebugCombatHUD.tscn` / `ui/debug_combat_hud.gd` overlay instead, so the existing Player Affinities diagnostic remains in the same debug panel. F3 opens this panel in the overworld, Mira encounter, Havenreach, retained World scene, and Battle. The runtime checklist above should be interpreted using this consolidated implementation.
+
+### Scene Load Failure: Invalid Scene Header Ordering (2026-10-10)
+
+Runtime testing reported `SceneManager could not change scene to: res://scenes/WorldMapWorld.tscn (error 19)`.
+
+Root cause found during static inspection:
+- The recent debug HUD attachment inserted its `[ext_resource]` declaration before the mandatory `[gd_scene]` header in `WorldMapWorld.tscn`, `MiraEncounterArea.tscn`, `Havenreach.tscn`, and `World.tscn`.
+- This made the scene files malformed and prevented Godot from loading the destination scene. SceneManager's transition error was the symptom, not the cause.
+
+Fixed:
+- Moved the debug HUD external-resource declaration to immediately after the `[gd_scene]` header in all four affected scenes.
+- Kept the DebugCombatHUD instance and all existing scene nodes/resources intact.
+- No Player Affinities or combat affinity settings were changed.
+
+Static verification:
+- Confirmed each corrected scene starts with `[gd_scene]` and declares the DebugCombatHUD resource after the header.
+- Confirmed the debug HUD instance remains present in each scene.
+
+Runtime verification required:
+1. Pull the latest `main`.
+2. Open the project in Godot and confirm no parse errors or missing-resource warnings.
+3. Trigger the transition to `WorldMapWorld.tscn`; confirm the transition completes and the error 19 message is gone.
+4. Confirm F3 opens the debug HUD and the overworld encounters toggle works.
+5. Re-enter the Mira encounter and Havenreach to confirm both scenes load normally.
+6. Confirm no new debugger errors occur.
