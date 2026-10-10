@@ -3687,3 +3687,21 @@ Runtime checklist after pulling `main`:
 5. Confirm idle, walking, and running animations still work and no new debugger errors appear.
 
 Status: committed to GitHub `main`; local Godot runtime verification is pending.
+
+
+### Consistent 2x Zoom Inside All Buildings (2026-10-10)
+
+The developer confirmed that the 2x camera zoom was consistent across the opening field, Mira encounter, and Havenreach exterior, but reset when entering buildings.
+
+Updated all 14 scenes under `scenes/interiors/` so each `InteriorPresentation/Camera2D` uses `zoom = Vector2(2.0, 2.0)`, matching the outdoor gameplay scenes. This includes Havenreach Church, the example Northbridge interiors, and the Tutorial Town example interiors.
+
+- No player sprite, animation, movement, collision, or save-data behavior was changed.
+- This is a scene configuration change; local runtime verification is still required.
+
+Runtime checklist after pulling `main`:
+1. Enter Havenreach Church and confirm the Player stays at 2x zoom.
+2. Enter and exit other buildings/interiors and confirm the same zoom is used on both sides of the transition.
+3. Load a save and confirm the camera zoom remains consistent.
+4. Confirm movement, animations, doors/interactions, and the debugger remain correct.
+
+Status: scene updates committed to GitHub `main`; local runtime verification is pending.
