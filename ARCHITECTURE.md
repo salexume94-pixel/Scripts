@@ -399,3 +399,11 @@ WorldLocationData supports optional entry blocking after a named quest objective
 ## Debug Menu Consolidation Correction
 
 The active development overlay is the existing `ui/debug_combat_hud.gd` / `ui/DebugCombatHUD.tscn`, attached to gameplay scenes and toggled with F3. It retains the Player Affinities display and also exposes the runtime-only overworld encounter toggle. No separate general DebugMenu scene is used.
+
+
+## Dialogue Interaction Lock
+
+- `systems/dialogue_manager.gd` owns the internal dialogue state through `is_active`. This state is gameplay-facing and is not a visible indicator.
+- While `DialogueManager.is_active` is true, `player/interaction_system.gd` reserves E for dialogue only. It must not continue to NPC, Door, Chest, or other world-interactable selection during that input.
+- Single-line dialogue consumes E to dismiss the line. Choice dialogue consumes E to activate the focused option; `ui/dialogue_box.gd` owns focus and delegates the selected choice ID back to DialogueManager.
+- The interaction lock is cleared by DialogueManager when dialogue ends. Avoid adding a second dialogue-active flag to the Player or individual interactables, as duplicate state can drift out of sync.
