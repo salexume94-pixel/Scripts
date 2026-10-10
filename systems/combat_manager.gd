@@ -176,6 +176,24 @@ func _grant_victory_rewards() -> void:
 	)
 
 
+func force_defeat_for_testing() -> bool:
+	# Development-only recovery test hook. This deliberately bypasses normal
+	# damage calculations so the defeat/recovery path can be tested without
+	# waiting for a weak enemy to exhaust the Player's HP.
+	if not is_in_combat() or is_victory() or is_defeat():
+		return false
+
+	var stats := GameState.get_player_stats()
+	if stats.is_empty():
+		return false
+	stats["hp"] = 0
+	GameState.set_player_stats(stats)
+	active_combat.phase = COMBAT_STATE_SCRIPT.Phase.DEFEAT
+	_append_combat_log("DEBUG: Defeat forced for recovery-path testing.")
+	player_defeated.emit()
+	return true
+
+
 func recover_from_defeat() -> bool:
 	# Defeat is a recoverable game state rather than a permanent save reset.
 	# The Player keeps XP and items, loses a small gold penalty, is fully healed,
