@@ -39,6 +39,12 @@ func reset_runtime_state() -> void:
 	player_stats.clear()
 	gold = 0
 	encounter_cooldown_until_msec = 0
+	defeated_moving_enemy_ids.clear()
+	escaped_enemy_id = ""
+	escaped_enemy_position = Vector2.ZERO
+	escape_invulnerable_until_msec = 0
+	paused_enemy_id = ""
+	paused_enemy_until_msec = 0
 	overworld_encounters_enabled = true
 
 
