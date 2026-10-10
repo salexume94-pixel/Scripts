@@ -408,9 +408,8 @@ The active development overlay is the existing `ui/debug_combat_hud.gd` / `ui/De
 - Single-line dialogue consumes E to dismiss the line. Choice dialogue consumes E to activate the focused option; `ui/dialogue_box.gd` owns focus and delegates the selected choice ID back to DialogueManager.
 - The interaction lock is cleared by DialogueManager when dialogue ends. Avoid adding a second dialogue-active flag to the Player or individual interactables, as duplicate state can drift out of sync.
 
-## Temporary Interaction-Lock Test Scene
+## Dialogue Interaction-Lock Verification
 
-- `scenes/InteractionLockTest.tscn` is a temporary manual verification scene, not a production location and not part of the New Game route.
-- It reuses the real Player, NPC, Chest, DialogueBox, world context, and camera presentation. It adds no test-only gameplay scripts and does not alter the main menu or production maps.
-- The Player starts within the 80-pixel interaction range of both the test NPC and test Chest. After starting dialogue, walk toward the Chest until the NPC is out of range but the Chest remains in range. Press E while the dialogue is still active: the line should dismiss and the Chest must remain closed.
-- Once that behavior is confirmed locally, delete this scene and append the result to `DEVELOPMENT_LOG.md`. Do not retain a temporary test scene as permanent game content unless a future test workflow explicitly needs it.
+- The temporary scene `scenes/InteractionLockTest.tscn` was used to verify that pressing E during active dialogue dismisses dialogue without activating a nearby Chest.
+- The user reported that the interaction-lock checklist passed. The temporary scene was then removed from `main`; it is not production content.
+- If this behavior needs retesting later, recreate a temporary isolated test scene rather than adding test-only objects to Havenreach.
