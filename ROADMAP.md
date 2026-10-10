@@ -372,3 +372,19 @@ Documentation ownership is settled:
 - Root `STORY_DIRECTION.md` and `STORY_DESIGN.md`: retained reference documents pending deliberate reconciliation.
 
 Current story implementation work is present in the repository, but local Godot runtime verification remains pending as recorded in the Story Bible and development log. Do not treat the repository audit as evidence that the new opening has passed runtime testing. The next audit completion gate is a current-tree static reference check, followed by local Godot import/parser and story-route testing.
+
+
+## Moving NPC Foundation (in progress)
+
+Implementation order:
+
+1. Inspect Player movement, collision layers, world boundaries, interaction targets, and CombatManager encounter interfaces.
+2. Add shared `world/moving_npc.gd` with Enemy, NPC, and Ally identity values.
+3. Add isolated `scenes/MovingNPCTest.tscn`.
+4. Verify civilian wandering and Player avoidance; improve steering until it reliably handles buildings, doors, chests, and boundaries.
+5. Verify Enemy pursuit and contact-triggered encounters, including protected-town exclusion.
+6. Confirm existing combat, Player movement, and world interactions remain intact.
+7. Append actual implementation and runtime results to `DEVELOPMENT_LOG.md`; do not rewrite earlier history.
+8. Pull `main` and run the dedicated Godot checklist locally.
+
+Current status: initial code and test scene are on `feature/moving-npc-foundation`. Static review only. Do not merge to `main` or call this runtime-verified until the test scene has been run and the protected-town/pathfinding gaps are closed.
