@@ -26,6 +26,14 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if encounter_started or player == null:
 		return
+
+	# A debug-menu toggle can suspend random encounters without changing the
+	# configured enemy, probability, or distance threshold. Reset tracking while
+	# disabled so re-enabling encounters never triggers an immediate stale roll.
+	if not GameState.overworld_encounters_enabled:
+		last_player_position = player.global_position
+		distance_since_check = 0.0
+		return
 	if GameState.is_encounter_cooldown_active():
 		# Ignore movement while the post-combat cooldown is active. This prevents
 		# Run from immediately producing another encounter.
