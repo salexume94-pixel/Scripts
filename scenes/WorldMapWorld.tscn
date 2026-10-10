@@ -1,3 +1,4 @@
+[ext_resource type="PackedScene" path="res://ui/DebugMenu.tscn" id="12_debug_menu"]
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://world/world_map_world.gd" id="1_world_map"]
@@ -131,3 +132,5 @@ encounter_chance = 0.5
 [node name="QuestLog" parent="." instance=ExtResource("10_quest_log")]
 
 [node name="WorldMap" parent="." instance=ExtResource("5_map")]
+
+[node name="DebugMenu" parent="." instance=ExtResource("12_debug_menu")]
