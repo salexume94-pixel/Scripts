@@ -66,7 +66,7 @@ func _create_location_entry_regions() -> void:
 		var area := Area2D.new()
 		area.name = "LocationEntry_%s" % String(location.get("location_id"))
 		area.collision_layer = 0
-		area.collision_mask = 1
+		area.collision_mask = 2
 		area.position = world_position_variant
 		add_child(area)
 
