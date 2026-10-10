@@ -13,10 +13,6 @@ var action_resolving := false
 func _on_combat_log_updated() -> void:
 	_update_combat_log_display()
 
-func _on_cycle_weakness_pressed() -> void:
-	if CombatManager.cycle_player_weakness():
-		_update_player_weakness_display()
-		_update_combat_log_display()
 
 func _ready() -> void:
 	CombatManager.player_attack_performed.connect(_on_player_attack_performed)
@@ -29,7 +25,6 @@ func _ready() -> void:
 	_update_player_hp_display()
 	_update_press_turn_display()
 	_update_combat_controls()
-	_update_player_weakness_display()
 	_update_combat_log_display()
 	_focus_initial_combat_action()
 
@@ -152,11 +147,6 @@ func _on_enemy_attack_performed(damage: int) -> void:
 	_update_press_turn_display()
 	_update_combat_controls()
 
-func _update_player_weakness_display() -> void:
-	var label := get_node_or_null("CenterContainer/Panel/VBoxContainer/PlayerWeaknessLabel")
-	if label == null:
-		return
-	label.text = "Player Weakness: %s" % CombatManager.get_player_weakness_debug()
 
 func _update_combat_log_display() -> void:
 	var scroll := get_node_or_null("CenterContainer/Panel/VBoxContainer/CombatLogScroll") as ScrollContainer
