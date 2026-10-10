@@ -441,3 +441,7 @@ Static repository inspection and local Godot runtime verification are separate g
 - Ally is an identity placeholder only. Do not add party-following or combat participation until the companion combat design is approved.
 - `scenes/MovingNPCTest.tscn` is isolated development content. Keep test actors and obstacles out of Havenreach and production world scenes.
 - Steering probes are a lightweight initial obstacle-avoidance foundation, not full pathfinding. Protected-town exclusion and robust multi-obstacle navigation remain acceptance gates before this system is production-ready.
+
+## Dedicated Test Scene Policy
+
+All future isolated gameplay tests and debugging work should use `scenes/MovingNPCTest.tscn` as the shared `test_scene` / debugging area unless a test explicitly requires a separate scene for technical reasons. Keep the Player instance in this scene. The test scene owns its test-only camera, attached to the Player so the view remains centered on the Player during movement. Do not remove or replace the Player when adding new test fixtures; add temporary test actors and obstacles around it instead.
