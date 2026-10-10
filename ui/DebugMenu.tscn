@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/debug_menu.gd" id="1_debug_menu"]
+
+[node name="DebugMenu" type="CanvasLayer"]
+layer = 40
+script = ExtResource("1_debug_menu")
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 350.0
+offset_bottom = 190.0
+visible = false
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "DEBUG MENU"
+horizontal_alignment = 1
+
+[node name="EncountersToggle" type="CheckBox" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Overworld encounters enabled"
+
+[node name="Help" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "F3: Toggle menu"
+horizontal_alignment = 1
