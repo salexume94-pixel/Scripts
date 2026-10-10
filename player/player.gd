@@ -19,47 +19,47 @@ extends CharacterBody2D
 @onready var interaction_system: Node = $InteractionSystem
 
 func _ready() -> void:
-    # Enforce the dedicated Player layer at runtime as well as in Player.tscn.
-    # This protects scene instances from accidental Inspector overrides and
-    # keeps Area2D sensors and one-way NPC collision using the same layer setup.
-    collision_layer = 2
-    collision_mask = 5
+	# Enforce the dedicated Player layer at runtime as well as in Player.tscn.
+	# This protects scene instances from accidental Inspector overrides and
+	# keeps Area2D sensors and one-way NPC collision using the same layer setup.
+	collision_layer = 2
+	collision_mask = 5
 
-    # Register the Player with a shared group so world-level systems can find
-    # the active Player without depending on a hard-coded scene path.
-    add_to_group("player")
+	# Register the Player with a shared group so world-level systems can find
+	# the active Player without depending on a hard-coded scene path.
+	add_to_group("player")
 
 
 func _input(event: InputEvent) -> void:
-    # Receive the physical E key at the Player root. Keeping the input entry
-    # point on the Player avoids relying on a child Node to receive the event
-    # while still allowing InteractionSystem to own the actual interaction
-    # logic.
-    if not event is InputEventKey:
-        return
+	# Receive the physical E key at the Player root. Keeping the input entry
+	# point on the Player avoids relying on a child Node to receive the event
+	# while still allowing InteractionSystem to own the actual interaction
+	# logic.
+	if not event is InputEventKey:
+		return
 
-    var key_event := event as InputEventKey
+	var key_event := event as InputEventKey
 
-    # Ignore key-repeat events so holding E cannot repeatedly interact with
-    # the same NPC, Chest, or Door.
-    if not key_event.pressed or key_event.echo:
-        return
+	# Ignore key-repeat events so holding E cannot repeatedly interact with
+	# the same NPC, Chest, or Door.
+	if not key_event.pressed or key_event.echo:
+		return
 
-    # The Inventory/Character screen is a Player-level gameplay shortcut,
-    # so it must be handled before interaction input. The HUD exists in each
-    # gameplay scene and exposes the same public toggle method everywhere.
-    if key_event.physical_keycode == KEY_I or key_event.keycode == KEY_I:
-        var inventory_hud := get_tree().current_scene.get_node_or_null("InventoryCharacterHUD")
-        if inventory_hud != null and inventory_hud.has_method("toggle_screen"):
-            inventory_hud.toggle_screen()
-        return
+	# The Inventory/Character screen is a Player-level gameplay shortcut,
+	# so it must be handled before interaction input. The HUD exists in each
+	# gameplay scene and exposes the same public toggle method everywhere.
+	if key_event.physical_keycode == KEY_I or key_event.keycode == KEY_I:
+		var inventory_hud := get_tree().current_scene.get_node_or_null("InventoryCharacterHUD")
+		if inventory_hud != null and inventory_hud.has_method("toggle_screen"):
+			inventory_hud.toggle_screen()
+		return
 
-    # Accept both physical and logical E key codes for keyboard-layout
-    # compatibility.
-    if key_event.physical_keycode != KEY_E and key_event.keycode != KEY_E:
-        return
+	# Accept both physical and logical E key codes for keyboard-layout
+	# compatibility.
+	if key_event.physical_keycode != KEY_E and key_event.keycode != KEY_E:
+		return
 
-    # InteractionSystem handles dialogue dismissal, nearest-target selection,
-    # and the target's actual interact() call.
-    if interaction_system != null and interaction_system.has_method("handle_interaction_input"):
-        interaction_system.handle_interaction_input()
+	# InteractionSystem handles dialogue dismissal, nearest-target selection,
+	# and the target's actual interact() call.
+	if interaction_system != null and interaction_system.has_method("handle_interaction_input"):
+		interaction_system.handle_interaction_input()
