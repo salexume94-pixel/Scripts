@@ -1,4 +1,4 @@
-[ext_resource type="PackedScene" path="res://ui/DebugMenu.tscn" id="24_debug_menu"]
+[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="25_debug_hud"]
 [gd_scene format=3 uid="uid://bryx83e7q5338"]
 
 [ext_resource type="PackedScene" uid="uid://derkldmdura1b" path="res://player/Player.tscn" id="1_player"]
@@ -206,4 +206,4 @@ script = ExtResource("2_world_presentation")
 
 [node name="WorldMap" parent="." instance=ExtResource("20_world_map")]
 
-[node name="DebugMenu" parent="." instance=ExtResource("24_debug_menu")]
+[node name="DebugCombatHUD" parent="." instance=ExtResource("25_debug_hud")]
