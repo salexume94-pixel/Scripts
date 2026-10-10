@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://player/player_currency.gd" id="9_currency"]
 [ext_resource type="Script" path="res://player/interaction_system.gd" id="8_interaction"]
 [ext_resource type="Script" path="res://player/player_skills.gd" id="10_skills"]
+[ext_resource type="Script" path="res://player/player_animation_controller.gd" id="11_animation_controller"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5hmnj"]
 radius = 16.0
@@ -26,8 +27,12 @@ script = ExtResource("1_p0vlq")
 [node name="PlayerMovement" type="Node" parent="." unique_id=557976840]
 script = ExtResource("2_v6fml")
 
-[node name="PlayerSprite" type="Polygon2D" parent="." unique_id=1969911015]
-polygon = PackedVector2Array(0, -20, 17, -10, 17, 10, 0, 20, -17, 10, -17, -10)
+[node name="PlayerSprite" type="AnimatedSprite2D" parent="." unique_id=1969911015]
+centered = true
+texture_filter = 1
+
+[node name="PlayerAnimationController" type="Node" parent="."]
+script = ExtResource("11_animation_controller")
 
 [node name="PlayerCollision" type="CollisionShape2D" parent="." unique_id=134236741]
 shape = SubResource("CircleShape2D_5hmnj")
