@@ -388,3 +388,7 @@ Implementation order:
 8. Pull `main` and run the dedicated Godot checklist locally.
 
 Current status: initial code and test scene are on `feature/moving-npc-foundation`. Static review only. Do not merge to `main` or call this runtime-verified until the test scene has been run and the protected-town/pathfinding gaps are closed.
+
+## Test Scene and Debugging Rule
+
+Use `scenes/MovingNPCTest.tscn` as the shared test scene / debugging area for future test work. Keep the Player present and keep its Camera2D attached to the Player so the view stays centered during movement. Add new test actors, obstacles, chests, doors, and other fixtures to this scene instead of creating a separate test scene for each feature, unless isolation is technically necessary.
