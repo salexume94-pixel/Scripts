@@ -3318,3 +3318,22 @@ Runtime test after `git pull origin main`:
 Cleanup policy: this scene is temporary. Once the dialogue-lock behavior passes local runtime verification, delete `scenes/InteractionLockTest.tscn` and append the verified result and cleanup commit here. Do not delete it before the user reports the test passed.
 
 Runtime status: scene added to GitHub `main`; static scene review only. Local Godot runtime verification is pending.
+
+### Dialogue Interaction-Lock Test Passed and Temporary Scene Removed (2026-10-10)
+
+User reported that the dedicated dialogue interaction-lock checklist passed.
+
+Verified by user in local Godot runtime:
+- Dialogue opens when interacting with the Test NPC.
+- With dialogue active, the Player can move into Chest range while moving out of NPC range.
+- Pressing E dismisses the active dialogue and does not activate the Chest.
+- A subsequent E press, after dialogue has closed, activates the Chest and grants its Potion reward.
+- No new parser errors, missing resources, or debugger errors were reported as part of the passed checklist.
+
+Cleanup:
+- Deleted `scenes/InteractionLockTest.tscn` from GitHub `main` after the user reported the test passed.
+- Updated `ARCHITECTURE.md` to record the verification and make clear the test scene is not production content.
+- No test NPC or Chest was added to Havenreach.
+- Existing development-log history was preserved; this entry is appended.
+
+The dialogue interaction-lock checklist is now complete.
