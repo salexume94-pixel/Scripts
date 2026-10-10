@@ -94,7 +94,7 @@ polygon = PackedVector2Array(-1200, -24, -970, -24, -915, -5, -875, 18, -820, 25
 color = Color(0.36, 0.28, 0.18, 1)
 
 [node name="ForestPathLabel" type="Label" parent="WorldMapContent"]
-position = Vector2(-825, -340)
+position = Vector2(-825, -300)
 text = "FOREST PATH"
 
 [node name="EastRoad" type="Polygon2D" parent="WorldMapContent"]
