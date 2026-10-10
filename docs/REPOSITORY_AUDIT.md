@@ -271,3 +271,48 @@ No existing file is moved, deleted, or overwritten by this organization plan. Th
 - The four test-named Slime AI Resource files are retained but excluded from normal EnemyDatabase lookup and enumeration. A dedicated debug catalog can be introduced if later test workflows need those profiles.
 - The developer confirmed that current quest-specific save/load behavior works. The previous pending-verification finding was stale and has been corrected. This confirmation does not claim that future, not-yet-implemented story quest behavior has been tested.
 - Remaining quest-system gaps are distinct turn-ins and conditional dialogue; these are now explicit roadmap items to be designed against the first approved quest rather than implemented speculatively.
+
+
+## Current Tree Refresh (2026-10-10)
+
+This addendum updates the inventory baseline without rewriting the historical findings above.
+
+### Current repository inventory
+
+The current `main` tree contains 201 tracked files. Counts by relevant type are:
+
+| Type | Current count |
+|---|---:|
+| GDScript (`.gd`) | 67 |
+| Scenes (`.tscn`) | 35 |
+| Godot resources (`.tres`) | 70 |
+| Markdown (`.md`) | 10 |
+| UID sidecars (`.uid`) | 10 |
+| Audio (`.mp3`) | 3 |
+| SVG (`.svg`) | 1 |
+| Godot import metadata (`.import`) | 1 |
+| Godot project file (`project.godot`) | 1 |
+| Other configuration files (`.editorconfig`, `.gitattributes`, `.gitignore`) | 3 |
+
+The project remains configured for Godot 4.7, GL Compatibility, `ui/MainMenu.tscn` as the main scene, and a 1152×648 viewport. `project.godot` registers SceneManager, PartyManager, GameState, SaveManager, CombatManager, RewardManager, QuestManager, MenuManager, DialogueManager, MapManager, OptionsManager, and AudioManager as autoloads.
+
+### Current scope changes since the earlier inventory
+
+The earlier inventory covered 63 scripts, 30 scenes, and 61 resources. The current tree adds/contains further story/world content and presentation/debug work, including `scenes/WakingArea.tscn`, `scenes/MiraEncounterArea.tscn`, `scenes/Havenreach.tscn`, `scenes/WorldMapWorld.tscn`, and the `ui/OptionsMenu.tscn` / `ui/DebugCombatHUD.tscn` family. The earlier counts and path-check result must therefore be read as a result for the earlier reviewed tree, not silently generalized to all files added afterward.
+
+### Current concrete findings
+
+1. **Documentation ownership is now implemented, not merely proposed.** `docs/README.md`, `docs/world/WORLD_BIBLE.md`, and `docs/story/STORY_BIBLE.md` exist. This supersedes the older A-08 wording that there was no canonical World Bible or Story Bible. Keep the root `STORY_DIRECTION.md` and `STORY_DESIGN.md` as historical/reference documents until their overlaps are reconciled; do not move or delete them as part of this audit.
+2. **The opening-direction conflict has a current decision.** The Story Bible and current implementation documentation identify *The Stranger* (waking in a field, meeting Mira, reaching Havenreach) as the working opening. `STORY_DIRECTION.md` retains the older MMO-login/tutorial-town proposal as reference material. Do not treat these as two simultaneous openings.
+3. **The active implementation is newer than the earlier audit.** `scenes/WakingArea.tscn`, `scenes/MiraEncounterArea.tscn`, and `scenes/Havenreach.tscn`, MAIN_001 quest content, dialogue choices, PartyManager roster persistence, and Havenreach's church save point are documented as implemented, but local Godot runtime verification for this content is still pending in the current log/Story Bible. Repository presence is not runtime proof.
+4. **The audit inventory itself must remain scoped and honest.** The earlier no-missing-target result was produced for the earlier 63/30/61 inventory. Because the current tree has 67/35/70, do not report a complete current-tree reference pass until every current scene/resource external path and explicit script `preload()`/`load()` target has been checked against the current tree. This addendum does not claim that broader recheck passed.
+5. **Architecture documentation contains a stale debug-menu statement.** `ARCHITECTURE.md` has an earlier section naming `ui/debug_menu.gd` and `ui/DebugMenu.tscn`, followed by a correction saying the active F3 overlay is `ui/debug_combat_hud.gd` / `ui/DebugCombatHUD.tscn` and no separate DebugMenu is used. The earlier section is historical contradiction, not current architecture; a later correction should make the active ownership unambiguous without deleting the history.
+6. **No folder move or broad cleanup is justified by inventory alone.** `scenes/` owns complete gameplay/location scenes, `world/` owns reusable world-object scenes and behavior/data, and each system keeps its definitions in its owning `definitions/` folder. Keep those boundaries unless a concrete ownership conflict is demonstrated.
+
+### Verification status
+
+- **Verified from current GitHub tree:** tracked-file inventory and extension counts above; current project configuration and autoload paths from `project.godot`; existence of the documentation files listed above.
+- **Prior static result, earlier tree only:** no missing targets were found in the earlier 63-script/30-scene/61-resource check.
+- **Not established by this refresh:** full static reference validation across all 67 current scripts, 35 scenes, and 70 resources; Godot import/parser validation; UID resolution; or local runtime testing of the new story opening.
+
+Do not mark this audit fully reference-clean for the current tree until the remaining static reference pass has actually been run. Append new results here or in a dated follow-up section rather than erasing the earlier findings.
