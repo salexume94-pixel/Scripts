@@ -1,3 +1,4 @@
+[ext_resource type="PackedScene" path="res://ui/DebugMenu.tscn" id="12_debug_menu"]
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
@@ -126,3 +127,5 @@ position = Vector2(0, 300)
 [node name="DialogueBox" parent="." instance=ExtResource("9_dialogue")]
 
 [node name="WorldMap" parent="." instance=ExtResource("10_map")]
+
+[node name="DebugMenu" parent="." instance=ExtResource("12_debug_menu")]
