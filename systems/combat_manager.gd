@@ -32,6 +32,10 @@ signal combat_log_updated
 var return_scene_path: String = ""
 var return_player_position: Vector2 = Vector2.ZERO
 
+## Stable world-actor identity and position let moving enemies survive scene replacement.
+var active_source_actor_id: String = ""
+var active_source_actor_position: Vector2 = Vector2.ZERO
+
 signal player_attack_performed(attack_value: int)
 signal player_press_turns_changed(remaining: float)
 signal enemy_turn_started
@@ -227,18 +231,33 @@ func end_combat() -> void:
 		return
 	var destination := return_scene_path
 	var destination_position := return_player_position
-	# Give the Player a short post-combat grace period before overworld
-	# encounter checks resume. The cooldown lives in GameState because the World
-	# encounter system is recreated during the scene transition.
+	var victory := is_victory()
+
+	# A moving enemy is permanently removed from the current runtime world only
+	# after victory. Running from battle preserves that actor and its position.
+	if victory and not active_source_actor_id.is_empty():
+		GameState.mark_moving_enemy_defeated(active_source_actor_id)
+	elif not is_defeat() and not active_source_actor_id.is_empty():
+		# Allow the Player to escape contact re-engagement and give the specific
+		# enemy a one-second pause after the world scene is restored.
+		GameState.set_escape_return_state(active_source_actor_id, active_source_actor_position, 2.5)
+
+	# Keep the existing general encounter cooldown for random overworld encounters.
 	GameState.set_encounter_cooldown(3.0)
 	active_combat = null
+	active_source_actor_id = ""
+	active_source_actor_position = Vector2.ZERO
 	combat_log.clear()
 	last_enemy_ai_debug.clear()
 	if not destination.is_empty():
 		SceneManager.change_scene(destination, destination_position)
 
-func start_encounter(enemy_id: String) -> bool:
-	# Start one encounter and record the Player return location.
+func start_encounter(
+	enemy_id: String,
+	source_actor_id: String = "",
+	source_actor_position: Vector2 = Vector2.ZERO
+) -> bool:
+	# Start one encounter and record the Player return location and optional moving-enemy source.
 	if enemy_id.is_empty() or is_in_combat():
 		return false
 
@@ -255,6 +274,8 @@ func start_encounter(enemy_id: String) -> bool:
 		return false
 	return_scene_path = current_scene.scene_file_path
 	return_player_position = player.global_position
+	active_source_actor_id = source_actor_id
+	active_source_actor_position = source_actor_position
 
 	# Copy the enemy definition into the active encounter state. The Resource is
 	# the source of truth for base values; CombatState owns only this encounter's
