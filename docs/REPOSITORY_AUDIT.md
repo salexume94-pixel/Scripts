@@ -639,6 +639,18 @@ The following inventory supersedes the older count table above for this snapshot
 All 36 tracked `.tscn` files were inventoried, and declared external script resources were reviewed against scene-level `script = ExtResource(...)` assignments. The Player scene's `PlayerSkills` attachment is the concrete placeholder finding above. Reusable interior scenes consistently attach the shared interior and presentation scripts; the 14 interior scenes declare `zoom = Vector2(2.0, 2.0)`. This is static scene-file inspection, not proof that every scene deserializes in Godot.
 
 
-### Reference-check execution note (2026-10-10)
+### Reference-check execution note (2026-10-10, superseded by local verification)
 
-The literal-reference checker was not executable against this exact GitHub snapshot from the current environment because a local checkout could not be obtained. Therefore the clean static-reference result recorded in the earlier audit applies only to its stated reviewed commit, not automatically to this newer snapshot. The current scene/resource inventory and scene script-attachment review were performed from the GitHub tree and file contents, but a fresh full-project run of `python tools/audit_res_refs.py` remains required after pulling `main`. This distinction is intentional: a historical checker result must not be presented as a new verification.
+The local checkout subsequently ran `python tools/audit_res_refs.py` successfully after pulling the documentation updates. Results: 390 files scanned, 1,094 literal `res://` references checked, 2 dynamic path templates skipped, 0 missing targets, and 0 unreadable files. This supersedes the earlier note that a fresh local run was still required. The checker still does not validate dynamic path results, UID resolution, Godot parsing/imports, or runtime behavior by itself.
+
+### Godot Import, Scene, and Runtime Verification (2026-10-10)
+
+The developer reports that all remaining verification checks passed in the local Godot 4.7.2 editor and runtime after the reference audit:
+
+- Project opened and resource imports completed without new errors.
+- Main project scene loaded; the game launched to the main menu.
+- Scene script attachments, UID references, and the two previously skipped dynamic path templates were checked.
+- Startup/navigation, movement and animation, world transitions and interactions, save/load and `MAIN_001` state, combat, and moving-NPC regression checks passed.
+- No new Godot debugger errors appeared during the checks.
+
+This is developer-reported local verification, not a result produced by the static reference checker. No gameplay code changes were needed for this verification pass. The audit's structural cautions remain: `PlayerSkills` is still a placeholder, `GameManager` remains a cleanup candidate, and legacy story documents still need reconciliation.
