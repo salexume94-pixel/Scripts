@@ -66,7 +66,8 @@ func _create_boundary_trigger(
 	var area := Area2D.new()
 	area.name = trigger_name
 	area.collision_layer = 0
-	area.collision_mask = 2
+	area.collision_mask = 3
+	area.monitoring = true
 	area.position = trigger_position
 	add_child(area)
 
