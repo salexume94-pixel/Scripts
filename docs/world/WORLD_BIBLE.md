@@ -70,3 +70,8 @@ This addendum records current world-layout decisions. It supersedes the unresolv
 ### Confirmed Havenreach save point correction (2026-10-09)
 
 The first playable Havenreach implementation includes a church interior with a Churchkeeper NPC as the in-world save point, following the established save interaction pattern. This supersedes the earlier statement that Havenreach's church/temple presence was entirely unspecified. Other institutional roles and broader lore remain open for deliberate design.
+
+
+### Mira's Woodland Approach (2026-10-09)
+
+The overworld approach to mira_encounter_area is now marked by a visible patch of dense woodland, a clearing path, and a "FOREST PATH" label. The encounter scene itself is a wooded clearing with a winding path leading toward Mira. This visual landmark is meant to make the hidden one-time encounter entrance discoverable without adding a visible map marker or changing quest-state ownership.
