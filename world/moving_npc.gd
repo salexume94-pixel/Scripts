@@ -204,7 +204,15 @@ func _choose_movement_intent() -> void:
 			var away := (global_position - player.global_position).normalized()
 			if away.is_zero_approx():
 				away = Vector2.RIGHT.rotated(randf_range(-PI, PI))
-			movement_target = global_position + away * wander_radius
+			var retreat_target := global_position + away * wander_radius
+			if identity == Identity.ALLY:
+				# Keep the retreat destination inside the Ally's home radius even
+				# when the Player approaches from the far edge of that radius.
+				var home_offset := retreat_target - home_position
+				var home_limit := wander_radius * 0.75
+				if home_offset.length() > home_limit:
+					retreat_target = home_position + home_offset.normalized() * home_limit
+			movement_target = retreat_target
 			return
 
 	# Pick a point inside a circular home area. This prevents Allies from gradually
