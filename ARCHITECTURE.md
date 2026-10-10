@@ -413,3 +413,21 @@ The active development overlay is the existing `ui/debug_combat_hud.gd` / `ui/De
 - The temporary scene `scenes/InteractionLockTest.tscn` was used to verify that pressing E during active dialogue dismisses dialogue without activating a nearby Chest.
 - The user reported that the interaction-lock checklist passed. The temporary scene was then removed from `main`; it is not production content.
 - If this behavior needs retesting later, recreate a temporary isolated test scene rather than adding test-only objects to Havenreach.
+
+
+## Documentation and Runtime Ownership Correction (2026-10-10)
+
+The documentation source of truth is indexed in `docs/README.md`:
+
+- `ARCHITECTURE.md` defines technical ownership and system boundaries.
+- `ROADMAP.md` defines priorities and planned work.
+- `DEVELOPMENT_LOG.md` is the chronological implementation and verification record. Append entries; never replace earlier history.
+- `docs/world/WORLD_BIBLE.md` owns stable setting facts.
+- `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation order.
+- `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain reference material until explicitly reconciled; they are not co-equal instructions to merge contradictory openings.
+
+Correction to the earlier Runtime Debug Menu section: the active F3 overlay is `ui/debug_combat_hud.gd` with `ui/DebugCombatHUD.tscn`, which also exposes the runtime-only overworld encounter toggle and Player Affinities diagnostic display. There is no separate active `ui/debug_menu.gd` / `ui/DebugMenu.tscn` system in the current repository tree. Treat the earlier naming as stale documentation, not a requirement to recreate a second debug menu.
+
+The current *The Stranger* route uses `scenes/WakingArea.tscn`, `scenes/MiraEncounterArea.tscn`, and `scenes/Havenreach.tscn`. Tutorial Town and Northbridge Village files remain example/reference content and should not be deleted or reactivated as part of routine architecture cleanup.
+
+Static repository inspection and local Godot runtime verification are separate gates. Do not describe current story scenes, dialogue choices, transitions, party persistence, or save/load behavior as runtime-verified unless the developer has tested those exact behaviors after pulling the corresponding changes.
