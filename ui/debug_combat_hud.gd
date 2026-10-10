@@ -30,8 +30,10 @@ func _ready() -> void:
 
 func _on_encounters_toggled(enabled: bool) -> void:
 	# WorldEncounterSystem reads this shared setting before processing random
-	# encounters. Player affinity configuration remains unchanged by this control.
+	# encounters. Update the shared state immediately so the setting survives
+	# scene changes, including the route where Mira joins the party.
 	GameState.overworld_encounters_enabled = enabled
+	encounters_toggle.button_pressed = GameState.overworld_encounters_enabled
 
 func _unhandled_input(event: InputEvent) -> void:
 	# F3 provides a simple development-only toggle without adding a gameplay control.
@@ -42,6 +44,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_refresh()
 
 func _process(_delta: float) -> void:
+	# Keep the checkbox display synchronized with the shared runtime setting.
+	# This matters because each scene creates a fresh copy of the debug HUD.
+	if encounters_toggle.button_pressed != GameState.overworld_encounters_enabled:
+		encounters_toggle.set_pressed_no_signal(GameState.overworld_encounters_enabled)
+
 	# Keep the diagnostic values current while an encounter is running.
 	if panel.visible:
 		_refresh()
