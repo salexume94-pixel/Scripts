@@ -3578,3 +3578,36 @@ Runtime verification required:
 6. Confirm collision, interaction, menus, dialogue, transitions, and the debugger remain correct.
 
 Status: source change committed; local runtime verification is pending.
+
+
+### Player Sprite Animation Integration
+
+Integrated the uploaded player sprite frames into the existing Player scene and movement flow.
+
+Updated:
+- `player/Player.tscn`
+- `player/player_movement.gd`
+- `player/player_animation_controller.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Replaced the temporary polygon placeholder with an AnimatedSprite2D.
+- Added a dedicated PlayerAnimationController that loads the eight PNG frames for each of the eight directions across idle breathing, walking, and running.
+- Added 24 directional animations using the existing asset folders under `assets/player_animations/Player/Player_Sprites/animations/`.
+- Idle plays at 4 FPS, walking at 10 FPS, and running at 12 FPS.
+- Directional facing is retained when movement stops, so idle uses the last direction faced.
+- Arrow keys remain the only movement controls; holding Shift selects running, and releasing Shift returns to walking.
+- Dialogue locks and scene transitions stop movement and switch the visual to idle.
+- Sprite filtering is set to nearest-neighbor for crisp pixel art.
+- Movement speed, collision settings, player systems, and interaction handling were otherwise left unchanged.
+
+Runtime verification required:
+1. Pull `origin main` and open the project in Godot 4.7.
+2. Confirm the Player scene opens without missing-resource or parse errors.
+3. Stand still and confirm the south-facing idle breathing animation plays.
+4. Test each arrow direction and all four diagonal directions; confirm walking frames and facing direction match input.
+5. Hold Shift while moving and confirm running frames play; release Shift and confirm walking resumes immediately.
+6. Stop after moving in each direction and confirm the idle animation retains the last facing direction.
+7. Open dialogue or a menu and confirm the Player stops and idles.
+8. Confirm WASD does not move the Player and no new debugger errors appear.
+
