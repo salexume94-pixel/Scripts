@@ -445,3 +445,10 @@ Static repository inspection and local Godot runtime verification are separate g
 ## Dedicated Test Scene Policy
 
 All future isolated gameplay tests and debugging work should use `scenes/MovingNPCTest.tscn` as the shared `test_scene` / debugging area unless a test explicitly requires a separate scene for technical reasons. Keep the Player instance in this scene. The test scene owns its test-only camera, attached to the Player so the view remains centered on the Player during movement. Do not remove or replace the Player when adding new test fixtures; add temporary test actors and obstacles around it instead.
+
+
+## Ally Presence and Town Encounters
+
+Moving Allies use a non-blocking proximity sensor separate from their physical body collision. The shared `world/moving_npc.gd` actor emits `ally_player_entered` and `ally_player_exited` signals when the Player enters or leaves the Ally's detection radius. The sensor does not start dialogue, recruit the Ally, change relationship values, or start combat by itself.
+
+Town-specific Ally appearances should be authored as deliberate story/location content. An Ally may be placed at a particular town location for a visit or story condition, then use the sensor to notify the story/interaction layer when the Player approaches. A future Ally Presence / Private Actions system should own appearance conditions and visit state; it should query existing location and quest data instead of embedding town schedules or story progression in the moving actor. This is inspired by optional party-member town interactions in *Star Ocean*, without copying its specific characters or story content.
