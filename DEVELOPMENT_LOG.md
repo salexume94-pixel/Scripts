@@ -3431,3 +3431,10 @@ Verification boundary:
 - Static source/scene review only. The user has not yet reported pulling this branch or running the test scene in Godot.
 - Basic raycast steering is not robust pathfinding. Protected-town exclusion and dependable navigation around multiple obstacles remain unfinished acceptance requirements.
 - No claim is made that this feature currently passes runtime, parser, collision, encounter, or regression tests.
+
+### Moving NPC Test Camera and Shared Debugging Area (2026-10-10)
+
+- Corrected the dedicated moving-NPC test scene camera by adding a Camera2D under the Player instance, keeping the view centered on the Player while the Player moves.
+- Confirmed the test scene retains its Player instance; future test fixtures should be added around that Player rather than replacing it or creating a separate test scene for each feature.
+- Documented `scenes/MovingNPCTest.tscn` as the shared test scene / debugging area in architecture and roadmap documentation.
+- Static repository edit only. Godot runtime verification is still required after pulling `main`.
