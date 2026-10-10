@@ -1,38 +1,35 @@
 extends Node
-## Handles player movement.
+## Handles player movement and forwards movement state to the visual animation controller.
 ##
-## This script is responsible only for movement and movement input.
-## It reads the player's movement inputs, calculates the movement direction,
-## applies the movement speed, and then moves the CharacterBody2D.
+## Movement remains separate from rendering: this script reads arrow-key input,
+## calculates velocity, and asks PlayerAnimationController to show the matching
+## idle, walking, or running animation.
 
 # Normal walking speed measured in pixels per second.
-# This can be changed in the Godot Inspector.
 @export var move_speed: float = 225.0
 
 # Holding Shift multiplies walking speed. Shift is the only run control.
 @export var run_speed_multiplier: float = 1.6
 
 # Reference to the CharacterBody2D that owns this movement component.
-# The actual movement is performed on this player node.
 var player: CharacterBody2D
 
-# Movement can be temporarily disabled by game UI such as the Character
-# screen. Keeping this state here means the movement system remains the owner
-# of whether movement input is currently allowed.
+# The animation controller is responsible for directional sprite frames.
+var animation_controller: Node
+
+# Movement can be temporarily disabled by game UI such as the Character screen.
 var movement_enabled: bool = true
 
-# Named locks allow multiple systems to stop movement independently. For
-# example, closing dialogue removes only the dialogue lock, not a menu lock.
+# Named locks allow multiple systems to stop movement independently.
 var movement_locks: Dictionary = {}
 
 
 func _ready() -> void:
-	# The movement script is expected to be a child of the player's
-	# CharacterBody2D, so get_parent() gives us the player node.
+	# The movement script is expected to be a child of the Player CharacterBody2D.
 	player = get_parent() as CharacterBody2D
+	animation_controller = player.get_node_or_null("PlayerAnimationController")
 
-	# DialogueManager owns the conversation state. Connecting here lets every
-	# Player instance stop while any shared NPC dialogue is open.
+	# DialogueManager owns conversation state. Dialogue locks movement while open.
 	DialogueManager.dialogue_started.connect(_on_dialogue_started)
 	DialogueManager.dialogue_cleared.connect(_on_dialogue_cleared)
 
@@ -42,25 +39,20 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	# Guard the Player reference first, then stop movement whenever a transition,
-	# menu, or gameplay movement lock says input must be ignored.
+	# Stop both movement and movement animations during transitions, menus, or locks.
 	if player == null:
 		return
 
-	# SceneManager sets transition_in_progress as soon as a scene change is
-	# requested, before the fade begins. Checking this shared flag stops the
-	# outgoing Player immediately and also keeps a newly created Player still
-	# until the transition overlay has completely faded away.
 	if (
 		SceneManager.transition_in_progress
 		or not movement_enabled
 		or not movement_locks.is_empty()
 	):
 		player.velocity = Vector2.ZERO
+		_update_animation(Vector2.ZERO, false)
 		return
 
-	# Use the four arrow keys directly so WASD is never treated as movement
-	# input, even if someone later changes the project's UI input bindings.
+	# Read only the four arrow keys. WASD is intentionally not used for movement.
 	# Normalizing the vector prevents diagonal movement from being faster.
 	var direction := Vector2(
 		float(Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_LEFT)),
@@ -68,30 +60,38 @@ func _physics_process(_delta: float) -> void:
 	).normalized()
 
 	# Shift is the only run control. Releasing it immediately restores walking speed.
+	var is_running := direction != Vector2.ZERO and Input.is_key_pressed(KEY_SHIFT)
 	var current_speed := move_speed
-	if Input.is_key_pressed(KEY_SHIFT):
+	if is_running:
 		current_speed *= run_speed_multiplier
 
-	# Convert direction into velocity, then let CharacterBody2D handle movement
-	# and collision sliding as before.
+	# Update the animation from actual input state, preserving the last facing
+	# direction whenever the Player stops moving.
+	_update_animation(direction, is_running)
+
+	# Convert direction into velocity and let CharacterBody2D handle collisions.
 	player.velocity = direction * current_speed
 	player.move_and_slide()
 
 
+func _update_animation(direction: Vector2, is_running: bool) -> void:
+	# Keep movement independent from sprite implementation so animation changes
+	# do not alter collision, movement speed, or other Player systems.
+	if animation_controller != null and animation_controller.has_method("update_motion"):
+		animation_controller.update_motion(direction, is_running)
+
+
 func set_movement_enabled(enabled: bool) -> void:
-	# Public control point for menus and other gameplay states that need to
-	# temporarily prevent the Player from moving.
+	# Public control point for menus and other gameplay states that disable movement.
 	movement_enabled = enabled
 
 	if not enabled and player != null:
-		# Clear existing velocity immediately so opening the menu also stops any
-		# movement that was already in progress.
 		player.velocity = Vector2.ZERO
+		_update_animation(Vector2.ZERO, false)
 
 
 func set_movement_lock(lock_name: String, locked: bool) -> void:
-	# Locks are keyed by system name, so unlocking dialogue cannot accidentally
-	# re-enable movement while another system still needs it disabled.
+	# Unlocking one system cannot re-enable movement while another lock remains.
 	if locked:
 		movement_locks[lock_name] = true
 	else:
@@ -101,10 +101,11 @@ func set_movement_lock(lock_name: String, locked: bool) -> void:
 		not movement_enabled or not movement_locks.is_empty()
 	):
 		player.velocity = Vector2.ZERO
+		_update_animation(Vector2.ZERO, false)
 
 
 func _on_dialogue_started(_speaker_name: String, _dialogue_text: String) -> void:
-	# Stop immediately when the shared dialogue system opens an NPC conversation.
+	# Stop immediately when shared dialogue opens.
 	set_movement_lock("dialogue", true)
 
 
