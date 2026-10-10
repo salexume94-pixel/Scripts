@@ -3337,3 +3337,32 @@ Cleanup:
 - Existing development-log history was preserved; this entry is appended.
 
 The dialogue interaction-lock checklist is now complete.
+
+### Repository Structural Audit Refresh and Documentation Ownership (2026-10-10)
+
+Refreshed the repository audit documentation against the current GitHub `main` tree. This entry is appended; all earlier development-log history is preserved.
+
+Updated:
+- `docs/REPOSITORY_AUDIT.md`
+- `ARCHITECTURE.md`
+- `ROADMAP.md`
+- `DEVELOPMENT_LOG.md`
+
+Current tree inventory:
+- 67 GDScript files (`.gd`).
+- 35 Godot scenes (`.tscn`).
+- 70 Godot resources (`.tres`).
+- 10 Markdown files, 10 UID sidecars, 3 MP3 assets, 1 SVG, 1 import metadata file, 1 `project.godot`, and 3 root configuration files; 201 tracked files total.
+- Godot project configuration remains version 4.7 / GL Compatibility, with `ui/MainMenu.tscn` as the main scene and a 1152×648 viewport.
+
+Documentation ownership is now explicit: Architecture defines code/system boundaries; Roadmap defines planned work; Development Log preserves chronological implementation and verification history; Repository Audit records inventory/findings and verification scope; World Bible owns stable setting facts; Story Bible owns plot chronology and revelations. Existing root story documents remain in place as references.
+
+Concrete correction recorded: the active F3 diagnostics overlay is `ui/debug_combat_hud.gd` / `ui/DebugCombatHUD.tscn`; the earlier Architecture section naming a separate DebugMenu is stale. The current *The Stranger* story route is represented by WakingArea, MiraEncounterArea, and Havenreach scenes, while Tutorial Town and Northbridge Village remain retained reference content.
+
+Verification boundary:
+- Current tree counts and project configuration were checked against GitHub `main`.
+- The previous no-missing-reference static check covered the earlier 63-script / 30-scene / 61-resource tree only.
+- A complete current-tree static check of every scene/resource external reference and every explicit GDScript `preload()` / `load()` path has not been established by this refresh and remains open.
+- No local Godot import/parser or runtime test was run as part of this documentation-only refresh. The current story implementation must remain marked runtime-pending until tested locally after pulling.
+
+Next audit gate: complete the current-tree reference validation, then pull `main` and run Godot import/parser checks and the documented story-route runtime checklist. Record actual results here by appending a new entry; do not replace this or earlier history.
