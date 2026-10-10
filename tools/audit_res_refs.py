@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path.cwd()
 SCANNED_SUFFIXES = {".gd", ".tscn", ".tres", ".godot", ".cfg", ".import", ".md"}
 SKIP_DIRS = {".git", ".godot", ".venv", "__pycache__"}
-REFERENCE = re.compile(r"""res://([^"'\s)\],;<>]+)""")
+REFERENCE = re.compile(r"""res://([^\"'`\s)\],;<>]+)""")
 TRAILING_PUNCTUATION = ".,:!?}"
 
 
@@ -37,6 +37,7 @@ def main() -> int:
     files = list(repository_files())
     missing: list[tuple[str, int, str]] = []
     checked_refs = 0
+    dynamic_templates_skipped = 0
     unreadable: list[tuple[str, str]] = []
 
     for source in files:
@@ -51,6 +52,10 @@ def main() -> int:
                 target = match.group(1).rstrip(TRAILING_PUNCTUATION)
                 if not target:
                     continue
+                # Formatting placeholders are runtime templates, not literal filenames.
+                if "%" in target or "{" in target or "}" in target:
+                    dynamic_templates_skipped += 1
+                    continue
                 checked_refs += 1
                 resolved = ROOT / target
                 if not resolved.exists():
@@ -59,6 +64,7 @@ def main() -> int:
     print(f"Repository root: {ROOT}")
     print(f"Files scanned: {len(files)}")
     print(f"Literal res:// references checked: {checked_refs}")
+    print(f"Dynamic path templates skipped: {dynamic_templates_skipped}")
     print(f"Missing targets: {len(missing)}")
     print(f"Unreadable files: {len(unreadable)}")
 
