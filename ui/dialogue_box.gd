@@ -66,6 +66,7 @@ func _on_dialogue_choices_started(
 		# Dialogue choices must work without a mouse. Focusable buttons use
 		# Godot's normal keyboard navigation (arrow keys, Tab, Enter/Space).
 		button.focus_mode = Control.FOCUS_ALL
+		button.set_meta("choice_id", choice_id)
 		button.pressed.connect(_on_choice_button_pressed.bind(choice_id))
 		choices_container.add_child(button)
 
@@ -75,6 +76,31 @@ func _on_dialogue_choices_started(
 		var first_choice := choices_container.get_child(0) as Button
 		if first_choice != null:
 			first_choice.call_deferred("grab_focus")
+
+
+func activate_focused_choice() -> bool:
+	# Let the shared E interaction activate the current dialogue option without
+	# making the Player controller depend on dialogue button implementation.
+	if not DialogueManager.is_active or not DialogueManager.has_choices():
+		return false
+
+	var focused_control := get_viewport().gui_get_focus_owner()
+	var focused_button := focused_control as Button
+
+	# Use the focused option when one is selected. If focus was lost, safely
+	# fall back to the first visible choice instead of passing E through to a Door.
+	if focused_button == null or focused_button.get_parent() != choices_container:
+		for child in choices_container.get_children():
+			var choice_button := child as Button
+			if choice_button != null and choice_button.visible:
+				focused_button = choice_button
+				break
+
+	if focused_button == null:
+		return false
+
+	_on_choice_button_pressed(str(focused_button.get_meta("choice_id", "")))
+	return true
 
 
 func _on_choice_button_pressed(choice_id: String) -> void:
