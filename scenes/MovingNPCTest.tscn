@@ -1,0 +1,111 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/moving_npc.gd" id="2_moving_npc"]
+
+[sub_resource type="RectangleShape2D" id="ActorCollision"]
+size = Vector2(24, 24)
+
+[sub_resource type="RectangleShape2D" id="ObstacleCollision"]
+size = Vector2(110, 90)
+
+[sub_resource type="RectangleShape2D" id="HorizontalBoundary"]
+size = Vector2(1200, 32)
+
+[sub_resource type="RectangleShape2D" id="VerticalBoundary"]
+size = Vector2(32, 800)
+
+[node name="MovingNPCTest" type="Node2D"]
+
+[node name="WorldFloor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
+color = Color(0.12, 0.2, 0.13, 1)
+
+[node name="TestTitle" type="Label" parent="."]
+position = Vector2(-550, -365)
+text = "MOVING NPC TEST | RED = ENEMY | GREEN = NPC | BLUE = ALLY PREVIEW"
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 0)
+
+[node name="Enemy" type="CharacterBody2D" parent="."]
+position = Vector2(-250, -100)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("2_moving_npc")
+identity = 0
+
+[node name="Visual" type="Polygon2D" parent="Enemy"]
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="Collision" type="CollisionShape2D" parent="Enemy"]
+shape = SubResource("ActorCollision")
+
+[node name="ObstacleProbe" type="RayCast2D" parent="Enemy"]
+target_position = Vector2(34, 0)
+collision_mask = 1
+enabled = true
+
+[node name="NPC" type="CharacterBody2D" parent="."]
+position = Vector2(230, 100)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("2_moving_npc")
+identity = 1
+
+[node name="Visual" type="Polygon2D" parent="NPC"]
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="Collision" type="CollisionShape2D" parent="NPC"]
+shape = SubResource("ActorCollision")
+
+[node name="ObstacleProbe" type="RayCast2D" parent="NPC"]
+target_position = Vector2(34, 0)
+collision_mask = 1
+enabled = true
+
+[node name="AllyPreview" type="CharacterBody2D" parent="."]
+position = Vector2(250, -180)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("2_moving_npc")
+identity = 2
+move_speed = 0.0
+
+[node name="Visual" type="Polygon2D" parent="AllyPreview"]
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="Collision" type="CollisionShape2D" parent="AllyPreview"]
+shape = SubResource("ActorCollision")
+
+[node name="Obstacle" type="StaticBody2D" parent="."]
+position = Vector2(-90, -80)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Visual" type="Polygon2D" parent="Obstacle"]
+polygon = PackedVector2Array(-55, -45, 55, -45, 55, 45, -55, 45)
+color = Color(0.35, 0.27, 0.18, 1)
+
+[node name="Collision" type="CollisionShape2D" parent="Obstacle"]
+shape = SubResource("ObstacleCollision")
+
+[node name="MapBounds" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="MapBounds"]
+position = Vector2(0, -400)
+shape = SubResource("HorizontalBoundary")
+
+[node name="Bottom" type="CollisionShape2D" parent="MapBounds"]
+position = Vector2(0, 400)
+shape = SubResource("HorizontalBoundary")
+
+[node name="Left" type="CollisionShape2D" parent="MapBounds"]
+position = Vector2(-600, 0)
+shape = SubResource("VerticalBoundary")
+
+[node name="Right" type="CollisionShape2D" parent="MapBounds"]
+position = Vector2(600, 0)
+shape = SubResource("VerticalBoundary")
