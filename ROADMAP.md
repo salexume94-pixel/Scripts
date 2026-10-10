@@ -355,3 +355,20 @@ The opening decisions are now implemented in the repository as an initial playab
 - Tutorial Town and Northbridge Village remain in the repository, but their overworld entry regions and visible markers are disabled.
 
 Status: repository implementation committed; local Godot runtime verification is still required. This implementation does not establish companion combat AI or full Havenreach town content.
+
+
+## Repository Audit and Documentation Ownership Refresh (2026-10-10)
+
+The current repository inventory is 67 GDScript files, 35 scenes, and 70 `.tres` resources. The historical audit in `docs/REPOSITORY_AUDIT.md` was originally run against an earlier tree of 63 scripts, 30 scenes, and 61 resources. Its no-missing-reference result is scoped to that earlier tree; a full static reference pass against the current inventory remains an explicit audit task.
+
+Documentation ownership is settled:
+
+- `ARCHITECTURE.md`: technical ownership and system boundaries.
+- `ROADMAP.md`: current development priorities.
+- `DEVELOPMENT_LOG.md`: append-only history of implementation, static checks, and developer-reported runtime verification.
+- `docs/REPOSITORY_AUDIT.md`: structural inventory, concrete findings, and audit verification boundaries.
+- `docs/world/WORLD_BIBLE.md`: stable world facts.
+- `docs/story/STORY_BIBLE.md`: plot chronology, characters, and revelations.
+- Root `STORY_DIRECTION.md` and `STORY_DESIGN.md`: retained reference documents pending deliberate reconciliation.
+
+Current story implementation work is present in the repository, but local Godot runtime verification remains pending as recorded in the Story Bible and development log. Do not treat the repository audit as evidence that the new opening has passed runtime testing. The next audit completion gate is a current-tree static reference check, followed by local Godot import/parser and story-route testing.
