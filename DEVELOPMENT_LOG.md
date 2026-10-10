@@ -3240,3 +3240,48 @@ Runtime verification after pulling:
 7. Confirm Player Affinities remain available in the F3 debug HUD and no new parser/debugger errors occur.
 
 Runtime status: NOT TESTED LOCALLY.
+
+
+### Battle E-Key Runtime Verification and Remaining Test Gaps (2026-10-10)
+
+User runtime report after pulling the Battle HUD E-key selection fix:
+- Passed: E activates the focused Battle action and keyboard navigation/focus fallback behave as expected.
+- Passed: disabled actions remain unavailable; mouse controls work; no duplicate actions were observed.
+- Passed: Player Affinities remain available in the F3 debug HUD.
+- Passed: no new parser errors, missing resources, or debugger errors.
+- Not verified: defeat recovery, because current enemies do not defeat the Player quickly enough during practical testing.
+- Not verified: dialogue/world-interaction interference with a Door or Chest, because Havenreach currently contains no suitable NPC or Chest test target.
+
+### Debug Defeat Hook for Recovery Testing (2026-10-10)
+
+Added a development-only test control so recovery can be verified without changing enemy balance or waiting through many combat turns.
+
+Updated:
+- `systems/combat_manager.gd`
+- `ui/battle.gd`
+- `ui/DebugCombatHUD.tscn`
+- `ui/debug_combat_hud.gd`
+
+Changes:
+- Added `CombatManager.force_defeat_for_testing()`, which sets Player HP to zero and enters the normal defeat phase only when a combat encounter is active.
+- Added **DEBUG: Force Defeat** to the F3 debug HUD. It is a test shortcut and does not modify enemy damage or normal combat balance.
+- Battle now listens for the existing `player_defeated` signal and refreshes its defeat label, HP display, action availability, and combat log. This keeps the test hook on the same UI path as a defeat event.
+- The existing Recover and Return button continues to call `CombatManager.recover_from_defeat()`; the debug hook does not bypass or replace recovery logic.
+
+Static verification:
+- Confirmed the debug button calls the CombatManager test method.
+- Confirmed the method refuses to run outside combat or after a terminal victory/defeat state, updates saved runtime HP, sets the defeat phase, records a debug log entry, and emits `player_defeated`.
+- Confirmed Battle handles that signal and refreshes the visible defeat state.
+- No local Godot runtime test has been run for this addition.
+
+Runtime verification after pulling:
+1. Enter Battle and press F3.
+2. Click **DEBUG: Force Defeat**.
+3. Confirm Player HP becomes 0, the state reads DEFEAT, and Recover and Return becomes available.
+4. Activate Recover and Return with E and then with the mouse in separate runs.
+5. Confirm the Player returns to the encounter's original scene/position with HP/MP restored and the configured gold penalty applied.
+6. Confirm normal combat still works and no parser/debugger errors occur.
+
+Dialogue interaction-lock test remains pending until a suitable NPC dialogue and Door/Chest can be active within interaction range in the same scene. No placeholder NPC or Chest has been added to Havenreach.
+
+Runtime status: Battle E-key checks reported passed by user; debug defeat hook and recovery path require local runtime verification.
