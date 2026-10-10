@@ -19,6 +19,7 @@ extends CanvasLayer
 @onready var magic_attack_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MagicAttackLabel
 @onready var magic_defense_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/MagicDefenseLabel
 @onready var speed_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/SpeedLabel
+@onready var party_summary_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/PartySummaryLabel
 @onready var equipment_label: Label = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentLabel
 @onready var equipment_grid: VBoxContainer = $Screen/Panel/Margin/Columns/CharacterPanel/CharacterMargin/CharacterVBox/EquipmentGrid
 @onready var inventory_grid: GridContainer = $Screen/Panel/Margin/Columns/InventoryPanel/InventoryMargin/InventoryVBox/InventoryGrid
@@ -76,6 +77,7 @@ func _refresh_screen() -> void:
 		return
 
 	_refresh_character_stats(player)
+	_refresh_party_summary()
 	_refresh_equipment(player)
 	_refresh_inventory(player)
 
@@ -97,6 +99,16 @@ func _refresh_character_stats(player: Node) -> void:
 	magic_defense_label.text = "Magic Defense: %d" % stats.get("magic_defense")
 	speed_label.text = "Speed: %d" % stats.get("speed")
 
+
+
+func _refresh_party_summary() -> void:
+	# Mira's preview stats are visible as soon as she joins the roster. These are
+	# character-sheet values for planning only; they do not imply combat support
+	# or companion AI has been implemented.
+	if PartyManager.has_companion("mira"):
+		party_summary_label.text = "PARTY\nMira (Level 1)\nHP 60/60 | MP 30/30\nATK 8 | DEF 7 | MAG 12\nMDEF 10 | SPD 9\nCombat: Not implemented"
+	else:
+		party_summary_label.text = "PARTY\nNo companions"
 
 func _get_xp_requirement(level: int) -> int:
 	# Mirror the PlayerProgression curve for presentation without owning it.
