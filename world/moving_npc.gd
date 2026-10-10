@@ -255,14 +255,15 @@ func _avoid_obstacles(direction: Vector2) -> Vector2:
 	if _is_direction_clear(direction):
 		return direction
 
-	var left := direction.rotated(-PI / 3.0)
-	var right := direction.rotated(PI / 3.0)
-	if _is_direction_clear(left):
-		return left
-	if _is_direction_clear(right):
-		return right
+	# Try progressively wider turns. A narrow pair of alternatives can fail
+	# when the Player pushes a civilian or Ally against a door or chest, leaving
+	# the actor with no valid way to escape the obstacle.
+	for angle in [PI / 4.0, -PI / 4.0, PI / 2.0, -PI / 2.0, PI * 3.0 / 4.0, -PI * 3.0 / 4.0, PI]:
+		var alternative := direction.rotated(angle)
+		if _is_direction_clear(alternative):
+			return alternative
 
-	# If all nearby paths are blocked, stop briefly instead of pushing into them.
+	# If every route is blocked, stop rather than continually driving into a wall.
 	return Vector2.ZERO
 
 
