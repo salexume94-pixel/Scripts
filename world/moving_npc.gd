@@ -60,12 +60,15 @@ func _ready() -> void:
 		queue_free()
 		return
 
-	# Allies use the same physical collision layers as moving civilians. Their
-	# separate Area2D remains only a proximity sensor; it does not replace the
-	# CharacterBody2D collision shape, so the Player and Ally respect each other.
+	# All moving actors use layer 3 and collide with world geometry (layer 1)
+	# and other moving actors (layer 3), but not the Player (layer 2). The Player
+	# includes layer 3 in its own mask, so it is blocked by NPCs while NPC movement
+	# ignores the Player and cannot be physically shoved around.
+	collision_layer = 4
+	collision_mask = 5
+
+	# Ally proximity is handled by a separate sensor, not by body collision.
 	if identity == Identity.ALLY:
-		collision_layer = 2
-		collision_mask = 3
 		var ally_collision := get_node_or_null("Collision") as CollisionShape2D
 		if ally_collision != null:
 			ally_collision.set_deferred("disabled", false)
@@ -189,7 +192,7 @@ func _ensure_ally_detection_area() -> void:
 	# Detect Player bodies only. Layer 0 means the sensor itself does not
 	# participate as a physical collision object for other actors.
 	ally_detection_area.collision_layer = 0
-	ally_detection_area.collision_mask = 1
+	ally_detection_area.collision_mask = 2
 	ally_detection_area.monitoring = true
 	ally_detection_area.monitorable = false
 	if not ally_detection_area.body_entered.is_connected(_on_ally_detection_body_entered):
@@ -267,9 +270,9 @@ func move_to_story_target(target_position: Vector2, ignore_world_collision: bool
 	story_ignore_world_collision = ignore_world_collision
 	story_movement_target = target_position
 	if story_ignore_world_collision:
-		collision_mask = 2 # Keep actor-to-actor collision while ignoring static world layer 1.
+		collision_mask = 4 # Keep NPC-to-NPC collision while ignoring static world layer 1.
 	else:
-		collision_mask = 3
+		collision_mask = 5
 
 
 func clear_story_movement() -> void:
@@ -277,7 +280,7 @@ func clear_story_movement() -> void:
 	# AI decision will choose a target inside the actor's usual home area.
 	story_movement_active = false
 	story_ignore_world_collision = false
-	collision_mask = 3
+	collision_mask = 5
 	movement_target = home_position
 
 
