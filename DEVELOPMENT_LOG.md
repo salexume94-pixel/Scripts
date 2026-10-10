@@ -3366,3 +3366,16 @@ Verification boundary:
 - No local Godot import/parser or runtime test was run as part of this documentation-only refresh. The current story implementation must remain marked runtime-pending until tested locally after pulling.
 
 Next audit gate: complete the current-tree reference validation, then pull `main` and run Godot import/parser checks and the documented story-route runtime checklist. Record actual results here by appending a new entry; do not replace this or earlier history.
+
+
+### Static Reference Audit Tool Added (2026-10-10)
+
+Added `tools/audit_res_refs.py` to check literal `res://` references against files in the local checkout and report missing targets with source line numbers.
+
+Runtime/status boundary:
+- Committed to GitHub `main`; local execution has not yet been reported.
+- After pulling, run `python tools/audit_res_refs.py` from the repository root.
+- This is a static path-existence check only. Follow it with Godot headless import/parser validation and the local story-route checklist.
+- No static-check pass or runtime pass is claimed until actual command output and local test results are available.
+
+This entry is appended; prior log history remains intact.
