@@ -3023,3 +3023,41 @@ Runtime verification required after pulling `main`:
 6. Confirm no new debugger errors appear.
 
 Runtime status: NOT TESTED after this GitHub change. Do not mark the checklist passed until locally verified.
+
+
+### Mira Encounter Discoverability: Woodland Landmark Added (2026-10-09)
+
+The Mira encounter was previously represented in the overworld only by a hidden entry trigger. There was no clear visual landmark to suggest where the player should go. The approach and encounter scene now use a visible woodland clearing.
+
+Added:
+- world/ForestTree.tscn: reusable polygon-based tree visual with trunk, canopy layers, and shadow.
+- A dense tree-ring/forest-floor composition and winding path inside scenes/MiraEncounterArea.tscn.
+- A forest-floor patch, surrounding tree silhouettes, a path that leads into the clearing, and a "FOREST PATH" label in scenes/WorldMapWorld.tscn.
+
+Updated:
+- world/definitions/mira_encounter_area_entry.tres description now identifies a visible woodland clearing rather than a hidden entrance.
+- docs/world/WORLD_BIBLE.md records the landmark and the intention behind it.
+
+Behavior preserved:
+- The forest visual is presentation-only. The existing WorldLocationData entry trigger still loads MiraEncounterArea.
+- The encounter remains hidden from map markers and closes after the meet_mira objective is completed.
+- No quest objectives, route choices, scene IDs, or save-state ownership changed.
+- No existing scene or resource was deleted.
+
+Static verification:
+- Confirmed ForestTree.tscn exists and both the overworld and encounter scenes reference it.
+- Local Godot parsing/rendering and player discoverability have not been runtime-tested.
+
+Runtime debug checklist after pulling:
+1. Pull latest main and open the project in Godot.
+2. Confirm no parse errors and no missing-resource warnings for ForestTree.tscn.
+3. Start New Game, exit WakingArea, and explore the overworld.
+4. Confirm the forest patch and "FOREST PATH" label are visible and readable before entering the trigger.
+5. Follow the path into the woodland and confirm the entry trigger loads MiraEncounterArea.
+6. Confirm the encounter scene visibly reads as a forest: surrounding trees, a clearing, and a path leading toward Mira.
+7. Confirm trees do not obscure Mira, the Player spawn, the dialogue interaction range, or the exit boundary.
+8. Test both dialogue choices and confirm the existing Havenreach/overworld transitions still work.
+9. Confirm the encounter trigger stays disabled after meet_mira is complete, including after saving and loading.
+10. Confirm no new debugger or runtime errors occur.
+
+Runtime status: NOT TESTED LOCALLY.
