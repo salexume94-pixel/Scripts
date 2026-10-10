@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[node name="ForestTree" type="Node2D"]
+
+[node name="TreeShadow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-34, 14, -10, 2, 20, 5, 38, 18, 12, 27, -18, 25)
+color = Color(0.035, 0.075, 0.04, 0.75)
+
+[node name="Trunk" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-8, -2, 9, -2, 12, 28, -11, 28)
+color = Color(0.30, 0.20, 0.12, 1)
+
+[node name="CanopyBase" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-31, -16, -30, -34, -18, -48, -2, -53, 18, -44, 31, -28, 30, -12, 17, 0, -8, 2, -25, -5)
+color = Color(0.045, 0.17, 0.075, 1)
+
+[node name="CanopyShade" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-30, -16, -25, -31, -13, -39, -1, -40, 8, -30, 4, -17, -8, -10, -22, -9)
+color = Color(0.06, 0.22, 0.09, 1)
+
+[node name="CanopyHighlight" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-14, -35, -4, -47, 9, -41, 16, -30, 7, -23, -3, -25)
+color = Color(0.10, 0.29, 0.12, 1)
