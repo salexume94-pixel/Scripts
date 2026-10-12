@@ -3762,3 +3762,28 @@ Runtime debug checklist after pulling `main`:
 7. Confirm no new Godot debugger errors occur.
 
 Runtime status: source update committed to GitHub `main`; local visual/runtime verification is pending.
+
+
+### Foreground Occlusion Follow-up: Draw Priority and Atlas Coverage (2026-10-12)
+
+The developer's local runtime checklist reported that roof and tree occlusion both failed, while map loading, roads/grass visibility, collision, and debugger checks passed. The previous foreground implementation therefore did not meet the visual requirement.
+
+Updated:
+- `world/tiled_map_loader.gd`
+- `DEVELOPMENT_LOG.md`
+
+Corrections:
+- Changed the generated foreground TileMapLayer to use an absolute Z index of 100 instead of a relative Z index of 10. This explicitly prioritizes foreground occlusion over the Player sprite despite the map loader being nested under WorldContent.
+- Expanded house foreground selection from only GIDs 1-40 to the full house/fence atlas range, excluding known doorway GIDs, so house roof sections using later atlas rows are not silently omitted.
+- Kept the church's upper roof selection and explicitly enumerated the placed four-row tree-canopy GIDs. Tree trunks and unrelated decorative cells remain outside the foreground selection.
+- Collision generation and background ground rendering remain unchanged.
+
+Runtime verification after pulling `main`:
+1. Confirm Havenreach loads without parse/resource errors.
+2. Walk behind multiple houses and the church. Confirm roof tiles visibly overlap the Player.
+3. Walk behind and in front of each tree. Confirm the canopy overlaps the Player while trunks/ground remain correctly visible.
+4. Confirm roads and grass remain visible and walkable.
+5. Confirm building, tree, rock, and bush collisions still work.
+6. Confirm no new Godot debugger errors occur.
+
+Runtime status: corrective source and log updates committed to GitHub `main`; local verification is pending.
