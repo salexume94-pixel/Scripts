@@ -3787,3 +3787,31 @@ Runtime verification after pulling `main`:
 6. Confirm no new Godot debugger errors occur.
 
 Runtime status: corrective source and log updates committed to GitHub `main`; local verification is pending.
+
+
+### Havenreach Object Collision Footprints (2026-10-12)
+
+The developer requested collision shapes that fit the physical bases of map objects instead of treating every occupied 16x16 tile as a full obstacle.
+
+Updated:
+- `world/tiled_map_loader.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Replaced the boolean full-cell collision check with a footprint helper that returns a per-cell collision rectangle.
+- Explicitly excluded the current large tree's canopy GIDs (446-494 in the four placed canopy rows) from collision.
+- Applied a narrow lower-half footprint to the current tree trunk/base tiles (GIDs 506-509).
+- Applied compact lower-half footprints to other non-decorative objects on `Rocks, Flowers`, allowing the Player to pass their upper/transparent artwork while still blocking near their base.
+- Kept grass/flower/decorative GIDs 645-750 walkable.
+- Preserved the existing house/church collision policy and doorway/entrance exceptions.
+- Kept the existing visual foreground layer rules unchanged.
+
+Runtime checklist after pulling `main`:
+1. Confirm Havenreach opens without parse/resource errors.
+2. Walk behind the large tree: canopy must not block movement, and the trunk should block only near its base.
+3. Walk around rocks and bushes: collision should feel limited to their lower footprints.
+4. Confirm buildings and church still block movement while entrances remain accessible.
+5. Confirm roads and grass remain walkable.
+6. Confirm no new Godot debugger errors.
+
+Runtime status: source update committed to GitHub `main`; local Godot verification is pending. Atlas-based canopy classification currently targets the explicitly identified large tree; other tree variants may need additional GID ranges after visual testing.
