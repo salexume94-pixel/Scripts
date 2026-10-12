@@ -50,16 +50,16 @@ func _load_tiled_map() -> void:
 
 		if node_type == XMLParser.NODE_ELEMENT:
 			if node_name == "map":
-				map_width = parser.get_attribute_value("width").to_int()
-				map_height = parser.get_attribute_value("height").to_int()
-				tile_width = parser.get_attribute_value("tilewidth").to_int()
-				tile_height = parser.get_attribute_value("tileheight").to_int()
+				map_width = parser.get_named_attribute_value("width").to_int()
+				map_height = parser.get_named_attribute_value("height").to_int()
+				tile_width = parser.get_named_attribute_value("tilewidth").to_int()
+				tile_height = parser.get_named_attribute_value("tileheight").to_int()
 			elif node_name == "layer":
 				inside_layer = true
 				current_layer = {
-					"name": parser.get_attribute_value("name"),
-					"width": parser.get_attribute_value("width").to_int(),
-					"height": parser.get_attribute_value("height").to_int(),
+					"name": parser.get_named_attribute_value("name"),
+					"width": parser.get_named_attribute_value("width").to_int(),
+					"height": parser.get_named_attribute_value("height").to_int(),
 					"csv": ""
 				}
 			elif node_name == "data" and inside_layer:
