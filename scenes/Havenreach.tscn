@@ -6,13 +6,14 @@
 [ext_resource type="Script" path="res://world/havenreach.gd" id="3_havenreach"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="4_presentation"]
 [ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="5_exit"]
-[ext_resource type="PackedScene" path="res://world/Building.tscn" id="6_building"]
-[ext_resource type="Resource" path="res://world/definitions/havenreach_church.tres" id="7_church_data"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="8_inventory"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="9_quest_log"]
 [ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="10_dialogue"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="11_map"]
 [ext_resource type="Script" path="res://world/tiled_map_loader.gd" id="13_tiled_loader"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_church"]
+size = Vector2(128, 160)
 
 [node name="Havenreach" type="Node2D"]
 script = ExtResource("3_havenreach")
@@ -27,14 +28,11 @@ location_id = "havenreach"
 [node name="TiledMap" type="Node2D" parent="WorldContent"]
 script = ExtResource("13_tiled_loader")
 
-[node name="Church" parent="WorldContent" instance=ExtResource("6_building")]
-location_data = ExtResource("7_church_data")
-interior_scene = "res://scenes/interiors/HavenreachChurch.tscn"
+[node name="ChurchCollision" type="StaticBody2D" parent="WorldContent"]
 position = Vector2(88, -128)
-scale = Vector2(0.6667, 1.25)
 
-[node name="BuildingVisual" parent="WorldContent/Church" index="0"]
-visible = false
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/ChurchCollision"]
+shape = SubResource("RectangleShape2D_church")
 
 [node name="WorldExitBoundary" type="Node2D" parent="."]
 script = ExtResource("5_exit")
