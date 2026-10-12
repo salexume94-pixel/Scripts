@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="50" height="35" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
- <tileset firstgid="1" name="exterior" tilewidth="16" tileheight="16" tilecount="750" columns="15">
-  <image source="../../../../Godot Projects/Scripts/scripts/assets/maps_tileset/town_map/towns_tileset/PNG/exterior.png" width="240" height="800"/>
- </tileset>
- <tileset firstgid="751" name="Exterior" tilewidth="16" tileheight="16" tilecount="304" columns="16">
-  <image source="../../../../Godot Projects/Scripts/scripts/assets/maps_tileset/town_map/church_tileset/PNG/Exterior.png" width="256" height="304"/>
- </tileset>
+ <tileset firstgid="1" source="exterior.tsx"/>
+ <tileset firstgid="751" source="church_exterior.tsx"/>
  <layer id="1" name="Ground" width="50" height="35">
   <data encoding="csv">
 227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,227,
