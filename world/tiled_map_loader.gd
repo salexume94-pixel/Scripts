@@ -154,7 +154,9 @@ func _load_tiled_map() -> void:
 		tile_layer.name = layer_name.replace(" ", "")
 		tile_layer.tile_set = tile_set
 		tile_layer.position = map_origin
-		tile_layer.z_index = layer_index
+		# Keep static map layers behind actors so walkable roads and grass do not
+		# render over the Player sprite. Add dedicated foreground layers later if needed.
+		tile_layer.z_index = -100 + layer_index
 		add_child(tile_layer)
 
 		for cell_index in range(raw_cells.size()):
