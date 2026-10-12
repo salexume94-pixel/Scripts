@@ -497,8 +497,7 @@ Updated:
 
 Changes:
 - Added PlayerActionData as a reusable Resource for Player combat actions.
-- Player actions now define an action ID, display name, damage type, and Attack-stat power multiplier.
-- Moved the existing basic Physical Attack into a Physical Player action Resource.
+- Player actions now define an action ID, display name, damage type, and Attack-stat power multiplier.- Moved the existing basic Physical Attack into a Physical Player action Resource.
 - Added a Fire Player action using the Player's Attack stat at 1.0x power.
 - Added a Fire button to the Battle UI.
 - Both Physical Attack and Fire use the same CombatManager and CombatRules resolution path.
@@ -998,7 +997,6 @@ Continue using comments in scripts to explain each script and major section.
 ### Character HUD Movement Lock
 
 Updated the Character/Inventory HUD so opening it disables Player movement while the screen is visible.
-
 Updated:
 - player/player_movement.gd
 - ui/inventory_character_hud.gd
@@ -1498,7 +1496,6 @@ Created:
 - `combat/battle.gd`
 - `scenes/Battle.tscn`
 - `systems/combat_manager.gd`
-
 Updated:
 - `systems/scene_manager.gd`
 - `project.godot`
@@ -1997,8 +1994,7 @@ Continue using comments in scripts to explain each script and major section. Eac
 - Integrated the confirmed enemy AI behavior system into the current stable combat/overworld base without merging the obsolete branch wholesale.
 - Preserved the current four Press Turn combat configuration, current Fire attack tuning, combat-polish UI/scripts, and restored overworld encounter/cooldown systems from main.
 - Added configurable EnemyBehaviorProfile resources: Balanced, Aggressive, Weakness Hunter, and Defensive.
-- Added per-encounter profile selection, weakness-aware action weighting, unfavorable-affinity avoidance, repeat-action suppression, power bias, and Defend weighting.
-- Added enemy elemental actions and Enemy Defend support, including shared target-affinity resolution for enemy actions.
+- Added per-encounter profile selection, weakness-aware action weighting, unfavorable-affinity avoidance, repeat-action suppression, power bias, and Defend weighting.- Added enemy elemental actions and Enemy Defend support, including shared target-affinity resolution for enemy actions.
 - Added controlled AI test enemy definitions and registered them in EnemyDatabase.
 - Kept the integration isolated on a temporary branch for verification before merging to main.
 - Remaining verification: run the game and confirm normal overworld encounters, all four behavior profiles, enemy elemental reactions, Enemy Defend, Player Defend/Pass, victory Return to World, and post-combat encounter cooldown together.
@@ -2497,8 +2493,7 @@ Next:
 - Runtime verification passed for the first Northbridge Village content framework.
 - Confirmed all four Northbridge buildings are enterable and their interior scenes load correctly.
 - Confirmed the reusable NPC interaction system works for the new Northbridge NPCs.
-- Confirmed the Northbridge quest giver successfully gives the quest.
-- Confirmed the quest appears in tracking and its objective progresses correctly.
+- Confirmed the Northbridge quest giver successfully gives the quest.- Confirmed the quest appears in tracking and its objective progresses correctly.
 - Confirmed the quest completes correctly and moves through the existing QuestManager state flow.
 - Confirmed the Northbridge content uses the existing reusable building, door/interior, NPC, dialogue, and quest systems rather than a separate one-off implementation.
 - No runtime errors were reported during this verification.
@@ -2997,8 +2992,7 @@ Runtime verification found this error when loading the church interior:
 `Node not found: "PlayerSkills" (relative to "/root/Interior/Player")`
 
 Root cause:
-- `player/player.gd` declares an on-ready reference to `$PlayerSkills`.
-- The shared `player/Player.tscn` scene did not define a `PlayerSkills` child or attach its script.
+- `player/player.gd` declares an on-ready reference to `$PlayerSkills`.- The shared `player/Player.tscn` scene did not define a `PlayerSkills` child or attach its script.
 - Interior scenes instance this shared Player scene, so the missing component could affect the church and other interiors.
 
 Updated:
@@ -3497,8 +3491,7 @@ Implemented on GitHub `main`:
 - Documented the intended town-specific appearance design: Allies may appear at chosen locations based on story/visit conditions, with a future Ally Presence / Private Actions layer owning those conditions. The proximity sensor alone does not trigger dialogue, recruitment, relationship changes, or combat.
 
 Runtime verification after pulling `main`:
-1. Run `scenes/MovingNPCTest.tscn`.
-2. Walk into the blue Ally preview's detection radius. Confirm the console reports `Ally detection entered: debug_ally_01`.
+1. Run `scenes/MovingNPCTest.tscn`.2. Walk into the blue Ally preview's detection radius. Confirm the console reports `Ally detection entered: debug_ally_01`.
 3. Walk out of the radius. Confirm the console reports `Ally detection exited: debug_ally_01`.
 4. Walk through and around the Ally. Confirm the Player is never physically blocked or pinned.
 5. Confirm the Ally remains stationary and no battle starts.
@@ -3743,3 +3736,29 @@ Editor and scene checks:
 Runtime regression checks passed for startup/navigation, arrow-key movement and Shift-to-run, directional idle/walk/run animations, world transitions and interactions, camera zoom across exteriors/interiors, save/load and relevant story state including `MAIN_001`, combat/rewards, and moving-NPC behavior. No new Godot debugger errors appeared.
 
 The earlier audit note saying a fresh local reference-check run was still required is superseded by these results. The reference checker remains a literal-path check, not a general parser/runtime validator. Structural cleanup candidates and legacy story-document reconciliation remain future work; they did not block this verification pass. No gameplay code changes were required. Existing development-log history was preserved; this entry is appended.
+
+### Havenreach Map Foreground Occlusion (2026-10-12)
+
+The developer confirmed the Tiled map load, generated object collision, corrected ground draw order, and debugger checklist all passed. The next visual pass adds selective foreground occlusion so the Player can appear behind upper building and tree tiles instead of every map tile being forced behind the Player.
+
+Updated:
+- `world/tiled_map_loader.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Added a dedicated `ForegroundOcclusion` TileMapLayer above the Player's normal draw order.
+- Kept the original tile cells in the background layer so roads, grass, lower building sections, and walkable ground remain visible beneath the Player.
+- Added explicit foreground selection rules for upper house roof tiles, the upper church roof, and selected upper tree-canopy tiles.
+- Left collision generation and its existing object-blocking rules unchanged.
+- This is an initial atlas-GID-based split. Additional GIDs may need to be moved between background and foreground after visual runtime review; complex trees/buildings may eventually benefit from dedicated foreground tiles in Tiled.
+
+Runtime debug checklist after pulling `main`:
+1. Confirm Havenreach loads without parser/resource errors.
+2. Walk across roads and walkable grass; confirm the Player renders above the ground.
+3. Walk behind each house and the church; confirm upper roofs overlap the Player while lower walls and doorways remain readable.
+4. Walk behind each tree and bush; confirm canopy tiles overlap the Player only where intended.
+5. Walk in front of the same objects; confirm the Player is not incorrectly hidden by the entire object.
+6. Confirm building, tree, rock, and bush collisions still block movement as before.
+7. Confirm no new Godot debugger errors occur.
+
+Runtime status: source update committed to GitHub `main`; local visual/runtime verification is pending.
