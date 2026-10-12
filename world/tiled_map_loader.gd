@@ -136,24 +136,24 @@ func _load_tiled_map() -> void:
 			var atlas_coords: Vector2i
 			if gid >= CHURCH_FIRST_GID:
 				# Tiled GIDs are one-based and include the first GID offset.
-				var local_id := gid - CHURCH_FIRST_GID
-				if local_id < 0 or local_id >= CHURCH_COLUMNS * CHURCH_ROWS:
+				var church_local_id := gid - CHURCH_FIRST_GID
+				if church_local_id < 0 or church_local_id >= CHURCH_COLUMNS * CHURCH_ROWS:
 					push_warning("Havenreach map contains an unsupported church tileset GID: %d" % gid)
 					continue
 				source_id = 1
 				atlas_coords = Vector2i(
-					local_id % CHURCH_COLUMNS,
-					floori(float(local_id) / float(CHURCH_COLUMNS))
+					church_local_id % CHURCH_COLUMNS,
+					floori(float(church_local_id) / float(CHURCH_COLUMNS))
 				)
 			else:
-				var local_id := gid - EXTERIOR_FIRST_GID
-				if local_id < 0 or local_id >= EXTERIOR_COLUMNS * EXTERIOR_ROWS:
+				var exterior_local_id := gid - EXTERIOR_FIRST_GID
+				if exterior_local_id < 0 or exterior_local_id >= EXTERIOR_COLUMNS * EXTERIOR_ROWS:
 					push_warning("Havenreach map contains an unsupported exterior tileset GID: %d" % gid)
 					continue
 				source_id = 0
 				atlas_coords = Vector2i(
-					local_id % EXTERIOR_COLUMNS,
-					floori(float(local_id) / float(EXTERIOR_COLUMNS))
+					exterior_local_id % EXTERIOR_COLUMNS,
+					floori(float(exterior_local_id) / float(EXTERIOR_COLUMNS))
 				)
 
 			var cell_coords := Vector2i(cell_index % layer_width, floori(float(cell_index) / float(layer_width)))
