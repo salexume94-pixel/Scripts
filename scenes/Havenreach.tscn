@@ -1,6 +1,6 @@
 [gd_scene format=3]
-[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="12_debug_hud"]
 
+[ext_resource type="PackedScene" path="res://ui/DebugCombatHUD.tscn" id="12_debug_hud"]
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/world_context.gd" id="2_context"]
 [ext_resource type="Script" path="res://world/havenreach.gd" id="3_havenreach"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="9_quest_log"]
 [ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="10_dialogue"]
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="11_map"]
+[ext_resource type="Script" path="res://world/tiled_map_loader.gd" id="13_tiled_loader"]
 
 [node name="Havenreach" type="Node2D"]
 script = ExtResource("3_havenreach")
@@ -23,38 +24,21 @@ location_id = "havenreach"
 
 [node name="WorldContent" type="Node2D" parent="."]
 
-[node name="WorldFloor" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-1000, -1500, 1000, -1500, 1000, 1500, -1000, 1500)
-color = Color(0.12, 0.18, 0.12, 1)
-
-[node name="NorthRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-70, -1500, 70, -1500, 70, 1500, -70, 1500)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="WestRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-1000, -70, 1000, -70, 1000, 70, -1000, 70)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="TownSquare" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-220, -180, 220, -180, 220, 180, -220, 180)
-color = Color(0.22, 0.25, 0.22, 1)
+[node name="TiledMap" type="Node2D" parent="WorldContent"]
+script = ExtResource("13_tiled_loader")
 
 [node name="Church" parent="WorldContent" instance=ExtResource("6_building")]
 location_data = ExtResource("7_church_data")
 interior_scene = "res://scenes/interiors/HavenreachChurch.tscn"
-position = Vector2(0, -420)
+position = Vector2(88, -128)
+scale = Vector2(0.6667, 1.25)
 
-[node name="ChurchLabel" type="Label" parent="WorldContent"]
-position = Vector2(-80, -515)
-text = "CHURCH"
-
-[node name="TownLabel" type="Label" parent="WorldContent"]
-position = Vector2(-90, -90)
-text = "HAVENREACH"
+[node name="BuildingVisual" parent="WorldContent/Church" index="0"]
+visible = false
 
 [node name="WorldExitBoundary" type="Node2D" parent="."]
 script = ExtResource("5_exit")
-location_bounds = Rect2(-1000, -1500, 2000, 3000)
+location_bounds = Rect2(-400, -280, 800, 560)
 target_scene = "res://scenes/WorldMapWorld.tscn"
 target_player_position = Vector2(0, -560)
 target_world_id = "world_map"
@@ -67,7 +51,7 @@ script = ExtResource("4_presentation")
 zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(0, 900)
+position = Vector2(0, 220)
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("8_inventory")]
 
