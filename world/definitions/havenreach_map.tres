@@ -6,5 +6,5 @@
 script = ExtResource("1_map_data")
 world_id = "havenreach"
 display_name = "Havenreach"
-world_bounds = Rect2(-1000, -1500, 2000, 3000)
-map_bounds = Rect2(0, 0, 400, 600)
+world_bounds = Rect2(-400, -280, 800, 560)
+map_bounds = Rect2(0, 0, 400, 280)
