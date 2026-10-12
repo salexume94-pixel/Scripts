@@ -134,18 +134,6 @@ func _load_tiled_map() -> void:
 	collision_body.collision_mask = 1
 	add_child(collision_body)
 	var collision_count := 0
-	# Dedicated foreground layers let the Player pass behind selected roof/canopy
-	# tiles without moving walkable ground or every map tile above the Player.
-	var foreground_layer := TileMapLayer.new()
-	foreground_layer.name = "ForegroundOcclusion"
-	foreground_layer.tile_set = tile_set
-	foreground_layer.position = map_origin
-	# Use an absolute, high Z index so this child layer reliably draws over the
-	# Player even though the map is nested under WorldContent and the Player is
-	# a sibling of WorldContent in Havenreach.tscn.
-	foreground_layer.z_as_relative = false
-	foreground_layer.z_index = 100
-	add_child(foreground_layer)
 
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
@@ -207,26 +195,19 @@ func _load_tiled_map() -> void:
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
 
-			# Duplicate only designated roof/canopy cells into the foreground layer.
-			# The original cell stays behind the Player; this copy draws over the
-			# Player when they walk behind the corresponding part of the object.
-			if _should_draw_foreground(layer_name, gid):
-				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
-
-			# Use object-specific footprints instead of treating every occupied
-			# tile as a full 16x16 obstacle. Canopy tiles deliberately return no shape.
-			var footprint := _get_collision_footprint(layer_name, gid, cell_coords)
-			if footprint.size != Vector2.ZERO:
+			# Build collision only where the tile image has visible, non-transparent
+			# pixels. This avoids invisible rectangular blockers in transparent margins.
+			var collision_rects := _get_collision_rects(layer_name, gid, source_id, atlas_coords, exterior_source.texture if source_id == 0 else church_source.texture, cell_coords)
+			for rect in collision_rects:
 				var collision_shape := CollisionShape2D.new()
-				collision_shape.name = "ObjectCell_%d_%d" % [cell_coords.x, cell_coords.y]
+				collision_shape.name = "ObjectPixel_%d_%d_%d" % [cell_coords.x, cell_coords.y, collision_count]
 				var rectangle := RectangleShape2D.new()
-				rectangle.size = footprint.size
+				rectangle.size = Vector2(rect.size)
 				collision_shape.shape = rectangle
-				# footprint.position is local to the tile's top-left corner.
 				collision_shape.position = Vector2(
 					float(cell_coords.x) * TILE_SIZE.x,
 					float(cell_coords.y) * TILE_SIZE.y
-				) + footprint.position + footprint.size / 2.0
+				) + Vector2(rect.position) + Vector2(rect.size) / 2.0
 				collision_body.add_child(collision_shape)
 				collision_count += 1
 
@@ -236,45 +217,67 @@ func _load_tiled_map() -> void:
 		print("Havenreach TiledMapLoader generated %d object collision shapes." % collision_count)
 
 
-func _get_collision_footprint(layer_name: String, gid: int, cell_coords: Vector2i) -> Rect2:
-	# Tree leaves/canopies must never block movement. These GIDs describe the
-	# four canopy rows of the large tree placed at the northwest of Havenreach.
-	if layer_name == "Rocks, Flowers" and _should_draw_foreground(layer_name, gid):
-		# Foreground canopy cells are visual-only. Using the same rule as the
-		# render layer prevents a missed atlas cell from becoming an invisible wall.
-		return Rect2()
-
-	# Church facade cells block movement, except the approach gap at the entrance.
-	# Use full tile footprints here because these cells represent solid walls.
+func _get_collision_rects(
+	layer_name: String,
+	gid: int,
+	source_id: int,
+	atlas_coords: Vector2i,
+	texture: Texture2D,
+	cell_coords: Vector2i
+) -> Array[Rect2i]:
+	# Return no collision for decorative ground plants and known open door cells.
+	if layer_name == "Ground":
+		return []
+	if layer_name == "Rocks, Flowers" and gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
+		return []
 	if gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX:
 		if cell_coords.x >= 30 and cell_coords.x <= 32 and cell_coords.y >= 12 and cell_coords.y <= 14:
-			return Rect2()
-		return Rect2(Vector2.ZERO, Vector2(TILE_SIZE))
-
-	# House/fence cells on the building layer retain full tile collision, while
-	# the known doorway cells stay open.
+			return []
 	if layer_name == "Buildings, Roads" and gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
 		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
 		if doorway_gids.has(gid):
-			return Rect2()
-		return Rect2(Vector2.ZERO, Vector2(TILE_SIZE))
+			return []
 
-	# Rocks, trunks, and dense bushes use a compact footprint near the bottom
-	# of their tile. This lets the Player pass their transparent/upper artwork.
-	# Small decorative ground tiles (grass/flowers) remain completely walkable.
-	if layer_name == "Rocks, Flowers":
-		if gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
-			return Rect2()
-		if _is_tree_trunk_gid(gid):
-			return Rect2(Vector2(3, 8), Vector2(10, 8))
-		return Rect2(Vector2(2, 8), Vector2(12, 8))
+	# Scan the exact 16x16 atlas tile's alpha channel. Collision rectangles are
+	# created from contiguous visible pixel runs, not the tile's transparent area.
+	# The atlas is tiny, so this work is inexpensive for a town map.
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		return []
+	var origin := atlas_coords * TILE_SIZE
+	var active_runs: Dictionary = {}
+	var completed: Array[Rect2i] = []
+	for y in range(TILE_SIZE.y):
+		var row_runs: Array[Vector2i] = []
+		var run_start := -1
+		for x in range(TILE_SIZE.x):
+			var alpha := image.get_pixel(origin.x + x, origin.y + y).a
+			if alpha > 0.5:
+				if run_start < 0:
+					run_start = x
+			elif run_start >= 0:
+				row_runs.append(Vector2i(run_start, x))
+				run_start = -1
+		if run_start >= 0:
+			row_runs.append(Vector2i(run_start, TILE_SIZE.x))
 
-	return Rect2()
+		var row_keys: Dictionary = {}
+		for run in row_runs:
+			var key := "%d:%d" % [run.x, run.y]
+			row_keys[key] = true
+			if active_runs.has(key):
+				active_runs[key].size.y += 1
+			else:
+				active_runs[key] = Rect2i(run.x, y, run.y - run.x, 1)
+		var old_keys: Array = active_runs.keys()
+		for key in old_keys:
+			if not row_keys.has(key):
+				completed.append(active_runs[key])
+				active_runs.erase(key)
 
-
-func _is_tree_trunk_gid(gid: int) -> bool:
-	# The fifth row directly beneath that canopy contains the trunk/base tiles.
-	return gid >= 506 and gid <= 509
+	for rect in active_runs.values():
+		completed.append(rect)
+	return completed
 
 
 func _create_atlas_source(
@@ -297,30 +300,3 @@ func _create_atlas_source(
 			atlas.create_tile(Vector2i(x, y))
 
 	return atlas
-
-
-
-func _should_draw_foreground(layer_name: String, gid: int) -> bool:
-	# The house atlas is arranged in 15 columns. GIDs 1-40 are the first three
-	# rows of the atlas, but the house roofs also use later rows. Include all
-	# placed house/fence atlas cells so roof edges are not omitted from occlusion.
-	# Doorway cells are excluded to keep the entrance visually open.
-	if layer_name == "Buildings, Roads":
-		if gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
-			var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
-			return not doorway_gids.has(gid)
-
-		# The church's upper roof tiles are in the first three placed rows of its
-		# atlas. Keep those rows in front, but leave its lower facade behind actors.
-		if gid >= 752 and gid <= 790:
-			return true
-
-	# The four-row tree canopy is assembled from these atlas GIDs. Duplicate all
-	# canopy tiles, not trunks or small decorative plants, into the foreground.
-	if layer_name == "Rocks, Flowers":
-		if (gid >= 446 and gid <= 449) or (gid >= 460 and gid <= 465):
-			return true
-		if (gid >= 475 and gid <= 480) or (gid >= 490 and gid <= 494):
-			return true
-
-	return false
