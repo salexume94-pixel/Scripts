@@ -140,7 +140,11 @@ func _load_tiled_map() -> void:
 	foreground_layer.name = "ForegroundOcclusion"
 	foreground_layer.tile_set = tile_set
 	foreground_layer.position = map_origin
-	foreground_layer.z_index = 10
+	# Use an absolute, high Z index so this child layer reliably draws over the
+	# Player even though the map is nested under WorldContent and the Player is
+	# a sibling of WorldContent in Havenreach.tscn.
+	foreground_layer.z_as_relative = false
+	foreground_layer.z_index = 100
 	add_child(foreground_layer)
 
 	for layer_index in range(layers.size()):
@@ -280,22 +284,26 @@ func _create_atlas_source(
 
 
 func _should_draw_foreground(layer_name: String, gid: int) -> bool:
-	# House atlas cells 1-40 form the upper roof rows. Keep these in front so the
-	# Player can walk behind house roofs while lower walls and doorways remain visible.
-	if layer_name == "Buildings, Roads" and gid >= 1 and gid <= 40:
-		return true
+	# The house atlas is arranged in 15 columns. GIDs 1-40 are the first three
+	# rows of the atlas, but the house roofs also use later rows. Include all
+	# placed house/fence atlas cells so roof edges are not omitted from occlusion.
+	# Doorway cells are excluded to keep the entrance visually open.
+	if layer_name == "Buildings, Roads":
+		if gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
+			var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
+			return not doorway_gids.has(gid)
 
-	# The church's top three atlas rows are its upper roof/canopy section.
-	# Lower church tiles remain behind the Player so the entrance and lower facade
-	# do not permanently cover the character.
-	if layer_name == "Buildings, Roads" and gid >= 752 and gid <= 790:
-		return true
+		# The church's upper roof tiles are in the first three placed rows of its
+		# atlas. Keep those rows in front, but leave its lower facade behind actors.
+		if gid >= 752 and gid <= 790:
+			return true
 
-	# The tree atlas clusters begin with these upper-canopy tile groups. Keeping
-	# their upper sections in front provides basic walk-behind-tree occlusion.
-	# Trunks and lower foliage remain on the background layer where possible.
+	# The four-row tree canopy is assembled from these atlas GIDs. Duplicate all
+	# canopy tiles, not trunks or small decorative plants, into the foreground.
 	if layer_name == "Rocks, Flowers":
-		if (gid >= 446 and gid <= 464) or (gid >= 475 and gid <= 494):
+		if (gid >= 446 and gid <= 449) or (gid >= 460 and gid <= 464):
+			return true
+		if (gid >= 475 and gid <= 480) or (gid >= 490 and gid <= 494):
 			return true
 
 	return false
