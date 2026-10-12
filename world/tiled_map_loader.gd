@@ -1,13 +1,16 @@
 extends Node2D
 ## Loads the Havenreach Tiled CSV map into native Godot TileMapLayer nodes.
 ##
-## Godot does not load Tiled .tmx files natively. This focused loader reads the
-## current finite, orthogonal TMX map at runtime and converts its CSV tile layers
-## into Godot atlas cells. Tiled remains the editable source of truth for layout.
+## Tiled remains the source of truth for visual layout. This loader also builds
+## simple static collision from the placed object tiles because the current TMX
+## has no authored collision/object layer.
 ##
-## The loader intentionally supports the two external tilesets currently used by
-## Havenreach. If the map gains more tilesets, flip flags, or non-CSV layer data,
-## extend this conversion rather than silently drawing incorrect tiles.
+## Collision policy:
+## - House/fence tiles and church tiles block movement.
+## - Large rocks, trees, and bushes placed on "Rocks, Flowers" block movement.
+## - Grass and small decorative ground plants are ignored.
+## - The church doorway and the visible house doorway tiles remain open.
+## - Roads and ground tiles are not treated as obstacles.
 
 const MAP_PATH := "res://world/maps/havensreach/Havensreach.tmx"
 const EXTERIOR_TEXTURE_PATH := "res://assets/maps_tileset/town_map/towns_tileset/PNG/exterior.png"
@@ -21,9 +24,22 @@ const CHURCH_FIRST_GID := 751
 const CHURCH_COLUMNS := 16
 const CHURCH_ROWS := 19
 
+# The exterior atlas's first 114 cells contain the house/fence artwork.
+const HOUSE_AND_FENCE_GID_MIN := 1
+const HOUSE_AND_FENCE_GID_MAX := 114
+
+# The church's placed atlas cells are in this GID interval.
+const CHURCH_GID_MIN := 752
+const CHURCH_GID_MAX := 902
+
+# These are small decorative ground tiles near the bottom of the exterior atlas.
+# They are intentionally non-blocking, as requested.
+const DECORATIVE_GID_MIN := 645
+const DECORATIVE_GID_MAX := 750
+
 
 func _ready() -> void:
-	# Build the TileSet and each visual layer only after the scene enters the tree.
+	# Build the TileSet, visuals, and collision after entering the scene tree.
 	_load_tiled_map()
 
 
@@ -109,8 +125,19 @@ func _load_tiled_map() -> void:
 		-float(map_height * tile_height) / 2.0
 	)
 
+	# One static body holds the generated collision shapes to avoid creating a
+	# separate physics body for every tile.
+	var collision_body := StaticBody2D.new()
+	collision_body.name = "GeneratedObjectCollision"
+	collision_body.position = map_origin
+	collision_body.collision_layer = 1
+	collision_body.collision_mask = 1
+	add_child(collision_body)
+	var collision_count := 0
+
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
+		var layer_name := str(layer_data["name"])
 		var layer_width: int = int(layer_data["width"])
 		var layer_height: int = int(layer_data["height"])
 		var raw_cells: PackedStringArray = str(layer_data["csv"]).strip_edges().split(",", false)
@@ -119,12 +146,12 @@ func _load_tiled_map() -> void:
 		if raw_cells.size() != expected_cells:
 			push_error(
 				"Havenreach TiledMapLoader layer '%s' has %d cells; expected %d."
-				% [str(layer_data["name"]), raw_cells.size(), expected_cells]
+				% [layer_name, raw_cells.size(), expected_cells]
 			)
 			continue
 
 		var tile_layer := TileMapLayer.new()
-		tile_layer.name = str(layer_data["name"]).replace(" ", "")
+		tile_layer.name = layer_name.replace(" ", "")
 		tile_layer.tile_set = tile_set
 		tile_layer.position = map_origin
 		tile_layer.z_index = layer_index
@@ -134,6 +161,11 @@ func _load_tiled_map() -> void:
 			var gid := raw_cells[cell_index].to_int()
 			if gid == 0:
 				continue
+
+			var cell_coords := Vector2i(
+				cell_index % layer_width,
+				floori(float(cell_index) / float(layer_width))
+			)
 
 			var source_id: int
 			var atlas_coords: Vector2i
@@ -159,8 +191,53 @@ func _load_tiled_map() -> void:
 					floori(float(exterior_local_id) / float(EXTERIOR_COLUMNS))
 				)
 
-			var cell_coords := Vector2i(cell_index % layer_width, floori(float(cell_index) / float(layer_width)))
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
+
+			# Collision is based on the actual placed cell and its layer, not on
+			# every non-empty tile. That keeps the road and ground layers walkable.
+			if _should_block_cell(layer_name, gid, cell_coords):
+				var collision_shape := CollisionShape2D.new()
+				collision_shape.name = "ObjectCell_%d_%d" % [cell_coords.x, cell_coords.y]
+				var rectangle := RectangleShape2D.new()
+				rectangle.size = Vector2(TILE_SIZE)
+				collision_shape.shape = rectangle
+				collision_shape.position = Vector2(
+					(float(cell_coords.x) + 0.5) * TILE_SIZE.x,
+					(float(cell_coords.y) + 0.5) * TILE_SIZE.y
+				)
+				collision_body.add_child(collision_shape)
+				collision_count += 1
+
+	if collision_count == 0:
+		push_warning("Havenreach TiledMapLoader generated no object collision shapes.")
+	else:
+		print("Havenreach TiledMapLoader generated %d object collision shapes." % collision_count)
+
+
+func _should_block_cell(layer_name: String, gid: int, cell_coords: Vector2i) -> bool:
+	# The church artwork is tall and occupies multiple atlas rows. Keep a narrow
+	# gap at its bottom center so the player can approach the entrance.
+	if gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX:
+		if cell_coords.x >= 30 and cell_coords.x <= 32 and cell_coords.y >= 12 and cell_coords.y <= 14:
+			return false
+		return true
+
+	# House/fence atlas cells are only considered obstacles on the building layer.
+	# Doorway atlas cells are skipped so the player can reach the front of a house.
+	if layer_name == "Buildings, Roads" and gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
+		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
+		if doorway_gids.has(gid):
+			return false
+		return true
+
+	# Trees, rocks, and dense bushes are on this layer. Small ground decorations
+	# (including grass/flowers in the decorative atlas range) remain walkable.
+	if layer_name == "Rocks, Flowers":
+		if gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
+			return false
+		return true
+
+	return false
 
 
 func _create_atlas_source(
