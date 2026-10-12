@@ -134,6 +134,14 @@ func _load_tiled_map() -> void:
 	collision_body.collision_mask = 1
 	add_child(collision_body)
 	var collision_count := 0
+	# Keep roof tiles in front of the Player; tree canopy layering is deferred.
+	var foreground_layer := TileMapLayer.new()
+	foreground_layer.name = "BuildingForeground"
+	foreground_layer.tile_set = tile_set
+	foreground_layer.position = map_origin
+	foreground_layer.z_as_relative = false
+	foreground_layer.z_index = 100
+	add_child(foreground_layer)
 	# Read each atlas image once instead of copying it for every occupied map cell.
 	var exterior_image := exterior_source.texture.get_image()
 	var church_image := church_source.texture.get_image()
@@ -197,6 +205,10 @@ func _load_tiled_map() -> void:
 				)
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
+
+			# Preserve house/church roof occlusion, but do not attempt tree-canopy layering yet.
+			if _should_draw_building_foreground(layer_name, gid):
+				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
 
 			# Build collision only where the tile image has visible, non-transparent
 			# pixels. This avoids invisible rectangular blockers in transparent margins.
@@ -313,3 +325,14 @@ func _create_atlas_source(
 			atlas.create_tile(Vector2i(x, y))
 
 	return atlas
+
+
+func _should_draw_building_foreground(layer_name: String, gid: int) -> bool:
+	# Keep house/fence roof tiles in front, excluding known doorway cells.
+	if layer_name != "Buildings, Roads":
+		return false
+	if gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
+		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
+		return not doorway_gids.has(gid)
+	# Only the upper church roof rows are drawn over actors.
+	return gid >= 752 and gid <= 790
