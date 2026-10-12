@@ -12,9 +12,6 @@
 [ext_resource type="PackedScene" path="res://ui/WorldMap.tscn" id="11_map"]
 [ext_resource type="Script" path="res://world/tiled_map_loader.gd" id="13_tiled_loader"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_church"]
-size = Vector2(128, 160)
-
 [node name="Havenreach" type="Node2D"]
 script = ExtResource("3_havenreach")
 
@@ -27,12 +24,6 @@ location_id = "havenreach"
 
 [node name="TiledMap" type="Node2D" parent="WorldContent"]
 script = ExtResource("13_tiled_loader")
-
-[node name="ChurchCollision" type="StaticBody2D" parent="WorldContent"]
-position = Vector2(88, -128)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldContent/ChurchCollision"]
-shape = SubResource("RectangleShape2D_church")
 
 [node name="WorldExitBoundary" type="Node2D" parent="."]
 script = ExtResource("5_exit")
