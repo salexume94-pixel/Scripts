@@ -53,7 +53,7 @@ func _on_dialogue_choice_selected(choice_id: String) -> void:
 		PartyManager.add_companion("mira")
 		SceneManager.change_scene(
 			HAVENREACH_SCENE,
-			Vector2(0.0, 900.0),
+			Vector2(0.0, 220.0),
 			"havenreach",
 			"havenreach"
 		)
