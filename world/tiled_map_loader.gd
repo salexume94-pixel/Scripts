@@ -239,7 +239,9 @@ func _load_tiled_map() -> void:
 func _get_collision_footprint(layer_name: String, gid: int, cell_coords: Vector2i) -> Rect2:
 	# Tree leaves/canopies must never block movement. These GIDs describe the
 	# four canopy rows of the large tree placed at the northwest of Havenreach.
-	if layer_name == "Rocks, Flowers" and _is_tree_canopy_gid(gid):
+	if layer_name == "Rocks, Flowers" and _should_draw_foreground(layer_name, gid):
+		# Foreground canopy cells are visual-only. Using the same rule as the
+		# render layer prevents a missed atlas cell from becoming an invisible wall.
 		return Rect2()
 
 	# Church facade cells block movement, except the approach gap at the entrance.
@@ -268,17 +270,6 @@ func _get_collision_footprint(layer_name: String, gid: int, cell_coords: Vector2
 		return Rect2(Vector2(2, 8), Vector2(12, 8))
 
 	return Rect2()
-
-
-func _is_tree_canopy_gid(gid: int) -> bool:
-	# Keep these atlas ranges explicit: the current Havenreach tree is assembled
-	# from four rows of 16x16 cells. Canopy artwork has no physical collision.
-	return (
-		(gid >= 446 and gid <= 449)
-		or (gid >= 460 and gid <= 464)
-		or (gid >= 475 and gid <= 480)
-		or (gid >= 490 and gid <= 494)
-	)
 
 
 func _is_tree_trunk_gid(gid: int) -> bool:
@@ -327,7 +318,7 @@ func _should_draw_foreground(layer_name: String, gid: int) -> bool:
 	# The four-row tree canopy is assembled from these atlas GIDs. Duplicate all
 	# canopy tiles, not trunks or small decorative plants, into the foreground.
 	if layer_name == "Rocks, Flowers":
-		if (gid >= 446 and gid <= 449) or (gid >= 460 and gid <= 464):
+		if (gid >= 446 and gid <= 449) or (gid >= 460 and gid <= 465):
 			return true
 		if (gid >= 475 and gid <= 480) or (gid >= 490 and gid <= 494):
 			return true
