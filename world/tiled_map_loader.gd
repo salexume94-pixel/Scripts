@@ -134,6 +134,14 @@ func _load_tiled_map() -> void:
 	collision_body.collision_mask = 1
 	add_child(collision_body)
 	var collision_count := 0
+	# Dedicated foreground layers let the Player pass behind selected roof/canopy
+	# tiles without moving walkable ground or every map tile above the Player.
+	var foreground_layer := TileMapLayer.new()
+	foreground_layer.name = "ForegroundOcclusion"
+	foreground_layer.tile_set = tile_set
+	foreground_layer.position = map_origin
+	foreground_layer.z_index = 10
+	add_child(foreground_layer)
 
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
@@ -194,6 +202,12 @@ func _load_tiled_map() -> void:
 				)
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
+
+			# Duplicate only designated roof/canopy cells into the foreground layer.
+			# The original cell stays behind the Player; this copy draws over the
+			# Player when they walk behind the corresponding part of the object.
+			if _should_draw_foreground(layer_name, gid):
+				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
 
 			# Collision is based on the actual placed cell and its layer, not on
 			# every non-empty tile. That keeps the road and ground layers walkable.
@@ -262,3 +276,26 @@ func _create_atlas_source(
 			atlas.create_tile(Vector2i(x, y))
 
 	return atlas
+
+
+
+func _should_draw_foreground(layer_name: String, gid: int) -> bool:
+	# House atlas cells 1-40 form the upper roof rows. Keep these in front so the
+	# Player can walk behind house roofs while lower walls and doorways remain visible.
+	if layer_name == "Buildings, Roads" and gid >= 1 and gid <= 40:
+		return true
+
+	# The church's top three atlas rows are its upper roof/canopy section.
+	# Lower church tiles remain behind the Player so the entrance and lower facade
+	# do not permanently cover the character.
+	if layer_name == "Buildings, Roads" and gid >= 752 and gid <= 790:
+		return true
+
+	# The tree atlas clusters begin with these upper-canopy tile groups. Keeping
+	# their upper sections in front provides basic walk-behind-tree occlusion.
+	# Trunks and lower foliage remain on the background layer where possible.
+	if layer_name == "Rocks, Flowers":
+		if (gid >= 446 and gid <= 464) or (gid >= 475 and gid <= 494):
+			return true
+
+	return false
