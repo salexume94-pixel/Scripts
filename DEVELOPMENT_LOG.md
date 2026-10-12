@@ -3841,3 +3841,28 @@ Runtime checklist after pulling `main`:
 5. Confirm no new Godot debugger errors.
 
 Runtime status: source update committed to GitHub `main`; local Godot verification is pending.
+
+
+### Havenreach Alpha-Aware Sprite Collision (2026-10-12)
+
+The previous tile-footprint approach still did not feel aligned with the visible sprites. Tree foreground layering is deferred; this update focuses only on collision.
+
+Updated:
+- `world/tiled_map_loader.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Removed the temporary `ForegroundOcclusion` layer and its canopy/roof duplication logic.
+- Collision now scans each relevant atlas tile's alpha channel and creates small rectangles only for contiguous visible pixel runs, merging matching runs across adjacent rows.
+- Transparent pixels in sprite margins no longer receive collision shapes.
+- Collision remains limited to object tiles: house/fence and church cells on `Buildings, Roads`, plus non-decorative objects on `Rocks, Flowers`.
+- Roads, ground, decorative plants, and the existing doorway/entrance exceptions remain walkable.
+
+Runtime checklist after pulling `main`:
+1. Confirm Havenreach loads without parse/resource errors.
+2. Walk along the transparent margins around trees, rocks, bushes, buildings, and church walls; the Player should not collide with empty tile space.
+3. Confirm visible object pixels still block movement.
+4. Confirm roads and ground remain walkable and doorways remain accessible.
+5. Confirm no new Godot debugger errors.
+
+Runtime status: source update committed to GitHub `main`; local Godot verification is pending.
