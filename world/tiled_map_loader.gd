@@ -46,7 +46,10 @@ func _load_tiled_map() -> void:
 
 	while parser.read() == OK:
 		var node_type := parser.get_node_type()
-		var node_name := parser.get_node_name()
+		# XMLParser only exposes element names for element nodes, not whitespace/text nodes.
+		var node_name := ""
+		if node_type == XMLParser.NODE_ELEMENT or node_type == XMLParser.NODE_ELEMENT_END:
+			node_name = parser.get_node_name()
 
 		if node_type == XMLParser.NODE_ELEMENT:
 			if node_name == "map":
@@ -77,7 +80,7 @@ func _load_tiled_map() -> void:
 				inside_layer = false
 				inside_data = false
 
-	parser.close()
+	# XMLParser has no close() method; reaching EOF ends this read loop.
 
 	if map_width <= 0 or map_height <= 0 or tile_width != TILE_SIZE.x or tile_height != TILE_SIZE.y:
 		push_error("Havenreach TiledMapLoader found unsupported or invalid map dimensions.")
