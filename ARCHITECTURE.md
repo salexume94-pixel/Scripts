@@ -484,3 +484,14 @@ Documentation ownership is intentionally split:
 - Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain legacy/reference material until their tutorial-town assumptions are reconciled with the current waking-area → Mira → Havenreach opening. They must not silently override the World/Story Bibles.
 
 Current structural cautions: `player/player_skills.gd` is still an empty placeholder attached to `Player.tscn`; `systems/game_manager.gd` appears unintegrated and should not be expanded until its responsibility relative to SceneManager and GameState is resolved. See the audit report for details. No gameplay code was changed as part of this documentation pass.
+
+
+### Tiled Map Runtime Loading
+
+Havenreach's editable exterior layout is maintained in `world/maps/havensreach/Havensreach.tmx`, with external tilesets in the same directory. Godot does not natively import Tiled TMX maps, so `world/tiled_map_loader.gd` converts this finite orthogonal map's CSV tile layers into native `TileMapLayer` nodes at runtime.
+
+- Tiled remains the source of truth for tile placement.
+- The loader currently supports the two registered 16x16 atlas sources used by Havenreach.
+- Visual tile placement is loaded from the TMX file; Tiled object layers, tile flip flags, and collision metadata are not currently converted.
+- Physical boundaries, interactable buildings, and scene transitions remain owned by the existing Godot world systems.
+- Add support to the loader deliberately if future Tiled maps introduce additional tilesets or layer encodings.
