@@ -3815,3 +3815,29 @@ Runtime checklist after pulling `main`:
 6. Confirm no new Godot debugger errors.
 
 Runtime status: source update committed to GitHub `main`; local Godot verification is pending. Atlas-based canopy classification currently targets the explicitly identified large tree; other tree variants may need additional GID ranges after visual testing.
+
+
+### Havenreach Tree Canopy Collision Correction (2026-10-12)
+
+Follow-up testing reported that the Player still could not walk behind the large tree.
+
+Source inspection found a missed canopy tile: GID 465 was placed in the tree's second canopy row but was excluded from both the foreground-rendering range and the canopy collision exclusion. It could therefore act as an invisible obstacle and fail to render over the Player.
+
+Updated:
+- `world/tiled_map_loader.gd`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Included GID 465 in the tree canopy foreground range.
+- Made collision generation reuse the foreground-selection rule for `Rocks, Flowers`, so foreground canopy cells cannot also generate collision.
+- Kept compact lower-half footprints for rocks/bushes and the narrower lower-half trunk footprint.
+- Preserved building/church collision and doorway exceptions.
+
+Runtime checklist after pulling `main`:
+1. Walk behind the large tree and confirm the Player can move through canopy cells.
+2. Confirm the canopy renders in front of the Player while behind the tree.
+3. Confirm collision remains around the trunk base and lower footprints of rocks/bushes.
+4. Confirm buildings, church entrances, roads, and grass behave as before.
+5. Confirm no new Godot debugger errors.
+
+Runtime status: source update committed to GitHub `main`; local Godot verification is pending.
