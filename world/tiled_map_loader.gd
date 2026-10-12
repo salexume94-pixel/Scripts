@@ -134,6 +134,9 @@ func _load_tiled_map() -> void:
 	collision_body.collision_mask = 1
 	add_child(collision_body)
 	var collision_count := 0
+	# Read each atlas image once instead of copying it for every occupied map cell.
+	var exterior_image := exterior_source.texture.get_image()
+	var church_image := church_source.texture.get_image()
 
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
@@ -197,7 +200,8 @@ func _load_tiled_map() -> void:
 
 			# Build collision only where the tile image has visible, non-transparent
 			# pixels. This avoids invisible rectangular blockers in transparent margins.
-			var collision_rects := _get_collision_rects(layer_name, gid, source_id, atlas_coords, exterior_source.texture if source_id == 0 else church_source.texture, cell_coords)
+			var atlas_image: Image = exterior_image if source_id == 0 else church_image
+			var collision_rects := _get_collision_rects(layer_name, gid, atlas_coords, atlas_image, cell_coords)
 			for rect in collision_rects:
 				var collision_shape := CollisionShape2D.new()
 				collision_shape.name = "ObjectPixel_%d_%d_%d" % [cell_coords.x, cell_coords.y, collision_count]
@@ -220,28 +224,34 @@ func _load_tiled_map() -> void:
 func _get_collision_rects(
 	layer_name: String,
 	gid: int,
-	source_id: int,
 	atlas_coords: Vector2i,
-	texture: Texture2D,
+	image: Image,
 	cell_coords: Vector2i
 ) -> Array[Rect2i]:
-	# Return no collision for decorative ground plants and known open door cells.
+	# Ground and small decorative plants never block movement.
 	if layer_name == "Ground":
 		return []
-	if layer_name == "Rocks, Flowers" and gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
+	if layer_name == "Rocks, Flowers":
+		if gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
+			return []
+	elif layer_name == "Buildings, Roads":
+		# Roads and unrelated atlas cells are walkable. Only house/fence and
+		# church tiles are solid on this layer.
+		var is_house_or_fence := gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX
+		var is_church := gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX
+		if not is_house_or_fence and not is_church:
+			return []
+		if is_house_or_fence:
+			var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
+			if doorway_gids.has(gid):
+				return []
+		if is_church and cell_coords.x >= 30 and cell_coords.x <= 32 and cell_coords.y >= 12 and cell_coords.y <= 14:
+			return []
+	else:
 		return []
-	if gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX:
-		if cell_coords.x >= 30 and cell_coords.x <= 32 and cell_coords.y >= 12 and cell_coords.y <= 14:
-			return []
-	if layer_name == "Buildings, Roads" and gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
-		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
-		if doorway_gids.has(gid):
-			return []
 
 	# Scan the exact 16x16 atlas tile's alpha channel. Collision rectangles are
 	# created from contiguous visible pixel runs, not the tile's transparent area.
-	# The atlas is tiny, so this work is inexpensive for a town map.
-	var image := texture.get_image()
 	if image == null or image.is_empty():
 		return []
 	var origin := atlas_coords * TILE_SIZE
@@ -261,12 +271,15 @@ func _get_collision_rects(
 		if run_start >= 0:
 			row_runs.append(Vector2i(run_start, TILE_SIZE.x))
 
+		# Merge identical horizontal runs on adjacent rows into fewer rectangles.
 		var row_keys: Dictionary = {}
 		for run in row_runs:
 			var key := "%d:%d" % [run.x, run.y]
 			row_keys[key] = true
 			if active_runs.has(key):
-				active_runs[key].size.y += 1
+				var active_rect: Rect2i = active_runs[key]
+				active_rect.size.y += 1
+				active_runs[key] = active_rect
 			else:
 				active_runs[key] = Rect2i(run.x, y, run.y - run.x, 1)
 		var old_keys: Array = active_runs.keys()
