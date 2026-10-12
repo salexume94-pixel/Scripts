@@ -213,18 +213,20 @@ func _load_tiled_map() -> void:
 			if _should_draw_foreground(layer_name, gid):
 				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
 
-			# Collision is based on the actual placed cell and its layer, not on
-			# every non-empty tile. That keeps the road and ground layers walkable.
-			if _should_block_cell(layer_name, gid, cell_coords):
+			# Use object-specific footprints instead of treating every occupied
+			# tile as a full 16x16 obstacle. Canopy tiles deliberately return no shape.
+			var footprint := _get_collision_footprint(layer_name, gid, cell_coords)
+			if footprint.size != Vector2.ZERO:
 				var collision_shape := CollisionShape2D.new()
 				collision_shape.name = "ObjectCell_%d_%d" % [cell_coords.x, cell_coords.y]
 				var rectangle := RectangleShape2D.new()
-				rectangle.size = Vector2(TILE_SIZE)
+				rectangle.size = footprint.size
 				collision_shape.shape = rectangle
+				# footprint.position is local to the tile's top-left corner.
 				collision_shape.position = Vector2(
-					(float(cell_coords.x) + 0.5) * TILE_SIZE.x,
-					(float(cell_coords.y) + 0.5) * TILE_SIZE.y
-				)
+					float(cell_coords.x) * TILE_SIZE.x,
+					float(cell_coords.y) * TILE_SIZE.y
+				) + footprint.position + footprint.size / 2.0
 				collision_body.add_child(collision_shape)
 				collision_count += 1
 
@@ -234,30 +236,54 @@ func _load_tiled_map() -> void:
 		print("Havenreach TiledMapLoader generated %d object collision shapes." % collision_count)
 
 
-func _should_block_cell(layer_name: String, gid: int, cell_coords: Vector2i) -> bool:
-	# The church artwork is tall and occupies multiple atlas rows. Keep a narrow
-	# gap at its bottom center so the player can approach the entrance.
+func _get_collision_footprint(layer_name: String, gid: int, cell_coords: Vector2i) -> Rect2:
+	# Tree leaves/canopies must never block movement. These GIDs describe the
+	# four canopy rows of the large tree placed at the northwest of Havenreach.
+	if layer_name == "Rocks, Flowers" and _is_tree_canopy_gid(gid):
+		return Rect2()
+
+	# Church facade cells block movement, except the approach gap at the entrance.
+	# Use full tile footprints here because these cells represent solid walls.
 	if gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX:
 		if cell_coords.x >= 30 and cell_coords.x <= 32 and cell_coords.y >= 12 and cell_coords.y <= 14:
-			return false
-		return true
+			return Rect2()
+		return Rect2(Vector2.ZERO, Vector2(TILE_SIZE))
 
-	# House/fence atlas cells are only considered obstacles on the building layer.
-	# Doorway atlas cells are skipped so the player can reach the front of a house.
+	# House/fence cells on the building layer retain full tile collision, while
+	# the known doorway cells stay open.
 	if layer_name == "Buildings, Roads" and gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX:
 		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
 		if doorway_gids.has(gid):
-			return false
-		return true
+			return Rect2()
+		return Rect2(Vector2.ZERO, Vector2(TILE_SIZE))
 
-	# Trees, rocks, and dense bushes are on this layer. Small ground decorations
-	# (including grass/flowers in the decorative atlas range) remain walkable.
+	# Rocks, trunks, and dense bushes use a compact footprint near the bottom
+	# of their tile. This lets the Player pass their transparent/upper artwork.
+	# Small decorative ground tiles (grass/flowers) remain completely walkable.
 	if layer_name == "Rocks, Flowers":
 		if gid >= DECORATIVE_GID_MIN and gid <= DECORATIVE_GID_MAX:
-			return false
-		return true
+			return Rect2()
+		if _is_tree_trunk_gid(gid):
+			return Rect2(Vector2(3, 8), Vector2(10, 8))
+		return Rect2(Vector2(2, 8), Vector2(12, 8))
 
-	return false
+	return Rect2()
+
+
+func _is_tree_canopy_gid(gid: int) -> bool:
+	# Keep these atlas ranges explicit: the current Havenreach tree is assembled
+	# from four rows of 16x16 cells. Canopy artwork has no physical collision.
+	return (
+		(gid >= 446 and gid <= 449)
+		or (gid >= 460 and gid <= 464)
+		or (gid >= 475 and gid <= 480)
+		or (gid >= 490 and gid <= 494)
+	)
+
+
+func _is_tree_trunk_gid(gid: int) -> bool:
+	# The fifth row directly beneath that canopy contains the trunk/base tiles.
+	return gid >= 506 and gid <= 509
 
 
 func _create_atlas_source(
