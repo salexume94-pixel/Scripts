@@ -3866,3 +3866,6 @@ Runtime checklist after pulling `main`:
 5. Confirm no new Godot debugger errors.
 
 Runtime status: source update committed to GitHub `main`; local Godot verification is pending.
+
+
+Correction to the alpha-aware collision implementation: house and church roof foreground rendering is retained so this collision-only change does not remove existing building occlusion. Tree-canopy foreground rendering remains deferred. Collision still uses visible-pixel alpha runs on relevant object tiles.
