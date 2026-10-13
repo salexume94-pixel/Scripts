@@ -8,11 +8,11 @@ The World Bible (`docs/world/WORLD_BIBLE.md`) owns stable setting facts. Quest d
 
 ## Current working opening: The Stranger
 
-**Status: initial implementation committed; local Godot runtime verification pending.**
+**Status: opening implementation committed; the 2026-10-10 developer-reported opening checklist passed. Later Tiled-map changes require their own verification.**
 
 The current working outline begins with the protagonist waking in a field, meeting Mira, and reaching Havenreach. The first playable main quest is titled **The Stranger**.
 
-This supersedes the older opening proposal in `STORY_DIRECTION.md` for planning the next design pass, but that existing file is retained unchanged as historical/reference material. Do not combine the two openings by adding an MMO login/tutorial sequence unless the story direction is deliberately revised.
+This is the sole canonical story-planning document. The older root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md` documents have been consolidated and removed. Do not reintroduce their outdated tutorial-town/MMO-login opening unless the canonical opening is deliberately revised.
 
 ## Narrative constraints
 
@@ -123,3 +123,32 @@ This addendum records decisions made after the initial outline above. It superse
 - Choice 1: **“Journey with Mira”**. Stable choice ID: journey_with_mira. Add Mira to the party roster, mark meet_mira complete, and transition directly to Havenreach.
 - Choice 2: **“Travel to Havenreach alone”**. Stable choice ID: travel_alone. Do not add Mira to the roster, mark meet_mira complete, and return the Player to the overworld outside the encounter entry trigger.
 - The choice appears only until one option is selected. The overworld entry for mira_encounter_area is then closed using the existing meet_mira objective progress, so the first encounter cannot be repeated by re-entering the area.
+
+
+## Canonical narrative framework
+
+This section consolidates the still-relevant principles from the retired root-level story documents. This Story Bible is now the only narrative-design source of truth.
+
+### Genre, themes, and pacing
+
+The game uses a fantasy MMORPG-like world as its surface premise, but its characters experience their world as real; they do not knowingly describe their lives as a game. The story should begin with understandable local needs and gradually reveal anomalies, a deeper world mystery, and eventually a larger existential conflict.
+
+Use this progression as a pacing guide, not a rigid chapter checklist:
+
+Personal journey → Regional problems → World-spanning mystery → Existential stakes.
+
+The protagonist starts as an ordinary, largely voiceless Wanderer. Importance should emerge from actions and discoveries rather than prophecy. Mira is observant and capable, but is not an all-knowing exposition device. The Wanderer Jesus-like / rogue-admin interpretation should remain understated and revealed through rare appearances, behavior, and consequences rather than explanatory monologues.
+
+### Narrative influences
+
+Use these works as broad craft references, not material to copy: Pokémon for accessible exploration and progression; Shin Megami Tensei and Persona for supernatural and moral tension; Baldur's Gate for character-driven choices and factions; Dark Souls and Elden Ring for environmental storytelling and fragmented history; NieR:Automata for layered philosophical revelations; Final Fantasy, Chrono Trigger, Chrono Cross, and Breath of Fire for escalating journeys, interconnected events, and mythology; and .hack / Sword Art Online for the tension between an MMO-like premise and reality that does not behave as expected.
+
+### Story delivery rules
+
+- Favor quests, locations, enemy behavior, objects, NPC choices, and changes in the world over long exposition or constant cutscenes.
+- Let early quests appear ordinary; introduce inconsistencies gradually, allowing the player to notice before understanding.
+- Keep three information layers distinct: what the player knows, what the player suspects, and what is actually true.
+- Let regional quests matter to their local characters even when they are not required for the central plot.
+- Use the existing QuestManager for quest lifecycle. Do not create a parallel StoryManager merely to store narrative notes.
+- Keep quest state, durable story facts, and physical world state separate, with one explicit runtime owner for each when implementation requires it.
+- Establish the world and its people before producing large amounts of dialogue: world and character motivations first, quest beats next, dialogue last.
