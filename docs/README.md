@@ -1,6 +1,6 @@
 # Documentation Index
 
-This folder contains canonical structured world and story references. Existing root-level documents remain in place; nothing has been moved or deleted.
+This folder contains the canonical structured world and story references. Retired root-level story documents have been consolidated into the Story Bible and removed.
 
 ## Technical and development documents
 
@@ -13,7 +13,7 @@ This folder contains canonical structured world and story references. Existing r
 
 - `world/WORLD_BIBLE.md` — stable setting facts: geography, settlements, institutions, factions, NPC reference facts, and regional relationships.
 - `story/STORY_BIBLE.md` — plot chronology, character arcs, revelations, and relationships between story beats and quests.
-- Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain reference material until their overlap and contradictions are reconciled. They are not silently replaced by the new documents.
+- The Story Bible is the single narrative source of truth. Do not create parallel root-level story-direction/design documents.
 
 ## Source-of-truth rules
 
