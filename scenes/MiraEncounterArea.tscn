@@ -85,7 +85,7 @@ script = ExtResource("3_presentation")
 zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(0, 100)
+position = Vector2(100, 0)
 
 [node name="InventoryCharacterHUD" parent="." instance=ExtResource("7_inventory")]
 
