@@ -3869,3 +3869,21 @@ Runtime status: source update committed to GitHub `main`; local Godot verificati
 
 
 Correction to the alpha-aware collision implementation: house and church roof foreground rendering is retained so this collision-only change does not remove existing building occlusion. Tree-canopy foreground rendering remains deferred. Collision still uses visible-pixel alpha runs on relevant object tiles.
+
+
+### Repository Structural Audit and Tiled Map Inventory Refresh (2026-10-12)
+
+Reviewed the current GitHub `main` tree and checked the existing architecture, roadmap, development log, documentation index, and prior repository audit before making documentation updates.
+
+Current tracked inventory: 1,859 files; 70 GDScript files; 36 scenes; 70 `.tres` resources; 819 PNGs; 3 TMX maps; and 2 TSX tileset definitions. The current map assets live under `world/maps/`.
+
+Structural checks:
+- Confirmed `scenes/Havenreach.tscn` attaches `world/tiled_map_loader.gd` to its TiledMap node.
+- Confirmed the loader’s literal Havenreach TMX and atlas paths correspond to tracked files.
+- Confirmed the overworld scene still uses Polygon2D terrain in the inspected source; the tracked overworld TMX is not yet shown as runtime-integrated.
+- Confirmed the house-interior TMX is tracked but the inspected loader only consumes the Havenreach exterior TMX.
+- Retained the earlier findings for the PlayerSkills placeholder, unintegrated GameManager candidate, repeated interior scaffolding, test enemy resources mixed with production definitions, and legacy story-document overlap.
+
+Documentation ownership remains: ARCHITECTURE.md for system and folder ownership; ROADMAP.md for active priorities; DEVELOPMENT_LOG.md as append-only history; docs/REPOSITORY_AUDIT.md for dated inventories and concrete findings; docs/README.md for navigation and source-of-truth rules; docs/world/WORLD_BIBLE.md for stable world facts; docs/story/STORY_BIBLE.md for plot chronology and revelations.
+
+Verification boundary: this source/tree review does not claim a fresh full-tree run of `tools/audit_res_refs.py` or Godot import/runtime verification for the newly added maps. The previous 1,094-reference/zero-missing result applies to its earlier snapshot only. Fresh local reference scanning and visual/runtime checks remain pending. No gameplay code was changed in this documentation update.
