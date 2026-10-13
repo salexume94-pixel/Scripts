@@ -4197,3 +4197,18 @@ Runtime checklist after pulling `origin main`:
 
 Status: source change committed to `main`; local Godot import and runtime verification remain pending.
 
+## Mira Encounter Side Entry (2026-10-13)
+
+- Changed the Mira encounter entry spawn from `Vector2(0, 100)` to `Vector2(100, 0)`, placing the Player at the right side of the clearing so the approach is horizontal rather than through the tree bands along the top and bottom of the map.
+- Updated the Player's fallback position in `scenes/MiraEncounterArea.tscn` to match the configured entry resource.
+- Did not move trees, edit the Tiled map, or change the encounter marker or exit destination.
+
+Runtime checklist:
+- [ ] Pull `origin main` and open the project in Godot.
+- [ ] Enter Mira's encounter from the overworld and confirm the Player appears on the right side of the clearing.
+- [ ] Confirm the Player can move left toward Mira without getting trapped by tree collision.
+- [ ] Confirm returning to the overworld and re-entering still works.
+- [ ] Check canopy draw order and the Godot debugger.
+
+Status: source changes committed; local runtime verification pending.
+
