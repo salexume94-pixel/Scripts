@@ -4281,3 +4281,22 @@ Local Godot runtime testing passed after the fixed-spawn transition update.
 - [x] Checked the Godot debugger; no errors were reported.
 
 Status: local runtime verification passed for Mira's entry spawn, forest collision, player access to Mira, and Havenreach side-based spawning.
+
+
+## Connect First Havenreach House Interior (2026-10-13)
+
+- Added `world/house_interior_tiled_map_loader.gd`, a configurable Tiled loader for the existing `world/maps/havensreach/house_1_interior.tmx`. It loads the exterior and interior atlases, renders the TMX layers, places close/top item layers in front of the Player, and generates alpha-aware collision for furniture.
+- Added `scenes/interiors/HavenreachHouse1.tscn` using the existing Player, HUD, camera, interior boundary, and reusable Door systems.
+- Made `world/interior.gd` room dimensions configurable so the 320×320 px house map gets matching boundaries without changing the church's 480×320 px default.
+- Connected the existing house doorway at the first house's visible entrance in `scenes/Havenreach.tscn` to the new interior. The entrance uses the shared Door interaction and saves the exact outside Player position for returning.
+- The church scene and church entrance remain unchanged.
+
+### Local runtime verification required
+
+- [ ] Pull `origin main` and open the project in Godot.
+- [ ] Confirm Havenreach loads with no parse/import/debugger errors.
+- [ ] Walk to the first house entrance and press E; confirm the house interior opens.
+- [ ] Confirm the Tiled floor, rugs, and furniture render correctly and furniture collision prevents walking through solid objects.
+- [ ] Confirm the Player can move through the room without getting trapped by invisible collision.
+- [ ] Press E at the exit and confirm return to Havenreach at the same outside position.
+- [ ] Confirm the church remains disconnected and unchanged.
