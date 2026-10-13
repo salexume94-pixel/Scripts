@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="6_world_presentation"]
 [ext_resource type="Script" path="res://world/world_boundaries.gd" id="7_world_boundaries"]
 [ext_resource type="Script" path="res://systems/world_encounter_system.gd" id="8_world_encounters"]
+[ext_resource type="Script" path="res://world/overworld_tiled_map_loader.gd" id="14_overworld_tiled_loader"]
 
 [node name="WorldMapWorld" type="Node2D"]
 script = ExtResource("1_world_map")
@@ -21,6 +22,9 @@ world_id = "world_map"
 location_id = "world_map"
 
 [node name="WorldMapContent" type="Node2D" parent="."]
+
+[node name="TiledOverworldMap" type="Node2D" parent="."]
+script = ExtResource("14_overworld_tiled_loader")
 
 [node name="WorldFloor" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(-1500, -1000, 1500, -1000, 1500, 1000, -1500, 1000)
