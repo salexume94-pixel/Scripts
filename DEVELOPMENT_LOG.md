@@ -4212,3 +4212,21 @@ Runtime checklist:
 
 Status: source changes committed; local runtime verification pending.
 
+## Mira Forest Collision Coverage Fix (2026-10-13)
+
+Corrected the shared forest loader so tree collision follows the layered tree artwork rather than assuming every tree is placed on the first tree layer.
+
+- Generates collision from the bottom/trunk atlas rows (GIDs 490–494 and 506–509) on every layer named `Tree Layer...`.
+- Leaves the upper canopy rows non-blocking, allowing normal movement behind and beneath tree crowns.
+- Continues to derive collision from opaque atlas pixels so transparent tile margins do not become invisible walls.
+- Applies to both Waking Area and Mira Encounter because both use `world/forest_tiled_map_loader.gd`.
+
+Runtime checklist after pulling `origin main`:
+- [ ] Enter Mira's encounter from the overworld marker's left and right sides; confirm the player starts in the clearing.
+- [ ] Enter from the top and bottom sides; confirm the player does not spawn inside the tree bands.
+- [ ] Walk against each tree trunk, including trees placed on Tree Layer 3 and Tree Layer 4; confirm collision blocks the trunk.
+- [ ] Walk behind/under canopies and through grass/decorative flora; confirm these remain walkable.
+- [ ] Repeat tree checks in Waking Area and inspect the Godot debugger.
+
+Status: source fix committed; local Godot runtime verification is still required.
+
