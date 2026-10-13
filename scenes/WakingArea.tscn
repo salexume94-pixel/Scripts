@@ -35,7 +35,7 @@ map_path = "res://world/maps/waking/waking_area.tmx"
 script = ExtResource("5_exit")
 location_bounds = Rect2(-160, -160, 320, 320)
 target_scene = "res://scenes/WorldMapWorld.tscn"
-target_player_position = Vector2(-1832, 1968)
+target_player_position = Vector2(-1840, 1968)
 target_world_id = "world_map"
 target_location_id = "world_map"
 
