@@ -3955,3 +3955,13 @@ Runtime checklist after pulling `origin main`:
 2. Confirm player, encounters, map boundaries, and world-map UI remain functional.
 3. Confirm the legacy `World.tscn` and `NorthbridgeVillage.tscn` are not relied on as active playable maps; if they are, connect the correct Tiled map loaders before runtime use.
 4. Confirm no new Godot debugger errors.
+
+
+## 2026-10-13 — Scene Node2D Redundancy Audit
+
+- Audited all 36 tracked `.tscn` scene files for Node2D-based nodes, grouping wrappers, visual placeholders, and scene-resource dependencies.
+- Removed the obsolete `WorldMapContent` group from `scenes/WorldMapWorld.tscn`, along with its eight legacy `ForestTree` instances and the `ForestPathLabel` / `WorldLabel` text overlays. The Tiled overworld loader now owns the map visuals, so keeping the old polygon-tree decoration over it duplicated scenery and labels.
+- Removed the now-unused `ForestTree.tscn` external-resource reference from `WorldMapWorld.tscn`. The reusable scene itself remains because `MiraEncounterArea.tscn` still uses it.
+- Kept root Node2D nodes, scripted boundary/presentation nodes, camera parents, content groups with live children, collision bodies, and the MovingNPCTest fixture. These are not redundant merely because they are Node2D-based.
+- Kept legacy/example scenes such as `World.tscn`, `NorthbridgeVillage.tscn`, and the Tutorial Town interiors; they still have scene/resource references and should not be deleted based on appearance alone.
+- Static GitHub-side edit only. Local Godot parse/runtime verification has not been performed; after pulling `origin main`, open `WorldMapWorld.tscn` and verify the Tiled map, boundaries, player, encounters, and HUD.
