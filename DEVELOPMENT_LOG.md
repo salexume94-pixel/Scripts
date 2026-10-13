@@ -4251,3 +4251,19 @@ Runtime checklist:
 
 Status: collision source correction committed; local Godot runtime verification pending.
 
+
+
+## Fix Mira Encounter Spawn for All Approach Directions (2026-10-13)
+
+- Fixed the overworld entry transition so location definitions can choose whether their configured spawn offset follows the side of approach.
+- Mira's encounter entry now sets `entry_spawn_follows_approach = false`, so entry from the top, south, left, or right always places the Player at the fixed clearing position `Vector2(100, 0)`.
+- Other locations retain the existing side-based behavior by default; Havenreach's entry behavior is unchanged.
+- This is separate from the forest collision change, which continues to make visible tree canopy and trunk pixels impassable.
+
+Runtime checklist after pulling `origin main`:
+- [ ] Enter Mira's marker from the overworld's top, south, left, and right sides; confirm the Player always spawns at the right-side clearing position.
+- [ ] Confirm the Player is not trapped against tree collision and can walk toward Mira.
+- [ ] Confirm Havenreach still spawns on the side approached.
+- [ ] Check the Godot debugger for parse/resource/physics errors.
+
+Status: source changes committed to GitHub `main`; local Godot import and runtime verification remain pending.
