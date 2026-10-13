@@ -17,6 +17,7 @@ world_position = Vector2(-1952, 1872)
 world_entry_size = Vector2(64, 64)
 entry_scene = "res://scenes/MiraEncounterArea.tscn"
 entry_player_position = Vector2(100, 0)
+entry_spawn_follows_approach = false
 entry_world_id = "world_map"
 entry_location_id = "mira_encounter_area"
 entry_enabled = true
