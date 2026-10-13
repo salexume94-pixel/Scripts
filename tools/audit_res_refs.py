@@ -19,7 +19,7 @@ ROOT = Path.cwd()
 SCANNED_SUFFIXES = {".gd", ".tscn", ".tres", ".godot", ".cfg", ".import", ".md"}
 SKIP_DIRS = {".git", ".godot", ".venv", "__pycache__"}
 REFERENCE = re.compile(
-    r"""(?P<quote>["'`])res://(?P<quoted_path>.*?)(?P=quote)|res://(?P<plain>[^"'\`\s)\],;<>]+)"""
+    r"""(?P<quote>["'`])res://(?P<quoted_path>.*?)(?P=quote)|res://(?P<plain>[^"'\x60\s)\],;<>]+)"""
 )
 TRAILING_PUNCTUATION = ".,:!?}"
 
