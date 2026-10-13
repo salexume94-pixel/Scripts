@@ -363,8 +363,10 @@ func _load_tiled_map() -> void:
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
 
-			# Preserve house/church roof occlusion, but do not attempt tree-canopy layering yet.
-			if _should_draw_building_foreground(layer_name, gid):
+			# Draw the tall location-marker artwork above the Player so its lower
+			# tiles cannot cover the character when walking into the marker.
+			# Building roofs use the same foreground layer for their normal occlusion.
+			if _should_draw_building_foreground(layer_name, gid) or _is_marker_gid(gid):
 				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
 
 			# Build collision only where the tile image has visible, non-transparent
@@ -403,6 +405,10 @@ func _get_collision_rects(
 	image: Image,
 	cell_coords: Vector2i
 ) -> Array[Rect2i]:
+	# Location markers are decorative transition art, not solid obstacles.
+	if _is_marker_gid(gid):
+		return []
+
 	# Ground and small decorative plants never block movement.
 	if layer_name == "Ground":
 		return []
@@ -508,3 +514,12 @@ func _should_draw_building_foreground(layer_name: String, gid: int) -> bool:
 		return not doorway_gids.has(gid)
 	# Only the upper church roof rows are drawn over actors.
 	return false
+
+
+
+func _is_marker_gid(gid: int) -> bool:
+	# Keep the marker ranges synchronized with the GIDs in Overworld.tmx.
+	return (
+		gid >= HAVENREACH_MARKER_FIRST_GID
+		and gid < WAKING_MARKER_FIRST_GID + WAKING_MARKER_COLUMNS * WAKING_MARKER_ROWS
+	)
