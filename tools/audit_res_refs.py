@@ -18,7 +18,9 @@ from pathlib import Path
 ROOT = Path.cwd()
 SCANNED_SUFFIXES = {".gd", ".tscn", ".tres", ".godot", ".cfg", ".import", ".md"}
 SKIP_DIRS = {".git", ".godot", ".venv", "__pycache__"}
-REFERENCE = re.compile(r"""res://([^\"'`\s)\],;<>]+)""")
+REFERENCE = re.compile(
+    r"""(?P<quote>["'`])res://(?P<quoted_path>.*?)(?P=quote)|res://(?P<plain>[^"'\`\s)\],;<>]+)"""
+)
 TRAILING_PUNCTUATION = ".,:!?}"
 
 
@@ -38,6 +40,7 @@ def main() -> int:
     missing: list[tuple[str, int, str]] = []
     checked_refs = 0
     dynamic_templates_skipped = 0
+    generated_import_refs_skipped = 0
     unreadable: list[tuple[str, str]] = []
 
     for source in files:
@@ -49,12 +52,18 @@ def main() -> int:
 
         for line_number, line in enumerate(text.splitlines(), 1):
             for match in REFERENCE.finditer(line):
-                target = match.group(1).rstrip(TRAILING_PUNCTUATION)
+                target = (
+                    match.group("quoted_path") or match.group("plain") or ""
+                ).rstrip(TRAILING_PUNCTUATION)
                 if not target:
                     continue
                 # Formatting placeholders are runtime templates, not literal filenames.
                 if "%" in target or "{" in target or "}" in target:
                     dynamic_templates_skipped += 1
+                    continue
+                # Godot regenerates imported .ctex cache files locally; they are not source assets.
+                if target.startswith(".godot/imported/"):
+                    generated_import_refs_skipped += 1
                     continue
                 checked_refs += 1
                 resolved = ROOT / target
@@ -65,6 +74,7 @@ def main() -> int:
     print(f"Files scanned: {len(files)}")
     print(f"Literal res:// references checked: {checked_refs}")
     print(f"Dynamic path templates skipped: {dynamic_templates_skipped}")
+    print(f"Generated .godot/imported references skipped: {generated_import_refs_skipped}")
     print(f"Missing targets: {len(missing)}")
     print(f"Unreadable files: {len(unreadable)}")
 
