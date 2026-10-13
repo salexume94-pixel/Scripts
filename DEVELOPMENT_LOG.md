@@ -4300,3 +4300,18 @@ Status: local runtime verification passed for Mira's entry spawn, forest collisi
 - [ ] Confirm the Player can move through the room without getting trapped by invisible collision.
 - [ ] Press E at the exit and confirm return to Havenreach at the same outside position.
 - [ ] Confirm the church remains disconnected and unchanged.
+
+
+## Align House Interior Exit with Bottom Rug (2026-10-13)
+
+- Moved the reusable exit Door to `Vector2(96, 160)`, aligned with the rug at the bottom-right of `house_1_interior.tmx`.
+- Added configurable `door_offset_x` to `world/interior.gd` so the bottom collision wall opening moves with the off-center doorway instead of leaving an impassable wall in front of it.
+- Moved the interior Player spawn to `Vector2(96, 120)` and updated the Havenreach entrance's destination spawn to match.
+- The exterior return behavior remains unchanged: the Door restores the exact position where the Player entered the building.
+
+### Local runtime verification required
+
+- [ ] Pull `origin main` and open Godot; confirm no parse or debugger errors.
+- [ ] Enter the house and confirm the Player appears near the bottom rug.
+- [ ] Confirm the exit opening aligns with the rug and the Player can walk through it.
+- [ ] Exit to Havenreach and confirm the Player returns to the original outside position.
