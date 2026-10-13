@@ -37,46 +37,6 @@ location_id = "tutorial_town"
 
 [node name="WorldContent" type="Node2D" parent="." unique_id=137521038]
 
-[node name="WorldFloor" type="Polygon2D" parent="WorldContent" unique_id=137521041]
-polygon = PackedVector2Array(-1000, -1500, 1000, -1500, 1000, 1500, -1000, 1500)
-color = Color(0.12, 0.18, 0.12, 1)
-
-[node name="NorthForest" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-900, -1450, 900, -1450, 900, -1050, 500, -1050, 300, -1150, -100, -1080, -450, -1180, -900, -1080)
-color = Color(0.08, 0.14, 0.08, 1)
-
-[node name="WestForest" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-950, -950, -650, -900, -700, -500, -820, -250, -760, 100, -900, 500, -950, 500)
-color = Color(0.08, 0.14, 0.08, 1)
-
-[node name="EastForest" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(950, -900, 700, -780, 760, -400, 680, -100, 820, 180, 700, 520, 950, 620)
-color = Color(0.08, 0.14, 0.08, 1)
-
-[node name="SouthForest" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-900, 1080, -450, 1160, -100, 1080, 300, 1170, 650, 1080, 900, 1160, 900, 1450, -900, 1450)
-color = Color(0.08, 0.14, 0.08, 1)
-
-[node name="NorthRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-70, -1050, 70, -1050, 70, -220, -70, -220)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="SouthRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-70, 220, 70, 220, 70, 1050, -70, 1050)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="WestRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-720, -70, -220, -70, -220, 70, -720, 70)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="EastRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(220, -70, 720, -70, 720, 70, 220, 70)
-color = Color(0.32, 0.27, 0.20, 1)
-
-[node name="TownSquare" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-220, -180, 220, -180, 220, 180, -220, 180)
-color = Color(0.22, 0.25, 0.22, 1)
-
 [node name="Inn" parent="WorldContent" instance=ExtResource("4_building")]
 location_data = ExtResource("11_inn_location")
 interior_scene = "res://scenes/interiors/TutorialTownInn.tscn"
@@ -121,14 +81,6 @@ position = Vector2(-360, 650)
 location_data = ExtResource("19_residence_06_location")
 interior_scene = "res://scenes/interiors/TutorialTownResidence06.tscn"
 position = Vector2(360, 650)
-
-[node name="FarmWest" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-900, 650, -600, 650, -600, 900, -900, 900)
-color = Color(0.36, 0.31, 0.14, 1)
-
-[node name="FarmEast" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(600, 650, 900, 650, 900, 900, 600, 900)
-color = Color(0.36, 0.31, 0.14, 1)
 
 [node name="InnLabel" type="Label" parent="WorldContent"]
 position = Vector2(-410, -395)
@@ -189,7 +141,6 @@ target_scene = "res://scenes/WorldMapWorld.tscn"
 target_player_position = Vector2(0, 560)
 target_world_id = "world_map"
 target_location_id = "world_map"
-
 
 [node name="WorldPresentation" type="Node2D" parent="." unique_id=137521037]
 script = ExtResource("2_world_presentation")
