@@ -721,3 +721,18 @@ Verified source connections:
 ### Audit conclusion
 
 The domain folder layout remains broadly coherent. No mass file moves are justified by this audit. The concrete current integration gap is that the overworld and house-interior TMX files are tracked but not yet shown to be loaded by their corresponding runtime scenes. Next verification should run the reference checker on the current local checkout, then test Havenreach collision/roof occlusion and separately confirm whether the overworld/interior TMX files are intentionally staging assets or need scene integration.
+
+
+---
+
+## Owner Clarifications and Cleanup Resolution (2026-10-12)
+
+The developer confirmed the following intended design decisions; these supersede any earlier wording that made them sound like defects:
+
+- **Polygon2D terrain is temporary.** The current `WorldMapWorld.tscn` Polygon2D terrain is being replaced with Tiled maps/sprite-sheet terrain. `Overworld.tmx` and `house_1_interior.tmx` are in-progress replacement assets. Their lack of runtime wiring at the time of this snapshot is migration work, not a decision to keep Polygon2D as the permanent terrain system.
+- **PlayerSkills is intentional.** `player/player_skills.gd` is reserved for player skill logic; the battle-screen Fire action should route through it. Do not delete the placeholder simply because more skills have not yet been implemented.
+- **Debug slime definitions are intentional.** Keep the AI test resources available for debugging. Their placement is not evidence of accidental duplication.
+- **GameManager cleanup completed.** `systems/game_manager.gd` was not an autoload and had no references in any of the 36 tracked scene files inspected. Its only behavior was toggling an otherwise unused `game_started` boolean. It and its UID sidecar were removed. This was a source-level cleanup; the project still needs a fresh local Godot run to validate the entire game after pulling.
+- **Story documentation consolidated.** Relevant general narrative principles from the old root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md` were consolidated into `docs/story/STORY_BIBLE.md`; the old documents were deleted. `docs/README.md` now identifies the canonical locations.
+
+No claim is made here that the new overworld/interior Tiled integrations have passed local runtime verification. Pull `origin main`, run `python tools/audit_res_refs.py`, and verify scene loading/collision/layering in Godot.
