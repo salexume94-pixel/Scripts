@@ -4267,3 +4267,17 @@ Runtime checklist after pulling `origin main`:
 - [ ] Check the Godot debugger for parse/resource/physics errors.
 
 Status: source changes committed to GitHub `main`; local Godot import and runtime verification remain pending.
+
+
+## Mira Encounter Entry Runtime Verification Passed (2026-10-13)
+
+Local Godot runtime testing passed after the fixed-spawn transition update.
+
+- [x] Entered Mira's marker from the top, south, left, and right.
+- [x] Confirmed every approach places the Player at `Vector2(100, 0)` in the clearing.
+- [x] Confirmed tree canopies and trunks remain impassable.
+- [x] Confirmed the Player can reach Mira without getting trapped.
+- [x] Confirmed Havenreach retains side-based spawning.
+- [x] Checked the Godot debugger; no errors were reported.
+
+Status: local runtime verification passed for Mira's entry spawn, forest collision, player access to Mira, and Havenreach side-based spawning.
