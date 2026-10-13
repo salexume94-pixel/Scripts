@@ -3887,3 +3887,8 @@ Structural checks:
 Documentation ownership remains: ARCHITECTURE.md for system and folder ownership; ROADMAP.md for active priorities; DEVELOPMENT_LOG.md as append-only history; docs/REPOSITORY_AUDIT.md for dated inventories and concrete findings; docs/README.md for navigation and source-of-truth rules; docs/world/WORLD_BIBLE.md for stable world facts; docs/story/STORY_BIBLE.md for plot chronology and revelations.
 
 Verification boundary: this source/tree review does not claim a fresh full-tree run of `tools/audit_res_refs.py` or Godot import/runtime verification for the newly added maps. The previous 1,094-reference/zero-missing result applies to its earlier snapshot only. Fresh local reference scanning and visual/runtime checks remain pending. No gameplay code was changed in this documentation update.
+
+
+### Roadmap Status Correction (2026-10-12)
+
+Corrected stale roadmap status text that still described the moving-NPC work as being on a feature branch and the MAIN_001 runtime checks as pending. Both descriptions conflicted with the current main-branch history and developer-reported checks recorded elsewhere. The updated roadmap distinguishes those earlier passing checks from the newer Tiled map integration checks, which still require local visual/runtime verification. No gameplay code changed.
