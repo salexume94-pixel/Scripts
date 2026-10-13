@@ -360,7 +360,7 @@ This section supplements earlier architecture notes and corrects stale path desc
 - The current repository does not contain a `data/` directory. Static definitions are kept with their owning systems, including `items/definitions/`, `enemies/definitions/`, `quests/definitions/`, and `world/definitions/`. Do not create a generic data folder unless a concrete ownership need is identified.
 - The Player-facing currency implementation is `player/player_currency.gd`, not `systems/player_currency.gd`.
 - `docs/README.md` defines the documentation index and ownership rules.
-- `docs/world/WORLD_BIBLE.md` owns stable setting facts. `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation pacing. Existing root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain in place as reference material until their conflicts are deliberately reconciled.
+- `docs/world/WORLD_BIBLE.md` owns stable setting facts. `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation pacing. The Story Bible is the sole narrative source of truth; obsolete root-level story documents have been consolidated and removed.
 - Quest state remains owned by QuestManager. World features own their physical/access state. Story flags require one explicit authoritative owner before implementation; do not scatter duplicate flags across NPCs or scenes.
 - The first quest should be specified before expanding QuestData or DialogueManager. Add prerequisites, categories, turn-in states, failure rules, or conditional dialogue only when the actual quest design requires them.
 
@@ -423,7 +423,7 @@ The documentation source of truth is indexed in `docs/README.md`:
 - `DEVELOPMENT_LOG.md` is the chronological implementation and verification record. Append entries; never replace earlier history.
 - `docs/world/WORLD_BIBLE.md` owns stable setting facts.
 - `docs/story/STORY_BIBLE.md` owns plot chronology, character arcs, and revelation order.
-- `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain reference material until explicitly reconciled; they are not co-equal instructions to merge contradictory openings.
+- The canonical `docs/story/STORY_BIBLE.md` defines the current opening; retired story documents must not be recreated as competing sources.
 
 Correction to the earlier Runtime Debug Menu section: the active F3 overlay is `ui/debug_combat_hud.gd` with `ui/DebugCombatHUD.tscn`, which also exposes the runtime-only overworld encounter toggle and Player Affinities diagnostic display. There is no separate active `ui/debug_menu.gd` / `ui/DebugMenu.tscn` system in the current repository tree. Treat the earlier naming as stale documentation, not a requirement to recreate a second debug menu.
 
@@ -482,7 +482,7 @@ Documentation ownership is intentionally split:
 - `docs/world/WORLD_BIBLE.md` owns stable world facts; `docs/story/STORY_BIBLE.md` owns plot chronology and revelations.
 - Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain legacy/reference material until their tutorial-town assumptions are reconciled with the current waking-area → Mira → Havenreach opening. They must not silently override the World/Story Bibles.
 
-Current structural cautions: `player/player_skills.gd` is still an empty placeholder attached to `Player.tscn`; `systems/game_manager.gd` appears unintegrated and should not be expanded until its responsibility relative to SceneManager and GameState is resolved. See the audit report for details. No gameplay code was changed as part of this documentation pass.
+Current structural cautions: `player/player_skills.gd` is still an empty placeholder attached to `Player.tscn`; The unused `systems/game_manager.gd` and UID sidecar have been removed after scene-reference inspection; SceneManager and GameState remain the active owners. See the audit report for details. No gameplay code was changed as part of this documentation pass.
 
 
 ### Tiled Map Runtime Loading
