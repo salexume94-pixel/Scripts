@@ -4020,3 +4020,31 @@ Runtime checklist after pulling `origin main`:
 
 Source change committed to GitHub `main`; local Godot runtime verification remains pending.
 
+
+
+### Waking Area and Mira Encounter Tiled Map Integration (2026-10-13)
+
+Connected the new Tiled maps to the existing opening scenes on `main`.
+
+Updated:
+- Added `world/forest_tiled_map_loader.gd`, a reusable CSV-TMX loader for the project's 16x16 exterior atlas.
+- Updated `scenes/WakingArea.tscn` to load `world/maps/waking/waking_area.tmx`.
+- Updated `scenes/MiraEncounterArea.tscn` to load `world/maps/miras encounter/mira_encounter_interior.tmx`.
+- Removed the old Polygon2D terrain, static forest-tree overlays, and map labels from those scenes while retaining Mira, the Player, dialogue/UI, story scripts, and transition nodes.
+
+Implementation notes:
+- The loader centers each 20x20 map (320x320 pixels) at the scene origin and creates a TileMapLayer for each Tiled CSV layer.
+- The later tree layers render above actors to support canopy overlap; lower tree layers remain behind actors.
+- Scene exit bounds now match the 320x320 map footprint. The Waking Area still exits to the existing temporary overworld test spawn at `(-1250, 800)`.
+- Mira's scene Player spawn is now `(0, 100)`, inside the compact map and south of Mira's origin position.
+- This loader does not infer collision from tile artwork. These TMX maps have no authored collision/object layer, so collision for trees and other map objects remains a separate task.
+
+Local Godot verification required after pulling `origin main`:
+1. Confirm both maps and the shared exterior atlas import without resource errors.
+2. Start New Game and confirm Waking Area displays the Tiled field instead of the Polygon2D placeholder.
+3. Walk to the Waking Area boundary and confirm exit to the overworld still uses `(-1250, 800)`.
+4. Enter the Mira marker and confirm the woodland map loads, Mira remains interactable, and the choice dialogue appears.
+5. Confirm both Mira choices still complete the same quest objective and transition as intended.
+6. Check tree canopy draw order and verify no new debugger errors.
+
+Runtime status: GitHub source integration committed; local Godot parse/import/runtime verification is pending.
