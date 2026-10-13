@@ -30,9 +30,7 @@ position = Vector2(0, 160)
 target_scene = "res://scenes/Havenreach.tscn"
 target_player_position = Vector2(0, -128)
 use_return_position = true
-
-[node name="ExitDoorVisualOverride" type="Node" parent="InteriorContent"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 
 [node name="InteriorPresentation" type="Node2D" parent="."]
 script = ExtResource("4_presentation")
