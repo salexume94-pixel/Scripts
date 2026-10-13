@@ -4091,3 +4091,11 @@ Runtime checklist after pulling `origin main`:
 5. Confirm leaving Havenreach or Mira returns the Player near the corresponding marker, and check for debugger errors.
 
 Status: committed to `main`; Godot import and runtime verification are still pending locally.
+
+
+### Marker PNG Resource-Load Fallback (2026-10-13)
+
+- Added embedded PNG fallbacks for the three small overworld marker atlases in `world/overworld_tiled_map_loader.gd`.
+- The loader still prefers the tracked PNG resources. If a local checkout or Godot filesystem scan cannot resolve a marker PNG, the loader decodes the matching embedded image into an `ImageTexture` rather than aborting the entire overworld map load.
+- This addresses the reported `No loader found for resource` error while keeping the separate PNG files in the repository as the editable source assets.
+- Runtime verification remains pending in Godot.
