@@ -4071,3 +4071,23 @@ Runtime verification required:
 7. Confirm no parse errors or runtime errors occur.
 
 Status: committed to `main`; not runtime-tested in Godot by the assistant.
+
+
+### Correct Existing Overworld Markers and Entry Boundaries (2026-10-13)
+
+Fixed the overworld's existing Tiled marker rendering and transition regions without adding any markers to the map.
+
+- Corrected `world/overworld_tiled_map_loader.gd` to map the three marker GID ranges to their actual PNG atlases: Havenreach (GIDs 751–756), Mira encounter (757–772), and Waking Area (773–788). Previously, all marker GIDs were incorrectly rendered from an unrelated atlas, which made the map markers appear corrupted.
+- Removed the generated polygon/label marker pass from `world/world_map_world.gd`. The TMX is the single source for marker visuals; no duplicate marker is generated over Havenreach.
+- Aligned transition centers to the actual centers of the existing TMX tile groups: Mira `(-1952, 1872)`, Havenreach `(-1832, 1872)`, and Waking Area `(-1832, 1968)`.
+- Resized transition triggers to match the marker footprints: Mira 64x64, Havenreach 48x32, Waking Area 64x64. The previous 180x140 triggers overlapped, so walking into one marker could activate a neighboring location.
+- Moved the fallback overworld spawn and the Waking Area exit destination to the center of the existing Waking marker.
+
+Runtime checklist after pulling `origin main`:
+1. Start New Game and exit the Waking Area; confirm the Player appears at the lower Waking marker.
+2. Walk left into the Mira marker and confirm `MiraEncounterArea.tscn` loads.
+3. Walk right into the Havenreach marker and confirm `Havenreach.tscn` loads.
+4. Confirm the three markers display their own art, no extra polygon marker/label appears, and their trigger areas do not overlap.
+5. Confirm leaving Havenreach or Mira returns the Player near the corresponding marker, and check for debugger errors.
+
+Status: committed to `main`; Godot import and runtime verification are still pending locally.
