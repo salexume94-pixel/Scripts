@@ -109,7 +109,14 @@ func _on_exit_boundary_body_entered(body: Node2D) -> void:
 	# owning world determines where the next scene begins.
 	var destination_position := target_player_position
 	if target_world_id == "world_map":
-		destination_position = _get_world_map_exit_position(body.global_position)
+		# The Waking Area is the opening scene, so its exit must use the fixed
+		# spawn beside the story markers rather than a side-based town exit offset.
+		var world_context := get_parent().get_node_or_null("WorldContext")
+		var source_location_id := ""
+		if world_context != null:
+			source_location_id = str(world_context.get("location_id"))
+		if source_location_id != "waking_area":
+			destination_position = _get_world_map_exit_position(body.global_position)
 
 	SceneManager.change_scene(
 		target_scene,
