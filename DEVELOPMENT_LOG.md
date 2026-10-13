@@ -4165,3 +4165,15 @@ Runtime verification: pending local Godot test.
 - [ ] Confirm all three transitions still trigger and check the debugger for errors.
 
 Runtime verification: pending local Godot test.
+
+## Overworld Marker Layering Verified (2026-10-13)
+
+- Local runtime testing confirmed the base-layer z-order correction fixes the issue: the Player now renders correctly in front of the existing overworld location markers.
+- The fix keeps the existing marker cells in `world/maps/overworld/Overworld.tmx`; no marker instances or transition triggers were added, duplicated, or moved.
+- The original Tiled map layers remain behind actors, while the separate high-z foreground layer stays available for building roof occlusion.
+
+Runtime verification status:
+- [x] Confirmed the marker layering issue is fixed in Godot.
+- [ ] Recheck all three location transitions and building roof occlusion after the change.
+- [ ] Check the Godot debugger for errors.
+
