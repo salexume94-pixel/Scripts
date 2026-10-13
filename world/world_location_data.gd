@@ -73,6 +73,10 @@ enum LocationType {
 ## Player position used when the destination scene is entered.
 @export var entry_player_position: Vector2 = Vector2.ZERO
 
+## When true, rotate the configured entry offset to match the approach side.
+## Set false for maps such as Mira’s clearing that require a fixed safe spawn.
+@export var entry_spawn_follows_approach: bool = true
+
 ## World identity assigned after entering the destination scene.
 @export var entry_world_id: String = ""
 
