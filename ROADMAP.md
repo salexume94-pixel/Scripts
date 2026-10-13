@@ -427,3 +427,26 @@ The current step is only the reusable proximity-sensor foundation. Town schedule
 - Keep buildings, doors, chests, and map boundaries solid obstacles during autonomous movement.
 - Provide an explicit story/cutscene movement override. Ignoring static-world collision must be opt-in and restored when the cutscene ends.
 - Runtime-test collision, obstacle avoidance, home-area limits, the proximity signals, and Enemy/NPC regression behavior in `scenes/MovingNPCTest.tscn` before marking complete.
+
+
+---
+
+## Repository Structure and Tiled Map Integration Audit (2026-10-12)
+
+The latest structural snapshot is recorded in `docs/REPOSITORY_AUDIT.md` (1,859 tracked files; 70 GDScript files, 36 scenes, 70 serialized resources, 3 TMX maps, and 2 TSX tilesets).
+
+### Immediate verification order
+
+1. Pull `origin main` and run `python tools/audit_res_refs.py` from the local project root. Record the fresh counts and investigate any missing paths; do not reuse the older 1,094-reference result as if it covered the current map assets.
+2. Open the project in Godot and test the current Havenreach Tiled loader: map load, visible-pixel collision, road/grass walkability, house/church entrances, roof occlusion, and debugger output.
+3. Decide whether `world/maps/overworld/Overworld.tmx` and `world/maps/havensreach/house_1_interior.tmx` are staging files or the next maps to integrate. The current `WorldMapWorld.tscn` still uses Polygon2D terrain, and the inspected Havenreach loader only loads the exterior TMX.
+4. Do not move map assets or generalize the loader until the current maps have been visually checked and their intended runtime owners are clear.
+
+### Structural cleanup candidates (not blockers for map work)
+
+- Resolve the purpose of the empty `player/player_skills.gd` placeholder.
+- Decide whether `systems/game_manager.gd` has a unique lifecycle responsibility or should be retired after reference checks.
+- Keep test-only slime definitions visibly distinguishable from production enemy definitions.
+- Reconcile the older root story reference documents with the canonical World/Story Bibles deliberately.
+
+Audit status: source/tree inspection updated; a fresh local reference-check run and post-map Godot runtime verification remain pending. The audit does not claim those checks passed.
