@@ -81,7 +81,6 @@ Game scenes.
 ### systems/
 
 Global game systems such as:
-- Game manager
 - Save/load manager
 - Scene management
 - Global state
@@ -505,3 +504,25 @@ Havenreach's editable exterior layout is maintained in `world/maps/havensreach/H
 - The loader currently assumes two fixed 16×16 atlas sources and CSV tile layers. Tiled object layers, flip flags, and authored collision metadata are not imported. Tree-canopy foreground occlusion is deferred; verify roof and collision behavior in Godot rather than inferring correctness from the source.
 - `world/maps/overworld/Overworld.tmx` and `world/maps/havensreach/house_1_interior.tmx` are tracked authoring assets, but they must not be documented as runtime-integrated until a scene or loader actually consumes them.
 - Extend to a reusable multi-map loader only when the next map integration requires it; do not duplicate the current parser into each world scene.
+
+
+## Active Map Migration and Skill Ownership (2026-10-12)
+
+### Tiled map migration
+
+The project is actively replacing temporary Polygon2D-built terrain and similar placeholder map presentation with Tiled-authored maps and sprite-sheet tiles. Existing Polygon2D terrain in `scenes/WorldMapWorld.tscn` is a migration target, not a reason to retain a parallel terrain system.
+
+- Editable map documents and their external tilesets belong under `world/maps/`.
+- The Havenreach exterior loader is the initial integration path.
+- `world/maps/overworld/Overworld.tmx` is intended to replace the current Polygon2D overworld terrain.
+- `world/maps/havensreach/house_1_interior.tmx` is intended to replace the corresponding placeholder interior layout.
+- Treat these as in-progress integrations until the developer confirms the scene wiring and runtime behavior. Do not duplicate terrain representations once the Tiled map has been verified.
+- `world/tiled_map_loader.gd` should own Tiled document parsing and supported tile/collision construction; scene-specific scripts own world transitions, doors, and interaction rules.
+
+### Player skills
+
+`player/player_skills.gd` is an intentional placeholder for the Player's skill API, not an orphan to delete. The battle screen's **Fire** action is the first planned skill to route through this system. Keep skill definitions/resolution in the player/combat domain and keep the battle UI responsible only for requesting and presenting the action.
+
+### Lifecycle coordination
+
+`systems/game_manager.gd` was not registered as an autoload and was not referenced by any of the 36 tracked scene files inspected in the structural pass. Its only behavior was a pair of unused `game_started` state toggles. It has been removed as an orphan; active lifecycle and global-state responsibilities remain with the existing dedicated managers and GameState.
