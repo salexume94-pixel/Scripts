@@ -136,25 +136,28 @@ func _on_location_entry_body_entered(body: Node2D, location: Resource) -> void:
 
 	transition_started = true
 
-	# entry_player_position is the canonical spawn point for this town. Its
-	# distance from the town origin tells us how far the Player should be from
-	# the town center. We rotate that distance onto the cardinal side from
-	# which the Player actually approached the World Map marker.
-	var approach_direction: Vector2 = _get_entry_direction(
-		body.global_position,
-		world_position_variant
-	)
-	var canonical_entry_position: Vector2 = target_player_position_variant
-	var entry_distance := minf(
-		maxf(absf(canonical_entry_position.x), absf(canonical_entry_position.y)),
-		900.0
-	)
+	# Some locations need a consistent safe spawn regardless of which side
+	# activates the marker. Mira's clearing is one such case: rotating the spawn
+	# to the north or south places the Player inside the surrounding tree bands.
+	var destination_position: Vector2 = target_player_position_variant
+	if bool(location.get("entry_spawn_follows_approach")):
+		# For ordinary towns, preserve the existing behavior: rotate the
+		# configured entry distance onto the side the Player approached from.
+		var approach_direction: Vector2 = _get_entry_direction(
+			body.global_position,
+			world_position_variant
+		)
+		var canonical_entry_position: Vector2 = target_player_position_variant
+		var entry_distance := minf(
+			maxf(absf(canonical_entry_position.x), absf(canonical_entry_position.y)),
+			900.0
+		)
 
-	var destination_position := Vector2.ZERO
-	if approach_direction.x != 0.0:
-		destination_position.x = approach_direction.x * entry_distance
-	else:
-		destination_position.y = approach_direction.y * entry_distance
+		destination_position = Vector2.ZERO
+		if approach_direction.x != 0.0:
+			destination_position.x = approach_direction.x * entry_distance
+		else:
+			destination_position.y = approach_direction.y * entry_distance
 
 	SceneManager.change_scene(
 		target_scene,
