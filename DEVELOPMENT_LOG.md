@@ -4099,3 +4099,22 @@ Status: committed to `main`; Godot import and runtime verification are still pen
 - The loader still prefers the tracked PNG resources. If a local checkout or Godot filesystem scan cannot resolve a marker PNG, the loader decodes the matching embedded image into an `ImageTexture` rather than aborting the entire overworld map load.
 - This addresses the reported `No loader found for resource` error while keeping the separate PNG files in the repository as the editable source assets.
 - Runtime verification remains pending in Godot.
+
+
+### Correct Opening-Area and Town Exit Positions (2026-10-13)
+
+Adjusted the three reported transition destinations using the existing overworld marker positions as the source of truth.
+
+- Waking Area now returns the Player to `(-1728, 1968)`, to the right of the Waking marker rather than directly underneath it. The overworld scene's fallback Player spawn uses the same point.
+- Mira's overworld entry now places the Player at `(0, 100)` inside the centered 320x320 forest map. The previous configured entry point, `(0, 300)`, was outside the map bounds and explains the Player appearing off-map.
+- Reduced the shared town/area exit offset from 140 to 64 pixels, so leaving Havenreach or Mira returns the Player much closer to its matching marker.
+- Updated scene fallback destinations for Mira and Havenreach to nearby points beside their own markers. Normal exits still use the location database and the side the Player crossed.
+
+Runtime verification required after pulling `origin main`:
+1. Leave Waking Area and confirm the Player appears beside, not on top of, the Waking marker.
+2. Enter Mira's marker and confirm the Player appears inside the forest map, not outside its bounds.
+3. Leave Mira from each side and confirm the Player returns near the Mira marker.
+4. Enter and leave Havenreach from different sides and confirm the Player returns within 64 pixels of its marker on the corresponding side.
+5. Confirm all three transitions work without debugger errors.
+
+Source edits are committed to `main`; Godot runtime verification has not been performed here.
