@@ -12,9 +12,10 @@ extends Node2D
 ## The bottom wall is split around the ExitDoor so the Player has a real
 ## opening to leave the interior.
 
-const INTERIOR_SIZE := Vector2(480.0, 320.0)
+@export var interior_size: Vector2 = Vector2(480.0, 320.0)
+@export var door_width: float = 48.0
+
 const WALL_THICKNESS := 16.0
-const DOOR_WIDTH := 48.0
 const PLAYER_VISUAL_CLEARANCE := 4.0
 
 
@@ -23,10 +24,10 @@ func _ready() -> void:
 	# StaticBody2D is used because the room boundaries never move.
 	_create_wall(
 		"TopWall",
-		Vector2(INTERIOR_SIZE.x + WALL_THICKNESS * 2.0, WALL_THICKNESS),
+		Vector2(interior_size.x + WALL_THICKNESS * 2.0, WALL_THICKNESS),
 		Vector2(
 			0.0,
-			-INTERIOR_SIZE.y / 2.0
+			-interior_size.y / 2.0
 			+ PLAYER_VISUAL_CLEARANCE
 			- WALL_THICKNESS / 2.0
 		)
@@ -54,7 +55,7 @@ func _ready() -> void:
 
 	# Split the bottom wall around the doorway so the ExitDoor is an actual
 	# opening in the room instead of a trigger placed on top of solid wall.
-	var segment_width := (INTERIOR_SIZE.x - DOOR_WIDTH) / 2.0
+	var segment_width := (INTERIOR_SIZE.x - door_width) / 2.0
 	var segment_x := DOOR_WIDTH / 2.0 + segment_width / 2.0
 
 	_create_wall(
