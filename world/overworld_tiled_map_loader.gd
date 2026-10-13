@@ -363,10 +363,9 @@ func _load_tiled_map() -> void:
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
 
-			# Draw the tall location-marker artwork above the Player so its lower
-			# tiles cannot cover the character when walking into the marker.
-			# Building roofs use the same foreground layer for their normal occlusion.
-			if _should_draw_building_foreground(layer_name, gid) or _is_marker_gid(gid):
+			# Only building roof tiles belong in the foreground occlusion layer.
+			# Markers stay on their normal map layer so their artwork cannot cover the Player.
+			if _should_draw_building_foreground(layer_name, gid):
 				foreground_layer.set_cell(cell_coords, source_id, atlas_coords)
 
 			# Build collision only where the tile image has visible, non-transparent
