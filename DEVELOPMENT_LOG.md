@@ -3972,3 +3972,15 @@ Runtime checklist after pulling `origin main`:
 - Follow-up dependency inspection found `world/world_map_world.gd` creates runtime location markers and labels under `$WorldMapContent`. Restored the empty `WorldMapContent` Node2D container in `scenes/WorldMapWorld.tscn` so those dynamically generated children have their expected parent.
 - The eight old ForestTree overlays and two static labels remain removed; only the required runtime container was restored.
 - This correction was committed before runtime verification. Godot validation is still pending locally.
+
+
+## 2026-10-13 — Full Scene Node and Repository Cleanup Pass
+
+- Reviewed all 36 tracked `.tscn` files and their node hierarchies, checking scene instances, external resources, scripts, collision bodies, cameras, presentation parents, content containers, and UI/debug nodes.
+- Confirmed the remaining Node2D/content/presentation containers have active roles or are referenced by scripts; did not delete grouping nodes just because they contain no static children, since scripts can add children at runtime.
+- Confirmed map/location definition resources are registered through `world/world_map_database.gd` and `world/world_location_database.gd`; quest and item/enemy definition resources are catalogued by their respective databases. Preserved those files and the explicit enemy-AI test resources.
+- Removed two macOS Finder metadata files (`.DS_Store`) from asset folders. They are operating-system noise, not game resources.
+- Removed `world/maps/.gitkeep` because the directory already contains tracked Tiled maps and tileset definitions.
+- Preserved Godot `.import` metadata, script `.uid` files, original source art/archives, debug scenes, and prototype/example scenes. Their apparent lack of direct scene references alone is not enough to establish that they are safe to delete.
+- Earlier in this audit, removed obsolete static forest-tree overlays and labels from `scenes/WorldMapWorld.tscn`, while retaining `WorldMapContent` because `world/world_map_world.gd` populates it dynamically.
+- Static repository analysis only. Godot editor import, parse, and runtime validation have not been run here. After pulling `origin main`, run the project and check the main menu, Waking Area, Mira encounter, overworld, Havenreach, interiors, combat, and the debugger.
