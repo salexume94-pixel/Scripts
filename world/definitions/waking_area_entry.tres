@@ -13,5 +13,5 @@ story_significant = true
 map_position = Vector2(0, 0)
 map_visible = false
 map_label_visible = false
-world_position = Vector2(-1840, 1960)
+world_position = Vector2(-1832, 1968)
 entry_enabled = false
