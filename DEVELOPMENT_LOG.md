@@ -3916,3 +3916,26 @@ Changes:
 - The audit reports how many generated import-cache references were skipped.
 
 Verification boundary: the updated checker was tested against representative quoted paths containing spaces, ordinary unquoted paths, and Markdown backtick-wrapped paths. The developer should pull `main` and rerun the full repository audit to confirm the new totals. This change modifies the audit utility only and does not alter game assets or runtime code.
+
+
+### Overworld Tiled Map Runtime Integration (2026-10-12)
+
+Connected the tracked `world/maps/overworld/Overworld.tmx` map to `scenes/WorldMapWorld.tscn` through a dedicated loader script based on the proven Havenreach TMX parser.
+
+Changes:
+- Added `world/overworld_tiled_map_loader.gd`, pointing at the tracked 256x256, 16px-tile overworld map and the existing exterior tileset image.
+- Attached the loader to the WorldMapWorld scene so the Tiled map renders over the old Polygon2D placeholder terrain.
+- Kept the existing location-entry regions, encounter system, world boundaries, player, and UI nodes intact.
+- Kept the legacy region polygons in the scene as fallback/reference content beneath the Tiled map. The new map layer draws at the normal world Z order so the Player remains visible above terrain.
+
+Limitations and verification:
+- This is the visual map integration pass. Terrain-specific collision, transitions defined as Tiled objects, and the tracked house-interior TMX are not yet wired into the runtime.
+- The overworld TMX currently has a single tile layer, so object/terrain collision still uses the existing world boundaries and location-entry areas.
+- Local Godot import and runtime verification is required after pulling `main`; no runtime success is claimed from the GitHub source edit alone.
+
+Runtime checklist:
+1. Open the project and confirm the new script parses and its texture/map resources import.
+2. Enter WorldMapWorld and confirm the Tiled overworld appears instead of the Polygon2D placeholder terrain.
+3. Confirm the Player renders above the terrain and can move across the map.
+4. Confirm town entry regions, Mira forest, encounter checks, world boundaries, and the M map overlay still function.
+5. Confirm no debugger errors.
