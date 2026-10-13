@@ -36,7 +36,7 @@ text = "OPEN FIELD"
 script = ExtResource("5_exit")
 location_bounds = Rect2(-600, -400, 1200, 800)
 target_scene = "res://scenes/WorldMapWorld.tscn"
-target_player_position = Vector2(0, 560)
+target_player_position = Vector2(-1250, 800)
 target_world_id = "world_map"
 target_location_id = "world_map"
 

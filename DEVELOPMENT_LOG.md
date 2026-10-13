@@ -3996,3 +3996,27 @@ Removed the obsolete Tutorial Town and Northbridge Village prototype content now
 - Kept the active Havenreach scenes/interior, Waking Area, Mira encounter, WorldMapWorld, and dedicated debugging scene. Kept `tutorial_town.mp3` for now because audio use is independent of the deleted prototype scenes and needs its own reference audit before removal.
 
 This is a GitHub source cleanup only. Godot import, parse, and runtime checks have not been run here. After pulling `origin main`, confirm the project opens without missing-resource errors, New Game enters Waking Area, the overworld still loads, Havenreach and its church interior still transition correctly, and the debugging scene remains available.
+
+### Temporary Overworld Test Spawn (2026-10-13)
+
+Moved the temporary overworld spawn to the lower-left portion of the current map so early movement and transition testing can happen away from the future town/dungeon area.
+
+Updated:
+- `scenes/WorldMapWorld.tscn`
+- `scenes/WakingArea.tscn`
+- `DEVELOPMENT_LOG.md`
+
+Changes:
+- Set the Player's initial position in `WorldMapWorld.tscn` to `Vector2(-1250, 800)`.
+- Set the Waking Area exit destination to the same coordinates, so the opening sequence and direct overworld scene entry agree.
+- Kept the spawn inside the existing world boundaries. This is a temporary testing location and can be moved when the overworld layout becomes more complete.
+
+Runtime checklist after pulling `origin main`:
+1. Start a New Game and complete the Waking Area exit.
+2. Confirm the Player appears in the lower-left portion of the overworld.
+3. Confirm the Player can move and the camera follows correctly.
+4. Confirm world boundaries, Mira encounter transition, and Havenreach entry remain reachable and functional.
+5. Confirm no new Godot debugger errors.
+
+Source change committed to GitHub `main`; local Godot runtime verification remains pending.
+

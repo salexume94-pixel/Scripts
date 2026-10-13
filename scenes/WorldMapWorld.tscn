@@ -39,7 +39,7 @@ script = ExtResource("6_world_presentation")
 zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
-position = Vector2(0, 560)
+position = Vector2(-1250, 800)
 
 [node name="WorldEncounterSystem" type="Node" parent="."]
 script = ExtResource("8_world_encounters")
