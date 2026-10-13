@@ -4048,3 +4048,26 @@ Local Godot verification required after pulling `origin main`:
 6. Check tree canopy draw order and verify no new debugger errors.
 
 Runtime status: GitHub source integration committed; local Godot parse/import/runtime verification is pending.
+
+
+### Opening Overworld Spawn and Story Marker Alignment
+
+Updated directly on `main` so the opening sequence starts beside the actual marker cluster in `world/maps/overworld/Overworld.tmx`.
+
+Changes:
+- Located the marker tiles in the 256x256 Tiled map: Mira around tile (5.5, 244.5), Havenreach around (13, 244.5), and Waking Area around (12.5, 250.5).
+- Updated the corresponding world coordinates to match the centered 16-pixel tile grid: Mira `(-1960, 1864)`, Havenreach `(-1840, 1864)`, Waking Area `(-1840, 1960)`.
+- Changed the overworld Player's fallback spawn and Waking Area exit destination to `(-1840, 1960)`, beside the Waking Area marker.
+- Changed overworld physical bounds from the old 3000x2000 test rectangle to `-2048..2048` on both axes, matching the 4096x4096 pixel TMX map. The old bounds would have blocked access to the markers at the map's bottom edge.
+- Changed WorldExitBoundary so leaving the one-time Waking Area uses its fixed configured spawn. Other world-location exits still use their side-based offset from the corresponding marker.
+
+Runtime verification required:
+1. Pull the latest `main` and open the project in Godot.
+2. Start a New Game and complete the Waking Area opening.
+3. Leave the Waking Area and confirm the Player appears beside the Waking Area marker in the overworld's bottom-left corner.
+4. Confirm Mira's marker is nearby to the left and Havenreach is nearby to the right, with no long cross-map trek.
+5. Confirm the Player can move around the map marker cluster and the physical boundaries still prevent leaving the map.
+6. Enter Mira's encounter area and Havenreach and confirm their exits return the Player near the matching overworld markers.
+7. Confirm no parse errors or runtime errors occur.
+
+Status: committed to `main`; not runtime-tested in Godot by the assistant.
