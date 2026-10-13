@@ -231,28 +231,7 @@ When creating new regions, enemies, equipment, quests, or locations:
 
 ## Story Direction
 
-The intended progression is:
-
-> "I'm playing an MMO."
->
-> "Something about this game is strange."
->
-> "This world isn't behaving like a normal MMO."
->
-> "There is something underneath this world."
->
-> "What exactly is this world?"
->
-> "What should I do now that I know the truth?"
-
-The protagonist begins as an ordinary beginner rather than an obvious chosen one. The story should emerge gradually through normal gameplay, quests, locations, NPCs, and increasingly difficult-to-ignore anomalies.
-
-Core framework:
-
-- Quest = What am I doing now?
-- Story = Why does it matter?
-- Mystery = What is happening?
-- Choice = What should I do about it?
+The canonical narrative premise, pacing, influences, and opening are maintained in [`docs/story/STORY_BIBLE.md`](docs/story/STORY_BIBLE.md). Do not duplicate narrative guidance here; this roadmap records work order only.
 
 ---
 
@@ -450,3 +429,12 @@ The latest structural snapshot is recorded in `docs/REPOSITORY_AUDIT.md` (1,859 
 - Reconcile the older root story reference documents with the canonical World/Story Bibles deliberately.
 
 Audit status: source/tree inspection updated; a fresh local reference-check run and post-map Godot runtime verification remain pending. The audit does not claim those checks passed.
+
+
+## Structural Cleanup Follow-up (2026-10-12)
+
+- **Map migration:** Polygon2D terrain is a temporary implementation being replaced by Tiled maps/sprite-sheet terrain. Integrate and runtime-test `Overworld.tmx` and `house_1_interior.tmx`; do not preserve the old terrain in parallel after replacement passes verification.
+- **Player skills:** retain `player/player_skills.gd` as the intended home for the battle-screen Fire action and future player skills. It is a placeholder awaiting implementation, not a duplicate.
+- **Lifecycle cleanup:** the unused, non-autoload `systems/game_manager.gd` and its UID sidecar were removed after inspection found no scene attachment and only unused boolean toggles. SceneManager, GameState, and the other dedicated autoloads remain.
+- **Story docs:** the two outdated root story documents have been consolidated into `docs/story/STORY_BIBLE.md` and removed. The Story Bible owns narrative content; this roadmap links to it instead of restating the premise.
+- **Debug resources:** slime AI test definitions remain in `enemies/definitions/` intentionally for debugging. They are not duplicates of production profiles; preserve them unless a dedicated debug-resource convention is introduced.
