@@ -34,9 +34,9 @@ func _ready() -> void:
 	)
 	_create_wall(
 		"LeftWall",
-		Vector2(WALL_THICKNESS, INTERIOR_SIZE.y + WALL_THICKNESS * 2.0),
+		Vector2(WALL_THICKNESS, interior_size.y + WALL_THICKNESS * 2.0),
 		Vector2(
-			-INTERIOR_SIZE.x / 2.0
+			-interior_size.x / 2.0
 			+ PLAYER_VISUAL_CLEARANCE
 			- WALL_THICKNESS / 2.0,
 			0.0
@@ -44,9 +44,9 @@ func _ready() -> void:
 	)
 	_create_wall(
 		"RightWall",
-		Vector2(WALL_THICKNESS, INTERIOR_SIZE.y + WALL_THICKNESS * 2.0),
+		Vector2(WALL_THICKNESS, interior_size.y + WALL_THICKNESS * 2.0),
 		Vector2(
-			INTERIOR_SIZE.x / 2.0
+			interior_size.x / 2.0
 			- PLAYER_VISUAL_CLEARANCE
 			+ WALL_THICKNESS / 2.0,
 			0.0
@@ -55,15 +55,15 @@ func _ready() -> void:
 
 	# Split the bottom wall around the doorway so the ExitDoor is an actual
 	# opening in the room instead of a trigger placed on top of solid wall.
-	var segment_width := (INTERIOR_SIZE.x - door_width) / 2.0
-	var segment_x := DOOR_WIDTH / 2.0 + segment_width / 2.0
+	var segment_width := (interior_size.x - door_width) / 2.0
+	var segment_x := door_width / 2.0 + segment_width / 2.0
 
 	_create_wall(
 		"BottomLeftWall",
 		Vector2(segment_width, WALL_THICKNESS),
 		Vector2(
 			-segment_x,
-			INTERIOR_SIZE.y / 2.0
+			interior_size.y / 2.0
 			- PLAYER_VISUAL_CLEARANCE
 			+ WALL_THICKNESS / 2.0
 		)
@@ -73,7 +73,7 @@ func _ready() -> void:
 		Vector2(segment_width, WALL_THICKNESS),
 		Vector2(
 			segment_x,
-			INTERIOR_SIZE.y / 2.0
+			interior_size.y / 2.0
 			- PLAYER_VISUAL_CLEARANCE
 			+ WALL_THICKNESS / 2.0
 		)
