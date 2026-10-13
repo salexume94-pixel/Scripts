@@ -27,10 +27,10 @@ script = ExtResource("14_overworld_tiled_loader")
 
 [node name="WorldBoundaries" type="Node2D" parent="."]
 script = ExtResource("7_world_boundaries")
-left_bound = -1500.0
-right_bound = 1500.0
-top_bound = -1000.0
-bottom_bound = 1000.0
+left_bound = -2048.0
+right_bound = 2048.0
+top_bound = -2048.0
+bottom_bound = 2048.0
 
 [node name="WorldPresentation" type="Node2D" parent="."]
 script = ExtResource("6_world_presentation")
@@ -39,7 +39,7 @@ script = ExtResource("6_world_presentation")
 zoom = Vector2(2.0, 2.0)
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
-position = Vector2(-1250, 800)
+position = Vector2(-1840, 1960)
 
 [node name="WorldEncounterSystem" type="Node" parent="."]
 script = ExtResource("8_world_encounters")
