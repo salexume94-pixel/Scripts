@@ -3905,3 +3905,14 @@ Applied the developer's clarifications to the structural audit and repository or
 - Updated `docs/README.md` and the roadmap to make documentation ownership unambiguous. Kept slime AI test resources because the developer confirmed they are intentionally used for debugging.
 
 No gameplay code was changed apart from deleting the unused GameManager script/UID. The map replacements still require local Godot runtime verification after pulling `origin main`. This entry is appended; previous development-log entries remain intact.
+
+### Resource Reference Audit: Quoted Paths and Generated Import Cache (2026-10-12)
+
+Fixed `tools/audit_res_refs.py` after the local audit reported 21 missing references from seven PNGs whose filenames contain spaces.
+
+Changes:
+- The reference matcher now recognizes quoted `res://` paths containing spaces, including paths in Godot `.import` metadata.
+- References into `.godot/imported/` are excluded from missing-target checks because those compressed import-cache files are generated locally by Godot and are not source assets.
+- The audit reports how many generated import-cache references were skipped.
+
+Verification boundary: the updated checker was tested against representative quoted paths containing spaces, ordinary unquoted paths, and Markdown backtick-wrapped paths. The developer should pull `main` and rerun the full repository audit to confirm the new totals. This change modifies the audit utility only and does not alter game assets or runtime code.
