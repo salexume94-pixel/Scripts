@@ -312,9 +312,10 @@ func _load_tiled_map() -> void:
 		tile_layer.name = layer_name.replace(" ", "")
 		tile_layer.tile_set = tile_set
 		tile_layer.position = map_origin
-		# Keep static map layers behind actors so walkable roads and grass do not
-		# render over the Player sprite. Add dedicated foreground layers later if needed.
-		tile_layer.z_index = layer_index
+		# Keep every original Tiled layer behind actors, regardless of its order
+		# in the TMX file. The Player is a sibling of this loader, so positive layer
+		# indices can otherwise draw the TOWN markers over the Player.
+		tile_layer.z_index = -10 + layer_index
 		add_child(tile_layer)
 
 		for cell_index in range(raw_cells.size()):
