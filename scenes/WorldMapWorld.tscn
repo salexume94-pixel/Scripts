@@ -23,9 +23,6 @@ location_id = "world_map"
 
 [node name="WorldMapContent" type="Node2D" parent="."]
 
-[node name="TiledOverworldMap" type="Node2D" parent="."]
-script = ExtResource("14_overworld_tiled_loader")
-
 [node name="WorldFloor" type="Polygon2D" parent="WorldMapContent"]
 polygon = PackedVector2Array(-1500, -1000, 1500, -1000, 1500, 1000, -1500, 1000)
 color = Color(0.10, 0.16, 0.12, 1)
@@ -109,6 +106,9 @@ color = Color(0.32, 0.27, 0.20, 1)
 [node name="WorldLabel" type="Label" parent="WorldMapContent"]
 position = Vector2(-80, -900)
 text = "WORLD MAP"
+
+[node name="TiledOverworldMap" type="Node2D" parent="."]
+script = ExtResource("14_overworld_tiled_loader")
 
 [node name="WorldBoundaries" type="Node2D" parent="."]
 script = ExtResource("7_world_boundaries")
