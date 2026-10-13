@@ -4230,3 +4230,24 @@ Runtime checklist after pulling `origin main`:
 
 Status: source fix committed; local Godot runtime verification is still required.
 
+## Forest Tree Collision Design Correction (2026-10-13)
+
+Corrected the previous collision change to match the intended design: a tree is one solid obstacle, including its canopy.
+
+- The shared forest loader now generates collision from opaque pixels on every placed tile in every `Tree Layer...` layer, not only trunk/base GIDs.
+- All generated shapes are children of one `GeneratedTreeCollision` StaticBody2D per map, so overlapping layers do not create separate physics bodies.
+- Transparent pixels remain non-blocking; visible canopy and trunk pixels are both impassable.
+- Applies to Waking Area and Mira Encounter.
+
+Important distinction: this corrects collision coverage. It does not yet prove that top/bottom overworld entry triggers use a safe destination spawn; that transition behavior must be tested and fixed separately if it still overrides the configured clearing spawn.
+
+Runtime checklist:
+- [ ] Pull latest `origin main` and open in Godot.
+- [ ] Confirm every tree canopy and trunk blocks movement in Mira Encounter.
+- [ ] Confirm trees placed on all four Tiled layers block correctly without oversized transparent-margin blockers.
+- [ ] Confirm Waking Area tree collision still works.
+- [ ] Enter Mira Encounter from each side of the overworld marker; confirm every entry spawns in the clearing rather than inside trees.
+- [ ] Check rendering order and the Godot debugger.
+
+Status: collision source correction committed; local Godot runtime verification pending.
+
