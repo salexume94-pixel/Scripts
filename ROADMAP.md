@@ -381,7 +381,7 @@ Documentation ownership is settled:
 - `docs/story/STORY_BIBLE.md`: plot chronology, characters, and revelations.
 - Root `STORY_DIRECTION.md` and `STORY_DESIGN.md`: retained reference documents pending deliberate reconciliation.
 
-Current story implementation work is present in the repository, but local Godot runtime verification remains pending as recorded in the Story Bible and development log. Do not treat the repository audit as evidence that the new opening has passed runtime testing. The next audit completion gate is a current-tree static reference check, followed by local Godot import/parser and story-route testing.
+The MAIN_001 opening implementation is present on main. The 2026-10-10 developer-reported local checklist recorded the waking/Mira/Havenreach flow, quest state, save/load, and related gameplay checks as passed. This does not verify later Tiled-map changes; the current map-specific import, collision, layering, and scene-integration checks remain separate pending work.
 
 
 ## Moving NPC Foundation (in progress)
@@ -397,7 +397,7 @@ Implementation order:
 7. Append actual implementation and runtime results to `DEVELOPMENT_LOG.md`; do not rewrite earlier history.
 8. Pull `main` and run the dedicated Godot checklist locally.
 
-Current status: initial code and test scene are on `feature/moving-npc-foundation`. Static review only. Do not merge to `main` or call this runtime-verified until the test scene has been run and the protected-town/pathfinding gaps are closed.
+Current status: the moving-NPC foundation is on `main`. The developer-reported regression checklist passed Ally detection, town entry/exit, Player/NPC collision, Enemy contact/run/defeat, and reported no debugger errors. Treat this as the latest recorded test result, not a guarantee against regressions from later changes; rerun the dedicated scene when changing movement, collision, or encounters.
 
 ## Test Scene and Debugging Rule
 
