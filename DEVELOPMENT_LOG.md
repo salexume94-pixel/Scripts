@@ -4133,3 +4133,19 @@ Runtime verification required after pulling `origin main`:
 4. Confirm no Godot debugger errors occur.
 
 Committed source change only; local Godot runtime verification remains pending.
+
+
+## Overworld Marker Draw Order Correction (2026-10-13)
+
+- Removed Havenreach, Waking Area, and Mira encounter marker tiles from the high-z `BuildingForeground` occlusion layer.
+- Marker artwork remains rendered from the existing Tiled map cells on its normal map layer; marker placement and transition logic are unchanged.
+- Kept the foreground layer reserved for building roof occlusion.
+
+### Local Godot runtime checklist
+- [ ] Pull latest `origin/main`.
+- [ ] Walk in front of and through the Waking Area marker; confirm the Player draws in front of the marker.
+- [ ] Repeat for the Mira encounter marker and confirm the transition still triggers.
+- [ ] Confirm Havenreach marker remains correctly layered and its transition still triggers.
+- [ ] Check the Godot debugger for new errors.
+
+Runtime verification: pending local Godot test.
