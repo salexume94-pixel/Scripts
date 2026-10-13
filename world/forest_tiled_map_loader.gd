@@ -1,7 +1,9 @@
 extends Node2D
 ## Loads a small forest/field Tiled map using the project's shared 16x16 exterior atlas.
-## This loader intentionally handles the CSV tile layers used by Waking Area and Mira's clearing.
-## Collision is not inferred from artwork; map collision will be authored separately if needed.
+## This loader handles the CSV tile layers used by Waking Area and Mira's clearing.
+## It builds alpha-aware static collision from the first tree layer in each map,
+## leaving later canopy layers visual-only so overlapping tree artwork does not
+## create stacked collision or make the entire canopy impassable.
 
 const TILE_SIZE := Vector2i(16, 16)
 const ATLAS_TEXTURE_PATH := "res://assets/maps_tileset/town_map/towns_tileset/PNG/exterior.png"
@@ -93,11 +95,23 @@ func _load_map() -> void:
 			atlas.create_tile(Vector2i(x, y))
 	tile_set.add_source(atlas, 0)
 
-	# Center the 320x320 map so scene actors and the boundary use world coordinates around (0, 0).
+	# Center the map so scene actors and the boundary use world coordinates around (0, 0).
 	var map_origin := Vector2(
 		-float(map_width * tile_width) / 2.0,
 		-float(map_height * tile_height) / 2.0
 	)
+
+	# One static body owns all generated tree collision, matching Havenreach's
+	# approach without creating a separate physics body for every occupied tile.
+	var collision_body := StaticBody2D.new()
+	collision_body.name = "GeneratedTreeCollision"
+	collision_body.position = map_origin
+	collision_body.collision_layer = 1
+	collision_body.collision_mask = 1
+	add_child(collision_body)
+	var collision_count := 0
+	var collision_layer_selected := false
+	var atlas_image := atlas_texture.get_image()
 
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
@@ -129,6 +143,13 @@ func _load_map() -> void:
 			tile_layer.z_index = -10 + layer_index
 		add_child(tile_layer)
 
+		# Only the first tree layer contains the map's primary tree placements.
+		# Later layers add canopy/overlap artwork and must not create extra blockers.
+		var layer_is_tree := layer_name.to_lower().contains("tree layer")
+		var layer_generates_collision := layer_is_tree and not collision_layer_selected
+		if layer_generates_collision:
+			collision_layer_selected = true
+
 		for cell_index in range(raw_cells.size()):
 			var gid := raw_cells[cell_index].to_int()
 			if gid <= 0:
@@ -141,4 +162,73 @@ func _load_map() -> void:
 			var atlas_coords := Vector2i(local_id % ATLAS_COLUMNS, floori(float(local_id) / float(ATLAS_COLUMNS)))
 			tile_layer.set_cell(cell_coords, 0, atlas_coords)
 
+			# Match Havenreach's alpha-aware collision: only visible pixels in the
+			# primary tree layer become small rectangles; transparent atlas margins
+			# remain walkable. Grass, flowers, and all later canopy layers stay clear.
+			if layer_generates_collision:
+				for rect in _get_alpha_collision_rects(atlas_image, atlas_coords):
+					var collision_shape := CollisionShape2D.new()
+					collision_shape.name = "TreePixel_%d_%d_%d" % [cell_coords.x, cell_coords.y, collision_count]
+					var rectangle := RectangleShape2D.new()
+					rectangle.size = Vector2(rect.size)
+					collision_shape.shape = rectangle
+					collision_shape.position = Vector2(
+						float(cell_coords.x) * TILE_SIZE.x,
+						float(cell_coords.y) * TILE_SIZE.y
+					) + Vector2(rect.position) + Vector2(rect.size) / 2.0
+					collision_body.add_child(collision_shape)
+					collision_count += 1
+
+	if not collision_layer_selected:
+		push_warning("ForestTiledMapLoader found no tree layer to generate collision from: %s" % map_path)
+	elif collision_count == 0:
+		push_warning("ForestTiledMapLoader generated no tree collision shapes for: %s" % map_path)
+	else:
+		print("ForestTiledMapLoader generated %d tree collision shapes for %s." % [collision_count, map_path])
+
 	print("ForestTiledMapLoader loaded %s (%dx%d, %d layers)." % [map_path, map_width, map_height, layers.size()])
+
+
+func _get_alpha_collision_rects(image: Image, atlas_coords: Vector2i) -> Array[Rect2i]:
+	# Convert contiguous runs of opaque atlas pixels into merged rectangles,
+	# reducing invisible blockers around transparent tree edges.
+	var completed: Array[Rect2i] = []
+	if image == null or image.is_empty():
+		return completed
+
+	var origin := atlas_coords * TILE_SIZE
+	var active_runs: Dictionary = {}
+	for y in range(TILE_SIZE.y):
+		var row_runs: Array[Vector2i] = []
+		var run_start := -1
+		for x in range(TILE_SIZE.x):
+			var alpha := image.get_pixel(origin.x + x, origin.y + y).a
+			if alpha > 0.5:
+				if run_start < 0:
+					run_start = x
+			elif run_start >= 0:
+				row_runs.append(Vector2i(run_start, x))
+				run_start = -1
+		if run_start >= 0:
+			row_runs.append(Vector2i(run_start, TILE_SIZE.x))
+
+		var row_keys: Dictionary = {}
+		for run in row_runs:
+			var key := "%d:%d" % [run.x, run.y]
+			row_keys[key] = true
+			if active_runs.has(key):
+				var active_rect: Rect2i = active_runs[key]
+				active_rect.size.y += 1
+				active_runs[key] = active_rect
+			else:
+				active_runs[key] = Rect2i(run.x, y, run.y - run.x, 1)
+
+		var old_keys: Array = active_runs.keys()
+		for key in old_keys:
+			if not row_keys.has(key):
+				completed.append(active_runs[key])
+				active_runs.erase(key)
+
+	for rect in active_runs.values():
+		completed.append(rect)
+	return completed
