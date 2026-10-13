@@ -4079,9 +4079,9 @@ Fixed the overworld's existing Tiled marker rendering and transition regions wit
 
 - Corrected `world/overworld_tiled_map_loader.gd` to map the three marker GID ranges to their actual PNG atlases: Havenreach (GIDs 751–756), Mira encounter (757–772), and Waking Area (773–788). Previously, all marker GIDs were incorrectly rendered from an unrelated atlas, which made the map markers appear corrupted.
 - Removed the generated polygon/label marker pass from `world/world_map_world.gd`. The TMX is the single source for marker visuals; no duplicate marker is generated over Havenreach.
-- Aligned transition centers to the actual centers of the existing TMX tile groups: Mira `(-1952, 1872)`, Havenreach `(-1832, 1872)`, and Waking Area `(-1832, 1968)`.
+- Aligned transition centers to the actual centers of the existing TMX tile groups: Mira `(-1952, 1872)`, Havenreach `(-1832, 1872)`, and Waking Area `(-1840, 1968)`.
 - Resized transition triggers to match the marker footprints: Mira 64x64, Havenreach 48x32, Waking Area 64x64. The previous 180x140 triggers overlapped, so walking into one marker could activate a neighboring location.
-- Moved the fallback overworld spawn and the Waking Area exit destination to the center of the existing Waking marker.
+- Moved the fallback overworld spawn and the Waking Area exit destination to the center of the existing Waking marker at `(-1840, 1968)`.
 
 Runtime checklist after pulling `origin main`:
 1. Start New Game and exit the Waking Area; confirm the Player appears at the lower Waking marker.
