@@ -3965,3 +3965,10 @@ Runtime checklist after pulling `origin main`:
 - Kept root Node2D nodes, scripted boundary/presentation nodes, camera parents, content groups with live children, collision bodies, and the MovingNPCTest fixture. These are not redundant merely because they are Node2D-based.
 - Kept legacy/example scenes such as `World.tscn`, `NorthbridgeVillage.tscn`, and the Tutorial Town interiors; they still have scene/resource references and should not be deleted based on appearance alone.
 - Static GitHub-side edit only. Local Godot parse/runtime verification has not been performed; after pulling `origin main`, open `WorldMapWorld.tscn` and verify the Tiled map, boundaries, player, encounters, and HUD.
+
+
+## 2026-10-13 — Audit Follow-up: Preserve Dynamic Marker Container
+
+- Follow-up dependency inspection found `world/world_map_world.gd` creates runtime location markers and labels under `$WorldMapContent`. Restored the empty `WorldMapContent` Node2D container in `scenes/WorldMapWorld.tscn` so those dynamically generated children have their expected parent.
+- The eight old ForestTree overlays and two static labels remain removed; only the required runtime container was restored.
+- This correction was committed before runtime verification. Godot validation is still pending locally.
