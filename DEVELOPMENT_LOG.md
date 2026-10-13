@@ -3939,3 +3939,19 @@ Runtime checklist:
 3. Confirm the Player renders above the terrain and can move across the map.
 4. Confirm town entry regions, Mira forest, encounter checks, world boundaries, and the M map overlay still function.
 5. Confirm no debugger errors.
+
+### Remove Polygon2D Map Placeholders (2026-10-13)
+
+Removed the hand-drawn Polygon2D placeholder terrain from the three legacy world scenes:
+
+- `scenes/World.tscn`: removed the floor, forest regions, roads, town square, and farm polygons.
+- `scenes/WorldMapWorld.tscn`: removed the floor, region/road polygons, Mira forest floor, and clearing-path polygon. The `TiledOverworldMap` loader node remains intact.
+- `scenes/NorthbridgeVillage.tscn`: removed the floor, field, village green, roads, and bridge polygons.
+
+All non-Polygon2D scene nodes were preserved. This source change has not been opened or runtime-tested in the local Godot editor. Note: the current GitHub versions of `World.tscn` and `NorthbridgeVillage.tscn` do not attach either Tiled map loader, unlike `WorldMapWorld.tscn`; these are legacy/example scenes and will not render replacement Tiled terrain until their intended map loaders are connected.
+
+Runtime checklist after pulling `origin main`:
+1. Confirm `WorldMapWorld.tscn` renders the overworld TMX without the old polygons.
+2. Confirm player, encounters, map boundaries, and world-map UI remain functional.
+3. Confirm the legacy `World.tscn` and `NorthbridgeVillage.tscn` are not relied on as active playable maps; if they are, connect the correct Tiled map loaders before runtime use.
+4. Confirm no new Godot debugger errors.
