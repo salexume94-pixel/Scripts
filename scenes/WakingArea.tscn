@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://world/waking_area.gd" id="3_waking"]
 [ext_resource type="Script" path="res://world/world_presentation.gd" id="4_presentation"]
 [ext_resource type="Script" path="res://world/world_exit_boundary.gd" id="5_exit"]
+[ext_resource type="Script" path="res://world/forest_tiled_map_loader.gd" id="10_forest_map"]
 [ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="6_inventory"]
 [ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="7_quest_log"]
 [ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="8_dialogue"]
@@ -20,21 +21,19 @@ location_id = "waking_area"
 
 [node name="WorldContent" type="Node2D" parent="."]
 
-[node name="FieldFloor" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-600, -400, 600, -400, 600, 400, -600, 400)
-color = Color(0.18, 0.30, 0.16, 1)
+[node name="TiledForestMap" type="Node2D" parent="WorldContent"]
+script = ExtResource("10_forest_map")
+map_path = "res://world/maps/waking/waking_area.tmx"
 
-[node name="GrassPatch" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-420, -230, -160, -300, 60, -180, 20, 20, -280, 60)
-color = Color(0.15, 0.25, 0.13, 1)
 
-[node name="WakingAreaLabel" type="Label" parent="WorldContent"]
-position = Vector2(-90, -330)
-text = "OPEN FIELD"
+
+
+
+
 
 [node name="WorldExitBoundary" type="Node2D" parent="."]
 script = ExtResource("5_exit")
-location_bounds = Rect2(-600, -400, 1200, 800)
+location_bounds = Rect2(-160, -160, 320, 320)
 target_scene = "res://scenes/WorldMapWorld.tscn"
 target_player_position = Vector2(-1250, 800)
 target_world_id = "world_map"
