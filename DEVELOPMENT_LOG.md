@@ -3892,3 +3892,16 @@ Verification boundary: this source/tree review does not claim a fresh full-tree 
 ### Roadmap Status Correction (2026-10-12)
 
 Corrected stale roadmap status text that still described the moving-NPC work as being on a feature branch and the MAIN_001 runtime checks as pending. Both descriptions conflicted with the current main-branch history and developer-reported checks recorded elsewhere. The updated roadmap distinguishes those earlier passing checks from the newer Tiled map integration checks, which still require local visual/runtime verification. No gameplay code changed.
+
+
+### Structural Cleanup and Narrative Documentation Consolidation (2026-10-12)
+
+Applied the developer's clarifications to the structural audit and repository organization:
+
+- Updated architecture and roadmap to describe Polygon2D terrain as a temporary migration target for Tiled/sprite-sheet maps, including the overworld and Havenreach interior maps.
+- Kept `player/player_skills.gd` as the intended home for the battle-screen Fire action and future skills.
+- Inspected all 36 tracked scenes and confirmed none references `systems/game_manager.gd`; `project.godot` does not register it as an autoload. The script only toggled an unused `game_started` boolean, so removed it and its `.uid` sidecar.
+- Consolidated the reusable narrative framework, inspirations, and storytelling rules into `docs/story/STORY_BIBLE.md`; removed the obsolete root-level `STORY_DIRECTION.md` and `STORY_DESIGN.md`.
+- Updated `docs/README.md` and the roadmap to make documentation ownership unambiguous. Kept slime AI test resources because the developer confirmed they are intentionally used for debugging.
+
+No gameplay code was changed apart from deleting the unused GameManager script/UID. The map replacements still require local Godot runtime verification after pulling `origin main`. This entry is appended; previous development-log entries remain intact.
