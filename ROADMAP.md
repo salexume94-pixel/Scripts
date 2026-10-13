@@ -317,7 +317,7 @@ This addendum records the next development gate without removing or rewriting ea
 
 ### Remaining design gate before quest implementation
 
-1. Reconcile the older MMO-login/tutorial-town opening in `STORY_DIRECTION.md` with the current *The Stranger* opening: waking in a field, meeting Mira, and reaching Havenreach. Do not merge the two openings by assumption.
+1. Keep the canonical *The Stranger* opening (waking in a field, meeting Mira, and reaching Havenreach) in `docs/story/STORY_BIBLE.md`. Retired root story documents have been consolidated and deleted.
 2. Establish Havenreach's stable facts in `docs/world/WORLD_BIBLE.md`: local authority, guild, church/temple, NPC roles, nearby ruins, and surrounding region. Keep plot chronology and revelation timing in `docs/story/STORY_BIBLE.md`.
 3. Specify *The Stranger* against the existing QuestManager, NPC interaction, DialogueManager, RewardManager, Quest Log, and SaveManager interfaces. Lock stable quest/objective IDs, prerequisites, trigger rules, dialogue transitions, completion/turn-in behavior, rewards, story facts, world changes, and persistence requirements.
 4. Extend QuestData or dialogue/NPC behavior only for capabilities the approved first-quest specification proves necessary. Do not create a StoryManager until its responsibilities, authoritative data, and interface are explicitly defined.
