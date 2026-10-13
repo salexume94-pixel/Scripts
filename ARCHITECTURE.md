@@ -495,3 +495,13 @@ Havenreach's editable exterior layout is maintained in `world/maps/havensreach/H
 - Visual tile placement is loaded from the TMX file; Tiled object layers, tile flip flags, and collision metadata are not currently converted.
 - Physical boundaries, interactable buildings, and scene transitions remain owned by the existing Godot world systems.
 - Add support to the loader deliberately if future Tiled maps introduce additional tilesets or layer encodings.
+
+
+## Tiled Map Asset and Loader Ownership (2026-10-12)
+
+- `world/maps/` is the source-controlled home for editable Tiled map documents and their adjacent `.tsx` tileset definitions. Keep each map's external tileset files beside that map when practical so the map's authoring dependencies are easy to locate.
+- `world/tiled_map_loader.gd` is currently a **Havenreach-specific adapter**, not a project-wide Tiled importer. It owns loading `world/maps/havensreach/Havensreach.tmx` into native `TileMapLayer` nodes and generating the current supported object collision from atlas alpha.
+- `scenes/Havenreach.tscn` owns placement of that loader. The loader does not own world transitions, doors/interactable buildings, named world-location data, quest state, or the overworld map UI.
+- The loader currently assumes two fixed 16×16 atlas sources and CSV tile layers. Tiled object layers, flip flags, and authored collision metadata are not imported. Tree-canopy foreground occlusion is deferred; verify roof and collision behavior in Godot rather than inferring correctness from the source.
+- `world/maps/overworld/Overworld.tmx` and `world/maps/havensreach/house_1_interior.tmx` are tracked authoring assets, but they must not be documented as runtime-integrated until a scene or loader actually consumes them.
+- Extend to a reusable multi-map loader only when the next map integration requires it; do not duplicate the current parser into each world scene.
