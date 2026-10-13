@@ -6,7 +6,6 @@ extends Node
 ## tracking, save-state, or UI systems.
 
 const QUEST_DEFINITIONS: Array[Resource] = [
-	preload("res://quests/definitions/northbridge_introduction.tres"),
 	preload("res://quests/definitions/the_stranger.tres"),
 ]
 
