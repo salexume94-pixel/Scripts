@@ -110,7 +110,7 @@ func _load_map() -> void:
 	collision_body.collision_mask = 1
 	add_child(collision_body)
 	var collision_count := 0
-	var collision_layer_selected := false
+	var tree_layer_found := false
 	var atlas_image := atlas_texture.get_image()
 
 	for layer_index in range(layers.size()):
@@ -143,12 +143,12 @@ func _load_map() -> void:
 			tile_layer.z_index = -10 + layer_index
 		add_child(tile_layer)
 
-		# Only the first tree layer contains the map's primary tree placements.
-		# Later layers add canopy/overlap artwork and must not create extra blockers.
+		# Trees are assembled across multiple Tiled layers. Generate collision
+		# from the bottom/trunk tile rows on EVERY tree layer, not just the first
+		# layer and not from opaque canopy pixels.
 		var layer_is_tree := layer_name.to_lower().contains("tree layer")
-		var layer_generates_collision := layer_is_tree and not collision_layer_selected
-		if layer_generates_collision:
-			collision_layer_selected = true
+		if layer_is_tree:
+			tree_layer_found = true
 
 		for cell_index in range(raw_cells.size()):
 			var gid := raw_cells[cell_index].to_int()
@@ -162,10 +162,10 @@ func _load_map() -> void:
 			var atlas_coords := Vector2i(local_id % ATLAS_COLUMNS, floori(float(local_id) / float(ATLAS_COLUMNS)))
 			tile_layer.set_cell(cell_coords, 0, atlas_coords)
 
-			# Match Havenreach's alpha-aware collision: only visible pixels in the
-			# primary tree layer become small rectangles; transparent atlas margins
-			# remain walkable. Grass, flowers, and all later canopy layers stay clear.
-			if layer_generates_collision:
+			# The atlas trees are multi-tile sprites: upper rows are foliage, while
+			# the final two rows contain the lower trunk/base that should block feet.
+			# Apply this to all tree layers so every placed tree gets collision.
+			if layer_is_tree and _is_tree_trunk_gid(gid):
 				for rect in _get_alpha_collision_rects(atlas_image, atlas_coords):
 					var collision_shape := CollisionShape2D.new()
 					collision_shape.name = "TreePixel_%d_%d_%d" % [cell_coords.x, cell_coords.y, collision_count]
@@ -179,14 +179,20 @@ func _load_map() -> void:
 					collision_body.add_child(collision_shape)
 					collision_count += 1
 
-	if not collision_layer_selected:
-		push_warning("ForestTiledMapLoader found no tree layer to generate collision from: %s" % map_path)
+	if not tree_layer_found:
+		push_warning("ForestTiledMapLoader found no tree layers to generate collision from: %s" % map_path)
 	elif collision_count == 0:
-		push_warning("ForestTiledMapLoader generated no tree collision shapes for: %s" % map_path)
+		push_warning("ForestTiledMapLoader generated no tree trunk collision shapes for: %s" % map_path)
 	else:
 		print("ForestTiledMapLoader generated %d tree collision shapes for %s." % [collision_count, map_path])
 
 	print("ForestTiledMapLoader loaded %s (%dx%d, %d layers)." % [map_path, map_width, map_height, layers.size()])
+
+
+func _is_tree_trunk_gid(gid: int) -> bool:
+	# GIDs 490-494 and 506-509 are the bottom two rows of this tree atlas.
+	# Canopy rows must stay non-blocking so actors can walk behind/under crowns.
+	return (gid >= 490 and gid <= 494) or (gid >= 506 and gid <= 509)
 
 
 func _get_alpha_collision_rects(image: Image, atlas_coords: Vector2i) -> Array[Rect2i]:
