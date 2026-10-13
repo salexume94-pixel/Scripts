@@ -1,9 +1,9 @@
 extends Node2D
 ## Loads a small forest/field Tiled map using the project's shared 16x16 exterior atlas.
 ## This loader handles the CSV tile layers used by Waking Area and Mira's clearing.
-## It builds alpha-aware static collision from the first tree layer in each map,
-## leaving later canopy layers visual-only so overlapping tree artwork does not
-## create stacked collision or make the entire canopy impassable.
+## It builds a single static collision body from the opaque pixels of every
+## placed tree tile across all tree layers. Trunks and canopies are both solid;
+## transparent atlas margins remain walkable.
 
 const TILE_SIZE := Vector2i(16, 16)
 const ATLAS_TEXTURE_PATH := "res://assets/maps_tileset/town_map/towns_tileset/PNG/exterior.png"
@@ -143,9 +143,9 @@ func _load_map() -> void:
 			tile_layer.z_index = -10 + layer_index
 		add_child(tile_layer)
 
-		# Trees are assembled across multiple Tiled layers. Generate collision
-		# from the bottom/trunk tile rows on EVERY tree layer, not just the first
-		# layer and not from opaque canopy pixels.
+		# Tree artwork is split across multiple Tiled layers. All of those layers
+		# contribute to one shared StaticBody2D, so the full visible tree
+		# footprint, including canopy, is impassable without stacked physics bodies.
 		var layer_is_tree := layer_name.to_lower().contains("tree layer")
 		if layer_is_tree:
 			tree_layer_found = true
@@ -162,10 +162,10 @@ func _load_map() -> void:
 			var atlas_coords := Vector2i(local_id % ATLAS_COLUMNS, floori(float(local_id) / float(ATLAS_COLUMNS)))
 			tile_layer.set_cell(cell_coords, 0, atlas_coords)
 
-			# The atlas trees are multi-tile sprites: upper rows are foliage, while
-			# the final two rows contain the lower trunk/base that should block feet.
-			# Apply this to all tree layers so every placed tree gets collision.
-			if layer_is_tree and _is_tree_trunk_gid(gid):
+			# Use every opaque pixel in each tree tile, including upper canopy tiles.
+			# Collision shapes remain children of the same body, making the whole
+			# visible tree footprint solid while preserving transparent gaps.
+			if layer_is_tree:
 				for rect in _get_alpha_collision_rects(atlas_image, atlas_coords):
 					var collision_shape := CollisionShape2D.new()
 					collision_shape.name = "TreePixel_%d_%d_%d" % [cell_coords.x, cell_coords.y, collision_count]
@@ -182,17 +182,11 @@ func _load_map() -> void:
 	if not tree_layer_found:
 		push_warning("ForestTiledMapLoader found no tree layers to generate collision from: %s" % map_path)
 	elif collision_count == 0:
-		push_warning("ForestTiledMapLoader generated no tree trunk collision shapes for: %s" % map_path)
+		push_warning("ForestTiledMapLoader generated no tree collision shapes for: %s" % map_path)
 	else:
 		print("ForestTiledMapLoader generated %d tree collision shapes for %s." % [collision_count, map_path])
 
 	print("ForestTiledMapLoader loaded %s (%dx%d, %d layers)." % [map_path, map_width, map_height, layers.size()])
-
-
-func _is_tree_trunk_gid(gid: int) -> bool:
-	# GIDs 490-494 and 506-509 are the bottom two rows of this tree atlas.
-	# Canopy rows must stay non-blocking so actors can walk behind/under crowns.
-	return (gid >= 490 and gid <= 494) or (gid >= 506 and gid <= 509)
 
 
 func _get_alpha_collision_rects(image: Image, atlas_coords: Vector2i) -> Array[Rect2i]:
