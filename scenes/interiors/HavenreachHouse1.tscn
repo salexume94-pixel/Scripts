@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://world/interior.gd" id="2_interior"]
+[ext_resource type="PackedScene" path="res://world/Door.tscn" id="3_door"]
+[ext_resource type="Script" path="res://world/interior_presentation.gd" id="4_presentation"]
+[ext_resource type="PackedScene" path="res://ui/InventoryCharacterHUD.tscn" id="5_inventory"]
+[ext_resource type="PackedScene" path="res://ui/QuestLog.tscn" id="6_quest_log"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="7_dialogue"]
+[ext_resource type="Script" path="res://world/house_interior_tiled_map_loader.gd" id="8_map_loader"]
+
+[node name="HavenreachHouse1Interior" type="Node2D"]
+script = ExtResource("2_interior")
+interior_size = Vector2(320, 320)
+door_width = 48.0
+
+[node name="InteriorContent" type="Node2D" parent="."]
+
+[node name="TiledMap" type="Node2D" parent="InteriorContent"]
+script = ExtResource("8_map_loader")
+map_path = "res://world/maps/havensreach/house_1_interior.tmx"
+secondary_texture_path = "res://assets/maps_tileset/town_map/towns_tileset/PNG/Interior.png"
+secondary_first_gid = 751
+secondary_columns = 12
+secondary_rows = 25
+interior_mode = true
+
+[node name="ExitDoor" parent="InteriorContent" instance=ExtResource("3_door")]
+position = Vector2(0, 160)
+target_scene = "res://scenes/Havenreach.tscn"
+target_player_position = Vector2(0, -128)
+use_return_position = true
+
+[node name="ExitDoorVisualOverride" type="Node" parent="InteriorContent"]
+visible = false
+
+[node name="InteriorPresentation" type="Node2D" parent="."]
+script = ExtResource("4_presentation")
+
+[node name="Camera2D" type="Camera2D" parent="InteriorPresentation"]
+zoom = Vector2(2, 2)
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 120)
+
+[node name="InventoryCharacterHUD" parent="." instance=ExtResource("5_inventory")]
+
+[node name="QuestLog" parent="." instance=ExtResource("6_quest_log")]
+
+[node name="DialogueBox" parent="." instance=ExtResource("7_dialogue")]
