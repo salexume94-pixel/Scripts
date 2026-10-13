@@ -20,6 +20,8 @@ script = ExtResource("2_world_context")
 world_id = "world_map"
 location_id = "world_map"
 
+[node name="WorldMapContent" type="Node2D" parent="."]
+
 [node name="TiledOverworldMap" type="Node2D" parent="."]
 script = ExtResource("14_overworld_tiled_loader")
 
