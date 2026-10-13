@@ -24,34 +24,6 @@ location_id = "northbridge_village"
 
 [node name="WorldContent" type="Node2D" parent="."]
 
-[node name="WorldFloor" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-1000, -1500, 1000, -1500, 1000, 1500, -1000, 1500)
-color = Color(0.15, 0.20, 0.14, 1)
-
-[node name="NorthField" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-900, -1450, 900, -1450, 900, -700, -900, -700)
-color = Color(0.11, 0.18, 0.12, 1)
-
-[node name="VillageGreen" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-420, -420, 420, -420, 420, 420, -420, 420)
-color = Color(0.20, 0.24, 0.15, 1)
-
-[node name="NorthRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-55, -1500, 55, -1500, 55, -420, -55, -420)
-color = Color(0.34, 0.29, 0.21, 1)
-
-[node name="SouthRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-55, 420, 55, 420, 55, 1500, -55, 1500)
-color = Color(0.34, 0.29, 0.21, 1)
-
-[node name="WestRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-1000, -55, -420, -55, -420, 55, -1000, 55)
-color = Color(0.34, 0.29, 0.21, 1)
-
-[node name="EastRoad" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(420, -55, 1000, -55, 1000, 55, 420, 55)
-color = Color(0.34, 0.29, 0.21, 1)
-
 [node name="NorthHouse" parent="WorldContent" instance=ExtResource("8_building")]
 location_data = ExtResource("11_north_house")
 interior_scene = "res://scenes/interiors/NorthbridgeNorthHouse.tscn"
@@ -75,10 +47,6 @@ location_data = ExtResource("14_southeast_house")
 interior_scene = "res://scenes/interiors/NorthbridgeSoutheastHouse.tscn"
 scale = Vector2(1.33, 1.33)
 position = Vector2(230, 275)
-
-[node name="Northbridge" type="Polygon2D" parent="WorldContent"]
-polygon = PackedVector2Array(-90, -1000, 90, -1000, 90, -700, -90, -700)
-color = Color(0.38, 0.38, 0.40, 1)
 
 [node name="VillageSign" type="Label" parent="WorldContent"]
 position = Vector2(-150, -90)
