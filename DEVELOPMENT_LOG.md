@@ -4149,3 +4149,19 @@ Committed source change only; local Godot runtime verification remains pending.
 - [ ] Check the Godot debugger for new errors.
 
 Runtime verification: pending local Godot test.
+
+
+## Correct Base Overworld Layer Z-Order (2026-10-13)
+
+- Confirmed the location markers are already authored in `world/maps/overworld/Overworld.tmx` on the `TOWN` layer; no duplicate marker instances were added.
+- Changed generated base Tiled layers to use negative z-indices so the original marker tiles and terrain render behind the Player sibling node.
+- Kept the separate high-z foreground layer for building roof occlusion only.
+- Transition triggers and map cell placement are unchanged.
+
+### Local Godot runtime checklist
+- [ ] Pull latest `origin/main`.
+- [ ] Confirm Waking Area and Mira marker artwork is behind the Player when walking over the markers.
+- [ ] Confirm Havenreach marker and building roof occlusion still look correct.
+- [ ] Confirm all three transitions still trigger and check the debugger for errors.
+
+Runtime verification: pending local Godot test.
