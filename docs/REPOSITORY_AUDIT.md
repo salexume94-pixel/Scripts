@@ -654,3 +654,70 @@ The developer reports that all remaining verification checks passed in the local
 - No new Godot debugger errors appeared during the checks.
 
 This is developer-reported local verification, not a result produced by the static reference checker. No gameplay code changes were needed for this verification pass. The audit's structural cautions remain: `PlayerSkills` is still a placeholder, `GameManager` remains a cleanup candidate, and legacy story documents still need reconciliation.
+
+
+---
+
+## Current Tree Refresh: Tiled Maps and Structural Audit (2026-10-12)
+
+**Reviewed branch:** `main`  
+**Reviewed Git tree:** `9c1d4ccfd94b03e227ee0bf629b0b3b7ffc009f0`  
+**Scope:** current Git tree inventory, recent Tiled-map integration, existing scene/script attachment findings, and documentation ownership. This is a new snapshot; older audit sections above remain historical and are not rewritten.
+
+### Current tracked inventory
+
+The recursive Git tree contains **1,859 tracked files**. Relevant categories:
+
+| Category | Count |
+|---|---:|
+| GDScript (`.gd`) | 70 |
+| Godot scenes (`.tscn`) | 36 |
+| Serialized Godot resources (`.tres`) | 70 |
+| PNG images | 819 |
+| MP3 music tracks | 3 |
+| Markdown documents | 10 |
+| Tiled maps (`.tmx`) | 3 |
+| Tiled tileset definitions (`.tsx`) | 2 |
+| Godot UID sidecars (`.uid`) | 10 |
+| Godot import sidecars (`.import`) | 823 |
+| Python tools | 1 |
+| Godot project files (`.godot`) | 1 |
+
+This supersedes earlier inventory counts. PNG and import-sidecar totals include the expanded map/tileset assets and should not be interpreted as separate gameplay systems.
+
+### Tiled map integration findings
+
+Current map-authoring files are organized under `world/maps/`:
+
+- `world/maps/havensreach/Havensreach.tmx`
+- `world/maps/havensreach/house_1_interior.tmx`
+- `world/maps/havensreach/exterior.tsx`
+- `world/maps/havensreach/church_exterior.tsx`
+- `world/maps/overworld/Overworld.tmx`
+
+Verified source connections:
+- `scenes/Havenreach.tscn` attaches `world/tiled_map_loader.gd` to its `TiledMap` node.
+- `world/tiled_map_loader.gd` reads `Havensreach.tmx` and loads the two referenced atlas images from `assets/maps_tileset/`.
+- The loader creates native `TileMapLayer` nodes and generates object collision from non-transparent pixels for its supported layers. Its comments and code explicitly defer tree-canopy occlusion.
+- The current `WorldMapWorld.tscn` still draws its world floor, regions, and roads using `Polygon2D` nodes. The new `world/maps/overworld/Overworld.tmx` is present in Git but is not wired into that scene by the inspected scene file.
+- The house interior TMX is present, but the inspected map integration only loads the Havenreach exterior TMX. Do not assume the interior map is playable merely because its authoring file is tracked.
+- The loader is intentionally a narrow adapter, not a general Tiled importer: it reads orthogonal CSV tile layers, maps two fixed 16×16 atlases, and does not import Tiled object layers, tile-flip flags, or authored collision metadata. Keep those limitations visible until support is implemented and tested.
+
+### Structural findings carried forward
+
+1. **PlayerSkills remains a placeholder.** `player/player_skills.gd` contains only `extends Node`; the Player scene attaches it and `player/player.gd` resolves it. Keep it explicitly marked as a placeholder or remove the node and all dependent references together in a separate tested code change.
+2. **GameManager remains a cleanup candidate.** `systems/game_manager.gd` exposes only basic start/end flags, is not an autoload in `project.godot`, and overlaps lifecycle coordination already represented by SceneManager and GameState. Search all code references before deciding whether to remove or assign it a distinct owner.
+3. **Legacy story docs overlap.** Root `STORY_DIRECTION.md` and `STORY_DESIGN.md` remain reference material with older opening assumptions. `docs/world/WORLD_BIBLE.md` owns stable world facts; `docs/story/STORY_BIBLE.md` owns plot chronology and revelations. Reconcile deliberately rather than silently merging conflicting openings.
+4. **Interior scene setup is repeated.** Existing interior scenes share the interior scripts and camera configuration. This is consistent but creates repeated maintenance; a shared inherited base scene is only a candidate, not an automatic refactor.
+5. **Enemy test resources sit beside production definitions.** `slime_ai_*_test.tres` files are under `enemies/definitions/`; the enemy database excludes them from normal lookup. This is functional but weakly signposted. A future move must update references and should be a separate code/resource change.
+
+### Reference and attachment verification boundary
+
+- The existing `tools/audit_res_refs.py` remains the project’s static checker for literal `res://` references. Its documented limitations include dynamic path templates, UID resolution, Godot parsing/imports, and runtime behavior.
+- The prior 2026-10-10 run recorded 1,094 literal references checked and zero missing targets for that earlier tree. **That result is historical and is not claimed as a fresh scan of this 1,859-file tree.**
+- Static inspection confirms the new `TiledMap` script attachment in `scenes/Havenreach.tscn` and the loader’s literal map/atlas paths match tracked paths. This does not establish that every current project reference resolves or that Godot imports/parses the new assets successfully.
+- The developer’s earlier local Godot checklist does not verify the new Tiled map assets added after that checklist. The latest development-log entries correctly mark their visual/runtime checks as pending.
+
+### Audit conclusion
+
+The domain folder layout remains broadly coherent. No mass file moves are justified by this audit. The concrete current integration gap is that the overworld and house-interior TMX files are tracked but not yet shown to be loaded by their corresponding runtime scenes. Next verification should run the reference checker on the current local checkout, then test Havenreach collision/roof occlusion and separately confirm whether the overworld/interior TMX files are intentionally staging assets or need scene integration.
