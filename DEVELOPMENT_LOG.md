@@ -3984,3 +3984,15 @@ Runtime checklist after pulling `origin main`:
 - Preserved Godot `.import` metadata, script `.uid` files, original source art/archives, debug scenes, and prototype/example scenes. Their apparent lack of direct scene references alone is not enough to establish that they are safe to delete.
 - Earlier in this audit, removed obsolete static forest-tree overlays and labels from `scenes/WorldMapWorld.tscn`, while retaining `WorldMapContent` because `world/world_map_world.gd` populates it dynamically.
 - Static repository analysis only. Godot editor import, parse, and runtime validation have not been run here. After pulling `origin main`, run the project and check the main menu, Waking Area, Mira encounter, overworld, Havenreach, interiors, combat, and the debugger.
+
+
+### Remove Tutorial Town and Northbridge Prototype Scenes (2026-10-13)
+
+Removed the obsolete Tutorial Town and Northbridge Village prototype content now that the dedicated debugging scene is the preferred test environment.
+
+- Removed `scenes/World.tscn`, `scenes/NorthbridgeVillage.tscn`, their named interior scenes, and the unused generic `scenes/Interior.tscn` prototype that returned to `World.tscn`.
+- Removed the Tutorial Town and Northbridge location/map definitions, their legacy building-location definitions, and the Northbridge introduction quest definition.
+- Updated `WorldLocationDatabase`, `WorldMapDatabase`, and `QuestDatabase` so they no longer preload the deleted resources.
+- Kept the active Havenreach scenes/interior, Waking Area, Mira encounter, WorldMapWorld, and dedicated debugging scene. Kept `tutorial_town.mp3` for now because audio use is independent of the deleted prototype scenes and needs its own reference audit before removal.
+
+This is a GitHub source cleanup only. Godot import, parse, and runtime checks have not been run here. After pulling `origin main`, confirm the project opens without missing-resource errors, New Game enters Waking Area, the overworld still loads, Havenreach and its church interior still transition correctly, and the debugging scene remains available.
