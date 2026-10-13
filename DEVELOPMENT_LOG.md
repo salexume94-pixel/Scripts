@@ -4118,3 +4118,18 @@ Runtime verification required after pulling `origin main`:
 5. Confirm all three transitions work without debugger errors.
 
 Source edits are committed to `main`; Godot runtime verification has not been performed here.
+
+
+### Overworld Marker Foreground Rendering (2026-10-13)
+
+- Updated `world/overworld_tiled_map_loader.gd` to copy the existing Havenreach, Mira, and Waking marker tiles into the map's high-Z foreground layer. The marker artwork now renders over the Player instead of the Player appearing underneath its lower tiles.
+- Explicitly excluded all marker GIDs from generated pixel collision. Markers are transition artwork and must not be mistaken for church/building tiles by the shared GID collision rules.
+- Kept the original Tiled marker cells and entry triggers unchanged; no markers were duplicated or moved.
+
+Runtime verification required after pulling `origin main`:
+1. Walk around and through each overworld marker and confirm the Player renders in front of its artwork.
+2. Confirm markers remain visible and their entry transitions still activate.
+3. Confirm the marker artwork does not block movement through its trigger area.
+4. Confirm no Godot debugger errors occur.
+
+Committed source change only; local Godot runtime verification remains pending.
