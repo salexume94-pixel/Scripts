@@ -4177,3 +4177,23 @@ Runtime verification status:
 - [ ] Recheck all three location transitions and building roof occlusion after the change.
 - [ ] Check the Godot debugger for errors.
 
+## Waking Area and Mira Forest Tree Collision (2026-10-13)
+
+Added generated tree collision to the shared `world/forest_tiled_map_loader.gd`, using the same alpha-aware collision technique already used by Havenreach.
+
+- The loader now creates one `StaticBody2D` for generated tree collision in each loaded forest map.
+- Collision is generated from opaque pixels in the first tree layer found in each TMX map. Transparent atlas margins remain walkable.
+- Later tree layers remain visual-only, preserving their canopy/overlap draw-order role without stacking additional collision across the same trees.
+- Ground, grass, flowers, and decorative flora remain walkable.
+- Both `scenes/WakingArea.tscn` and `scenes/MiraEncounterArea.tscn` already use this loader, so no scene or map edits were required.
+
+Runtime checklist after pulling `origin main`:
+- [ ] Open the project in Godot and confirm the forest loader parses without errors.
+- [ ] In Waking Area, walk into the tree trunks and confirm collision blocks movement; verify grass and decorative plants remain walkable.
+- [ ] Repeat the tree collision and walkability checks in Mira's encounter area.
+- [ ] Walk around tree edges and confirm transparent margins do not create oversized invisible blockers.
+- [ ] Confirm canopy rendering, Mira interaction, area exits, and the opening sequence still work.
+- [ ] Check the Godot debugger for parse, resource, or physics errors.
+
+Status: source change committed to `main`; local Godot import and runtime verification remain pending.
+
