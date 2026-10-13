@@ -10,15 +10,25 @@ extends Node2D
 
 const MAP_PATH := "res://world/maps/overworld/Overworld.tmx"
 const EXTERIOR_TEXTURE_PATH := "res://assets/maps_tileset/town_map/towns_tileset/PNG/exterior.png"
-const CHURCH_TEXTURE_PATH := "res://assets/maps_tileset/town_map/church_tileset/PNG/Exterior.png"
+const HAVENREACH_MARKER_TEXTURE_PATH := "res://world/maps/havensreach/havensreach_marker.png"
+const MIRA_MARKER_TEXTURE_PATH := "res://world/maps/miras encounter/mira_encounter_marker.png"
+const WAKING_MARKER_TEXTURE_PATH := "res://world/maps/waking/waking_area_marker.png"
 
 const TILE_SIZE := Vector2i(16, 16)
 const EXTERIOR_FIRST_GID := 1
 const EXTERIOR_COLUMNS := 15
 const EXTERIOR_ROWS := 50
-const CHURCH_FIRST_GID := 751
-const CHURCH_COLUMNS := 16
-const CHURCH_ROWS := 19
+# These first-GID ranges must match the tileset declarations already in Overworld.tmx.
+# Do not add duplicate markers here; these atlas sources only render the existing TMX cells.
+const HAVENREACH_MARKER_FIRST_GID := 751
+const HAVENREACH_MARKER_COLUMNS := 3
+const HAVENREACH_MARKER_ROWS := 2
+const MIRA_MARKER_FIRST_GID := 757
+const MIRA_MARKER_COLUMNS := 4
+const MIRA_MARKER_ROWS := 4
+const WAKING_MARKER_FIRST_GID := 773
+const WAKING_MARKER_COLUMNS := 4
+const WAKING_MARKER_ROWS := 4
 
 # The exterior atlas's first 114 cells contain the house/fence artwork.
 const HOUSE_AND_FENCE_GID_MIN := 1
@@ -110,10 +120,26 @@ func _load_tiled_map() -> void:
 		return
 	tile_set.add_source(exterior_source, 0)
 
-	var church_source := _create_atlas_source(CHURCH_TEXTURE_PATH, CHURCH_COLUMNS, CHURCH_ROWS)
-	if church_source == null:
+	var havenreach_marker_source := _create_atlas_source(
+		HAVENREACH_MARKER_TEXTURE_PATH, HAVENREACH_MARKER_COLUMNS, HAVENREACH_MARKER_ROWS
+	)
+	if havenreach_marker_source == null:
 		return
-	tile_set.add_source(church_source, 1)
+	tile_set.add_source(havenreach_marker_source, 1)
+
+	var mira_marker_source := _create_atlas_source(
+		MIRA_MARKER_TEXTURE_PATH, MIRA_MARKER_COLUMNS, MIRA_MARKER_ROWS
+	)
+	if mira_marker_source == null:
+		return
+	tile_set.add_source(mira_marker_source, 2)
+
+	var waking_marker_source := _create_atlas_source(
+		WAKING_MARKER_TEXTURE_PATH, WAKING_MARKER_COLUMNS, WAKING_MARKER_ROWS
+	)
+	if waking_marker_source == null:
+		return
+	tile_set.add_source(waking_marker_source, 3)
 
 	# Center the 800x560 pixel map around the town's world origin.
 	var map_origin := Vector2(
@@ -140,7 +166,9 @@ func _load_tiled_map() -> void:
 	add_child(foreground_layer)
 	# Read each atlas image once instead of copying it for every occupied map cell.
 	var exterior_image := exterior_source.texture.get_image()
-	var church_image := church_source.texture.get_image()
+	var havenreach_marker_image := havenreach_marker_source.texture.get_image()
+	var mira_marker_image := mira_marker_source.texture.get_image()
+	var waking_marker_image := waking_marker_source.texture.get_image()
 
 	for layer_index in range(layers.size()):
 		var layer_data: Dictionary = layers[layer_index]
@@ -178,27 +206,37 @@ func _load_tiled_map() -> void:
 
 			var source_id: int
 			var atlas_coords: Vector2i
-			if gid >= CHURCH_FIRST_GID:
-				# Tiled GIDs are one-based and include the first GID offset.
-				var church_local_id := gid - CHURCH_FIRST_GID
-				if church_local_id < 0 or church_local_id >= CHURCH_COLUMNS * CHURCH_ROWS:
-					push_warning("Havenreach map contains an unsupported church tileset GID: %d" % gid)
+			# Tiled global IDs identify three marker sheets after the exterior tileset.
+			# Route each range to its own texture instead of mistakenly drawing markers
+			# from an unrelated atlas.
+			if gid >= WAKING_MARKER_FIRST_GID:
+				var local_id := gid - WAKING_MARKER_FIRST_GID
+				if local_id >= WAKING_MARKER_COLUMNS * WAKING_MARKER_ROWS:
+					push_warning("Overworld map contains an unsupported waking marker GID: %d" % gid)
+					continue
+				source_id = 3
+				atlas_coords = Vector2i(local_id % WAKING_MARKER_COLUMNS, floori(float(local_id) / WAKING_MARKER_COLUMNS))
+			elif gid >= MIRA_MARKER_FIRST_GID:
+				var local_id := gid - MIRA_MARKER_FIRST_GID
+				if local_id >= MIRA_MARKER_COLUMNS * MIRA_MARKER_ROWS:
+					push_warning("Overworld map contains an unsupported Mira marker GID: %d" % gid)
+					continue
+				source_id = 2
+				atlas_coords = Vector2i(local_id % MIRA_MARKER_COLUMNS, floori(float(local_id) / MIRA_MARKER_COLUMNS))
+			elif gid >= HAVENREACH_MARKER_FIRST_GID:
+				var local_id := gid - HAVENREACH_MARKER_FIRST_GID
+				if local_id >= HAVENREACH_MARKER_COLUMNS * HAVENREACH_MARKER_ROWS:
+					push_warning("Overworld map contains an unsupported Havenreach marker GID: %d" % gid)
 					continue
 				source_id = 1
-				atlas_coords = Vector2i(
-					church_local_id % CHURCH_COLUMNS,
-					floori(float(church_local_id) / float(CHURCH_COLUMNS))
-				)
+				atlas_coords = Vector2i(local_id % HAVENREACH_MARKER_COLUMNS, floori(float(local_id) / HAVENREACH_MARKER_COLUMNS))
 			else:
 				var exterior_local_id := gid - EXTERIOR_FIRST_GID
 				if exterior_local_id < 0 or exterior_local_id >= EXTERIOR_COLUMNS * EXTERIOR_ROWS:
-					push_warning("Havenreach map contains an unsupported exterior tileset GID: %d" % gid)
+					push_warning("Overworld map contains an unsupported exterior GID: %d" % gid)
 					continue
 				source_id = 0
-				atlas_coords = Vector2i(
-					exterior_local_id % EXTERIOR_COLUMNS,
-					floori(float(exterior_local_id) / float(EXTERIOR_COLUMNS))
-				)
+				atlas_coords = Vector2i(exterior_local_id % EXTERIOR_COLUMNS, floori(float(exterior_local_id) / EXTERIOR_COLUMNS))
 
 			tile_layer.set_cell(cell_coords, source_id, atlas_coords)
 
@@ -208,7 +246,13 @@ func _load_tiled_map() -> void:
 
 			# Build collision only where the tile image has visible, non-transparent
 			# pixels. This avoids invisible rectangular blockers in transparent margins.
-			var atlas_image: Image = exterior_image if source_id == 0 else church_image
+			var atlas_image: Image = exterior_image
+			if source_id == 1:
+				atlas_image = havenreach_marker_image
+			elif source_id == 2:
+				atlas_image = mira_marker_image
+			elif source_id == 3:
+				atlas_image = waking_marker_image
 			var collision_rects := _get_collision_rects(layer_name, gid, atlas_coords, atlas_image, cell_coords)
 			for rect in collision_rects:
 				var collision_shape := CollisionShape2D.new()
@@ -246,7 +290,7 @@ func _get_collision_rects(
 		# Roads and unrelated atlas cells are walkable. Only house/fence and
 		# church tiles are solid on this layer.
 		var is_house_or_fence := gid >= HOUSE_AND_FENCE_GID_MIN and gid <= HOUSE_AND_FENCE_GID_MAX
-		var is_church := gid >= CHURCH_GID_MIN and gid <= CHURCH_GID_MAX
+		var is_church := false
 		if not is_house_or_fence and not is_church:
 			return []
 		if is_house_or_fence:
@@ -331,4 +375,4 @@ func _should_draw_building_foreground(layer_name: String, gid: int) -> bool:
 		var doorway_gids: Array[int] = [52, 53, 67, 68, 82, 83, 97, 98]
 		return not doorway_gids.has(gid)
 	# Only the upper church roof rows are drawn over actors.
-	return gid >= 752 and gid <= 790
+	return false
