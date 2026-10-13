@@ -14,6 +14,7 @@ extends Node2D
 
 @export var interior_size: Vector2 = Vector2(480.0, 320.0)
 @export var door_width: float = 48.0
+@export var door_offset_x: float = 0.0
 
 const WALL_THICKNESS := 16.0
 const PLAYER_VISUAL_CLEARANCE := 4.0
@@ -55,14 +56,18 @@ func _ready() -> void:
 
 	# Split the bottom wall around the doorway so the ExitDoor is an actual
 	# opening in the room instead of a trigger placed on top of solid wall.
-	var segment_width := (interior_size.x - door_width) / 2.0
-	var segment_x := door_width / 2.0 + segment_width / 2.0
+	# Allow the exit opening to align with an off-center rug or doorway in the
+	# Tiled layout. Each wall segment is calculated from that opening's center.
+	var left_segment_width := interior_size.x / 2.0 + door_offset_x - door_width / 2.0
+	var right_segment_width := interior_size.x / 2.0 - door_offset_x - door_width / 2.0
+	var left_segment_x := -interior_size.x / 2.0 + left_segment_width / 2.0
+	var right_segment_x := interior_size.x / 2.0 - right_segment_width / 2.0
 
 	_create_wall(
 		"BottomLeftWall",
-		Vector2(segment_width, WALL_THICKNESS),
+		Vector2(left_segment_width, WALL_THICKNESS),
 		Vector2(
-			-segment_x,
+			left_segment_x,
 			interior_size.y / 2.0
 			- PLAYER_VISUAL_CLEARANCE
 			+ WALL_THICKNESS / 2.0
@@ -70,9 +75,9 @@ func _ready() -> void:
 	)
 	_create_wall(
 		"BottomRightWall",
-		Vector2(segment_width, WALL_THICKNESS),
+		Vector2(right_segment_width, WALL_THICKNESS),
 		Vector2(
-			segment_x,
+			right_segment_x,
 			interior_size.y / 2.0
 			- PLAYER_VISUAL_CLEARANCE
 			+ WALL_THICKNESS / 2.0
